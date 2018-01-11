@@ -4,12 +4,13 @@ import errno
 import csv
 import math
 import numpy as np
+import pprint
 
 
 class DataImporter:
 
-    def import_from_csv(self, path, header=True, separator = '\n', by_file = True):
-        entries = list()
+    def import_csv_to_list(self, path, header=True):
+        entries = []
         files = glob.glob(path)
         for name in files:
             try:
@@ -24,22 +25,33 @@ class DataImporter:
                     raise  # Propagate other kinds of IOError.
         return entries
 
+    def import_csv_to_dict(self, path):
+        entries = {}
+        entries["trajectories"] = []
+        files = glob.glob(path)
+        for name in files:
+            try:
+                with open(name, encoding='utf') as f:
+                    reader = csv.DictReader(f)
+                    trajectory = {}
+                    trajectory["name"] = name
+                    trajectory["observations"] = []
+                    for row in reader:
+                        trajectory["observations"].append(row)
+                    entries['trajectories'].append(trajectory)
+            except IOError as exc:
+                if exc.errno != errno.EISDIR:
+                    raise  # Propagate other kinds of IOError.
+        return entries
+
 
 class DataProcessor:
 
-    # waaayy to go jeff...
-    def remove_extra_entry(self, entries):
-        for entry in entries:
-            for element in entry:
-                # pop last element that is blank, this is an inplace operator
-                element.pop(len(element)-1)
-        return entries
-
     def fixed_length_sampler(self, entries, fixed_length=250):
-        fl_entries = list()
+        fl_entries = []
         for entry in entries:
             if len(entry) >= fixed_length:
-                fl_entry = list()
+                fl_entry = []
                 length = float(len(entry))
                 for i in range(fixed_length):
                     fl_entry.append(entry[int(math.ceil(i * length / fixed_length))])
@@ -50,11 +62,30 @@ class DataProcessor:
         return fl_entries
 
     def concatenate_trajectory_observations(self, entries):
-        observations = list()
+        observations = []
         for entry in entries:
             for observation in entry:
                 observations.append(observation)
         return observations
 
-    def convert_numpy(self, sequence, type='f'):
+    def convert_trajectory_dict_to_list(self, trajectory_dict, key_order=["PoseX", "PoseY", "PoseZ", "OrienX", "OrienY", "OrienZ", "OrienW", "time"]):
+        trajectory_list = []
+        for key in key_order:
+            print(key)
+            trajectory_list.append(trajectory_dict.key)
+        return trajectory_list
+
+
+    def convert_to_numpy(self, sequence, type='f'):
         return np.array(sequence, dtype=type)
+
+if __name__ == "__main__":
+    importer = DataImporter()
+    processor = DataProcessor()
+    trajectories_dict = importer.import_csv_to_dict('../toy_data/*.csv')
+    trajectory_list = []
+    print(len(trajectories_dict["trajectories"]))
+    for t in trajectories_dict["trajectories"]:
+        trajectory = []
+        processor.convert_trajectory_dict_to_list(t)
+    print(trajectory_list)

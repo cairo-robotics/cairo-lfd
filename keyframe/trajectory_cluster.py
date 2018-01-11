@@ -7,16 +7,25 @@ from matplotlib.colors import colorConverter
 from mpl_toolkits.mplot3d import Axes3D #<-- Note the capitalization!
 from data_processing import DataProcessor, DataImporter
 import randomcolor
+from collections import OrderedDict
 
-class KMeansKeyframe:
+class KMeansClusterer:
 
-    def __init__(self, observations, n_clusters = 5):
+    def __init__(self, observations, n_clusters=5):
         self.observations = observations
         self.n_clusters = n_clusters
         self.kmeans = KMeans(n_clusters=self.n_clusters)
 
     def kmeans_fit(self):
         self.kmeans.fit(self.observations)
+
+    def get_cluster_samples(self):
+        cluster_data = OrderedDict()
+        labels = self.kmeans.labels_
+        for i in range(0, self.n_clusters):
+            cluster_data[i+1] = [self.observations[np.where(labels == i)]]
+        return cluster_data
+
 
     def view_XYZ_clusters(self):
         """
@@ -46,6 +55,7 @@ class KMeansKeyframe:
 
 class GMMKeyframe:
 
+
     def __init__(self, observations, n_components = 5, means_init=None):
         self.observations = observations
         self.n_components = n_components
@@ -73,6 +83,9 @@ class GMMKeyframe:
         plt.xticks(())
         plt.yticks(())
         plt.show()
+
+    def view_3D_samples(self):
+        pass
 
     def _make_ellipses(self, gmm, ax, colors):
 
@@ -102,19 +115,29 @@ if __name__ == "__main__":
     importer = DataImporter()
     processor = DataProcessor()
 
-    trajectories = importer.import_from_csv('../toy_data/*.csv')
-    trajectories = processor.remove_extra_entry(trajectories)
-    trajectories = processor.fixed_length_sampler(trajectories)
+    trajectories = importer.import_csv_to_list('../toy_data/*.csv')
     observations = processor.concatenate_trajectory_observations(trajectories)
-    observations = [[entry[1], entry[2], entry[3]] for entry in observations]
-    np_observation = processor.convert_numpy(observations)
+    observations = [[entry[1], entry[2], entry[3], entry[4], entry[5], entry[6], entry[7]] for entry in observations]
+    np_observation = processor.convert_to_numpy(observations)
 
-    km_keyframer = KMeansKeyframe(np_observation, n_clusters=5)
-    km_keyframer.kmeans_fit()
-    km_keyframer.view_XYZ_clusters()
+    km_clusterer = KMeansClusterer(np_observation, n_clusters=5)
+    km_clusterer.kmeans_fit()
+    km_clusterer.view_XYZ_clusters()
+    cluster_data = km_clusterer.get_cluster_samples()
 
-    cluster_centers = km_keyframer.kmeans.cluster_centers_
-
-    gmm_keyframer = GMMKeyframe(np_observation, means_init=cluster_centers)
-    gmm_keyframer.gmm_fit()
-    gmm_keyframer.view_2D_gaussians()
+    counter = 0
+    for cluster_number, np_array in cluster_data.items():
+        gmm_keyframer = GMMKeyframe(np_array[0])
+        gmm_keyframer.gmm_fit()
+        gmm_keyframer.view_2D_gaussians()
+        points, labels = gmm_keyframer.gmm.sample(500)
+        samples = list(zip(points, labels))
+        print(samples)
+        sample_points = np.array([sample[0] for sample in samples])
+        counter += 1
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        ax.autoscale_view()
+        ax.scatter(sample_points[:, 0], sample_points[:, 1], sample_points[:, 2])
+        plt.show()
+        plt.close()  # Close a figure window

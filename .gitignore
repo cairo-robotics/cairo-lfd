@@ -1,10 +1,11 @@
 #Project specific
 .idea
 /env
-
+keyframe/__pycache__/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+*__pycache__/*
 *.py[cod]
 
 # C extensions

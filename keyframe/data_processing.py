@@ -75,7 +75,6 @@ class DataProcessor:
             trajectory_list.append(trajectory_dict.key)
         return trajectory_list
 
-
     def convert_to_numpy(self, sequence, type='f'):
         return np.array(sequence, dtype=type)
 
@@ -83,9 +82,9 @@ if __name__ == "__main__":
     importer = DataImporter()
     processor = DataProcessor()
     trajectories_dict = importer.import_csv_to_dict('../toy_data/*.csv')
-    trajectory_list = []
+    trajectories_list = []
     print(len(trajectories_dict["trajectories"]))
     for t in trajectories_dict["trajectories"]:
-        trajectory = []
-        processor.convert_trajectory_dict_to_list(t)
-    print(trajectory_list)
+        for observation in t["observations"]:
+            trajectory = []
+            processor.convert_trajectory_dict_to_list(t)

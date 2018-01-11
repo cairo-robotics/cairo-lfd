@@ -4,10 +4,10 @@ from sklearn.mixture import GaussianMixture
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 from matplotlib.colors import colorConverter
-from mpl_toolkits.mplot3d import Axes3D #<-- Note the capitalization!
+from mpl_toolkits.mplot3d import Axes3D
 from data_processing import DataProcessor, DataImporter
 import randomcolor
-from collections import OrderedDict
+
 
 class KMeansClusterer:
 
@@ -20,14 +20,14 @@ class KMeansClusterer:
         self.kmeans.fit(self.observations)
 
     def get_cluster_samples(self):
-        cluster_data = OrderedDict()
+        cluster_data = {}
         labels = self.kmeans.labels_
         for i in range(0, self.n_clusters):
             cluster_data[i+1] = [self.observations[np.where(labels == i)]]
         return cluster_data
 
 
-    def view_XYZ_clusters(self):
+    def view_XYZ_clusters(self, x_index, y_index, z_index):
         """
         FRAGILE FUNCTION: DEPENDS ON THE ARRAY ELEMENTS BEING CORRECTLY MAPPED TO X,Y,Z OF THE OBSERVATIONS
         """
@@ -45,8 +45,8 @@ class KMeansClusterer:
 
         for n, color in enumerate(colors):
             data = X[np.where(labels == n)]
-            ax.scatter(data[:, 0], data[:, 1], data[:, 2], color=color)
-        ax.scatter(centroids[:, 0], centroids[:, 1], centroids[:, 2], marker="x", s=150, linewidths=5, zorder=100)
+            ax.scatter(data[:, x_index], data[:, y_index], data[:, z_index], color=color)
+        ax.scatter(centroids[:, x_index], centroids[:, y_index], centroids[:, z_index], marker="x", s=150, linewidths=5, zorder=100)
         ax.autoscale(enable=False, axis='both')  # you will need this line to change the Z-axis
 
         plt.show()
@@ -54,7 +54,6 @@ class KMeansClusterer:
 
 
 class GMMKeyframe:
-
 
     def __init__(self, observations, n_components = 5, means_init=None):
         self.observations = observations
@@ -64,7 +63,7 @@ class GMMKeyframe:
     def gmm_fit(self):
         self.gmm.fit(self.observations)
 
-    def view_2D_gaussians(self):
+    def view_2D_gaussians(self, x_index, y_index):
         """
          FRAGILE FUNCTION: DEPENDS ON THE ARRAY ELEMENTS BEING CORRECTLY MAPPED TO X,Y OF THE OBSERVATIONS
         """
@@ -79,13 +78,14 @@ class GMMKeyframe:
         self._make_ellipses(self.gmm, ax, colors)
         for n, color in enumerate(colors):
             data = X[np.where(labels == n)]
-            plt.scatter(data[:, 0], data[:, 1], s=0.8, color=color)
+            plt.scatter(data[:, x_index], data[:, y_index], s=0.8, color=color)
         plt.xticks(())
         plt.yticks(())
         plt.show()
 
-    def view_3D_samples(self):
-        pass
+    def generate_samples(self, n_samples):
+        points, labels = gmm_keyframer.gmm.sample(n_samples)
+        return points
 
     def _make_ellipses(self, gmm, ax, colors):
 

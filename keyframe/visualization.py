@@ -1,6 +1,3 @@
-"""
-Shift visualizations to their own classes to be more general.
-"""
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 from matplotlib.colors import colorConverter

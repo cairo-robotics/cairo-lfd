@@ -1,5 +1,3 @@
-
-
 class KeyframeNode:
 
     def __init__(self, GMM, samples, keyframe_type="standard"):

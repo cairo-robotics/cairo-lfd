@@ -1,4 +1,4 @@
-from keyframe.modeling import GausssianMixtureModel
+from keyframe.modeling import GaussianMixtureModel
 from keyframe.data_processing import DataImporter, DataProcessor
 from keyframe.visualization import SamplePointViewer, GaussianMixtureModelViewer
 import os
@@ -19,7 +19,7 @@ if __name__ == "__main__":
             observations.append(sample)
         np_observations = processor.convert_to_numpy_array(observations)
 
-        model = GausssianMixtureModel(np_observations)
+        model = GaussianMixtureModel(np_observations)
         model.gmm_fit()
         simulated_samples = model.generate_samples(200)
 

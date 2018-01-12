@@ -3,8 +3,6 @@ from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
 
 
-
-
 class KMeansModel:
 
     def __init__(self, observations, n_clusters=5):
@@ -23,7 +21,7 @@ class KMeansModel:
         return cluster_data
 
 
-class GausssianMixtureModel:
+class GaussianMixtureModel:
 
     def __init__(self, observations, n_components=5, means_init=None):
         self.observations = observations

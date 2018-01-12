@@ -7,7 +7,8 @@ from matplotlib.colors import colorConverter
 from mpl_toolkits.mplot3d import Axes3D
 from data_processing import DataProcessor, DataImporter
 import randomcolor
-
+import pprint
+from collections import OrderedDict
 
 class KMeansClusterer:
 
@@ -115,21 +116,54 @@ if __name__ == "__main__":
     importer = DataImporter()
     processor = DataProcessor()
 
-    trajectories = importer.import_csv_to_list('../toy_data/*.csv')
-    observations = processor.concatenate_trajectory_observations(trajectories)
+    trajectories_dict = importer.import_csv_to_dict('../toy_data/raw_trajectories/*.csv')
+    observations = []
+    for t in trajectories_dict["trajectories"]:
+        for observation in t["observations"]:
+            observations.append(processor.convert_trajectory_dict_to_list(observation))
     observations = [[entry[1], entry[2], entry[3], entry[4], entry[5], entry[6], entry[7]] for entry in observations]
     np_observation = processor.convert_to_numpy(observations)
 
     km_clusterer = KMeansClusterer(np_observation, n_clusters=5)
     km_clusterer.kmeans_fit()
-    km_clusterer.view_XYZ_clusters()
-    cluster_data = km_clusterer.get_cluster_samples()
+
+    cluster_data = OrderedDict
+    for t in trajectories_dict["trajectories"]:
+        for observation in t["observations"]:
+            sample = processor.convert_to_numpy([processor.convert_trajectory_dict_to_list(observation, key_order=["PoseX", "PoseY", "PoseZ", "OrienX", "OrienY", "OrienZ", "OrienW"])])
+            cluster = km_clusterer.kmeans.predict(sample)[0]
+            observation["cluster"] = cluster
+            if cluster in cluster_data.keys():
+                cluster_data[cluster].append(observation)
+            else:
+                cluster_data[cluster] = []
+
+    key_frame_data = OrderedDict
+    counter = 1
+    for cluster_number, observations in cluster_data.items():
+        # standard keyframe data
+        keyframe_data = []
+        for observation in observations:
+            keyframe_data.append(processor.convert_trajectory_dict_to_list(observation))
+        key_frame_data[counter] = processor.convert_to_numpy(keyframe_data)
+
+        # transition keyframe data
+        # Preceeding 12 samples
+        key_frame_data[counter]
+
+        ##
+
+
+
+    pprint.pprint(cluster_data)
+
+    # km_clusterer.view_XYZ_clusters(1, 2, 3)
 
     counter = 0
     for cluster_number, np_array in cluster_data.items():
         gmm_keyframer = GMMKeyframe(np_array[0])
         gmm_keyframer.gmm_fit()
-        gmm_keyframer.view_2D_gaussians()
+        gmm_keyframer.view_2D_gaussians(1, 2)
         points, labels = gmm_keyframer.gmm.sample(500)
         samples = list(zip(points, labels))
         print(samples)

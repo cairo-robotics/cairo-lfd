@@ -1,10 +1,10 @@
-import sys
 import glob
 import errno
 import csv
 import math
+import json
 import numpy as np
-import pprint
+from collections import OrderedDict
 
 
 class DataImporter:
@@ -26,7 +26,7 @@ class DataImporter:
         return entries
 
     def import_csv_to_dict(self, path):
-        entries = {}
+        entries = OrderedDict()
         entries["trajectories"] = []
         files = glob.glob(path)
         for name in files:
@@ -43,6 +43,11 @@ class DataImporter:
                 if exc.errno != errno.EISDIR:
                     raise  # Propagate other kinds of IOError.
         return entries
+
+    def load_keyframe_json(self, path):
+        with open(path, 'r') as f:
+            datastore = json.load(f)
+            return datastore
 
 
 class DataProcessor:
@@ -68,23 +73,12 @@ class DataProcessor:
                 observations.append(observation)
         return observations
 
-    def convert_trajectory_dict_to_list(self, trajectory_dict, key_order=["PoseX", "PoseY", "PoseZ", "OrienX", "OrienY", "OrienZ", "OrienW", "time"]):
+    def convert_observation_dict_to_list(self, trajectory_dict, key_order=["PoseX", "PoseY", "PoseZ", "OrienX", "OrienY", "OrienZ", "OrienW", "time"]):
         trajectory_list = []
         for key in key_order:
-            print(key)
-            trajectory_list.append(trajectory_dict.key)
+            trajectory_list.append(trajectory_dict[key])
         return trajectory_list
 
-    def convert_to_numpy(self, sequence, type='f'):
+    def convert_to_numpy_array(self, sequence, type='f'):
         return np.array(sequence, dtype=type)
 
-if __name__ == "__main__":
-    importer = DataImporter()
-    processor = DataProcessor()
-    trajectories_dict = importer.import_csv_to_dict('../toy_data/*.csv')
-    trajectories_list = []
-    print(len(trajectories_dict["trajectories"]))
-    for t in trajectories_dict["trajectories"]:
-        for observation in t["observations"]:
-            trajectory = []
-            processor.convert_trajectory_dict_to_list(t)

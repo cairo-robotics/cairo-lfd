@@ -80,7 +80,7 @@ class GaussianMixtureModelViewer:
 
     def view_2D_gaussians(self, x_index, y_index):
         """
-        Generates 3D graph of the clusters of KMeans model.
+        Generates 2D graph of distribution components of the of Gaussian Mixture model.
 
         Parameters
         ----------
@@ -88,8 +88,6 @@ class GaussianMixtureModelViewer:
             Index of sample point to represent the x-axis value.
         y_index : int
             Index of sample point to represent the y-axis value.
-        z_index : int
-            Index of sample point to represent the z-axis value.
         """
         rand_color = randomcolor.RandomColor()
         colors = [colorConverter.to_rgb(rand_color.generate()[0]) for n in enumerate(range(0, self.gmm.n_components))]

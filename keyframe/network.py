@@ -11,8 +11,8 @@ class KeyframeNode:
 
 class WaypointGenerator:
 
-    def generate_way_points(self):
-        pass
+    def generate_way_points(self, keyframe1, keyframe2):
+        pass ;
 
 
 

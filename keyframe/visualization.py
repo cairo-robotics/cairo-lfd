@@ -8,17 +8,30 @@ import numpy as np
 
 class SamplePointViewer:
 
-    def __init__(self, sample_points):
-        self.sample_points = sample_points
+    """
+    Class for viewing samples points via Matplotlib's pyplot.
+    """
 
-    def view_3D_scatter(self):
+    def view_3D_scatter(self, sample_points, x_index, y_index, z_index):
+        """
+        Generates 3D graph according of the passed in sample points.
+
+        Parameters
+        ----------
+        sample_points : list
+            List of numpy arrays (usually observations)
+        x_index : int
+            Index of sample point to represent the x-axis value.
+        y_index : int
+            Index of sample point to represent the y-axis value.
+        z_index : int
+            Index of sample point to represent the z-axis value.
+        """
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         ax.autoscale_view()
-        ax.scatter(self.sample_points[:, 0], self.sample_points[:, 1], self.sample_points[:, 2])
+        ax.scatter(sample_points[:, x_index], sample_points[:, y_index], sample_points[:, z_index])
         plt.show()
-        plt.close()  # Close a figure window
-
 
 class KMeansModelViewer:
 
@@ -28,7 +41,16 @@ class KMeansModelViewer:
 
     def view_3D_clusters(self, x_index, y_index, z_index):
         """
-        FRAGILE FUNCTION: DEPENDS ON THE ARRAY ELEMENTS BEING CORRECTLY MAPPED TO X,Y,Z OF THE OBSERVATIONS
+        Generates 3D graph of the clusters of KMeans model
+
+        Parameters
+        ----------
+        x_index : int
+            Index of sample point to represent the x-axis value.
+        y_index : int
+            Index of sample point to represent the y-axis value.
+        z_index : int
+            Index of sample point to represent the z-axis value.
         """
         labels = self.kmm.model.labels_
         centroids = self.kmm.model.cluster_centers_
@@ -58,7 +80,16 @@ class GaussianMixtureModelViewer:
 
     def view_2D_gaussians(self, x_index, y_index):
         """
-         FRAGILE FUNCTION: DEPENDS ON THE ARRAY ELEMENTS BEING CORRECTLY MAPPED TO X,Y OF THE OBSERVATIONS
+        Generates 3D graph of the clusters of KMeans model.
+
+        Parameters
+        ----------
+        x_index : int
+            Index of sample point to represent the x-axis value.
+        y_index : int
+            Index of sample point to represent the y-axis value.
+        z_index : int
+            Index of sample point to represent the z-axis value.
         """
         rand_color = randomcolor.RandomColor()
         colors = [colorConverter.to_rgb(rand_color.generate()[0]) for n in enumerate(range(0, self.gmm.n_components))]
@@ -68,7 +99,7 @@ class GaussianMixtureModelViewer:
         X = self.observations
         labels = self.gmm.model.predict(self.observations)
 
-        self._make_ellipses(self.gmm.model, ax, colors)
+        self.__make_ellipses(self.gmm.model, ax, colors)
         for n, color in enumerate(colors):
             data = X[np.where(labels == n)]
             plt.scatter(data[:, x_index], data[:, y_index], s=0.8, color=color)
@@ -76,8 +107,20 @@ class GaussianMixtureModelViewer:
         plt.yticks(())
         plt.show()
 
-    def _make_ellipses(self, gmm, ax, colors):
+    def __make_ellipses(self, gmm, ax, colors):
+        """
+        Generates and adds to the passed ax object ellipse figures.These ellipses represent component Gaussian
+        distributions of the mixture model.
 
+        Parameters
+        ----------
+        gmm : modeling.GaussianMixtureModel
+            The gaussian mixture model for which to generate ellipses.
+        ax : matplotlib.axes.Axes
+            Subplot axes to which the ellipses are added.
+        colors : list
+            List of randomly generated colors used to differentiate the component distributions.
+        """
         for n, color in enumerate(colors):
             if gmm.covariance_type == 'full':
                 covariances = gmm.covariances_[n][:2, :2]

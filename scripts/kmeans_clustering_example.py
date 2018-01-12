@@ -3,6 +3,11 @@ from keyframe.visualization import KMeansModelViewer
 from keyframe.modeling import KMeansModel
 
 if __name__  == "__main__":
+
+    """
+    An example of generating and visualizing KMeans on the raw trajectories from the toy data. 
+    """
+
     importer = DataImporter()
     processor = DataProcessor()
 
@@ -11,7 +16,7 @@ if __name__  == "__main__":
     for t in trajectories_dict["trajectories"]:
         for observation in t["observations"]:
             observations.append(processor.convert_observation_dict_to_list(observation, key_order=["PoseX", "PoseY", "PoseZ"]))
-    np_observation = processor.convert_to_numpy_array(observations)
+    np_observation = processor.to_np_array(observations)
 
     kmm = KMeansModel(np_observation, n_clusters=5)
     kmm.kmeans_fit()

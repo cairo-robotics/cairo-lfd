@@ -4,6 +4,12 @@ import json
 
 if __name__  == "__main__":
 
+    """
+    Given the toy trajectories represented as .csv files in toy_data/raw_trajectories, this script will generate 
+    a json file with entries representing keyframe data. This data include standard keyframes as well as fake constraint
+    transition keyframes.
+    """
+
     importer = DataImporter()
     processor = DataProcessor()
 
@@ -12,7 +18,7 @@ if __name__  == "__main__":
     for t in trajectories_dict["trajectories"]:
         for observation in t["observations"]:
             observations.append(processor.convert_observation_dict_to_list(observation, key_order=["PoseX", "PoseY", "PoseZ"]))
-    np_observation = processor.convert_to_numpy_array(observations)
+    np_observation = processor.to_np_array(observations)
 
     km_clusterer = KMeansModel(np_observation, n_clusters=5)
     km_clusterer.kmeans_fit()
@@ -21,7 +27,7 @@ if __name__  == "__main__":
     cluster_order = []
     for t in trajectories_dict["trajectories"]:
         for observation in t["observations"]:
-            sample = processor.convert_to_numpy_array([processor.convert_observation_dict_to_list(observation, key_order=["PoseX", "PoseY", "PoseZ"])])
+            sample = processor.to_np_array([processor.convert_observation_dict_to_list(observation, key_order=["PoseX", "PoseY", "PoseZ"])])
             cluster = int(km_clusterer.kmeans.predict(sample)[0])
             if cluster not in cluster_order:
                 cluster_order.append(cluster)
@@ -32,7 +38,7 @@ if __name__  == "__main__":
         cluster_data[cluster] = []
     for t in trajectories_dict["trajectories"]:
         for observation in t["observations"]:
-            sample = processor.convert_to_numpy_array(
+            sample = processor.to_np_array(
                 [processor.convert_observation_dict_to_list(observation, key_order=["PoseX", "PoseY", "PoseZ"])])
             cluster = int(km_clusterer.kmeans.predict(sample)[0])
             cluster_data[cluster].append(observation)

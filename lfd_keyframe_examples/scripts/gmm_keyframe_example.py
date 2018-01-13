@@ -1,6 +1,8 @@
-from lfd_keyframe.modeling import GaussianMixtureModel
-from lfd_keyframe.modeling import DataImporter, DataProcessor
-from lfd_keyframe.modeling import SamplePointViewer, GaussianMixtureModelViewer
+#!/usr/bin/env python2.7
+
+from keyframe.modeling import GaussianMixtureModel
+from keyframe.data_processing import DataImporter, DataProcessor
+from keyframe.visualization import SamplePointViewer, GaussianMixtureModelViewer
 import os
 
 if __name__ == "__main__":
@@ -30,5 +32,5 @@ if __name__ == "__main__":
         gmm_viewer = GaussianMixtureModelViewer(model, np_observations)
         gmm_viewer.view_2D_gaussians(0, 1)
 
-        sample_viewer = SamplePointViewer(simulated_samples)
-        sample_viewer.view_3D_scatter()
+        sample_viewer = SamplePointViewer()
+        sample_viewer.view_3D_scatter(simulated_samples, 0, 1, 2)

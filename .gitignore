@@ -1,7 +1,6 @@
 #Project specific
 .idea
 /env
-src/lfd/keyframe/__pycache__/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

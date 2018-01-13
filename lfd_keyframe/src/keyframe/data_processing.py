@@ -4,6 +4,7 @@ import csv
 import math
 import json
 import numpy as np
+import codecs
 from collections import OrderedDict
 
 
@@ -37,7 +38,7 @@ class DataImporter:
         files = glob.glob(path)
         for name in files:
             try:
-                with open(name, encoding='utf') as f:
+                with codecs.open(name, "r", 'utf-8') as f:
                     reader = csv.reader(f)
                     trajectory = list(reader)
                     if exclude_header:
@@ -72,7 +73,7 @@ class DataImporter:
         files = glob.glob(path)
         for name in files:
             try:
-                with open(name, encoding='utf') as f:
+                with codecs.open(name, "r", 'utf-8') as f:
                     reader = csv.DictReader(f)
                     trajectory = {}
                     trajectory["name"] = name

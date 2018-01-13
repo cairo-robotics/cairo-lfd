@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>lfd_networkl</name>
+  <name>lfd_network</name>
   <version>0.0.0</version>
   <description>Cairo Lab's Learning From Demostration graph network package for representing keyframes and their relationships.</description>
 

@@ -1,6 +1,9 @@
-from lfd_keyframe.data_processing import DataProcessor, DataImporter
-from lfd_keyframe.visualization import KMeansModelViewer
-from lfd_keyframe.modeling import KMeansModel
+#!/usr/bin/env python2.7
+
+from keyframe.data_processing import DataProcessor, DataImporter
+from keyframe.visualization import KMeansModelViewer
+from keyframe.modeling import KMeansModel
+import os
 
 if __name__  == "__main__":
 
@@ -10,8 +13,9 @@ if __name__  == "__main__":
 
     importer = DataImporter()
     processor = DataProcessor()
-
-    trajectories_dict = importer.import_csv_to_dict('../toy_data/raw_trajectories/*.csv')
+    directory = os.path.dirname(__file__)
+    filename = os.path.join(directory, '../toy_data/raw_trajectories/*.csv')
+    trajectories_dict = importer.import_csv_to_dict(filename)
     observations = []
     for t in trajectories_dict["trajectories"]:
         for observation in t["observations"]:

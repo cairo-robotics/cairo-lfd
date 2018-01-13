@@ -1,6 +1,6 @@
-from keyframe.modeling import GaussianMixtureModel
-from keyframe.data_processing import DataImporter, DataProcessor
-from keyframe.visualization import SamplePointViewer, GaussianMixtureModelViewer
+from lfd_keyframe.modeling import GaussianMixtureModel
+from lfd_keyframe.modeling import DataImporter, DataProcessor
+from lfd_keyframe.modeling import SamplePointViewer, GaussianMixtureModelViewer
 import os
 
 if __name__ == "__main__":

@@ -33,6 +33,7 @@ class SamplePointViewer:
         ax.scatter(sample_points[:, x_index], sample_points[:, y_index], sample_points[:, z_index])
         plt.show()
 
+
 class KMeansModelViewer:
 
     def __init__(self, kmm, observations):

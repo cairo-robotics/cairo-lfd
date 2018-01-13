@@ -10,6 +10,8 @@ class KeyframeNode:
         self.simulated_samples = self.gmm.generate_samples()
 
     def evaluate_points(self):
+        pass
+
 
 class WaypointGenerator:
 

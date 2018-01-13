@@ -6,6 +6,8 @@ find_package(catkin
 	COMPONENTS
 	rospy
 	lfd_keyframe
+    predicate_classification_msgs
+    predicate_classification
 )
 
 catkin_python_setup()
@@ -14,6 +16,8 @@ catkin_package(
 	CATKIN_DEPENDS 
 	rospy
 	lfd_keyframe
+    predicate_classification_msgs
+    predicate_classification
 )
 
 ###########

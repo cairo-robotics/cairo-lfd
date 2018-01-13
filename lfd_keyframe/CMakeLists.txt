@@ -5,8 +5,8 @@ find_package(catkin
 	REQUIRED
 	COMPONENTS
 	rospy
-	binary_predicate_classification
-	binary_predicate_classification_msgs
+	predicate_classification
+	predicate_classification_msgs
 )
 
 catkin_python_setup()
@@ -14,8 +14,8 @@ catkin_python_setup()
 catkin_package(
 	CATKIN_DEPENDS 
 	rospy
-	binary_predicate_classification
-	binary_predicate_classification_msgs
+	predicate_classification
+	predicate_classification_msgs
 )
 
 ###########

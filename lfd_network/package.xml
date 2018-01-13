@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>lfd</name>
+  <name>lfd_networkl</name>
   <version>0.0.0</version>
-  <description>Cairo Lab's Learning From Demostration ROS package.</description>
+  <description>Cairo Lab's Learning From Demostration graph network package for representing keyframes and their relationships.</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -36,5 +36,6 @@
   <depend>rospy</depend>
   <depend>binary_predicate_classification_msgs</depend> 
   <depend>binary_predicate_classification</depend> 
+  <depend>lfd_keyframe</depend>
   
 </package>

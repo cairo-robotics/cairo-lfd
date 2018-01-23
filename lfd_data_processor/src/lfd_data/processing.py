@@ -2,6 +2,7 @@ import math
 import numpy as np
 from geometry_msgs.msg import Pose
 
+
 class DataProcessor(object):
 
     """
@@ -82,14 +83,13 @@ class DataProcessor(object):
 
 class ObservationConverter(object):
 
-    def generate_pose(self, state):
+    def generate_pose(self, object_state):
         pose = Pose()
-        pose.position.x = state["PoseX"]
-        pose.position.y = state["PoseY"]
-        pose.position.z = state["PoseZ"]
-        pose.orientation.x = state["OrienX"]
-        pose.orientation.y = state["OrienY"]
-        pose.orientation.z = state["OrienX"]
-        pose.orientation.w = state["OrienW"]
+        pose.position.x = object_state["PoseX"]
+        pose.position.y = object_state["PoseY"]
+        pose.position.z = object_state["PoseZ"]
+        pose.orientation.x = object_state["OrienX"]
+        pose.orientation.y = object_state["OrienY"]
+        pose.orientation.z = object_state["OrienX"]
+        pose.orientation.w = object_state["OrienW"]
         return pose 
-

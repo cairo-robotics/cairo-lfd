@@ -11,6 +11,7 @@ catkin_package(
 	CATKIN_DEPENDS 
 	rospy
 	lfd_keyframe
+    lfd_data_processor
 )
 
 ###########

@@ -34,6 +34,7 @@
   <!-- Use depend as a shortcut for packages that are both build and exec dependencies -->
   <buildtool_depend>catkin</buildtool_depend>
   <depend>rospy</depend>
-  <depend>lfd_keyframe</depend> 
+  <depend>lfd_keyframe</depend>
+  <depend>lfd_data_processor</depend>
   
 </package>

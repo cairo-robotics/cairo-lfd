@@ -36,6 +36,6 @@
   <depend>rospy</depend>
   <depend>predicate_classification_msgs</depend> 
   <depend>predicate_classification</depend> 
-  <depend>lfd_data</depend>
+  <depend>lfd_data_processor</depend>
   
 </package>

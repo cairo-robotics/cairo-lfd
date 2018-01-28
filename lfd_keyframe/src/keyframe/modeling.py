@@ -1,9 +1,10 @@
+"""python object wrappers for modeling"""
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
 
 
-class KMeansModel:
+class KMeansModel(object):
 
     """
     Wrapper class for Scikit Learn's KMeans clustering.
@@ -36,14 +37,16 @@ class KMeansModel:
         return cluster_data
 
 
-class GaussianMixtureModel:
+class GaussianMixtureModel(object):
     """
     Wrapper class for Scikit Learn's Gaussian Mixture Model.
     """
     def __init__(self, observations, n_components=5, means_init=None):
         self.observations = observations
         self.n_components = n_components
-        self.model = GaussianMixture(n_components=self.n_components, covariance_type='full', means_init=means_init)
+        self.model = GaussianMixture(n_components=self.n_components,
+                                     covariance_type='full',
+                                     means_init=means_init)
 
     def gmm_fit(self):
         """
@@ -63,5 +66,3 @@ class GaussianMixtureModel:
         """
         points, labels = self.model.sample(n_samples)
         return points
-
-

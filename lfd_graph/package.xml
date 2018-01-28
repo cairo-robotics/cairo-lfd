@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>lfd_network</name>
+  <name>lfd_graph</name>
   <version>0.0.0</version>
   <description>Cairo Lab's Learning From Demostration graph network package for representing keyframes and their relationships.</description>
 
@@ -34,8 +34,8 @@
   <!-- Use depend as a shortcut for packages that are both build and exec dependencies -->
   <buildtool_depend>catkin</buildtool_depend>
   <depend>rospy</depend>
-  <depend>predicate_classification_msgs</depend> 
-  <depend>predicate_classification</depend> 
+  <depend>predicate_classification_msgs</depend>
+  <depend>predicate_classification</depend>
   <depend>lfd_keyframe</depend>
-  
+
 </package>

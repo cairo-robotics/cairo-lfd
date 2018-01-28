@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(lfd_network)
 
-find_package(catkin 
+find_package(catkin
 	REQUIRED
 	COMPONENTS
 	rospy
@@ -13,11 +13,11 @@ find_package(catkin
 catkin_python_setup()
 
 catkin_package(
-	CATKIN_DEPENDS 
+	CATKIN_DEPENDS
 	rospy
 	lfd_keyframe
-    predicate_classification_msgs
-    predicate_classification
+  predicate_classification_msgs
+  predicate_classification
 )
 
 ###########

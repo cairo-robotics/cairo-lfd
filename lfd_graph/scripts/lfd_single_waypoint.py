@@ -51,7 +51,7 @@ def main():
     pose_pub = rospy.Publisher("/commander/pose", Pose, queue_size=1)
     sub_message = rospy.Subscriber("/test_topic", String, callback, queue_size=1)
     rospy.init_node("graph_traverse")
-
+    print "hello world"
     yagami = DeathNote()
 
     importer = DataImporter()

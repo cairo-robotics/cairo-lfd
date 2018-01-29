@@ -34,12 +34,20 @@ class Environment(object):
                 triggered_constraints.append(constraint.id)
         return triggered_constraints
 
-    def get_item_constraints(self, object_id):
-        constraints = []
-        for constraint in self.constraints:
-            if constraint.item == object_id:
-                constraints.append(constraint)
-        return constraints
+
+class Trajectory(object):
+
+    def __init__(self, observations):
+        self.observations = observations
+
+    def vectorize_observations(self, keys=["position", "orientation", "joints"]):
+        observation_vectors = []
+        for observation in self.observations:
+            vector = []
+            for key in keys:
+                vector.append[observation[key]]
+            observation_vectors.append(vector)
+        return observation_vectors
 
 
 class RobotFactory(object):

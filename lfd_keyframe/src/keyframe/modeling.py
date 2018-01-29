@@ -66,3 +66,6 @@ class GaussianMixtureModel(object):
         """
         points, labels = self.model.sample(n_samples)
         return points
+
+    def predict_proba(self, X):
+        return self.model.predict_proba(X)

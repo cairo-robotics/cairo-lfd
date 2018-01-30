@@ -6,6 +6,26 @@ import codecs
 from collections import OrderedDict
 
 
+class DataExporter:
+    """
+    Data exporint class with a variety of methods to support importing trajectory/observation data from csv, json etc.
+    """
+
+    def export_to_json(self, path, data):
+        """
+        Exports dictioanry data to a .json file.
+
+        Parameters
+        ----------
+        path : string
+            Path of directory to save .json file.
+        dict_data : dict/JSON serializable type
+            Data to be serialized to json.
+        """
+        with open(path, 'w') as f:
+            json.dump(data, f,  indent=4, sort_keys=True)
+
+
 class DataImporter:
 
     """

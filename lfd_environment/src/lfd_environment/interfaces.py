@@ -1,7 +1,7 @@
 import json
 from collections import OrderedDict
 from lfd_environment.constraints import UprightConstraint, HeightConstraint
-from lfd_environment.robot import SawyerRobot
+from lfd_environment.items import SawyerRobot
 
 
 def import_configuration(filepath):
@@ -19,12 +19,25 @@ class Environment(object):
     def get_robot_state(self):
         return self.robot.get_state()
 
+    def get_robot_info(self):
+        return self.robot.get_info()
+
     def get_item_states(self):
         item_states = []
         if self.items is not None:
             for item in self.items:
                 item_states.append(item.get_state())
         return item_states
+
+    def get_item_info(self):
+        item_info = []
+        if self.items is not None:
+            for item in self.items:
+                item_info.append(item.get_info())
+        return item_info
+
+    def get_constraint_by_id(self, constraint_id):
+        return [constraint for constraint in self.constraints if constraint.id == constraint_id][0]
 
     def check_constraint_triggers(self):
         triggered_constraints = []
@@ -35,19 +48,47 @@ class Environment(object):
         return triggered_constraints
 
 
-class Trajectory(object):
+class Demonstration(object):
 
     def __init__(self, observations):
         self.observations = observations
 
     def vectorize_observations(self, keys=["position", "orientation", "joints"]):
+        # This is fragile considering the observation data might vary or not have joints etc.
         observation_vectors = []
         for observation in self.observations:
             vector = []
             for key in keys:
-                vector.append[observation[key]]
+                if key in observation.keys():
+                    vector.append[observation[key]]
             observation_vectors.append(vector)
         return observation_vectors
+
+
+class Observation(object):
+    def __init__(self, observation_data):
+        self.data = observation_data
+
+    def get_timestamp(self):
+        return self.data["time"]
+
+    def get_robot_data(self):
+        return self.data["robot"]
+
+    def get_item_data(self, item_id):
+        for item in self.data["items"]:
+            # return first occurance, should only be one
+            if item["id"] is item_id:
+                return item
+
+    def get_triggered_constraint_data(self):
+        return self.data["triggered_constraints"]
+
+    def get_applied_constraint_data(self):
+        if "applied_constraints" in self.data.keys():
+            return self.data["applied_constraints"]
+        else:
+            return None
 
 
 class RobotFactory(object):

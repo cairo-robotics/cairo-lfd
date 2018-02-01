@@ -31,11 +31,12 @@ class HeightConstraint(object):
 
 class UprightConstraint(object):
 
-    def __init__(self, constraint_id, item_id, button, threshold_angle):
+    def __init__(self, constraint_id, item_id, button, threshold_angle, axis):
         self.id = constraint_id
         self.item_id = item_id
         self.button = button
         self.threshold_angle = threshold_angle
+        self.axis = str(axis)
 
     def check_trigger(self):
         if intera_interface.Navigator().get_button_state(self.button) is not 0:
@@ -54,6 +55,4 @@ class UprightConstraint(object):
         current_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
         upright_pose = convert_data_to_pose(item_info["upright_pose"]["position"], item_info["upright_pose"]["orientation"])
 
-        print(current_pose)
-        print(upright_pose)
-        return upright(upright_pose, current_pose, self.threshold_angle)
+        return upright(upright_pose, current_pose, self.threshold_angle, self.axis)

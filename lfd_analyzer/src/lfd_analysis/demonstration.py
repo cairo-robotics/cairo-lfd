@@ -1,6 +1,13 @@
+def transition_point_identifier(demonstration):
+    prev = []
+    for observation in demonstration.observations:
+        curr = observation.get_applied_constraint_data()
+        if prev != curr:
+            observation.data["constraint_transition"] = True
+        prev = curr
 
 
-def map_constraints(demonstration, evaluator):
+def applied_constraint_evaluator(demonstration, evaluator):
     prev = []
     for observation in demonstration.observations:
         triggered = observation.get_triggered_constraint_data()

@@ -113,10 +113,6 @@ class ConstraintFactory(object):
             "HeightConstraint": HeightConstraint
         }
 
-    def import_configuration(self, filename):
-        with open(filename) as json_data:
-            self.constraints = json.load(json_data, object_pairs_hook=OrderedDict)["constraints"]
-
     def generate_constraints(self):
         constraints = []
         for config in self.configs:

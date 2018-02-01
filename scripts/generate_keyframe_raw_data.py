@@ -1,5 +1,6 @@
-from keyframe.data_processing import DataProcessor, DataImporter
-from keyframe.modeling import KMeansModel
+from lfd_data.processing import DataProcessor
+from lfd_data.io import DataImporter
+from lfd_keyframe.modeling import KMeansModel
 import json
 
 if __name__  == "__main__":

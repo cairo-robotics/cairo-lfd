@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>lfd_keyframe_examples</name>
+  <name>lfd_data_processor</name>
   <version>0.0.0</version>
-  <description>lfd-keyframe example scripts</description>
+  <description>Cairo Lab's Learning From Demostration ROS package containing data processing modules for data I/O, conversions, and serialization.</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -34,7 +34,6 @@
   <!-- Use depend as a shortcut for packages that are both build and exec dependencies -->
   <buildtool_depend>catkin</buildtool_depend>
   <depend>rospy</depend>
-  <depend>lfd_keyframe</depend>
-  <depend>lfd_data_processor</depend>
+  <depend>geometry_msgs</depend>
   
 </package>

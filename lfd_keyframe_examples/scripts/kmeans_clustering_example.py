@@ -1,8 +1,9 @@
 #!/usr/bin/env python2.7
 
-from keyframe.data_processing import DataProcessor, DataImporter
-from keyframe.visualization import KMeansModelViewer
-from keyframe.modeling import KMeansModel
+from lfd_data.processing import DataProcessor
+from lfd_data.io import DataImporter
+from lfd_keyframe.visualization import KMeansModelViewer
+from lfd_keyframe.modeling import KMeansModel
 import os
 
 if __name__  == "__main__":

@@ -115,15 +115,13 @@ class DataImporter:
         Parameters
         ----------
         path : string
-            Path of directory containing the .csv files.
+            Path of directory containing the .json files.
 
         Returns
         -------
         entries : OrderedDict
             Dictionary of trajectories. Trajectories themselves are dictionaries of observations.
         """
-        data = json.load(open('config.json'), object_pairs_hook=OrderedDict)
-
         entries = OrderedDict()
         entries["trajectories"] = []
         files = glob.glob(path)
@@ -137,8 +135,34 @@ class DataImporter:
                     raise  # Propagate other kinds of IOError.
         return entries
 
-
     def load_json_files(self, path):
+        """
+        Import JSON files as a Python dictionary from .json files in the directory signified by the path..
+
+        Parameters
+        ----------
+        path : string
+            Path of directory containing the ..json files.
+
+        Returns
+        -------
+        entries : dict
+            Dictionary representation of the JSON file.
+        """
+        entries = OrderedDict()
+        entries["data"] = []
+        files = glob.glob(path)
+        for name in files:
+            try:
+                with codecs.open(name, "r", 'utf-8') as f:
+                    file_data = json.load(f, object_pairs_hook=OrderedDict)
+                    entries["data"].append(file_data)
+            except IOError as exc:
+                if exc.errno != errno.EISDIR:
+                    raise  # Propagate other kinds of IOError.
+        return entries
+
+    def load_json_file(self, path):
         """
         Import JSON file as a Python dictionary.
 

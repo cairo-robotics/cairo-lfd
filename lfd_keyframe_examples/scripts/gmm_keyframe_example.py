@@ -16,7 +16,7 @@ if __name__ == "__main__":
     processor = DataProcessor()
     dir = os.path.dirname(__file__)
     filename = os.path.join(dir, "../toy_data/keyframe_data/keyframes.json")
-    keyframe_data = importer.load_json_files(filename)
+    keyframe_data = importer.load_json_file(filename)
 
     for key in sorted(keyframe_data.keys()):
 

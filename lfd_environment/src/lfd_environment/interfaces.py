@@ -53,14 +53,12 @@ class Demonstration(object):
     def __init__(self, observations):
         self.observations = observations
 
-    def vectorize_observations(self, keys=["position", "orientation", "joints"]):
+    def vectorize_observations(self, key):
         # This is fragile considering the observation data might vary or not have joints etc.
         observation_vectors = []
         for observation in self.observations:
             vector = []
-            for key in keys:
-                if key in observation.keys():
-                    vector.append[observation[key]]
+            vector.append[observation[key]]
             observation_vectors.append(vector)
         return observation_vectors
 

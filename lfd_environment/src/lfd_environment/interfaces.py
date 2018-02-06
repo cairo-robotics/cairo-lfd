@@ -53,14 +53,18 @@ class Demonstration(object):
     def __init__(self, observations):
         self.observations = observations
 
-    def vectorize_observations(self, key):
-        # This is fragile considering the observation data might vary or not have joints etc.
-        observation_vectors = []
+    def get_observation_by_index(self, idx):
+        return self.observations[idx]
+
+    def vectorize_observations(self, key_path_as_list):
+        vectors = []
         for observation in self.observations:
-            vector = []
-            vector.append[observation[key]]
-            observation_vectors.append(vector)
-        return observation_vectors
+            path = key_path_as_list
+            data = observation.data
+            for i in range(0, len(path)):
+                data = data[path[i]]
+            vectors.append(data)
+        return vectors
 
 
 class Observation(object):

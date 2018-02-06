@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(lfd_network)
+project(lfd_graph)
 
 find_package(catkin
 	REQUIRED

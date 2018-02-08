@@ -2040,7 +2040,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2070,7 +2072,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2100,7 +2104,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2130,7 +2136,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2160,7 +2168,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2190,7 +2200,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2220,7 +2232,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2250,7 +2264,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2280,7 +2296,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2310,7 +2328,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2340,7 +2360,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2370,7 +2392,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2400,7 +2424,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2430,7 +2456,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2460,7 +2489,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2490,7 +2522,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2520,7 +2555,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2550,7 +2588,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2580,7 +2621,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2610,7 +2654,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2640,7 +2687,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.041667, 
@@ -2671,7 +2721,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "constraint_transition": true, 
         "items": [], 
@@ -2706,7 +2757,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -2738,7 +2790,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -2770,7 +2823,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -2802,7 +2856,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -2834,7 +2889,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -2866,7 +2922,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -2898,7 +2955,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -2930,7 +2988,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -2962,7 +3021,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -2994,7 +3054,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3026,7 +3087,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3058,7 +3120,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3090,7 +3153,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3122,7 +3186,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3154,7 +3219,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3186,7 +3252,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3218,7 +3285,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3250,7 +3318,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3282,7 +3351,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3314,7 +3384,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3346,7 +3417,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3378,7 +3450,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3410,7 +3483,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3442,7 +3516,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3474,7 +3549,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3506,7 +3582,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3538,7 +3615,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3570,7 +3648,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3602,7 +3681,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3634,7 +3714,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3666,7 +3747,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3698,7 +3780,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3730,7 +3813,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3762,7 +3846,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3794,7 +3879,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3826,7 +3912,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3858,7 +3945,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3890,7 +3978,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3922,7 +4011,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3954,7 +4044,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -3986,7 +4077,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4018,7 +4110,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4050,7 +4143,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4082,7 +4176,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4114,7 +4209,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4146,7 +4242,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4178,7 +4275,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4210,7 +4308,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4242,7 +4341,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4274,7 +4374,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4306,7 +4407,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4338,7 +4440,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4370,7 +4473,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4402,7 +4506,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4434,7 +4539,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4466,7 +4572,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4498,7 +4605,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4530,7 +4638,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4562,7 +4671,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4594,7 +4704,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4626,7 +4737,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4658,7 +4770,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4690,7 +4803,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4722,7 +4836,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4754,7 +4869,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4786,7 +4902,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4818,7 +4935,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4850,7 +4968,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4882,7 +5001,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4914,7 +5034,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4946,7 +5067,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -4978,7 +5100,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5010,7 +5133,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5042,7 +5166,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5074,7 +5199,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5106,7 +5232,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5138,7 +5265,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5170,7 +5298,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5202,7 +5331,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5234,7 +5364,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5266,7 +5397,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5298,7 +5430,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5330,7 +5463,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5362,7 +5496,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5394,7 +5529,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5426,7 +5562,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5458,7 +5595,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -5489,7 +5627,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "constraint_transition": true, 
         "items": [], 
         "robot": {
@@ -5520,7 +5660,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5550,7 +5692,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5580,7 +5724,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5610,7 +5756,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5640,7 +5788,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5670,7 +5820,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5700,7 +5852,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5730,7 +5884,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5760,7 +5916,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5790,7 +5948,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5820,7 +5980,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5850,7 +6012,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5880,7 +6044,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5910,7 +6076,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5940,7 +6108,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -5970,7 +6140,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -6000,7 +6172,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -6030,7 +6204,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -6060,7 +6236,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -6090,7 +6268,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -6120,7 +6300,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -6150,7 +6332,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -6180,7 +6364,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -6210,7 +6396,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -6240,7 +6428,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -6270,7 +6460,1129 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.929615234375, 
+                0.072642578125, 
+                2.729796875, 
+                -1.0255693359375, 
+                -2.991041015625, 
+                -0.9423642578125, 
+                -1.0542080078125
+            ], 
+            "orientation": [
+                0.6393681677702802, 
+                -0.3787048024741647, 
+                0.5732242902064943, 
+                0.3452606721628464
+            ], 
+            "position": [
+                0.7361239109519121, 
+                -0.4558838511386234, 
+                -0.16779115869155245
+            ]
+        }, 
+        "time": 20.565349102020264, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -6327,6 +7639,456 @@
             ]
         }, 
         "time": 20.66538405418396, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.9293056640625, 
+                0.0718125, 
+                2.729796875, 
+                -1.02542578125, 
+                -2.991041015625, 
+                -0.941951171875, 
+                -1.0546220703125
+            ], 
+            "orientation": [
+                0.6392104189350956, 
+                -0.378559190656172, 
+                0.5734328327433408, 
+                0.34536613300454366
+            ], 
+            "position": [
+                0.7365279548512674, 
+                -0.45622497792983036, 
+                -0.16713681882524006
+            ]
+        }, 
+        "time": 20.765382051467896, 
         "triggered_constraints": []
     }, 
     {
@@ -7350,7 +9112,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7380,7 +9144,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7410,7 +9176,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7440,7 +9208,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7470,7 +9240,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7500,7 +9272,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7530,7 +9304,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7560,7 +9336,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7590,7 +9369,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7620,7 +9402,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7650,7 +9435,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7680,7 +9468,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7710,7 +9501,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7740,7 +9534,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7770,7 +9567,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7800,7 +9600,10 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            1, 
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -7831,7 +9634,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "constraint_transition": true, 
         "items": [], 
@@ -7866,7 +9670,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -7900,7 +9705,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -7934,7 +9740,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -7966,7 +9773,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -7998,7 +9806,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8030,7 +9839,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8062,7 +9872,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8094,7 +9905,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8126,7 +9938,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8158,7 +9971,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8190,7 +10004,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8222,7 +10037,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8254,7 +10070,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8286,7 +10103,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8318,7 +10136,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8350,7 +10169,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8382,7 +10202,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8414,7 +10235,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8446,7 +10268,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8478,7 +10301,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8510,7 +10334,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8542,7 +10367,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8574,7 +10400,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8606,7 +10433,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8638,7 +10466,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8670,7 +10499,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8702,7 +10532,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8734,7 +10565,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8766,7 +10598,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8798,7 +10631,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8830,7 +10664,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8862,7 +10697,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8894,7 +10730,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8926,7 +10763,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8958,7 +10796,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -8990,7 +10829,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -9022,7 +10862,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -9054,7 +10895,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -9086,7 +10928,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -9118,7 +10961,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -9150,7 +10994,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [], 
         "robot": {
@@ -9181,7 +11026,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "constraint_transition": true, 
         "items": [], 
         "robot": {
@@ -9212,7 +11059,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9242,7 +11091,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9272,7 +11123,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9302,7 +11155,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9332,7 +11187,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9362,7 +11219,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9392,7 +11251,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9422,7 +11283,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9452,7 +11315,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9482,7 +11347,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9512,7 +11379,41 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.0998759765625, 
+                -0.110431640625, 
+                3.050470703125, 
+                -1.2543857421875, 
+                -2.9900078125, 
+                -1.10098828125, 
+                -1.4133134765625
+            ], 
+            "orientation": [
+                0.7163064012621678, 
+                -0.07059990045987143, 
+                0.6864641207218302, 
+                0.1033818384799939
+            ], 
+            "position": [
+                0.8383460750949357, 
+                0.35899289803425705, 
+                -0.02682777456117623
+            ]
+        }, 
+        "time": 30.965403079986572, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9542,7 +11443,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9572,7 +11475,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9602,7 +11507,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9632,7 +11539,41 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.121177734375, 
+                0.055611328125, 
+                3.050615234375, 
+                -1.1311259765625, 
+                -2.9906279296875, 
+                -1.16465234375, 
+                -1.413533203125
+            ], 
+            "orientation": [
+                0.7093589916474236, 
+                -0.07018220993961985, 
+                0.6927683914483247, 
+                0.10934456633524571
+            ], 
+            "position": [
+                0.8287382955659782, 
+                0.34682505559033716, 
+                -0.0984115136309628
+            ]
+        }, 
+        "time": 31.36533808708191, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9662,7 +11603,233 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.1243681640625, 
+                0.092041015625, 
+                3.050615234375, 
+                -1.1027744140625, 
+                -2.9906279296875, 
+                -1.1923330078125, 
+                -1.413533203125
+            ], 
+            "orientation": [
+                0.7025992406976863, 
+                -0.06902647975181787, 
+                0.6995468125544247, 
+                0.11056178864802985
+            ], 
+            "position": [
+                0.8250828158332553, 
+                0.34576231743307595, 
+                -0.11170635591492974
+            ]
+        }, 
+        "time": 31.46522808074951, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.1243681640625, 
+                0.092041015625, 
+                3.050615234375, 
+                -1.1027744140625, 
+                -2.9906279296875, 
+                -1.1923330078125, 
+                -1.413533203125
+            ], 
+            "orientation": [
+                0.7025992406976863, 
+                -0.06902647975181787, 
+                0.6995468125544247, 
+                0.11056178864802985
+            ], 
+            "position": [
+                0.8250828158332553, 
+                0.34576231743307595, 
+                -0.11170635591492974
+            ]
+        }, 
+        "time": 31.46522808074951, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.1243681640625, 
+                0.092041015625, 
+                3.050615234375, 
+                -1.1027744140625, 
+                -2.9906279296875, 
+                -1.1923330078125, 
+                -1.413533203125
+            ], 
+            "orientation": [
+                0.7025992406976863, 
+                -0.06902647975181787, 
+                0.6995468125544247, 
+                0.11056178864802985
+            ], 
+            "position": [
+                0.8250828158332553, 
+                0.34576231743307595, 
+                -0.11170635591492974
+            ]
+        }, 
+        "time": 31.46522808074951, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.1243681640625, 
+                0.092041015625, 
+                3.050615234375, 
+                -1.1027744140625, 
+                -2.9906279296875, 
+                -1.1923330078125, 
+                -1.413533203125
+            ], 
+            "orientation": [
+                0.7025992406976863, 
+                -0.06902647975181787, 
+                0.6995468125544247, 
+                0.11056178864802985
+            ], 
+            "position": [
+                0.8250828158332553, 
+                0.34576231743307595, 
+                -0.11170635591492974
+            ]
+        }, 
+        "time": 31.46522808074951, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.1243681640625, 
+                0.092041015625, 
+                3.050615234375, 
+                -1.1027744140625, 
+                -2.9906279296875, 
+                -1.1923330078125, 
+                -1.413533203125
+            ], 
+            "orientation": [
+                0.7025992406976863, 
+                -0.06902647975181787, 
+                0.6995468125544247, 
+                0.11056178864802985
+            ], 
+            "position": [
+                0.8250828158332553, 
+                0.34576231743307595, 
+                -0.11170635591492974
+            ]
+        }, 
+        "time": 31.46522808074951, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.1243681640625, 
+                0.092041015625, 
+                3.050615234375, 
+                -1.1027744140625, 
+                -2.9906279296875, 
+                -1.1923330078125, 
+                -1.413533203125
+            ], 
+            "orientation": [
+                0.7025992406976863, 
+                -0.06902647975181787, 
+                0.6995468125544247, 
+                0.11056178864802985
+            ], 
+            "position": [
+                0.8250828158332553, 
+                0.34576231743307595, 
+                -0.11170635591492974
+            ]
+        }, 
+        "time": 31.46522808074951, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
+        "items": [], 
+        "robot": {
+            "gripper": 0.0, 
+            "id": 1, 
+            "joints": [
+                -0.1243681640625, 
+                0.092041015625, 
+                3.050615234375, 
+                -1.1027744140625, 
+                -2.9906279296875, 
+                -1.1923330078125, 
+                -1.413533203125
+            ], 
+            "orientation": [
+                0.7025992406976863, 
+                -0.06902647975181787, 
+                0.6995468125544247, 
+                0.11056178864802985
+            ], 
+            "position": [
+                0.8250828158332553, 
+                0.34576231743307595, 
+                -0.11170635591492974
+            ]
+        }, 
+        "time": 31.46522808074951, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9692,7 +11859,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9722,7 +11891,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9752,7 +11923,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9782,7 +11955,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9812,7 +11987,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9842,7 +12019,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 
@@ -9872,7 +12051,9 @@
         "triggered_constraints": []
     }, 
     {
-        "applied_constraints": [], 
+        "applied_constraints": [
+            2
+        ], 
         "items": [], 
         "robot": {
             "gripper": 0.0, 

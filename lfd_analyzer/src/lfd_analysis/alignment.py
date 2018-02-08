@@ -2,13 +2,15 @@ from scipy.spatial.distance import euclidean
 from lfd_data.io import DataImporter
 from lfd_environment.interfaces import Demonstration, Observation
 from dtw import fastdtw
+from lfd_data.io import DataExporter
+import itertools
 
 
-def vectorize_demonstration(self, demonstrations):
-        vectorized_demonstrations = []
-        for demo in demonstrations:
-            vectorized_demonstrations.append(demo.vectorize_observations(["robot", "position"]))
-        return vectorized_demonstrations
+def vectorize_demonstration(demonstration):
+    obs1 = demonstration.vectorize_observations(["robot", "position"])
+    obs2 = demonstration.vectorize_observations(["robot", "joints"])
+    result = [i[0] + i[1] for i in zip(obs1, obs2)]
+    return result
 
 
 class DemonstrationAligner(object):
@@ -18,42 +20,59 @@ class DemonstrationAligner(object):
         self.vectorize_func = vectorize_func
 
     def align(self):
-        self.demonstrations.sort(key = lambda d: len(d.observations.data))
-        reference_demo = self.demonstrations[-1]
+        self.demonstrations.sort(key = lambda d: len(d.observations))
+        reference_demo = self.demonstrations[1]
         aligned_demos = []
         for idx, curr_demo in enumerate(self.demonstrations):
-            if idx == 0:
-                new_demos = self.align_two_demonstrations(curr_demo, reference_demo)
-                aligned_demos = aligned_demos + new_demos
-                reference_demo = new_demos[1]
-            else:
-                new_demos = self.align_two_demonstrations(curr_demo, reference_demo)[0]
-                aligned_demos.append(self.align_two_demonstrations(curr_demo, reference_demo)[0])
-                reference_demo = new_demos[1]
-        return aligned_demos
+            # first loop collects applied constraints into longest demonstration as master reference
+            alignments = self.get_alignment(curr_demo, reference_demo)
+            curr_demo.aligned_observations = alignments["current"]
+            reference_demo.aligned_observations = alignments["reference"]
+        for idx, curr_demo in enumerate(self.demonstrations):
+            alignments = self.get_alignment(curr_demo, reference_demo)
+            curr_demo.aligned_observations = alignments["current"]
+            reference_demo.aligned_observations = alignments["reference"]
+        for idx, curr_demo in enumerate(self.demonstrations):
+            # by third loop, constraints have converged to an equivalent mapping.
+            # I do not like or know exactly why but intuitively it makes some sense as iteratively running DTW will
+            # converge on some global alignment if a reference vector is always used.
+            alignments = self.get_alignment(curr_demo, reference_demo)
+            curr_demo.aligned_observations = alignments["current"]
+            reference_demo.aligned_observations = alignments["reference"]
+        return demonstrations
 
-    def align_two_demonstrations(self, demo1, demo2):
-        demos = [demo1, demo2]
-        demos.sort(key = lambda d: len(d.observations.data))
-
+    def get_alignment(self, current_demo, reference_demo):
+        demos = [current_demo, reference_demo]
         demo_vectors = [self.vectorize_func(demo) for demo in demos]
-
         dist, cost, acc, path = fastdtw(demo_vectors[0], demo_vectors[1], dist=euclidean)
         idx_pairs = zip(path[0].tolist(), path[1].tolist())
 
-        aligned_vector_1 = []
-        aligned_vector_2 = []
-        for idx, pair in enumerate(pairs):
+        current_aligned_observations = []
+        reference_aligned_observations = []
+        for idx, pair in enumerate(idx_pairs):
             # build new osbervation trajectory
-            demo1 = demos[0].get_observation_by_index(pair[0])
-            demo2 = demos[1].get_observation_by_index(pair[1])
-            constraint_union = list(set(demo1.data["applied_constraints"] + demo2.data["applied_constraints"]))
-            demo1.data["applied_constraints"] = constraint_union
-            demo2.data["applied_constraints"] = constraint_union
-            new_x_trajectory.append(demo1)
-            new_y_trajectory.append(demo2)
+            current_ob = demos[0].get_observation_by_index(pair[0])
+            reference_ob = demos[1].get_observation_by_index(pair[1])
+            constraint_union = list(set(current_ob.data["applied_constraints"] + reference_ob.data["applied_constraints"]))
+            current_ob.data["applied_constraints"] = constraint_union
+            reference_ob.data["applied_constraints"] = constraint_union
+            current_aligned_observations.append(current_ob)
+            reference_aligned_observations.append(reference_ob)
+        return {
+            "current": current_aligned_observations,
+            "reference": reference_aligned_observations
+        }
 
-        return [Demonstration(new_x_trajectory), Demonstration(new_y_trajectory)]
+
+def get_constraint_ordering(demonstration):
+    constraint_order = []
+    curr = []
+    for ob in demonstration.aligned_observations:
+        if curr != ob.data["applied_constraints"]:
+            constraint_order.append(ob.data["applied_constraints"])
+            curr = ob.data["applied_constraints"]
+    return constraint_order
+
 
 
 if __name__ == "__main__":
@@ -68,41 +87,22 @@ if __name__ == "__main__":
             observations.append(Observation(entry))
         demonstrations.append(Demonstration(observations))
 
+    aligner = DemonstrationAligner(demonstrations, vectorize_demonstration)
+    aligned_demos = aligner.align()
+    # c = []
+    # for demo in aligned_demos:
+    #     constraints = []
+    #     for ob in demo.aligned_observations:
+    #         constraints.append(ob.data["applied_constraints"])
+    #     c.append(constraints)
+    # for i in itertools.izip_longest(c[0],c[1], c[2]): print i
 
-    self.
+    print "Demonstration Constraint Transitions"
+    for demo in aligned_demos:
+        print(get_constraint_ordering(demo))
 
-
-    # Vectorize data
-    position_vectors = []   
-    for demo in demonstrations:
-        position_vectors.append(demo.vectorize_observations(["robot", "position"]))
-
-    position_vectors.sort(key = lambda s: len(s))
-
-    for v in position_vectors:
-        print(len(v))
-
-    dist, cost, acc, path = fastdtw(position_vectors[0], position_vectors[1], dist=euclidean)
-    
-    pairs = zip(path[0].tolist(), path[1].tolist())
-
-    new_x_trajectory = []
-    new_y_trajectory = []
-    for idx, pair in enumerate(pairs):
-        # build new osbervation trajectory
-        demo1 = demonstrations[0].get_observation_by_index(pair[0])
-        demo2 = demonstrations[1].get_observation_by_index(pair[1])
-        constraint_union = list(set(demo1.data["applied_constraints"] + demo2.data["applied_constraints"]))
-        demo1.data["applied_constraints"] = constraint_union
-        demo2.data["applied_constraints"] = constraint_union
-        new_x_trajectory.append(demo1)
-        new_y_trajectory.append(demo2)
-
-    print len(new_x_trajectory)
-    print len(new_y_trajectory)
-    new_x_demo = Demonstration(new_x_trajectory)
-    new_y_demo = Demonstration(new_y_trajectory)
-
-
-
+    exp = DataExporter()
+    for idx, demo in enumerate(aligned_demos):
+        raw_data = [obs.data for obs in demo.aligned_observations]
+        exp.export_to_json("./trajectory{}.json".format(idx), raw_data)
 

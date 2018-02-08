@@ -1,8 +1,7 @@
 class DemonstrationConstraintAnalyzer():
 
-    def __init__(self, environment, constraint_ids):
+    def __init__(self, environment):
         self.environment = environment
-        self.constraint_ids = constraint_ids
 
     def transition_point_identifier(self, demonstration):
         prev = []

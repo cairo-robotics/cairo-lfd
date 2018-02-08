@@ -50,8 +50,9 @@ class Environment(object):
 
 class Demonstration(object):
 
-    def __init__(self, observations):
+    def __init__(self, observations, aligned_observation=None):
         self.observations = observations
+        self.aligned_observation = aligned_observation
 
     def get_observation_by_index(self, idx):
         return self.observations[idx]

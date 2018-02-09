@@ -5,8 +5,8 @@ from lfd_processor.items import SawyerRobot
 
 
 def import_configuration(filepath):
-        with open(filepath) as json_data:
-            return json.load(json_data, object_pairs_hook=OrderedDict)
+    with open(filepath) as json_data:
+        return json.load(json_data, object_pairs_hook=OrderedDict)
 
 
 class Environment(object):
@@ -56,16 +56,6 @@ class Demonstration(object):
 
     def get_observation_by_index(self, idx):
         return self.observations[idx]
-
-    def vectorize_observations(self, key_path_as_list):
-        vectors = []
-        for observation in self.observations:
-            path = key_path_as_list
-            data = observation.data
-            for i in range(0, len(path)):
-                data = data[path[i]]
-            vectors.append(data)
-        return vectors
 
 
 class Observation(object):

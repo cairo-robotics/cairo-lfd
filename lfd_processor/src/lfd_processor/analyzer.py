@@ -1,4 +1,4 @@
-class DemonstrationConstraintAnalyzer():
+class ConstraintAnalyzer():
 
     def __init__(self, environment):
         self.environment = environment
@@ -11,18 +11,17 @@ class DemonstrationConstraintAnalyzer():
                 observation.data["constraint_transition"] = True
             prev = curr
 
-
-    def applied_constraint_evaluator(self, demonstration):
+    def applied_constraint_evaluator(self, observations):
         prev = []
-        for observation in demonstration.observations:
+        for observation in observations:
             triggered = observation.get_triggered_constraint_data()
             new = list(set(triggered)-set(prev))
-            evaluated = self.evaluator(constraint_ids=prev, observation=observation)
+            evaluated = self._evaluator(constraint_ids=prev, observation=observation)
             applied = list(set(evaluated).union(set(new)))
             prev = applied
             observation.data["applied_constraints"] = applied
 
-    def evaluator(self, constraint_ids, observation):
+    def _evaluator(self, constraint_ids, observation):
 
         if constraint_ids is not []:
             valid_constraints = []
@@ -48,7 +47,7 @@ class DataGrouper():
     def keyframe_grouper(self, )
         pass
 
-    def _retrieve_window_points(observations, central_idx, window_size):
+    def _retrieve_window_points(self, observations, central_idx, window_size):
         group = []
         for spread in reversed(range(window_size+1)):
             print(spread)

@@ -7,10 +7,13 @@ import itertools
 
 
 def vectorize_demonstration(demonstration):
-    obs1 = demonstration.vectorize_observations(["robot", "position"])
-    obs2 = demonstration.vectorize_observations(["robot", "joints"])
-    result = [i[0] + i[1] for i in zip(obs1, obs2)]
-    return result
+    vectors = []
+    for observation in demonstration.observations:
+        position_data = observation.data["robot"]["position"]
+        joint_data = observation.data["robot"]["joints"]
+        vector = position_data + joint_data
+        vectors.append(vector)
+    return vectors
 
 
 class DemonstrationAligner(object):

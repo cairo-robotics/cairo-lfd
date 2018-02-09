@@ -2,8 +2,8 @@
 from lfd_processor.processing import DataProcessor
 from lfd_processor.interfaces import Demonstration, Observation
 from lfd_processor.io import DataImporter
-from lfd_processor.visualization import KMeansModelViewer
-from lfd_processor.modeling import KMeansModel
+from lfd_modeling.visualization import KMeansModelViewer
+from lfd_modeling.modeling import KMeansModel
 import os
 
 if __name__  == "__main__":
@@ -26,8 +26,16 @@ if __name__  == "__main__":
             observations.append(Observation(entry))
         demonstrations.append(Demonstration(observations))
 
+    demo_vectors = []
+    for demo in demonstrations:
+        observation_vectors = []
+        for observation in demo.observations:
+            position_data = observation.data["robot"]["position"]
+            joint_data = observation.data["robot"]["joints"]
+            vector = position_data + joint_data
+            observation_vectors.append(vector)
+        demo_vectors.append(observation_vectors)
 
-    demo_vectors = [demo.vectorize_observations(["robot", "position"]) for demo in demonstrations]
     observations = []
     for vec in demo_vectors:
         for ob in vec:

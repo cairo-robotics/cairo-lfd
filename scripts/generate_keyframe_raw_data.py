@@ -1,5 +1,5 @@
 from lfd_processor.processing import DataProcessor
-from lfd_processor.io import DataImporter
+from lfd_processor.data_io import DataImporter
 from lfd_processor.modeling import KMeansModel
 import json
 

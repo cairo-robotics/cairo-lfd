@@ -1,9 +1,9 @@
 #!/usr/bin/env python2.7
 
 from lfd_processor.processing import DataProcessor
-from lfd_processor.io import DataImporter
-from lfd_processor.visualization import KMeansModelViewer
-from lfd_processor.modeling import KMeansModel
+from lfd_processor.data_io import DataImporter
+from lfd_modeling.visualization import KMeansModelViewer
+from lfd_modeling.modeling import KMeansModel
 import os
 
 if __name__  == "__main__":

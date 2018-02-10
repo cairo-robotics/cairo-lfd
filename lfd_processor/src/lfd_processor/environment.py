@@ -57,6 +57,15 @@ class Demonstration(object):
     def get_observation_by_index(self, idx):
         return self.observations[idx]
 
+    def get_applied_constraint_order(self):
+        constraint_order = []
+        curr = []
+        for ob in self.aligned_observations:
+            if curr != ob.data["applied_constraints"]:
+                constraint_order.append(ob.data["applied_constraints"])
+                curr = ob.data["applied_constraints"]
+        return constraint_order
+
 
 class Observation(object):
     def __init__(self, observation_data):

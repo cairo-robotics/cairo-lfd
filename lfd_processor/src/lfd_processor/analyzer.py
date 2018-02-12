@@ -53,7 +53,8 @@ class DemonstrationKeyframeGrouper():
         
         This function serves to take each demonstration and create a list of observations labeled with keyframe_ids.
         For each demonstation, the function gets the observation grouping and then iteratively calls _get_labeled_group() from which
-        it extends and list using returned labeled_observations. This list becomes the labeled_observations assigned to the demonstration object.
+        it extends a list using returned labeled_group. This list becomes the labeled_observations list of observation obejcts assigned 
+        to the demonstration object.
 
         Parameters
         ----------
@@ -87,11 +88,11 @@ class DemonstrationKeyframeGrouper():
 
     def _get_labeled_group(self, observation_group, keyframe_type, current_id, num_keyframes, window_size):
         """
-        This function takes in a group, generates a list of its indices split into n groups were n is the number of keyframes. Each of these 
-        groups of indices represent represent the observations that will constitute a keyframe.
+        This function takes in a group, generates a list of its indices, and splits those indices into n lists were n is the number of keyframes. Each of these 
+        list of indices represent the observations that will constitute a keyframe.
         
-        Using the index splits, it the calculate the center of each of those splits and grabs a window using that center of the split as
-        the center of the window. This window of indices will be the indices of the observation_group list that will be used for a keyframe.
+        Using the index splits, the center of each of those splits is calculated, and window of elements is taken around that center. This window of indices will 
+        be the indices of the observation_group list that will be used for a keyframe.
 
         The observations are labeled with keyframe_ids by iterating over the index splits, caputring the windows, and labeling the data with an increasing
         current_id.
@@ -149,7 +150,7 @@ class DemonstrationKeyframeGrouper():
         D2: r r r r r r     t t t t
 
         Group 1, in the above example, consists of all the regular data needed peform regular keyframing. The purpose of this function
-        is to calculate how many keyframes Group 1 of each demonstration needs to have.
+        is to calculate how many keyframes each group ought to have.
 
         Parameters
         ----------
@@ -174,10 +175,10 @@ class DemonstrationKeyframeGrouper():
 
     def _get_observation_groups(self, observations, constraint_transitions):
         """
-        This function generates groups of observations based on the constraint transition of a demonstration.
+        This function generates groups of observations based on the constraint transitions of a demonstration.
 
         It will create a list of observation lists, where each index alternates between being a group of regular observations
-        and observations that surround a constraint transition.
+        and observations that surround a constraint transition. The group structure is generated using _generate_group_structure().
 
         Parameters
         ----------

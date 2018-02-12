@@ -31,7 +31,7 @@ class ConstraintAnalyzer():
             triggered = observation.get_triggered_constraint_data()
             new = list(set(triggered)-set(prev))
 
-        The evaluated constraints are those still are valid from the previous observations applied constraints.
+        The evaluated constraints are those that are still valid from the previous observations applied constraints.
             evaluated = self._evaluator(constraint_ids=prev, observation=observation)
 
         The current observations applied constraints is the union of the evaluted constraints and new constraints
@@ -86,7 +86,7 @@ class DemonstrationKeyframeGrouper():
     Keyframe grouping class. 
 
     This class depends on constraint aligned demosntrations. This means that all demosntrations should have the same sequence of constraint transitions.
-    Without such alignment, the class will fail ungracefully.
+    Without such alignment, the class functions will fail ungracefully.
     """
 
     def __init__(self, aligned_demonstrations, constraint_transitions):
@@ -142,13 +142,14 @@ class DemonstrationKeyframeGrouper():
     def _get_labeled_group(self, observation_group, keyframe_type, current_id, num_keyframes, window_size):
         """
         This function takes in a group, generates a list of its indices, and splits those indices into n lists were n is the number of keyframes. Each of these 
-        list of indices represent the observations that will constitute a keyframe.
+        list of indices represent the observations available to constitute a keyframe.
         
         Using the index splits, the center of each of those splits is calculated, and window of elements is taken around that center. This window of indices will 
         be the indices of the observation_group list that will be used for a keyframe.
 
-        The observations are labeled with keyframe_ids by iterating over the index splits, caputring the windows, and labeling the data with an increasing
-        current_id.
+        The observations are labeled with keyframe_ids by iterating over the index splits, caputring the windows, and labeling the data with an increasing current_id. This has the effect of shrinking the keyframes, purposefully under utilizing
+        the demonstration's observations. 
+
 
 
         Parameters

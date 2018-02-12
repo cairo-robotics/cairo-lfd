@@ -23,27 +23,28 @@ class DemonstrationAligner(object):
 
     def align(self):
         self.demonstrations.sort(key = lambda d: len(d.observations))
-        reference_demo = self.demonstrations[1]
+        reference_demo = self.demonstrations[0]
         aligned_demos = []
         for idx, curr_demo in enumerate(self.demonstrations):
             # first loop collects applied constraints into longest demonstration as master reference
-            alignments = self.get_alignment(curr_demo, reference_demo)
+            alignments = self._get_alignment(curr_demo, reference_demo)
             curr_demo.aligned_observations = alignments["current"]
             reference_demo.aligned_observations = alignments["reference"]
         for idx, curr_demo in enumerate(self.demonstrations):
-            alignments = self.get_alignment(curr_demo, reference_demo)
+            alignments = self._get_alignment(curr_demo, reference_demo)
             curr_demo.aligned_observations = alignments["current"]
             reference_demo.aligned_observations = alignments["reference"]
         for idx, curr_demo in enumerate(self.demonstrations):
             # by third loop, constraints have converged to an equivalent mapping.
             # I do not like or know exactly why but intuitively it makes some sense as iteratively running DTW will
             # converge on some global alignment if a reference vector is always used.
-            alignments = self.get_alignment(curr_demo, reference_demo)
+            alignments = self._get_alignment(curr_demo, reference_demo)
             curr_demo.aligned_observations = alignments["current"]
             reference_demo.aligned_observations = alignments["reference"]
-        return self.demonstrations
+        constraint_transitions = self._get_universal_constraint_transitions(self.demonstrations)
+        return (self.demonstrations, constraint_transitions)
 
-    def get_alignment(self, current_demo, reference_demo):
+    def _get_alignment(self, current_demo, reference_demo):
         demos = [current_demo, reference_demo]
         demo_vectors = [self.vectorize_func(demo) for demo in demos]
         dist, cost, acc, path = fastdtw(demo_vectors[0], demo_vectors[1], dist=euclidean)
@@ -52,7 +53,7 @@ class DemonstrationAligner(object):
         current_aligned_observations = []
         reference_aligned_observations = []
         for idx, pair in enumerate(idx_pairs):
-            # build new osbervation trajectory
+            # build new observation trajectory
             current_ob = demos[0].get_observation_by_index(pair[0])
             reference_ob = demos[1].get_observation_by_index(pair[1])
             constraint_union = list(set(current_ob.data["applied_constraints"] + reference_ob.data["applied_constraints"]))
@@ -65,6 +66,12 @@ class DemonstrationAligner(object):
             "reference": reference_aligned_observations
         }
 
+    def _get_universal_constraint_transitions(self, demonstrations):
+        mappings = [demo.get_applied_constraint_order() for demo in demonstrations]
+        if mappings[1:] == mappings[:-1]:
+            return mappings[0]
+        else:
+            raise Exception("Unequivalent constraint transition mappings!")
 
 if __name__ == "__main__":
     importer = DataImporter()
@@ -79,14 +86,13 @@ if __name__ == "__main__":
         demonstrations.append(Demonstration(observations))
 
     aligner = DemonstrationAligner(demonstrations, vectorize_demonstration)
-    aligned_demos = aligner.align()
+    aligned_demos, constraint_transitions = aligner.align()
 
-    print "Demonstration Constraint Transitions"
-    for demo in aligned_demos:
-        print demo.get_applied_constraint_order()
+    print constraint_transitions
+
 
     exp = DataExporter()
     for idx, demo in enumerate(aligned_demos):
         raw_data = [obs.data for obs in demo.aligned_observations]
-        exp.export_to_json("./trajectory{}.json".format(idx), raw_data)
+        exp.export_to_json("./aligned_trajectory{}.json".format(idx), raw_data)
 

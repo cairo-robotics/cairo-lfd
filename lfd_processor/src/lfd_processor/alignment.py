@@ -1,11 +1,24 @@
 from lfd_processor.environment import Demonstration, Observation
-from lfd_processor.data_io import DataExporter
-from lfd_processor.data_io import DataImporter
 from dtw import fastdtw
 from scipy.spatial.distance import euclidean
+import copy
 
 
 def vectorize_demonstration(demonstration):
+    """
+    Vectorizes a demonstration's observations through the union of the
+    robot's postion and robot's joints.
+    
+    Parameters
+    ----------
+    demonstration : Demonstration
+      Demonstraions to vectorize.
+
+    Returns
+    -------
+    vectors : list
+        List of observation vectors.
+    """
     vectors = []
     for observation in demonstration.observations:
         position_data = observation.data["robot"]["position"]
@@ -16,34 +29,85 @@ def vectorize_demonstration(demonstration):
 
 
 class DemonstrationAligner(object):
-
+    """
+    Demonstration aligning class to align demonstrations, ensuring uniform constraint transitions across all demosntrations.
+    """
     def __init__(self, demonstrations, vectorize_func):
+        """
+        Parameters
+        ----------
+        demonstrations : list
+           List of demonstraions to align.
+
+        vectorize_func : func
+            A function used to vectorize the dictionary data of a demonstrations observations.
+        """
         self.demonstrations = demonstrations
         self.vectorize_func = vectorize_func
 
     def align(self):
-        self.demonstrations.sort(key = lambda d: len(d.observations))
-        reference_demo = self.demonstrations[1]
-        aligned_demos = []
-        for idx, curr_demo in enumerate(self.demonstrations):
-            # first loop collects applied constraints into longest demonstration as master reference
-            alignments = self.get_alignment(curr_demo, reference_demo)
-            curr_demo.aligned_observations = alignments["current"]
-            reference_demo.aligned_observations = alignments["reference"]
-        for idx, curr_demo in enumerate(self.demonstrations):
-            alignments = self.get_alignment(curr_demo, reference_demo)
-            curr_demo.aligned_observations = alignments["current"]
-            reference_demo.aligned_observations = alignments["reference"]
-        for idx, curr_demo in enumerate(self.demonstrations):
-            # by third loop, constraints have converged to an equivalent mapping.
-            # I do not like or know exactly why but intuitively it makes some sense as iteratively running DTW will
-            # converge on some global alignment if a reference vector is always used.
-            alignments = self.get_alignment(curr_demo, reference_demo)
-            curr_demo.aligned_observations = alignments["current"]
-            reference_demo.aligned_observations = alignments["reference"]
-        return self.demonstrations
+        """
+        This function executes three identical loops where each demosntration is aligned against a chosen 
+        reference demonstration. The reference demonstration performs an aggregation role, where it collects the applied
+        constraints against the demosntrations to which it is repeatedly aligned. The loop is repeated as it forces a 
+        convergence onto a uniform constraint mapping.
 
-    def get_alignment(self, current_demo, reference_demo):
+        Alignment is performed using the FastDTW algorithm.
+
+        Before the demostrations are returned, the function iterates through each demonstration's aligned observations 
+        to perform a deepcopy of each observation. This ensures that during keyframe labeling, multiple references do
+        not conflict as in place mutation occurs on observation objects during labeling.
+
+        Returns
+        -------
+        self.demonstrations : tuple
+            Returns the demonstrations each having a new parameter called aligned_observations.
+        """
+        if not len(self.demonstrations) > 1:
+            raise Exception("Error! You are attempting to align ONLY ONE OR ZERO demonstrations.")
+        self.demonstrations.sort(key = lambda d: len(d.observations))
+        reference_demo = self.demonstrations[0]
+        for curr_demo in self.demonstrations:
+            # first loop collects applied constraints into shortest demonstration as master reference
+            alignments = self._get_alignment(curr_demo, reference_demo)
+            curr_demo.aligned_observations = alignments["current"]
+            reference_demo.aligned_observations = alignments["reference"]
+        for curr_demo in self.demonstrations:
+            alignments = self._get_alignment(curr_demo, reference_demo)
+            curr_demo.aligned_observations = alignments["current"]
+            reference_demo.aligned_observations = alignments["reference"]
+        for curr_demo in self.demonstrations:
+            # By third loop, constraints have converged to an equivalent mapping.
+            # Intuitively it makes some sense as iteratively running DTW will
+            # converge onto some global alignment if a reference vector is always used.
+            alignments = self._get_alignment(curr_demo, reference_demo)
+            curr_demo.aligned_observations = alignments["current"]
+            reference_demo.aligned_observations = alignments["reference"]
+        for demo in self.demonstrations:
+            demo.aligned_observations = self._deep_copy_observations(demo.aligned_observations)
+        constraint_transitions = self._get_universal_constraint_transitions(self.demonstrations)
+        return (self.demonstrations, constraint_transitions)
+
+    def _get_alignment(self, current_demo, reference_demo):
+        """
+        This function aligns two demonstrations and builds new observation lists.
+
+        Alignment is performed using the FastDTW algorithm.
+
+        Parameters
+        ----------
+        current_demo : Demonstration
+           The current demosntration being aligned.
+
+        current_demo : Demonstration
+           The reference demosntration.
+
+        Returns
+        -------
+        : dict
+            Key: current; Value: A list of the current demonstration's new aligned observation list.
+            Key: reference; Value: A list of the reference demonstration's new aligned observation list.
+        """
         demos = [current_demo, reference_demo]
         demo_vectors = [self.vectorize_func(demo) for demo in demos]
         dist, cost, acc, path = fastdtw(demo_vectors[0], demo_vectors[1], dist=euclidean)
@@ -51,8 +115,8 @@ class DemonstrationAligner(object):
 
         current_aligned_observations = []
         reference_aligned_observations = []
-        for idx, pair in enumerate(idx_pairs):
-            # build new osbervation trajectory
+        for pair in idx_pairs:
+            # build new observation trajectory
             current_ob = demos[0].get_observation_by_index(pair[0])
             reference_ob = demos[1].get_observation_by_index(pair[1])
             constraint_union = list(set(current_ob.data["applied_constraints"] + reference_ob.data["applied_constraints"]))
@@ -65,28 +129,43 @@ class DemonstrationAligner(object):
             "reference": reference_aligned_observations
         }
 
+    def _deep_copy_observations(self, observations):
+        """
+        Iterates of a list of observations and deep copies each.
 
-if __name__ == "__main__":
-    importer = DataImporter()
-    trajectories = importer.load_json_files('./src/lfd/lfd_processor/src/lfd_processor/*.json')
+        Parameters
+        ----------
+        observations : list
+           Observations to be deep copied.
 
-    # Convert trajectory data into Demonstrations and Observations
-    demonstrations = []
-    for datum in trajectories["data"]:
-        observations = []
-        for entry in datum:
-            observations.append(Observation(entry))
-        demonstrations.append(Demonstration(observations))
+        Returns
+        -------
+        new_observations: list
+            The deep copied observation list.
+        """
+        new_observations = []
+        for ob in observations:
+            new_observations.append(copy.deepcopy(ob))
+        return new_observations
 
-    aligner = DemonstrationAligner(demonstrations, vectorize_demonstration)
-    aligned_demos = aligner.align()
+    def _get_universal_constraint_transitions(self, demonstrations):
+        """
+        Generates the universal constraint transition mapping for all demosntraionts.
+        Raises an exception if any of the demosntrations has a difference mapping than
+        the others.
 
-    print "Demonstration Constraint Transitions"
-    for demo in aligned_demos:
-        print demo.get_applied_constraint_order()
+        Parameters
+        ----------
+        demonstrations : list
+           Demosntrations with which to generate the universal constraint transition map.
 
-    exp = DataExporter()
-    for idx, demo in enumerate(aligned_demos):
-        raw_data = [obs.data for obs in demo.aligned_observations]
-        exp.export_to_json("./trajectory{}.json".format(idx), raw_data)
-
+        Returns
+        -------
+        mapping: list
+            The universal mapping of constraint transitions for all the demonstraionts.
+        """
+        mappings = [demo.get_applied_constraint_order() for demo in demonstrations]
+        if mappings[1:] == mappings[:-1]:
+            return mappings[0]
+        else:
+            raise Exception("Unequivalent constraint transition mappings!")

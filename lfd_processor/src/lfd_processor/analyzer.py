@@ -3,22 +3,45 @@ from lfd_processor.data_io import DataImporter, DataExporter
 from lfd_processor.alignment import DemonstrationAligner, vectorize_demonstration
 import numpy as np
 import copy
-import pprint
+import os
+
 
 class ConstraintAnalyzer():
-
+    """
+    Constraint analysis class to evaluate observations for constraints.
+    """
     def __init__(self, environment):
+        """
+        Parameters
+        ----------
+        aligned_demonstrations : list
+           List of demonstraionts. These must be constraint aligned
+
+        constraint_transitions : 2D list
+            A 2D list containing the set of constraint transitions that are applicable to all of the aligned demosntrations.
+        """
         self.environment = environment
 
-    def transition_point_identifier(self, observations):
-        prev = []
-        for observation in observations:
-            curr = observation.get_applied_constraint_data()
-            if prev != curr:
-                observation.data["constraint_transition"] = True
-            prev = curr
-
     def applied_constraint_evaluator(self, observations):
+        """
+        This function evaluates observations for constraints that were triggered during the demonstration. It will label a demonstration's entire
+        list of observations with the constraints that were triggered and wheter or not they are still applicable.
+
+        New constraints are those where the triggered constraints are different from the previously applied constraints:
+            triggered = observation.get_triggered_constraint_data()
+            new = list(set(triggered)-set(prev))
+
+        The evaluated constraints are those still are valid from the previous observations applied constraints.
+            evaluated = self._evaluator(constraint_ids=prev, observation=observation)
+
+        The current observations applied constraints is the union of the evaluted constraints and new constraints
+             applied = list(set(evaluated).union(set(new)))
+
+        Parameters
+        ----------
+        observations : int
+           List of observations to be evaluated for constraints.
+        """
         prev = []
         for observation in observations:
             triggered = observation.get_triggered_constraint_data()
@@ -29,7 +52,23 @@ class ConstraintAnalyzer():
             observation.data["applied_constraints"] = applied
 
     def _evaluator(self, constraint_ids, observation):
+        """
+        This function evaluates an observation for all the constraints in the list constraint_ids. It depends on being able to access the constraint objects
+        from the self.environment object. Every constraint object should have an evaluate function that takes in the environment and the observation.
 
+        Parameters
+        ----------
+        constraint_ids : list
+            List of constraint id's to evalaute.
+
+        observation : Observation
+            The observation to evaluate for the constraints.
+    
+        Returns
+        -------
+        valid_constraints : list
+            Returns the list of valid cosntraints evaluated for the observation. 
+        """
         if constraint_ids is not []:
             valid_constraints = []
             for constraint_id in constraint_ids:
@@ -43,14 +82,28 @@ class ConstraintAnalyzer():
 
 
 class DemonstrationKeyframeGrouper():
+    """
+    Keyframe grouping class. 
+
+    This class depends on constraint aligned demosntrations. This means that all demosntrations should have the same sequence of constraint transitions.
+    Without such alignment, the class will fail ungracefully.
+    """
 
     def __init__(self, aligned_demonstrations, constraint_transitions):
+        """
+        Parameters
+        ----------
+        aligned_demonstrations : list
+           List of demonstraionts. These must be constraint aligned
+
+        constraint_transitions : 2D list
+            A 2D list containing the set of constraint transitions that are applicable to all of the aligned demosntrations.
+        """
         self.demonstrations = aligned_demonstrations
         self.constraint_transitions = constraint_transitions
 
     def group_data(self, divisor = 20, keyframe_window_size = 8):
         """
-        
         This function serves to take each demonstration and create a list of observations labeled with keyframe_ids.
         For each demonstation, the function gets the observation grouping and then iteratively calls _get_labeled_group() from which
         it extends a list using returned labeled_group. This list becomes the labeled_observations list of observation obejcts assigned 
@@ -68,14 +121,14 @@ class DemonstrationKeyframeGrouper():
         -------
         self.demonstrations : tuple
             Returns the demonstrations each of which will have a new parameter assigned with a list called 'labeled_observations'.
-           
         """
         keyframe_counts = self._get_keyframe_count_per_group(divisor)
         for demo in self.demonstrations:
             groupings = self._get_observation_groups(demo.aligned_observations, self.constraint_transitions)
             labeled_observations = []
-            current_id = 1
+            current_id = 0
             for idx, group in enumerate(groupings):
+                # Recall that every even index in groupings is a regular group while all odd indices are transition groups.
                 if idx%2 == 0:
                     keyframe_type = "regular"
                     current_id, labeled_group = self._get_labeled_group(group, keyframe_type, current_id, keyframe_counts[idx], keyframe_window_size)
@@ -119,24 +172,24 @@ class DemonstrationKeyframeGrouper():
         -------
         (current_id, labeled_observations) : tuple
             Returns a tuple of the current_id (so it can be passed to the next call of this function) and a list of labeled_observations.
-           
         """
         labeled_observations = []
         group = copy.deepcopy(observation_group)
         group_index_splits = [list(n) for n in np.array_split(list(range(0, len(group)-1)), num_keyframes)]
-        for idx, group_idxs in enumerate(group_index_splits):
+
+        for group_idxs in group_index_splits:
+            current_id = current_id + 1
             middle = (len(group_idxs))/2
             keyframe_idxs = self._retrieve_data_window(group_idxs, middle, window_size)
             ignored_idxs = list(set(group_idxs) - set(keyframe_idxs))
             for i in keyframe_idxs:
                 group[i].data["keyframe_id"] = current_id
                 group[i].data["keyframe_type"] = keyframe_type
-            for i in ignored_idxs:
-                group[i].data["keyframe_id"] = None
-                group[i].data["keyframe_type"] = None
-            current_id = current_id + 1
-            keyframe = []
+            for j in ignored_idxs:
+                group[j].data["keyframe_id"] = None
+                group[j].data["keyframe_type"] = None
             for idx in group_idxs:
+                # to retain ordering, loop over group_idxs and append each observation in group after they've beel labeled.
                 labeled_observations.append(group[idx])
         return (current_id, labeled_observations)
 
@@ -187,7 +240,6 @@ class DemonstrationKeyframeGrouper():
 
         constraint_transitions : 2D list
             A 2D list containing the sets of constraint transitions.
-
 
         Returns
         -------
@@ -257,8 +309,6 @@ class DemonstrationKeyframeGrouper():
         window_size : int
             Size of windown of elements to grab surrounding that center index from the sequence.
 
-
-
         Returns
         -------
         : list
@@ -266,58 +316,5 @@ class DemonstrationKeyframeGrouper():
         """
         for spread in reversed(range(int(window_size/2)+1)):
             if 0 <= central_idx-spread < len(sequence) and 0 <= central_idx+spread < len(sequence):
-                return sequence[central_idx-spread:central_idx+spread]
+                return sequence[central_idx-spread:central_idx+spread+1]
         return []
-
-
-
-if __name__ == "__main__":
-    importer = DataImporter()
-    trajectories = importer.load_json_files('./src/lfd/lfd_processor/src/lfd_processor/*.json')
-
-    # Convert trajectory data into Demonstrations and Observations
-    demonstrations = []
-    for datum in trajectories["data"]:
-        observations = []
-        for entry in datum:
-            observations.append(Observation(entry))
-        demonstrations.append(Demonstration(observations))
-
-    aligner = DemonstrationAligner(demonstrations, vectorize_demonstration)
-    aligned_demos, constraint_transitions = aligner.align()
-
-    keyframe_grouper = DemonstrationKeyframeGrouper(aligned_demos, constraint_transitions)
-    # grouper._get_keyframe_count_per_group(10)
-    labeled_demonstrations = keyframe_grouper.group_data(20, 10)
-
-
-    exp = DataExporter()
-    for idx, demo in enumerate(labeled_demonstrations):
-        raw_data = [obs.data for obs in demo.labeled_observations]
-        exp.export_to_json("./labeled_demonstration{}.json".format(idx), raw_data)
-
-    # test_list = [1,2,3,4,5,6,7,8,9,10]
-    # grouper._divide_group_by_num_keyframe_counts([1,2,3,4,5,6,7,8,9,10], 5, 3)
-    # Integrate the below into a test:
-    # groupings = []
-    # for demo in aligned_demos:
-    #     groupings.append(grouper._get_observation_groups(demo.aligned_observations, demo.get_applied_constraint_order()))
-
-    # print len(groupings)
-    # for grouping in groupings:
-    #     for ob in grouping[1]:
-    #         print ob.data["applied_constraints"]
-    #     print
-    #     for ob in grouping[3]:
-    #         print ob.data["applied_constraints"]
-    #     print
-    #     for ob in grouping[5]:
-    #         print ob.data["applied_constraints"]
-    #     print
-    #     for ob in grouping[7]:
-    #         print ob.data["applied_constraints"]
-    #     print
-    #     for ob in grouping[9]:
-    #         print ob.data["applied_constraints"]
-    #     print
-

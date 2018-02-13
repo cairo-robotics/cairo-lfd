@@ -6,6 +6,7 @@ from lfd_processor.constraints import UprightConstraint, HeightConstraint
 
 
 def convert_data_to_pose(position, orientation):
+
     """
     Converts raw position and orientation data to a ROS message Pose object.
 
@@ -15,6 +16,7 @@ def convert_data_to_pose(position, orientation):
     pose: geometry_msgs.msgs.Pose
         The Pose object
     """
+
     pose = Pose()
     pose.position.x = position[0]
     pose.position.y = position[1]
@@ -27,9 +29,11 @@ def convert_data_to_pose(position, orientation):
 
 
 class AbstractItem(object):
+
     """
     Abstract Base class for represent items in an Environment.
     """
+
     __metaclass__ = ABCMeta
 
     @abstractmethod
@@ -42,11 +46,13 @@ class AbstractItem(object):
 
 
 class SawyerRobot(AbstractItem):
+
     """
     Class representing the Saywer robot in the LFD Environment object.
     """
 
     def __init__(self, robot_id, upright_pose):
+
         """
         Example upright pose:
 
@@ -73,6 +79,7 @@ class SawyerRobot(AbstractItem):
         upright_pose : dict
            Dictionary with position and orietnation fields
         """
+
         self.id = robot_id
         self.upright_pose = upright_pose
         self._limb = intera_interface.Limb("right")
@@ -92,6 +99,7 @@ class SawyerRobot(AbstractItem):
             rospy.loginfo("No electric gripper detected.")
 
     def get_state(self):
+
         """
         Get's the current state of the robot.
 
@@ -108,8 +116,8 @@ class SawyerRobot(AbstractItem):
         -------
         state : dict
             The state of the robot
-       
         """
+
         state = {}
         joints = self._limb.joint_names()
         pose = self._limb.endpoint_pose()
@@ -121,6 +129,7 @@ class SawyerRobot(AbstractItem):
         return state
 
     def get_info(self):
+
         """
         Get's the current state of the robot.
 
@@ -137,8 +146,8 @@ class SawyerRobot(AbstractItem):
         -------
         state : dict
             The state of the robot
-       
         """
+
         return {
                     "id": self.id,
                     "upright_pose": self.upright_pose
@@ -146,6 +155,7 @@ class SawyerRobot(AbstractItem):
 
 
 class RobotFactory(object):
+
     """
     Factory class that builds robot items. These items are defined in the config.json file.
     The class field in the configuration determines which AbstractItem robot class to use.
@@ -175,19 +185,23 @@ class RobotFactory(object):
                 }
         }
     """
+
     def __init__(self, robot_configs):
+
         """
         Parameters
         ----------
         robot_configs : list
             List of configuration dictionaries.
         """
+
         self.configs = robot_configs
         self.classes = {
             "SawyerRobot": SawyerRobot,
         }
 
     def generate_robots(self):
+
         """
         Build the robots defined in the configuration dictionaries of self.configs.
 
@@ -196,6 +210,7 @@ class RobotFactory(object):
         robots : list
             List of AbstractItem robot objects.
         """
+
         robots = []
         for config in self.configs:
             robots.append(self.classes[config["class"]](*tuple(config["init_args"].values())))
@@ -203,6 +218,7 @@ class RobotFactory(object):
 
 
 class ConstraintFactory(object):
+
     """
     Factory class that builds LFD constraints. These items are defined in the config.json file.
     The class field in the configuration determines which constraint class to use.
@@ -210,24 +226,27 @@ class ConstraintFactory(object):
     Example entry:
         {
             "class": "HeightConstraint",
-            "init_args" : 
+            "init_args" :
                 {
                     "id": 1,
                     "item": 1,
                     "button": "right_button_square",
                     "reference_height": 0.0,
                     "threshold_distance": 0.25
-                
+
                 }
         }
     """
+
     def __init__(self, constraint_configs):
+
         """
         Parameters
         ----------
         constraint_configs : list
             List of configuration dictionaries.
         """
+
         self.configs = constraint_configs
         self.classes = {
             "UprightConstraint": UprightConstraint,
@@ -235,6 +254,7 @@ class ConstraintFactory(object):
         }
 
     def generate_constraints(self):
+
         """
         Build the constraint objects defined in the configuration dictionaries of self.configs.
 
@@ -243,6 +263,7 @@ class ConstraintFactory(object):
         robots : list
             List of constraint objects.
         """
+
         constraints = []
         for config in self.configs:
             constraints.append(self.classes[config["class"]](*tuple(config["init_args"].values())))

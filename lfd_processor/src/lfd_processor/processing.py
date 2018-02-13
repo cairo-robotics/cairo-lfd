@@ -10,6 +10,7 @@ class DataProcessor(object):
     """
 
     def fixed_length_sampler(self, entries, fixed_length=250):
+
         """
         Takes a list and returns a list of a fixed length evenly pulled from the original list.
 
@@ -25,6 +26,7 @@ class DataProcessor(object):
         fl_entries : list
            A list of entries of fixed length, evenly distributed from the original list.
         """
+
         fl_entries = []
         for entry in entries:
             if len(entry) >= fixed_length:
@@ -42,6 +44,7 @@ class DataProcessor(object):
                                          observation,
                                          key_order=["PoseX", "PoseY", "PoseZ", "OrienX",
                                                     "OrienY", "OrienZ", "OrienW", "time"]):
+
         """
         Takes an observation represented as a dictionary and converts it into a list.
 
@@ -57,6 +60,7 @@ class DataProcessor(object):
         observation_list : list
            A list representation of the observation dict.
         """
+
         observation_list = []
         for key in key_order:
             observation_list.append(observation[key])
@@ -92,4 +96,4 @@ class ObservationConverter(object):
         pose.orientation.y = object_state["OrienY"]
         pose.orientation.z = object_state["OrienX"]
         pose.orientation.w = object_state["OrienW"]
-        return pose 
+        return pose

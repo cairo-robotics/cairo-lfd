@@ -3,34 +3,38 @@ import copy
 
 
 class ConstraintAnalyzer():
+
     """
     Constraint analysis class to evaluate observations for constraints.
     """
+
     def __init__(self, environment):
+
         """
         Parameters
         ----------
-        aligned_demonstrations : list
-           List of demonstraionts. These must be constraint aligned
-
-        constraint_transitions : 2D list
-            A 2D list containing the set of constraint transitions that are applicable to all of the aligned demosntrations.
+        enivornment : Environment
+           Environment object for the current LFD environment.
+  
         """
+
         self.environment = environment
 
     def applied_constraint_evaluator(self, observations):
+
         """
-        This function evaluates observations for constraints that were triggered during the demonstration. It will label a demonstration's entire
-        list of observations with the constraints that were triggered and wheter or not they are still applicable.
+        This function evaluates observations for constraints that were triggered during the demonstration. 
+        It will label a demonstration's entire list of observations with the constraints that were triggered 
+        and wheter or not they are still applicable.
 
         New constraints are those where the triggered constraints are different from the previously applied constraints:
             triggered = observation.get_triggered_constraint_data()
             new = list(set(triggered)-set(prev))
 
-        The evaluated constraints are those that are still valid from the previous observations applied constraints.
+        The evaluated constraints are those that are still valid from the previous observation's applied constraints.
             evaluated = self._evaluator(constraint_ids=prev, observation=observation)
 
-        The current observations applied constraints is the union of the evaluted constraints and new constraints
+        The current observation's applied constraints are the union of the evaluted constraints and new constraints.
              applied = list(set(evaluated).union(set(new)))
 
         Parameters
@@ -38,6 +42,7 @@ class ConstraintAnalyzer():
         observations : int
            List of observations to be evaluated for constraints.
         """
+
         prev = []
         for observation in observations:
             triggered = observation.get_triggered_constraint_data()
@@ -48,9 +53,11 @@ class ConstraintAnalyzer():
             observation.data["applied_constraints"] = applied
 
     def _evaluator(self, constraint_ids, observation):
+
         """
-        This function evaluates an observation for all the constraints in the list constraint_ids. It depends on being able to access the constraint objects
-        from the self.environment object. Every constraint object should have an evaluate function that takes in the environment and the observation.
+        This function evaluates an observation for all the constraints in the list constraint_ids. It depends on 
+        being able to access the constraint objects from the self.environment object. Every constraint object 
+        should have an 'evaluate()'' function that takes in the environment and the observation.
 
         Parameters
         ----------
@@ -65,6 +72,7 @@ class ConstraintAnalyzer():
         valid_constraints : list
             Returns the list of valid cosntraints evaluated for the observation. 
         """
+
         if constraint_ids is not []:
             valid_constraints = []
             for constraint_id in constraint_ids:
@@ -77,33 +85,37 @@ class ConstraintAnalyzer():
             return []
 
 
-class DemonstrationKeyframeGrouper():
-    """
-    Keyframe grouping class. 
+class DemonstrationKeyframeLabeler():
 
-    This class depends on constraint aligned demosntrations. This means that all demosntrations should have the same sequence of constraint transitions.
-    Without such alignment, the class functions will fail ungracefully.
+    """
+    Keyframe labeling class. 
+
+    This class depends on constraint aligned demosntrations. This means that all demosntrations should have the same 
+    sequence of constraint transitions. Without such alignment, the class functions will fail ungracefully.
     """
 
     def __init__(self, aligned_demonstrations, constraint_transitions):
+
         """
         Parameters
         ----------
         aligned_demonstrations : list
            List of demonstraionts. These must be constraint aligned
 
-        constraint_transitions : 2D list
+        constraint_transitions : list
             A 2D list containing the set of constraint transitions that are applicable to all of the aligned demosntrations.
         """
+
         self.demonstrations = aligned_demonstrations
         self.constraint_transitions = constraint_transitions
 
-    def group_data(self, divisor = 20, keyframe_window_size = 8):
+    def label_demonstrations(self, divisor = 20, keyframe_window_size = 8):
+
         """
         This function serves to take each demonstration and create a list of observations labeled with keyframe_ids.
-        For each demonstation, the function gets the observation grouping and then iteratively calls _get_labeled_group() from which
-        it extends a list using returned labeled_group. This list becomes the labeled_observations list of observation obejcts assigned 
-        to the demonstration object.
+        For each demonstation, the function gets the observation grouping and then iteratively calls 
+        _get_labeled_group() from which it extends a list using the function's returned labeled_group. This list becomes
+        the labeled_observations list of observation obejcts assigned to the demonstration object.
 
         Parameters
         ----------
@@ -118,6 +130,7 @@ class DemonstrationKeyframeGrouper():
         self.demonstrations : tuple
             Returns the demonstrations each of which will have a new parameter assigned with a list called 'labeled_observations'.
         """
+
         keyframe_counts = self._get_keyframe_count_per_group(divisor)
         for demo in self.demonstrations:
             groupings = self._get_observation_groups(demo.aligned_observations, self.constraint_transitions)
@@ -136,15 +149,19 @@ class DemonstrationKeyframeGrouper():
         return self.demonstrations
 
     def _get_labeled_group(self, observation_group, keyframe_type, current_id, num_keyframes, window_size):
-        """
-        This function takes in a group, generates a list of its indices, and splits those indices into n lists were n is the number of keyframes. Each of these 
-        list of indices represent the observations available to constitute a keyframe.
-        
-        Using the index splits, the center of each of those splits is calculated, and window of elements is taken around that center. This window of indices will 
-        be the indices of the observation_group list that will be used for a keyframe.
 
-        The observations are labeled with keyframe_ids by iterating over the index splits, caputring the windows, and labeling the data with an increasing current_id. 
-        This has the effect of shrinking the keyframes, purposefully under utilizing the demonstration's observations.
+        """
+        This function takes in a group, generates a list of its indices, and splits those indices into n lists were 
+        n is the number of keyframes. Each of these list of indices represent the observations available to constitute 
+        a keyframe.
+        
+        Using the index splits, the center of each of those splits is calculated, and window of elements is taken 
+        around that center. This window of indices will be the indices of the observation_group list's elements that 
+        will be used for a keyframe.
+
+        The observations are labeled with keyframe_ids by iterating over the index splits and labeling the data with an 
+        increasing current_id. This has the effect of shrinking the keyframes, purposefully under utilizing the 
+        demonstration's observations.
 
 
 
@@ -154,7 +171,7 @@ class DemonstrationKeyframeGrouper():
            A list of obervations to be separated into keyframes.
 
         keyframe_type: string
-            Either 'regular' or 'constraint_transition'. Used to label observations.
+            Either 'regular' or 'constraint_transition'. Used to label observation's keyframe type.
 
         current_id: int
             The current starting index of the next set of keyframes to be made by this function.
@@ -168,8 +185,10 @@ class DemonstrationKeyframeGrouper():
         Returns
         -------
         (current_id, labeled_observations) : tuple
-            Returns a tuple of the current_id (so it can be passed to the next call of this function) and a list of labeled_observations.
+            Returns a tuple of the current_id (so it can be passed to the next call of this function) and a list of 
+            labeled observations.
         """
+
         labeled_observations = []
         group = copy.deepcopy(observation_group)
         group_index_splits = [list(n) for n in np.array_split(list(range(0, len(group)-1)), num_keyframes)]
@@ -191,27 +210,30 @@ class DemonstrationKeyframeGrouper():
         return (current_id, labeled_observations)
 
     def _get_keyframe_count_per_group(self, divisor = 20):
+
         """
         This function calculates the number of keyframes for each group. A group is a precursor to keyframes. Generally,
         the order of groups is as follows:
 
-             Group 1         Group2
-        D1: r r r r         t t t t
-        D2: r r r r r r     t t t t
+             Group 1      Group 2   Group 3
+        D1: r r r r       t t t t   r r r r r r r
+        D2: r r r r r r   t t t t   r r r r r r
 
-        Group 1, in the above example, consists of all the regular data needed peform regular keyframing. The purpose of this function
-        is to calculate how many keyframes each group ought to have.
+        Group 1, in the above example, consists of all the regular data needed peform regular keyframing prior to a transition
+        region. The purpose of this function is to calculate how many keyframes each group ought to have.
 
         Parameters
         ----------
         divisor : int
-            A divisor that divides the average length of a group of 'regular' observations into n number of keyframes for that group
+            A divisor that divides the average length of a group of 'regular' observations into n number of keyframes 
+            for that group
 
         Returns
         -------
         keyframe_counts : list
            A list of the number of keyframes per group.
         """
+
         keyframe_counts = []
         groupings = []
         for demo in self.demonstrations:
@@ -224,18 +246,20 @@ class DemonstrationKeyframeGrouper():
         return keyframe_counts
 
     def _get_observation_groups(self, observations, constraint_transitions):
+
         """
         This function generates groups of observations based on the constraint transitions of a demonstration.
 
-        It will create a list of observation lists, where each index alternates between being a group of regular observations
-        and observations that surround a constraint transition. The group structure is generated using _generate_group_structure().
+        It will create a list of observation lists, where each index alternates between being a group of regular 
+        observations and observations that surround a constraint transition. The group structure is generated 
+        using _generate_group_structure().
 
         Parameters
         ----------
         observations : list
            List of observations to group according to the constraint_transitions of the demonstration.
 
-        constraint_transitions : 2D list
+        constraint_transitions : list
             A 2D list containing the sets of constraint transitions.
 
         Returns
@@ -243,6 +267,7 @@ class DemonstrationKeyframeGrouper():
         groups : list
            A list of groups with each entry containing a list observations for that group.
         """
+
         constraints = copy.deepcopy(constraint_transitions)
         groups = self._generate_group_structure(constraints)  
         curr_constraints = []
@@ -261,6 +286,7 @@ class DemonstrationKeyframeGrouper():
         return groups
 
     def _generate_group_structure(self, constraint_transitions):
+
         """
         This function generates a 2D list of the length of the number of groups.
 
@@ -276,7 +302,7 @@ class DemonstrationKeyframeGrouper():
         Parameters
         ----------
 
-        constraint_transitions : 2D list
+        constraint_transitions : list
             A 2D list containing the sets of constraint transitions.
 
         Returns
@@ -284,12 +310,14 @@ class DemonstrationKeyframeGrouper():
         groups : list
             2D list of the length of the number of groups.
         """
+
         groups = []
         for idx in range(2*len(constraint_transitions)+1):
             groups.append([])
         return groups
 
     def _retrieve_data_window(self, sequence, central_idx, window_size=10):
+
         """
         Retrieves a window of elements from a sequence. The window is centered by central_idx.
         The window size will shrink if the central index would make the window out of the sequence index.
@@ -297,7 +325,7 @@ class DemonstrationKeyframeGrouper():
         Parameters
         ----------
 
-        sequence : 2D list
+        sequence : list
             Any iterable.
 
         central_idx : int
@@ -311,6 +339,7 @@ class DemonstrationKeyframeGrouper():
         : list
             List of elements captured by the window.
         """
+
         for spread in reversed(range(int(window_size/2)+1)):
             if 0 <= central_idx-spread < len(sequence) and 0 <= central_idx+spread < len(sequence):
                 return sequence[central_idx-spread:central_idx+spread+1]

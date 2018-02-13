@@ -3,18 +3,23 @@ from collections import OrderedDict
 
 
 def import_configuration(filepath):
+
     """
     Wrapper function around json.load() to import a config.json file used to inform the Environment object.
     """
+
     with open(filepath) as json_data:
         return json.load(json_data, object_pairs_hook=OrderedDict)
 
 
 class Environment(object):
+
     """
     HeightConstraint class to evaluate the height predicate classifier assigned to a given item.
     """
+
     def __init__(self, items, robot, constraints):
+
         """
         Parameters
         ----------
@@ -24,13 +29,14 @@ class Environment(object):
             AbstractItem extended class object representing the robot.
         constraints : list
             List of constrain class objects representing the available constraints for the Demonstration.
-
         """
+
         self.items = items
         self.robot = robot
         self.constraints = constraints
 
     def get_robot_state(self):
+
         """
         Retrieves the robot item's current state
 
@@ -39,9 +45,11 @@ class Environment(object):
         entries : dict
             Dictionary representing robot's state. See SawyerRobot class.
         """
+
         return self.robot.get_state()
 
     def get_robot_info(self):
+
         """
         Retrieves the robot item's configuration information.
 
@@ -50,9 +58,11 @@ class Environment(object):
         entries : dict
             Dictionary representing robot's information. See SawyerRobot class.
         """
+
         return self.robot.get_info()
 
     def get_item_states(self):
+
         """
         Retrieves the Environment's items states.
 
@@ -61,6 +71,7 @@ class Environment(object):
         entries : list
             List of dictionaries for each of the Environment's items (exluding the robot item)
         """
+
         item_states = []
         if self.items is not None:
             for item in self.items:
@@ -68,6 +79,7 @@ class Environment(object):
         return item_states
 
     def get_item_info(self):
+
         """
         Retrieves the Environment's items information.
 
@@ -76,6 +88,7 @@ class Environment(object):
         entries : list
             List of dictionaries for each of the Environment's items (exluding the robot item)
         """
+
         item_info = []
         if self.items is not None:
             for item in self.items:
@@ -83,6 +96,7 @@ class Environment(object):
         return item_info
 
     def get_constraint_by_id(self, constraint_id):
+
         """
         Retrieves a constraint from the Environment by it's id.
 
@@ -96,9 +110,11 @@ class Environment(object):
         : Constraint class
             Constraint class for the given id.
         """
+
         return [constraint for constraint in self.constraints if constraint.id == constraint_id][0]
 
     def check_constraint_triggers(self):
+
         """
         Checks all constraints for their trigger. A triggered constraint might be a button press on Sawyer's
         cuff or a natural language dicated constraint.
@@ -108,6 +124,7 @@ class Environment(object):
         triggered_cosntraints: list
           List of the id's of all the constraints currently triggered
         """
+
         triggered_constraints = []
         for constraint in self.constraints:
             result = constraint.check_trigger()
@@ -117,10 +134,13 @@ class Environment(object):
 
 
 class Demonstration(object):
+
     """
     Demonstration object to contain list of osbervations and various methods to perform on those observations.
     """
+
     def __init__(self, observations, aligned_observation=None, labeled_observations=None):
+
         """
         Parameters
         ----------
@@ -132,11 +152,13 @@ class Demonstration(object):
             List of Observation objects representing keyframe labeled observations.
 
         """
+
         self.observations = observations
         self.aligned_observation = aligned_observation
         self.labeled_observations = labeled_observations
 
     def get_observation_by_index(self, idx):
+
         """
         Returns an raw observation by its index.
 
@@ -150,9 +172,11 @@ class Demonstration(object):
         : Observation
             The retrieved observation object.
         """
+
         return self.observations[idx]
 
     def get_applied_constraint_order(self):
+
         """
         Returns the applied constraint order of a Demonstration's aligned observation list.
 
@@ -162,6 +186,7 @@ class Demonstration(object):
             List of list where each element is ordered by the sequence of the applied constraints and represents
             the set of constraints applied.
         """
+
         constraint_order = []
         curr = []
         for ob in self.aligned_observations:
@@ -172,73 +197,76 @@ class Demonstration(object):
 
 
 class Observation(object):
+
     """
     Observation object to contain raw dictionary data for an observation and retrieval methods for that data.
 
     Example:
         {
-            "applied_constraints": [], 
+            "applied_constraints": [],
             "items": [
                 {
                     "id": 1,
                     "orientation": [
-                        0.6874194527002508, 
-                        -0.06937214001305077, 
-                        0.7140914218104518, 
-                        0.11276277548918841
-                    ], 
+                        0.6874194527002508,
+                        -0.06937214001305077,
+                        0.7140914218104518,
+                        0.1127627754891884
+                    ],
                     "position": [
-                        0.8263962716618255, 
-                        0.3449914200419018, 
-                        -0.13530685216508534
-                    ]
+                        0.8263962716618255,
+                        0.3449914200419018,
+                        -0.1353068521650853
+
                 },
                 {
                     "id": 2,
                     "orientation": [
-                        0.7874194527002508, 
-                        -0.16937214001305077, 
-                        0.23140914218104518, 
-                        0.23276277548918841
-                    ], 
+                        0.7874194527002508,
+                        -0.16937214001305077,
+                        0.23140914218104518,
+                        0.2327627754891884
+                    ],
                     "position": [
-                        0.1034962716618255, 
-                        0.9469914200419018, 
+                        0.1034962716618255,
+                        0.9469914200419018,
                         -0.54330685216508534
                     ]
                 }
-            ], 
+            ],
             "keyframe_id": null, => labeled_demosntration only
             "keyframe_type": null,  => labeled_demosntration only
             "robot": {
-                "gripper": 0.0, 
-                "id": 1, 
+                "gripper": 0.0,
+                "id": 1,
                 "joints": [
-                    -0.1242646484375, 
-                    0.1710810546875, 
-                    3.044984375, 
-                    -1.006376953125, 
-                    -2.976296875, 
-                    -1.216076171875, 
+                    -0.1242646484375,
+                    0.1710810546875,
+                    3.044984375,
+                    -1.006376953125,
+                    -2.976296875,
+                    -1.216076171875,
                     -1.41415234375
-                ], 
+                ],
                 "orientation": [
-                    0.6874194527002508, 
-                    -0.06937214001305077, 
-                    0.7140914218104518, 
+                    0.6874194527002508,
+                    -0.06937214001305077,
+                    0.7140914218104518,
                     0.11276277548918841
-                ], 
+                ],
                 "position": [
-                    0.8263962716618255, 
-                    0.3449914200419018, 
+                    0.8263962716618255,
+                    0.3449914200419018,
                     -0.13530685216508534
                 ]
-            }, 
-            "time": 0.38476085662841797, 
+            },
+            "time": 0.38476085662841797,
             "triggered_constraints": []
         }
     """
+
     def __init__(self, observation_data):
+
         """
         Parameters
         ----------
@@ -246,9 +274,11 @@ class Observation(object):
             Dictionary of raw data collecting item, robot and constraint states.
 
         """
+
         self.data = observation_data
 
     def get_timestamp(self):
+
         """
         Get's osbervations timestamp
 
@@ -257,9 +287,11 @@ class Observation(object):
         : float
             Integer timestamp in milliseconds representing time from epoch.
         """
+
         return self.data["time"]
 
     def get_robot_data(self):
+
         """
         Get the observation's robot data.
 
@@ -268,12 +300,14 @@ class Observation(object):
         : float
             Integer timestamp in milliseconds representing time from epoch.
         """
+
         return self.data["robot"]
 
     def get_item_data(self, item_id):
+
         """
         Gets an items information based on its id
-        
+
         Parameters
         ----------
         observation_data : dict
@@ -284,12 +318,14 @@ class Observation(object):
         : float
             Integer timestamp in milliseconds representing time from epoch.
         """
+
         for item in self.data["items"]:
             # return first occurance, should only be one
             if item["id"] is item_id:
                 return item
 
     def get_triggered_constraint_data(self):
+
         """
         Get the triggered constraints of an object.
 
@@ -298,9 +334,11 @@ class Observation(object):
         : list
             List of constraint id's.
         """
+
         return self.data["triggered_constraints"]
 
     def get_applied_constraint_data(self):
+
         """
         Get the applied constraints of an object.
 
@@ -309,10 +347,8 @@ class Observation(object):
         : list
             List of constraint id's.
         """
+
         if "applied_constraints" in self.data.keys():
             return self.data["applied_constraints"]
         else:
             return None
-
-
-

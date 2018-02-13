@@ -7,8 +7,10 @@ from collections import OrderedDict
 
 
 class DataExporter:
+
     """
-    Data exporint class with a variety of methods to support importing trajectory/observation data from csv, json etc.
+    Data exporint class with a variety of methods to support importing trajectory/observation data from 
+    csv, json etc.
     """
 
     def export_to_json(self, path, data):
@@ -29,10 +31,12 @@ class DataExporter:
 class DataImporter:
 
     """
-    Data importing class with a variety of methods to support importing trajectory/observation data from csv, json etc.
+    Data importing class with a variety of methods to support importing trajectory/observation data from 
+    csv, json etc.
     """
 
     def import_csv_to_list(self, path, exclude_header=True):
+
         """
         Import trajectories stored as .csv files into a list of trajectories. In this case, each file represents
         a single trajectory/demonstration.
@@ -52,6 +56,7 @@ class DataImporter:
         entries : list
             List of trajectories. Trajectories themselves are lists of observations (rows of the .csv file).
         """
+
         entries = []
         files = glob.glob(path)
         for name in files:
@@ -68,6 +73,7 @@ class DataImporter:
         return entries
 
     def import_csv_to_dict(self, path):
+
         """
         Import trajectories stored as .csv files into a Ordered Dictionary. In this case, each file represents
         a single trajectory/demonstration.
@@ -86,6 +92,7 @@ class DataImporter:
             Dictionary of trajectories. Trajectories themselves are dictionaries of observations (rows of the
             .csv file).
         """
+
         entries = OrderedDict()
         entries["trajectories"] = []
         files = glob.glob(path)
@@ -105,6 +112,7 @@ class DataImporter:
         return entries
 
     def import_json_to_dict(self, path):
+
         """
         Import trajectories stored as .json files into a Ordered Dictionary. In this case, each file represents
         a single trajectory/demonstration.
@@ -122,6 +130,7 @@ class DataImporter:
         entries : OrderedDict
             Dictionary of trajectories. Trajectories themselves are dictionaries of observations.
         """
+
         entries = OrderedDict()
         entries["trajectories"] = []
         files = glob.glob(path)
@@ -136,6 +145,7 @@ class DataImporter:
         return entries
 
     def load_json_files(self, path):
+
         """
         Import JSON files as a Python dictionary from .json files in the directory signified by the path..
 
@@ -149,6 +159,7 @@ class DataImporter:
         entries : dict
             Dictionary representation of the JSON file.
         """
+
         entries = OrderedDict()
         entries["data"] = []
         files = glob.glob(path)
@@ -163,6 +174,7 @@ class DataImporter:
         return entries
 
     def load_json_file(self, path):
+
         """
         Import JSON file as a Python dictionary.
 
@@ -176,6 +188,7 @@ class DataImporter:
         entries : dict
             Dictionary representation of the JSON file.
         """
+
         with open(path, 'r') as f:
             datastore = json.load(f)
             return datastore

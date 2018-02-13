@@ -4,7 +4,7 @@ import argparse
 import os
 from lfd_processor.environment import Demonstration, Observation
 from lfd_processor.alignment import DemonstrationAligner, vectorize_demonstration
-from lfd_processor.analyzer import DemonstrationKeyframeGrouper
+from lfd_processor.analyzer import DemonstrationKeyframeLabeler
 from lfd_processor.data_io import DataExporter
 from lfd_processor.data_io import DataImporter
 
@@ -36,8 +36,8 @@ if __name__ == "__main__":
     aligner = DemonstrationAligner(demonstrations, vectorize_demonstration)
     aligned_demos, constraint_transitions = aligner.align()
 
-    keyframe_grouper = DemonstrationKeyframeGrouper(aligned_demos, constraint_transitions)
-    labeled_demonstrations = keyframe_grouper.group_data(20, 10)
+    keyframe_grouper = DemonstrationKeyframeLabeler(aligned_demos, constraint_transitions)
+    labeled_demonstrations = keyframe_grouper.label_demonstrations(20, 10)
 
     exp = DataExporter()
     for idx, demo in enumerate(labeled_demonstrations):

@@ -1,9 +1,5 @@
-from lfd_processor.environment import Demonstration, Observation
-from lfd_processor.data_io import DataImporter, DataExporter
-from lfd_processor.alignment import DemonstrationAligner, vectorize_demonstration
 import numpy as np
 import copy
-import os
 
 
 class ConstraintAnalyzer():
@@ -147,8 +143,8 @@ class DemonstrationKeyframeGrouper():
         Using the index splits, the center of each of those splits is calculated, and window of elements is taken around that center. This window of indices will 
         be the indices of the observation_group list that will be used for a keyframe.
 
-        The observations are labeled with keyframe_ids by iterating over the index splits, caputring the windows, and labeling the data with an increasing current_id. This has the effect of shrinking the keyframes, purposefully under utilizing
-        the demonstration's observations. 
+        The observations are labeled with keyframe_ids by iterating over the index splits, caputring the windows, and labeling the data with an increasing current_id. 
+        This has the effect of shrinking the keyframes, purposefully under utilizing the demonstration's observations.
 
 
 

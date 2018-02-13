@@ -1,31 +1,7 @@
 import rospy
 import intera_interface
 from abc import ABCMeta, abstractmethod
-from geometry_msgs.msg import Pose
 from lfd_processor.constraints import UprightConstraint, HeightConstraint
-
-
-def convert_data_to_pose(position, orientation):
-
-    """
-    Converts raw position and orientation data to a ROS message Pose object.
-
-    Returns
-    -------
-
-    pose: geometry_msgs.msgs.Pose
-        The Pose object
-    """
-
-    pose = Pose()
-    pose.position.x = position[0]
-    pose.position.y = position[1]
-    pose.position.z = position[2]
-    pose.orientation.x = orientation[0]
-    pose.orientation.y = orientation[1]
-    pose.orientation.z = orientation[2]
-    pose.orientation.w = orientation[3]
-    return pose
 
 
 class AbstractItem(object):

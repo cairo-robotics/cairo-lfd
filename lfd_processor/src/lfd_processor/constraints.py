@@ -1,6 +1,6 @@
 import intera_interface
 from predicate_classification.predicate_classifiers import height, upright
-from lfd_processor.items import convert_data_to_pose
+from lfd_processor.processing import convert_data_to_pose
 
 
 class HeightConstraint(object):

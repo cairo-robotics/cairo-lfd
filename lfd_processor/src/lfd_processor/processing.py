@@ -3,6 +3,29 @@ import numpy as np
 from geometry_msgs.msg import Pose
 
 
+def convert_data_to_pose(position, orientation):
+
+    """
+    Converts raw position and orientation data to a ROS message Pose object.
+
+    Returns
+    -------
+
+    pose: geometry_msgs.msgs.Pose
+        The Pose object
+    """
+
+    pose = Pose()
+    pose.position.x = position[0]
+    pose.position.y = position[1]
+    pose.position.z = position[2]
+    pose.orientation.x = orientation[0]
+    pose.orientation.y = orientation[1]
+    pose.orientation.z = orientation[2]
+    pose.orientation.w = orientation[3]
+    return pose
+
+
 class DataProcessor(object):
 
     """
@@ -46,6 +69,9 @@ class DataProcessor(object):
                                                     "OrienY", "OrienZ", "OrienW", "time"]):
 
         """
+        ####################
+        #### DEPRECATED ####
+        ####################
         Takes an observation represented as a dictionary and converts it into a list.
 
         Parameters
@@ -86,7 +112,9 @@ class DataProcessor(object):
 
 
 class ObservationConverter(object):
-
+    ####################
+    #### DEPRECATED ####
+    ####################
     def generate_pose(self, object_state):
         pose = Pose()
         pose.position.x = object_state["PoseX"]

@@ -33,12 +33,23 @@ if __name__ == "__main__":
             observations.append(Observation(entry))
         demonstrations.append(Demonstration(observations))
 
+    # For more details about alignment, see the alignment_example.
     aligner = DemonstrationAligner(demonstrations, vectorize_demonstration)
     aligned_demos, constraint_transitions = aligner.align()
 
-    keyframe_grouper = DemonstrationKeyframeLabeler(aligned_demos, constraint_transitions)
-    labeled_demonstrations = keyframe_grouper.label_demonstrations(20, 10)
+    # Create DemosntrationkeyframeLabeler passing in the aligned demonstrations and the constraint transition
+    # ordering, both of which are returned from the DemonstratinAligner object.
+    keyframe_labeler = DemonstrationKeyframeLabeler(aligned_demos, constraint_transitions)
 
+    # Call label_demontrations. The first paremeter is the average group length divisor which determines
+    # the number of keyframes for that group. So if the first grouping of data before the first constraint transtion
+    # has an average length of 100, then that first grouping will generate 5 keyframes (100/20 = 5). The second parameter
+    # is the window size i.e. how big each keyframe size should be (+/- one depending on if odd number of elements in 
+    # the grouping list per demonstration)
+    labeled_demonstrations = keyframe_labeler.label_demonstrations(20, 10)
+
+    # Export the dictionary data representation of the observations of the labeled demos.
+    # Notice that the demonstrations now have a populated instance member 'labeled_observations'.
     exp = DataExporter()
     for idx, demo in enumerate(labeled_demonstrations):
         raw_data = [obs.data for obs in demo.labeled_observations]

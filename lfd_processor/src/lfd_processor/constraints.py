@@ -53,7 +53,7 @@ class HeightConstraint(object):
             Boolean value of trigger result.
         """
 
-        if intera_interface.Navigator().get_button_state(self.button) is not 0:
+        if intera_interface.Navigator().get_button_state(self.button) != 0:
             return 1
         else:
             return 0
@@ -79,7 +79,7 @@ class HeightConstraint(object):
             Boolean value of constraint evaluation for the associate constraint and item. 
         """
 
-        if self.item_id is environment.get_robot_info()["id"]:
+        if self.item_id == environment.get_robot_info()["id"]:
             item_data = observation.get_robot_data()
             item_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
         else:
@@ -137,7 +137,7 @@ class UprightConstraint(object):
             Boolean value of trigger result.
         """
 
-        if intera_interface.Navigator().get_button_state(self.button) is not 0:
+        if intera_interface.Navigator().get_button_state(self.button) != 0:
             return 1
         else:
             return 0
@@ -163,7 +163,7 @@ class UprightConstraint(object):
             Boolean value of constraint evaluation for the associate constraint and item. 
         """
 
-        if self.item_id is environment.get_robot_info()["id"]:
+        if self.item_id == environment.get_robot_info()["id"]:
             item_data = observation.get_robot_data()
             item_info = environment.get_robot_info()
         else:

@@ -128,7 +128,7 @@ class Environment(object):
         triggered_constraints = []
         for constraint in self.constraints:
             result = constraint.check_trigger()
-            if result is not 0:
+            if result != 0:
                 triggered_constraints.append(constraint.id)
         return triggered_constraints
 
@@ -321,7 +321,7 @@ class Observation(object):
 
         for item in self.data["items"]:
             # return first occurance, should only be one
-            if item["id"] is item_id:
+            if item["id"] == item_id:
                 return item
 
     def get_triggered_constraint_data(self):

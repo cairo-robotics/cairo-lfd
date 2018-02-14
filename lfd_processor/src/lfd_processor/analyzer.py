@@ -1,3 +1,4 @@
+import rospy
 import numpy as np
 import copy
 
@@ -73,12 +74,12 @@ class ConstraintAnalyzer():
             Returns the list of valid cosntraints evaluated for the observation. 
         """
 
-        if constraint_ids is not []:
+        if constraint_ids != []:
             valid_constraints = []
             for constraint_id in constraint_ids:
                 constraint = self.environment.get_constraint_by_id(constraint_id)
                 result = constraint.evaluate(self.environment, observation)
-                if result is 1:
+                if result == 1:
                     valid_constraints.append(constraint_id)
             return valid_constraints
         else:
@@ -130,7 +131,7 @@ class DemonstrationKeyframeLabeler():
         self.demonstrations : tuple
             Returns the demonstrations each of which will have a new parameter assigned with a list called 'labeled_observations'.
         """
-
+        rospy.loginfo("Labeling keyframe groups...")
         keyframe_counts = self._get_keyframe_count_per_group(divisor)
         for demo in self.demonstrations:
             groupings = self._get_observation_groups(demo.aligned_observations, self.constraint_transitions)

@@ -144,6 +144,7 @@ class DemonstrationKeyframeLabeler():
                 else:
                     keyframe_type = "constraint_transition"
                     current_id, labeled_group = self._get_labeled_group(group, keyframe_type, current_id, keyframe_counts[idx], 4)
+                    labeled_group = self._set_applied_constraints_for_transition(labeled_group)
                 labeled_observations.extend(labeled_group)
             demo.labeled_observations = labeled_observations
         return self.demonstrations
@@ -208,6 +209,29 @@ class DemonstrationKeyframeLabeler():
                 # to retain ordering, loop over group_idxs and append each observation in group after they've beel labeled.
                 labeled_observations.append(group[idx])
         return (current_id, labeled_observations)
+
+    def _set_applied_constraints_for_transition(self, constraint_transition_group):
+
+        """
+        This function takes a list observations associated with a constraint transition keyframe label
+        and makes sure the ending applied constraints is set on all of the points in the group labeled
+        as a constraint_transition keyframe_type.
+
+        Parameters
+        ----------
+        constraint_transition_group : list
+            The list of constraint transition observations
+
+        Returns
+        -------
+        constraint_transition_group : list
+
+        """
+        last_idx = len(constraint_transition_group) - 1
+        for ob in constraint_transition_group:
+            if ob.data["keyframe_type"] == "constraint_transition":
+                ob.data["applied_constraints"] = constraint_transition_group[last_idx].data["applied_constraints"]
+        return constraint_transition_group
 
     def _get_keyframe_count_per_group(self, divisor = 20):
 

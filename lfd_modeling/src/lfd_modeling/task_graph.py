@@ -5,6 +5,7 @@ from networkx import MultiDiGraph
 
 from lfd_modeling.modeling import GaussianMixtureModel
 from lfd_processor.data_io import DataImporter
+#from lfd_processor.processing import DataProcessor
 
 import os, signal
 
@@ -37,18 +38,58 @@ class TaskGraph(MultiDiGraph):
         self._head = None
         self._tail = None
 
-
-    def add_gmm_node(self, samples):
-        pass
-        '''
+    def task_graph_builder(self, keyframe_data):
+        # prototype task graph builder
         observations = []
-        for observation in samples["data"]:
-            sample = self._processor.convert_observation_dict_to_list(observation)
-            observations.append(sample)
+        if keyframe_data[0]["keyframe_id"] is None:
+            rospy.loginfo("first data point no keyframe")
+        keyframe_num = 1
 
-        np_observations = self._processor.to_np_array(observations)
-        model = GaussianMixtureModel(np_observations)
+        for data in keyframe_data:
+            #no keyframe discard
+            if data["keyframe_id"] is None:
+                pass
+            else:
+                #new keyframe create new graph node
+                if data["keyframe_id"] == keyframe_num + 1:
+                    rospy.loginfo("%s data points in keyframe %s",
+                                  len(observations), keyframe_num)
+                    keyframe_num += 1
+                    self.add_gmm_node(observations)
+                    #clear and append new data
+                    observations = []
+                    observations.append(data)
+                #same keyframe append data
+                elif data["keyframe_id"] == keyframe_num:
+                    observations.append(data)
+                #uhoh weird mismatch
+                else:
+                    rospy.logerr("keyframe_id mismatch %s on %s",
+                                 data["keyframe_id"], keyframe_num)
+
+        #create final keyframe
+        rospy.loginfo("%s data points in keyframe %s",
+                      len(observations), keyframe_num)
+        self.add_gmm_node(observations)
+
+        if keyframe_data[-1]["keyframe_id"] is None:
+            rospy.loginfo("last data point no keyframe")
+
+
+
+    def add_gmm_node(self, observations):
+        #TODO try without np array conversion?
+        np_poses = []
+        for obsrv in observations:
+            robot = obsrv["robot"]
+            np_poses.append(robot["orientation"] + robot["position"])
+        np_poses = np.array(np_poses)
+
+        #create and fit model
+        model = GaussianMixtureModel(np_poses)
         model.gmm_fit()
+
+        print model.observations
 
         if self._head is None:
             self.add_node(0, gmm=model)
@@ -58,7 +99,7 @@ class TaskGraph(MultiDiGraph):
             self._tail += 1
             self.add_node(self._tail, gmm=model)
             self.add_edge(self._tail-1, self._tail)
-        '''
+
 
 
     def add_n_samples_to_node(self, n, node):
@@ -101,40 +142,10 @@ def main():
     keyframe_data = importer.import_json_to_dict(pkg_path + file_path+ traj_file)
     keyframe_data = keyframe_data["trajectories"][0]
 
-    # prototype task graph builder
-    observations = []
-    if keyframe_data[0]["keyframe_id"] is None:
-        rospy.loginfo("first data point no keyframe")
-    keyframe_num = 1
+    task_graph.task_graph_builder(keyframe_data)
 
-    for data in keyframe_data:
-        #no keyframe discard
-        if data["keyframe_id"] is None:
-            pass
-        else:
-            #new keyframe create new graph node
-            if data["keyframe_id"] == keyframe_num + 1:
-                rospy.loginfo("%s data points in keyframe %s",
-                              len(observations), keyframe_num)
-                keyframe_num += 1
-                task_graph.add_gmm_node(observations)
-                #clear and append new data
-                observations = []
-                observations.append(data)
-            #same keyframe append data
-            elif data["keyframe_id"] == keyframe_num:
-                observations.append(data)
-            #uhoh weird mismatch
-            else:
-                rospy.logerr("keyframe_id mismatch %s on %s",
-                             data["keyframe_id"], keyframe_num)
-
-    #create final keyframe
-    task_graph.add_gmm_node(observations)
-
-    if keyframe_data[-1]["keyframe_id"] is None:
-        rospy.loginfo("last data point no keyframe")
-
+    print task_graph.nodes
+    print
 
 if __name__ == '__main__':
     main()

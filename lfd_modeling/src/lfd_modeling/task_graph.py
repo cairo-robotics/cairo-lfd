@@ -15,9 +15,8 @@ from std_msgs.msg import String
 import geometry_msgs.msg
 from geometry_msgs.msg import Pose
 
-import json
 
-
+#TODO temporary wild loop killer
 class DeathNote(object):
     '''DeathNote for exiting runaway loops'''
     write_name = False
@@ -102,76 +101,40 @@ def main():
     keyframe_data = importer.import_json_to_dict(pkg_path + file_path+ traj_file)
     keyframe_data = keyframe_data["trajectories"][0]
 
+    # prototype task graph builder
     observations = []
-
-    if keyframe_data[0]["keyframe_id"] == None:
-        print "first empty"
+    if keyframe_data[0]["keyframe_id"] is None:
+        rospy.loginfo("first data point no keyframe")
     keyframe_num = 1
 
     for data in keyframe_data:
+        #no keyframe discard
         if data["keyframe_id"] is None:
             pass
         else:
-            #new keyframe
+            #new keyframe create new graph node
             if data["keyframe_id"] == keyframe_num + 1:
+                rospy.loginfo("%s data points in keyframe %s",
+                              len(observations), keyframe_num)
                 keyframe_num += 1
-                #add gmm node
-                #clear observations array
-                #add new observation
-            #same keyframe
+                task_graph.add_gmm_node(observations)
+                #clear and append new data
+                observations = []
+                observations.append(data)
+            #same keyframe append data
             elif data["keyframe_id"] == keyframe_num:
-                print data["keyframe_id"]
-                #observations.append(data)
-
+                observations.append(data)
             #uhoh weird mismatch
             else:
-                rospy.loginfo("keyframe_id mismatch %s on %s",
-                              data["keyframe_id"], keyframe_num)
+                rospy.logerr("keyframe_id mismatch %s on %s",
+                             data["keyframe_id"], keyframe_num)
 
     #create final keyframe
+    task_graph.add_gmm_node(observations)
 
+    if keyframe_data[-1]["keyframe_id"] is None:
+        rospy.loginfo("last data point no keyframe")
 
-
-    '''
-    for key in sorted(keyframe_data.keys()):
-        task_graph.add_gmm_node(keyframe_data[key])
-
-    task_graph.add_sample_to_node(1)
-
-    print task_graph.nodes[1]['points']
-
-    global Wait_flag
-    Wait_flag = 1
-    current_node = 0
-
-    pose_data = node_to_pose(task_graph.task_graph.nodes[current_node]["pose"])
-
-    print pose_data
-    pose_pub.publish(pose_data)
-    global Wait_flag
-    Wait_flag = 1
-
-    while list(task_graph.task_graph.successors(current_node)):
-        if yagami.write_name: #execute death note
-            break
-        temp = list(task_graph.task_graph.successors(current_node))
-        current_node = temp[0]
-        print current_node
-        while(Wait_flag):
-            if yagami.write_name: #execute death note
-                break
-            pass
-        Wait_flag = 1
-        pose_data = node_to_pose(task_graph.task_graph.nodes[current_node]["pose"])
-        print pose_data
-        pose_pub.publish(pose_data)
-
-    #print prob
-
-    '''
-
-
-    print
 
 if __name__ == '__main__':
     main()

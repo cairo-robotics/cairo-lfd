@@ -15,7 +15,7 @@ from std_msgs.msg import String
 import geometry_msgs.msg
 from geometry_msgs.msg import Pose
 
-import os, signal
+import json
 
 
 class DeathNote(object):
@@ -35,7 +35,6 @@ class TaskGraph(MultiDiGraph):
 
     def __init__(self):
         MultiDiGraph.__init__(self)
-        #self._processor = DataProcessor()
         self._head = None
         self._tail = None
 
@@ -85,6 +84,7 @@ class TaskGraph(MultiDiGraph):
                 '''
 
 def main():
+    #TODO remove when module is done
     yagami = DeathNote()
 
     pose_pub = rospy.Publisher("/commander/pose", Pose, queue_size=1)
@@ -95,20 +95,42 @@ def main():
     importer = DataImporter()
 
     rospack = rospkg.RosPack()
-    pkg_path = rospack.get_path('lfd_processor')
+    pkg_path = rospack.get_path('lfd_processor_examples')
 
-    file_path = "/src/lfd_processor/"
-    traj_file = "trajectory2.json"
-
-
-
-
+    file_path = "/toy_data/labeled_demonstrations/"
+    traj_file = "labeled_demonstration0.json"
     keyframe_data = importer.import_json_to_dict(pkg_path + file_path+ traj_file)
+    keyframe_data = keyframe_data["trajectories"][0]
 
-    for key in keyframe_data["trajectories"]:
-        print len(key)
+    observations = []
 
-    print keyframe_data["trajectories"][0][0]["time"]
+    if keyframe_data[0]["keyframe_id"] == None:
+        print "first empty"
+    keyframe_num = 1
+
+    for data in keyframe_data:
+        if data["keyframe_id"] is None:
+            pass
+        else:
+            #new keyframe
+            if data["keyframe_id"] == keyframe_num + 1:
+                keyframe_num += 1
+                #add gmm node
+                #clear observations array
+                #add new observation
+            #same keyframe
+            elif data["keyframe_id"] == keyframe_num:
+                print data["keyframe_id"]
+                #observations.append(data)
+
+            #uhoh weird mismatch
+            else:
+                rospy.loginfo("keyframe_id mismatch %s on %s",
+                              data["keyframe_id"], keyframe_num)
+
+    #create final keyframe
+
+
 
     '''
     for key in sorted(keyframe_data.keys()):

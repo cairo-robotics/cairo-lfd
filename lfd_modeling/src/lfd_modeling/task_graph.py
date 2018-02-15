@@ -1,13 +1,11 @@
 #!/usr/bin/env python
+import os, signal
 import numpy as np
 import networkx as nx
 from networkx import MultiDiGraph
 
 from lfd_modeling.modeling import GaussianMixtureModel
 from lfd_processor.data_io import DataImporter
-#from lfd_processor.processing import DataProcessor
-
-import os, signal
 
 import rospy
 import rospkg
@@ -32,13 +30,18 @@ class DeathNote(object):
 
 
 class TaskGraph(MultiDiGraph):
-
+    """
+    TODO add class defenition
+    """
     def __init__(self):
         MultiDiGraph.__init__(self)
         self._head = None
         self._tail = None
 
-    def task_graph_builder(self, keyframe_data):
+    def builder(self, keyframe_data):
+        """
+        TODO finish making function definition
+        """
         # prototype task graph builder
         observations = []
         if keyframe_data[0]["keyframe_id"] is None:
@@ -76,20 +79,21 @@ class TaskGraph(MultiDiGraph):
             rospy.loginfo("last data point no keyframe")
 
 
-
     def add_gmm_node(self, observations):
+        """
+        TODO add functin definition
+        """
         #TODO try without np array conversion?
+        #does it matter? doesn't numpy just wrap on existing array
         np_poses = []
         for obsrv in observations:
             robot = obsrv["robot"]
-            np_poses.append(robot["orientation"] + robot["position"])
+            np_poses.append(robot["position"] + robot["orientation"])
         np_poses = np.array(np_poses)
 
         #create and fit model
         model = GaussianMixtureModel(np_poses)
         model.gmm_fit()
-
-        print model.observations
 
         if self._head is None:
             self.add_node(0, gmm=model)
@@ -99,15 +103,18 @@ class TaskGraph(MultiDiGraph):
             self._tail += 1
             self.add_node(self._tail, gmm=model)
             self.add_edge(self._tail-1, self._tail)
+        rospy.loginfo("node %s added to task graph", self._tail)
 
 
 
-    def add_n_samples_to_node(self, n, node):
-        pass
-        '''
-        sample = self.nodes[ node]['gmm'].generate_samples(1)
-        self.nodes[node]['points'].append(sample)
-        '''
+    def sample_n_from_node(self, n, node):
+        """
+        TODO fully define the function
+        """
+        samples = self.nodes[node]['gmm'].generate_samples(n)
+
+        return samples
+
 
 
     def check_sample_points(self, point, gmm):
@@ -142,10 +149,25 @@ def main():
     keyframe_data = importer.import_json_to_dict(pkg_path + file_path+ traj_file)
     keyframe_data = keyframe_data["trajectories"][0]
 
-    task_graph.task_graph_builder(keyframe_data)
+    task_graph.builder(keyframe_data)
 
     print task_graph.nodes
-    print
+
+    sample =  task_graph.sample_n_from_node(1, 5)
+    pose_msg = Pose()
+    sample = sample[0]
+    print sample
+
+    pose_msg.position.x = sample[0]
+    pose_msg.position.y = sample[1]
+    pose_msg.position.z = sample[2]
+    pose_msg.orientation.x = sample[3]
+    pose_msg.orientation.y = sample[4]
+    pose_msg.orientation.z = sample[5]
+    pose_msg.orientation.w = sample[6]
+
+    pose_pub.publish(pose_msg)
+
 
 if __name__ == '__main__':
     main()

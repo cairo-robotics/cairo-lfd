@@ -6,6 +6,9 @@ from networkx import MultiDiGraph
 
 from lfd_modeling.modeling import GaussianMixtureModel
 from lfd_processor.data_io import DataImporter
+from lfd_processor.environment import Environment, import_configuration, Observation
+from lfd_processor.items import RobotFactory, ConstraintFactory
+from lfd_processor.analyzer import ConstraintAnalyzer
 
 import rospy
 import rospkg
@@ -33,79 +36,101 @@ class TaskGraph(MultiDiGraph):
     """
     TODO add class defenition
     """
-    def __init__(self):
+    def __init__(self, config_path):
         MultiDiGraph.__init__(self)
         self._head = None
         self._tail = None
 
-    def builder(self, keyframe_data):
+        configs = import_configuration(config_path)
+        robot_factory = RobotFactory(configs["robots"])
+        constraint_factory = ConstraintFactory(configs["constraints"])
+
+        robot = robot_factory.generate_robots()[0]
+        constraints = constraint_factory.generate_constraints()
+
+        self.environment = Environment(items=None, robot=robot,
+                                       constraints=constraints)
+        self.analyzer = ConstraintAnalyzer(self.environment)
+
+
+    def add_obsvs_to_graph(self, obsv_objects):
         """
         TODO finish making function definition
         """
-        # prototype task graph builder
-        observations = []
-        if keyframe_data[0]["keyframe_id"] is None:
-            rospy.loginfo("first data point no keyframe")
-        keyframe_num = 1
-
-        for data in keyframe_data:
-            #no keyframe discard
-            if data["keyframe_id"] is None:
-                pass
+        empty_obsvs = 0
+        positive_obsvs = 0
+        for obsv in obsv_objects:
+            keyframe_num = obsv.data["keyframe_id"]
+            if keyframe_num is None:
+                empty_obsvs += 1
             else:
-                #new keyframe create new graph node
-                if data["keyframe_id"] == keyframe_num + 1:
-                    rospy.loginfo("%s data points in keyframe %s",
-                                  len(observations), keyframe_num)
-                    keyframe_num += 1
-                    self.add_gmm_node(observations)
-                    #clear and append new data
-                    observations = []
-                    observations.append(data)
-                #same keyframe append data
-                elif data["keyframe_id"] == keyframe_num:
-                    observations.append(data)
-                #uhoh weird mismatch
-                else:
-                    rospy.logerr("keyframe_id mismatch %s on %s",
-                                 data["keyframe_id"], keyframe_num)
+                self.add_obsv_to_node(obsv)
+                positive_obsvs += 1
 
-        #create final keyframe
-        rospy.loginfo("%s data points in keyframe %s",
-                      len(observations), keyframe_num)
-        self.add_gmm_node(observations)
-
-        if keyframe_data[-1]["keyframe_id"] is None:
-            rospy.loginfo("last data point no keyframe")
+        nodes = self.nodes
+        for node in nodes:
+            rospy.loginfo(" %s observations in keyframe %s",
+                          len(self.node[node]['obsv']), node)
+        rospy.loginfo("%s observations discarded of %s", empty_obsvs,
+                      empty_obsvs + positive_obsvs)
 
 
-    def add_gmm_node(self, observations):
+    def add_obsv_to_node(self, obsv):
         """
-        TODO add functin definition
+        add obsv to node
         """
-        #TODO try without np array conversion?
-        #does it matter? doesn't numpy just wrap on existing array
-        np_poses = []
-        for obsrv in observations:
-            robot = obsrv["robot"]
-            np_poses.append(robot["position"] + robot["orientation"])
-        np_poses = np.array(np_poses)
-
-        #create and fit model
-        model = GaussianMixtureModel(np_poses)
-        model.gmm_fit()
-
-        if self._head is None:
-            self.add_node(0, gmm=model)
-            self._head = 0
-            self._tail = 0
+        if obsv.data["keyframe_id"] in self.nodes():
+            observation_array = self.node[obsv.data["keyframe_id"]]["obsv"]
+            observation_array.append(obsv)
+            self.node[obsv.data["keyframe_id"]]["obsv"] = observation_array
         else:
-            self._tail += 1
-            self.add_node(self._tail, gmm=model)
-            self.add_edge(self._tail-1, self._tail)
-        rospy.loginfo("node %s added to task graph", self._tail)
+            observation = []
+            observation.append(obsv)
+            self.add_node(obsv.data["keyframe_id"], obsv=observation)
+
+    def link_graph(self):
+        """
+        link keyframes nodes together with edges
+        """
+        nodes = self.nodes
+        for i in range(1, len(nodes)):
+            self.add_edge(i, i+1)
 
 
+    def sample_for_valid_waypoints(self, node_num, n):
+        """
+        works yay! TODO define function and comment code
+        break down into smaller functions?
+        add overal attempts number to be logged
+        """
+        node = self.nodes[node_num]
+        constraint_ids = node["obsv"][-1].data["applied_constraints"]
+        gmm_model = node["gmm"]
+
+        i = 0
+        waypoint_array = []
+        while len(waypoint_array) < n:
+            i += 1
+            j = 0
+            while True:
+                j += 1
+                sample_array = gmm_model.generate_samples(1).tolist()[0]
+                sample_obsv = Observation.init_samples(sample_array[0:3],
+                                                       sample_array[3:7])
+
+                matched_ids = self.analyzer.evaluator(constraint_ids,
+                                                      sample_obsv)
+
+                if constraint_ids == matched_ids:
+                    break
+                if j > 200:
+                    rospy.logwarn("200 samples no valid waypoint")
+                    break
+            waypoint_array.append(sample_obsv)
+            if i > (n*2):
+                rospy.logerr("%swaypoint attempts failed for node %s", n, node_num)
+                break
+        return waypoint_array
 
     def sample_n_from_node(self, n, node):
         """

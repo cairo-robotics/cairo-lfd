@@ -1,3 +1,4 @@
+import rospy
 from dtw import fastdtw
 from scipy.spatial.distance import euclidean
 import copy
@@ -23,8 +24,9 @@ def vectorize_demonstration(demonstration):
     vectors = []
     for observation in demonstration.observations:
         position_data = observation.data["robot"]["position"]
+        orientation_data = observation.data["robot"]["orientation"]
         joint_data = observation.data["robot"]["joints"]
-        vector = position_data + joint_data
+        vector = position_data + orientation_data + joint_data
         vectors.append(vector)
     return vectors
 
@@ -70,7 +72,7 @@ class DemonstrationAligner(object):
         self.demonstrations : tuple
             Returns the demonstrations each having a new parameter called aligned_observations.
         """
-
+        rospy.loginfo("Aligning demosntrations...")
         if not len(self.demonstrations) > 1:
             raise Exception("Error! You are attempting to align ONLY ONE OR ZERO demonstrations.")
         self.demonstrations.sort(key = lambda d: len(d.observations))
@@ -177,7 +179,6 @@ class DemonstrationAligner(object):
         mapping: list
             The universal mapping of constraint transitions for all the demonstraionts.
         """
-
         mappings = [demo.get_applied_constraint_order() for demo in demonstrations]
         if mappings[1:] == mappings[:-1]:
             return mappings[0]

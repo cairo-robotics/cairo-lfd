@@ -53,7 +53,7 @@ class SawyerRobot(AbstractItem):
         robot_id : int
             Id of robot assigned in the config.json configuration files.
         upright_pose : dict
-           Dictionary with position and orietnation fields
+           Dictionary with position and orientation fields
         """
 
         self.id = robot_id
@@ -98,8 +98,8 @@ class SawyerRobot(AbstractItem):
         joints = self._limb.joint_names()
         pose = self._limb.endpoint_pose()
         state["id"] = self.id
-        state['position'] = pose['position']
-        state['orientation'] = pose['orientation']
+        state['position'] = [x for x in pose["position"]]
+        state['orientation'] = [x for x in pose["orientation"]]
         state['gripper'] = self._gripper.get_position()
         state['joints'] = [self._limb.joint_angle(j) for j in joints]
         return state

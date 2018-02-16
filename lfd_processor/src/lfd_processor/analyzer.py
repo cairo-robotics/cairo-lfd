@@ -43,7 +43,7 @@ class ConstraintAnalyzer():
         observations : int
            List of observations to be evaluated for constraints.
         """
-
+        rospy.loginfo("Analyzing observations for applied constraints...")
         prev = []
         for observation in observations:
             triggered = observation.get_triggered_constraint_data()

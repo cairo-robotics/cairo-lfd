@@ -1,3 +1,5 @@
+#!/usr/bin/env python2.7
+
 import math
 import numpy as np
 from geometry_msgs.msg import Pose
@@ -31,6 +33,7 @@ class DataProcessor(object):
     """
     Data prcoessing class with a variety of methods to support manipulating imported data.
     """
+
 
     def fixed_length_sampler(self, entries, fixed_length=250):
 

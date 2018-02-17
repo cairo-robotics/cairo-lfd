@@ -17,6 +17,10 @@ from std_msgs.msg import String
 import geometry_msgs.msg
 from geometry_msgs.msg import Pose
 
+#TODO wrap these methods instead?
+from sklearn.neighbors.kde import KernelDensity
+from sklearn.mixture import GaussianMixture
+
 
 #TODO temporary wild loop killer
 class DeathNote(object):
@@ -96,13 +100,39 @@ class TaskGraph(MultiDiGraph):
         for i in range(1, len(nodes)):
             self.add_edge(i, i+1)
 
+    def build_model(self, model="kde_gauss"):
+        """
+        create models with observations in node
+        """
+        for node in self.nodes():
+            obsvs = self.nodes[node]['obsv']
+            np_array = []
+            for obsv in obsvs:
+                robot = obsv.data["robot"]
+                np_array.append(robot['position'] + robot['orientation'])
+            np_array = np.array(np_array)
 
-    def sample_for_valid_waypoints(self, node_num, n):
+            if model == "kde_gauss":
+                #TODO kernel density method is unwrapped change that
+                kde = KernelDensity(kernel='gaussian', bandwidth=.1).fit(np_array)
+                self.nodes[node]['kde_gauss'] = kde
+                rospy.loginfo("keyframe %s has build kde gaussian model", node)
+
+
+    def sample_n_keyframe_waypoints(self, n, keyframe, model = "kde_gauss"):
+        model = self.nodes[keyframe][model]
+        print model
+
+
+    def sample_n_valid_waypoints(self, node_num, n):
         """
         works yay! TODO define function and comment code
         break down into smaller functions?
         add overal attempts number to be logged
         """
+
+
+        '''
         node = self.nodes[node_num]
         constraint_ids = node["obsv"][-1].data["applied_constraints"]
         gmm_model = node["gmm"]
@@ -131,26 +161,7 @@ class TaskGraph(MultiDiGraph):
                 rospy.logerr("%swaypoint attempts failed for node %s", n, node_num)
                 break
         return waypoint_array
-
-    def sample_n_from_node(self, n, node):
-        """
-        TODO fully define the function
-        """
-        return self.nodes[node]['gmm'].generate_samples(n)
-
-
-    def check_sample_points(self, point, gmm):
-        pass
-        '''
-        new_pose = None
-        i = 0
-        while new_pose is None:
-            pass
-            if any(P > .95 for P in prior[0][:]):
-                pass
-            else:
-                new_pose = test_pose
-                '''
+    '''
 
 def main():
     #TODO remove when module is done
@@ -170,25 +181,8 @@ def main():
     traj_file = "labeled_demonstration0.json"
     keyframe_data = importer.import_json_to_dict(pkg_path + file_path+ traj_file)
     keyframe_data = keyframe_data["trajectories"][0]
-
-    task_graph.builder(keyframe_data)
-
-    print task_graph.nodes
-
-    sample =  task_graph.sample_n_from_node(1, 5)
-    pose_msg = Pose()
-    sample = sample[0]
-    print sample
-
-    pose_msg.position.x = sample[0]
-    pose_msg.position.y = sample[1]
-    pose_msg.position.z = sample[2]
-    pose_msg.orientation.x = sample[3]
-    pose_msg.orientation.y = sample[4]
-    pose_msg.orientation.z = sample[5]
-    pose_msg.orientation.w = sample[6]
-
-    pose_pub.publish(pose_msg)
+    print "bad main old methods"
+    return 0
 
 
 if __name__ == '__main__':

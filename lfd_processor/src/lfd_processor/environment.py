@@ -277,6 +277,20 @@ class Observation(object):
 
         self.data = observation_data
 
+    @classmethod
+    def init_samples(cls, pose, orientation):
+        """
+        Parameters
+        ----------
+        pose : array of pose data
+        orientation: array of orientation data
+        """
+        observation_data = {"robot":{"orientation": orientation,
+                                     "position": pose}}
+        return cls(observation_data)
+
+
+
     def get_timestamp(self):
 
         """

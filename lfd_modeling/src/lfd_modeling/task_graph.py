@@ -136,10 +136,7 @@ class TaskGraph(MultiDiGraph):
         """
         TODO fully define the function
         """
-        samples = self.nodes[node]['gmm'].generate_samples(n)
-
-        return samples
-
+        return self.nodes[node]['gmm'].generate_samples(n)
 
 
     def check_sample_points(self, point, gmm):

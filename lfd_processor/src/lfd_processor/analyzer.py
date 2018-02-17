@@ -3,6 +3,32 @@ import numpy as np
 import copy
 
 
+class MotionPlanAnalyzer():
+
+    """
+    Class with methods to support the analysis of a motion plan.
+    """
+
+   def __init__(self, environment):
+
+        """
+        Parameters
+        ----------
+        enivornment : Environment
+           Environment object for the current LFD environment.
+  
+        """
+
+        self.environment = environment
+
+    def evaluate_plan(self, constraints_ids, plan_observations):
+
+        """
+        
+        """
+
+        pass
+
 class ConstraintAnalyzer():
 
     """
@@ -85,7 +111,6 @@ class ConstraintAnalyzer():
         else:
             return []
 
-
 class DemonstrationKeyframeLabeler():
 
     """
@@ -131,6 +156,7 @@ class DemonstrationKeyframeLabeler():
         self.demonstrations : tuple
             Returns the demonstrations each of which will have a new parameter assigned with a list called 'labeled_observations'.
         """
+
         rospy.loginfo("Labeling keyframe groups...")
         keyframe_counts = self._get_keyframe_count_per_group(divisor)
         for demo in self.demonstrations:
@@ -226,8 +252,8 @@ class DemonstrationKeyframeLabeler():
         Returns
         -------
         constraint_transition_group : list
-
         """
+
         last_idx = len(constraint_transition_group) - 1
         for ob in constraint_transition_group:
             if ob.data["keyframe_type"] == "constraint_transition":

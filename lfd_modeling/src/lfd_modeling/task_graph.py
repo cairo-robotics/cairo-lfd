@@ -10,6 +10,8 @@ from lfd_processor.environment import Environment, import_configuration, Observa
 from lfd_processor.items import RobotFactory, ConstraintFactory
 from lfd_processor.analyzer import ConstraintAnalyzer
 
+import math
+
 import rospy
 import rospkg
 import std_msgs.msg
@@ -121,52 +123,55 @@ class TaskGraph(MultiDiGraph):
             else:
                 rospy.logwarn("No valid model created")
 
-    def sample_n_keyframe_waypoints(self, n, keyframe, model = "kde_gauss"):
+    def sample_n_obsv_objects(self, n, model):
         """
         wrapper for sampling points
+        return obsv objects
         """
-        model = self.nodes[keyframe][model]
-        return model.sample(n)
+        samples = model.sample(n)
+        obsv_array = []
+        for sample in samples:
+            normalize = math.sqrt(sample[3]**2 + sample[4]**2 +
+                                  sample[5]**2 + sample[6]**2)
+            sample[3] = sample[3]/normalize
+            sample[4] = sample[4]/normalize
+            sample[5] = sample[5]/normalize
+            sample[6] = sample[6]/normalize
+            obsv_array.append(Observation.init_samples(sample[0:3],
+                                                       sample[3:7]))
+        return obsv_array
 
 
-    def sample_n_valid_waypoints(self, node_num, n):
+    def sample_n_valid_waypoints(self, node_num, n = 100, model = "kde_gauss"):
         """
-        works yay! TODO define function and comment code
-        break down into smaller functions?
-        add overal attempts number to be logged
+        returns a number of keypoints that are valid based on the constraints
+        TODO messy and want to clean up
         """
 
-
-        '''
         node = self.nodes[node_num]
         constraint_ids = node["obsv"][-1].data["applied_constraints"]
-        gmm_model = node["gmm"]
+        model = node[model]
 
-        i = 0
-        waypoint_array = []
-        while len(waypoint_array) < n:
-            i += 1
-            j = 0
-            while True:
-                j += 1
-                sample_array = gmm_model.generate_samples(1).tolist()[0]
-                sample_obsv = Observation.init_samples(sample_array[0:3],
-                                                       sample_array[3:7])
-
-                matched_ids = self.analyzer.evaluator(constraint_ids,
-                                                      sample_obsv)
-
-                if constraint_ids == matched_ids:
-                    break
-                if j > 200:
-                    rospy.logwarn("200 samples no valid waypoint")
-                    break
-            waypoint_array.append(sample_obsv)
-            if i > (n*2):
-                rospy.logerr("%swaypoint attempts failed for node %s", n, node_num)
+        yagami = DeathNote()
+        valid_sample_obsv = []
+        attempts = 0
+        while len(valid_sample_obsv) < n:
+            attempts += 1
+            if attempts >= n*20:
                 break
-        return waypoint_array
-    '''
+            sample = self.sample_n_obsv_objects(1, model)[0]
+            matched_ids = self.analyzer._evaluator(constraint_ids, sample)
+            if constraint_ids == matched_ids:
+                valid_sample_obsv.append(sample)
+
+
+        rospy.loginfo("%s valid of %s attempts", len(valid_sample_obsv), attempts)
+        if len(valid_sample_obsv) < n:
+            rospy.logwarn("only %s of %s waypoints provided", len(valid_sample_obsv), n)
+
+        return valid_sample_obsv
+
+
 
 def main():
     #TODO remove when module is done

@@ -78,25 +78,14 @@ def main():
         for obsv in trajectories:
             obsv_objects.append(Observation(obsv))
 
-
     task_graph.add_obsvs_to_graph(obsv_objects)
     task_graph.link_graph()
-
+    task_graph.build_model()
 
     viewer = SamplePointViewer()
     pose_array = []
 
     for node in task_graph.nodes():
-        print node
-        obsvs = task_graph.nodes[node]['obsv']
-        np_array = []
-        for obsv in obsvs:
-            robot = obsv.data["robot"]
-            np_array.append(robot['position'] + robot['orientation'])
-
-        np_array = np.array(np_array)
-        kde = KernelDensity(kernel='gaussian', bandwidth=.1).fit(np_array)
-        task_graph.nodes[node]['kde_gauss'] = kde
 
         samples = kde.sample(1000)
         task_graph.nodes[node]['samples'] = samples
@@ -108,7 +97,7 @@ def main():
         #keypress = raw_input("press key to continue")
         #if keypress == "q":
         #    return 0
-
+        return 0
     #print pose_array
 
 

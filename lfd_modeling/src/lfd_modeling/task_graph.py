@@ -114,14 +114,19 @@ class TaskGraph(MultiDiGraph):
 
             if model == "kde_gauss":
                 #TODO kernel density method is unwrapped change that
+                #TODO load bandwidth from roslaunch params
                 kde = KernelDensity(kernel='gaussian', bandwidth=.1).fit(np_array)
                 self.nodes[node]['kde_gauss'] = kde
                 rospy.loginfo("keyframe %s has build kde gaussian model", node)
-
+            else:
+                rospy.logwarn("No valid model created")
 
     def sample_n_keyframe_waypoints(self, n, keyframe, model = "kde_gauss"):
+        """
+        wrapper for sampling points
+        """
         model = self.nodes[keyframe][model]
-        print model
+        return model.sample(n)
 
 
     def sample_n_valid_waypoints(self, node_num, n):

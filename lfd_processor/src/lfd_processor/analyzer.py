@@ -9,7 +9,7 @@ class MotionPlanAnalyzer():
     Class with methods to support the analysis of a motion plan.
     """
 
-   def __init__(self, environment):
+    def __init__(self, environment):
 
         """
         Parameters
@@ -21,13 +21,66 @@ class MotionPlanAnalyzer():
 
         self.environment = environment
 
-    def evaluate_plan(self, constraints_ids, plan_observations):
+    def evaluate_plan(self, constraint_ids, plan_observations):
 
         """
-        
+        Evaluates plan observations to ensure that the constraints specified in the list of constraint ids
+        is valid throughout the entire plan. If one observation in the plan violates the constraints,
+        the plan is invalidated.
+
+        Parameters
+        ----------
+        constraint_ids : list
+            List of constraint id's to evalaute.
+
+        plan_observations : lsit
+            The observation to evaluate for the constraints.
+    
+        Returns
+        -------
+         : boolean
+           Returns true if the given constraints are valid throughout the entirety of the plan, false otherwise. 
         """
 
-        pass
+        for observation in plan_observations:
+            evaluation = self._evaluate(constraint_ids, observation)
+            print constraint_ids, evaluation
+            if constraint_ids != evaluation:
+                return False
+        return True
+
+    def _evaluate(self, constraint_ids, observation):
+
+        """
+        This function evaluates an observation for all the constraints in the list constraint_ids. It depends on 
+        being able to access the constraint objects from the self.environment object. Every constraint object 
+        should have an 'evaluate()'' function that takes in the environment and the observation.
+
+        Parameters
+        ----------
+        constraint_ids : list
+            List of constraint id's to evalaute.
+
+        observation : Observation
+            The observation to evaluate for the constraints.
+    
+        Returns
+        -------
+        valid_constraints : list
+            Returns the list of valid contraints evaluated for the observation. 
+        """
+
+        if constraint_ids != []:
+            valid_constraints = []
+            for constraint_id in constraint_ids:
+                constraint = self.environment.get_constraint_by_id(constraint_id)
+                result = constraint.evaluate(self.environment, observation)
+                if result == 1:
+                    valid_constraints.append(constraint_id)
+            return valid_constraints
+        else:
+            return []
+
 
 class ConstraintAnalyzer():
 
@@ -97,7 +150,7 @@ class ConstraintAnalyzer():
         Returns
         -------
         valid_constraints : list
-            Returns the list of valid cosntraints evaluated for the observation. 
+            Returns the list of valid contraints evaluated for the observation. 
         """
 
         if constraint_ids != []:

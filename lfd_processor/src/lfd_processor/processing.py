@@ -31,6 +31,7 @@ def convert_data_to_pose(position, orientation):
 class DataProcessor(object):
 
     """
+    TODO: RENAME TO A MORE SPECIFIC CLASS NAME.
     Data prcoessing class with a variety of methods to support manipulating imported data.
     """
 

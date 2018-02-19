@@ -146,7 +146,11 @@ class TaskGraph(MultiDiGraph):
         """
         returns a number of keypoints that are valid based on the constraints
         TODO messy and want to clean up
+        only works with d method
         """
+        if model != "kde_gauss":
+            rospy.logerr("warning sampling valid waypoints only accepts kde_gauss models")
+            return 0
 
         node = self.nodes[node_num]
         constraint_ids = node["obsv"][-1].data["applied_constraints"]
@@ -164,12 +168,38 @@ class TaskGraph(MultiDiGraph):
             if constraint_ids == matched_ids:
                 valid_sample_obsv.append(sample)
 
-
         rospy.loginfo("%s valid of %s attempts", len(valid_sample_obsv), attempts)
         if len(valid_sample_obsv) < n:
             rospy.logwarn("only %s of %s waypoints provided", len(valid_sample_obsv), n)
 
-        return valid_sample_obsv
+        #TODO append method for adding more points?
+        self.nodes[node_num]['samples'] = valid_sample_obsv
+        return 0
+
+    def rank_waypoint_samples(self, node_num, model="kde_gauss"):
+        """
+        re arrange all sampled points based on Prob Density
+        """
+        #TODO add desnity values to samples?
+        if model != "kde_gauss":
+            rospy.logerr("warning ranking valid waypoints only accepts kde_gauss models")
+            return 0
+
+        model = self.nodes[node_num][model]
+        samples = self.nodes[node_num]['samples']
+
+        np_array = []
+        for sample in samples:
+            robot = sample.data["robot"]
+            np_array.append(np.concatenate([robot["position"], robot["orientation"]]))
+
+        scores = model.score_samples(np_array)
+        order = np.argsort(-scores)
+        scores = scores[order]
+        samples = np.asarray(samples)
+        self.nodes[node_num]['samples'] = samples
+        rospy.loginfo("keyframe %s samples have been reorderd", node_num)
+        return 0
 
 
 

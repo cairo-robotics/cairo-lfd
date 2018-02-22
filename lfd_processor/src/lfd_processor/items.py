@@ -79,7 +79,7 @@ class SawyerRobot(AbstractItem):
         """
         Get's the current state of the robot.
 
-        Returns state of robot:
+        State returned:
         {
             id: robot_id
             position: [x, y ,z],
@@ -107,21 +107,21 @@ class SawyerRobot(AbstractItem):
     def get_info(self):
 
         """
-        Get's the current state of the robot.
+        Get's the robot item's information.
 
-        Returns state of robot:
+        Info returned:
         {
             id: robot_id
-            position: [x, y ,z],
-            orientation: [x, y, z, w]
-            joints: [j0, j1, j2, j3, j4, j5, j6],
-            gripper: .123123123123
+            upright_pose: {
+                position: [x, y ,z],
+                orientation: [x, y, z, w]
+            }
         }
 
         Returns
         -------
         state : dict
-            The state of the robot
+            The info of the robot item
         """
 
         return {

@@ -16,7 +16,6 @@ class MotionPlanAnalyzer():
         ----------
         enivornment : Environment
            Environment object for the current LFD environment.
-  
         """
 
         self.environment = environment
@@ -35,11 +34,11 @@ class MotionPlanAnalyzer():
 
         plan_observations : lsit
             The observation to evaluate for the constraints.
-    
+
         Returns
         -------
          : boolean
-           Returns true if the given constraints are valid throughout the entirety of the plan, false otherwise. 
+           Returns true if the given constraints are valid throughout the entirety of the plan, false otherwise.
         """
 
         for observation in plan_observations:
@@ -52,8 +51,8 @@ class MotionPlanAnalyzer():
     def _evaluate(self, constraint_ids, observation):
 
         """
-        This function evaluates an observation for all the constraints in the list constraint_ids. It depends on 
-        being able to access the constraint objects from the self.environment object. Every constraint object 
+        This function evaluates an observation for all the constraints in the list constraint_ids. It depends on
+        being able to access the constraint objects from the self.environment object. Every constraint object
         should have an 'evaluate()'' function that takes in the environment and the observation.
 
         Parameters
@@ -63,11 +62,11 @@ class MotionPlanAnalyzer():
 
         observation : Observation
             The observation to evaluate for the constraints.
-    
+
         Returns
         -------
         valid_constraints : list
-            Returns the list of valid contraints evaluated for the observation. 
+            Returns the list of valid contraints evaluated for the observation.
         """
 
         if constraint_ids != []:
@@ -95,7 +94,6 @@ class ConstraintAnalyzer():
         ----------
         enivornment : Environment
            Environment object for the current LFD environment.
-  
         """
 
         self.environment = environment
@@ -103,8 +101,8 @@ class ConstraintAnalyzer():
     def applied_constraint_evaluator(self, observations):
 
         """
-        This function evaluates observations for constraints that were triggered during the demonstration. 
-        It will label a demonstration's entire list of observations with the constraints that were triggered 
+        This function evaluates observations for constraints that were triggered during the demonstration.
+        It will label a demonstration's entire list of observations with the constraints that were triggered
         and wheter or not they are still applicable.
 
         New constraints are those where the triggered constraints are different from the previously applied constraints:
@@ -135,8 +133,8 @@ class ConstraintAnalyzer():
     def _evaluator(self, constraint_ids, observation):
 
         """
-        This function evaluates an observation for all the constraints in the list constraint_ids. It depends on 
-        being able to access the constraint objects from the self.environment object. Every constraint object 
+        This function evaluates an observation for all the constraints in the list constraint_ids. It depends on
+        being able to access the constraint objects from the self.environment object. Every constraint object
         should have an 'evaluate()'' function that takes in the environment and the observation.
 
         Parameters
@@ -146,11 +144,11 @@ class ConstraintAnalyzer():
 
         observation : Observation
             The observation to evaluate for the constraints.
-    
+
         Returns
         -------
         valid_constraints : list
-            Returns the list of valid contraints evaluated for the observation. 
+            Returns the list of valid contraints evaluated for the observation.
         """
 
         if constraint_ids != []:
@@ -164,12 +162,13 @@ class ConstraintAnalyzer():
         else:
             return []
 
+
 class DemonstrationKeyframeLabeler():
 
     """
-    Keyframe labeling class. 
+    Keyframe labeling class.
 
-    This class depends on constraint aligned demosntrations. This means that all demosntrations should have the same 
+    This class depends on constraint aligned demosntrations. This means that all demosntrations should have the same
     sequence of constraint transitions. Without such alignment, the class functions will fail ungracefully.
     """
 
@@ -182,17 +181,18 @@ class DemonstrationKeyframeLabeler():
            List of demonstraionts. These must be constraint aligned
 
         constraint_transitions : list
-            A 2D list containing the set of constraint transitions that are applicable to all of the aligned demosntrations.
+            A 2D list containing the set of constraint transitions that are applicable to all of the aligned
+            demosntrations.
         """
 
         self.demonstrations = aligned_demonstrations
         self.constraint_transitions = constraint_transitions
 
-    def label_demonstrations(self, divisor = 20, keyframe_window_size = 8):
+    def label_demonstrations(self, divisor=20, keyframe_window_size=8):
 
         """
         This function serves to take each demonstration and create a list of observations labeled with keyframe_ids.
-        For each demonstation, the function gets the observation grouping and then iteratively calls 
+        For each demonstation, the function gets the observation grouping and then iteratively calls
         _get_labeled_group() from which it extends a list using the function's returned labeled_group. This list becomes
         the labeled_observations list of observation obejcts assigned to the demonstration object.
 
@@ -207,7 +207,8 @@ class DemonstrationKeyframeLabeler():
         Returns
         -------
         self.demonstrations : tuple
-            Returns the demonstrations each of which will have a new parameter assigned with a list called 'labeled_observations'.
+            Returns the demonstrations each of which will have a new parameter assigned with a list called
+            'labeled_observations'.
         """
 
         rospy.loginfo("Labeling keyframe groups...")
@@ -220,10 +221,12 @@ class DemonstrationKeyframeLabeler():
                 # Recall that every even index in groupings is a regular group while all odd indices are transition groups.
                 if idx%2 == 0:
                     keyframe_type = "regular"
-                    current_id, labeled_group = self._get_labeled_group(group, keyframe_type, current_id, keyframe_counts[idx], keyframe_window_size)
+                    current_id, labeled_group = self._get_labeled_group(group, keyframe_type, current_id, 
+                                                                        keyframe_counts[idx], keyframe_window_size)
                 else:
                     keyframe_type = "constraint_transition"
-                    current_id, labeled_group = self._get_labeled_group(group, keyframe_type, current_id, keyframe_counts[idx], 4)
+                    current_id, labeled_group = self._get_labeled_group(group, keyframe_type, current_id,
+                                                                        keyframe_counts[idx], 4)
                     labeled_group = self._set_applied_constraints_for_transition(labeled_group)
                 labeled_observations.extend(labeled_group)
             demo.labeled_observations = labeled_observations
@@ -232,16 +235,16 @@ class DemonstrationKeyframeLabeler():
     def _get_labeled_group(self, observation_group, keyframe_type, current_id, num_keyframes, window_size):
 
         """
-        This function takes in a group, generates a list of its indices, and splits those indices into n lists were 
-        n is the number of keyframes. Each of these list of indices represent the observations available to constitute 
+        This function takes in a group, generates a list of its indices, and splits those indices into n lists were
+        n is the number of keyframes. Each of these list of indices represent the observations available to constitute
         a keyframe.
-        
-        Using the index splits, the center of each of those splits is calculated, and window of elements is taken 
-        around that center. This window of indices will be the indices of the observation_group list's elements that 
+
+        Using the index splits, the center of each of those splits is calculated, and window of elements is taken
+        around that center. This window of indices will be the indices of the observation_group list's elements that
         will be used for a keyframe.
 
-        The observations are labeled with keyframe_ids by iterating over the index splits and labeling the data with an 
-        increasing current_id. This has the effect of shrinking the keyframes, purposefully under utilizing the 
+        The observations are labeled with keyframe_ids by iterating over the index splits and labeling the data with an
+        increasing current_id. This has the effect of shrinking the keyframes, purposefully under utilizing the
         demonstration's observations.
 
 
@@ -266,7 +269,7 @@ class DemonstrationKeyframeLabeler():
         Returns
         -------
         (current_id, labeled_observations) : tuple
-            Returns a tuple of the current_id (so it can be passed to the next call of this function) and a list of 
+            Returns a tuple of the current_id (so it can be passed to the next call of this function) and a list of
             labeled observations.
         """
 
@@ -313,7 +316,7 @@ class DemonstrationKeyframeLabeler():
                 ob.data["applied_constraints"] = constraint_transition_group[last_idx].data["applied_constraints"]
         return constraint_transition_group
 
-    def _get_keyframe_count_per_group(self, divisor = 20):
+    def _get_keyframe_count_per_group(self, divisor=20):
 
         """
         This function calculates the number of keyframes for each group. A group is a precursor to keyframes. Generally,
@@ -329,7 +332,7 @@ class DemonstrationKeyframeLabeler():
         Parameters
         ----------
         divisor : int
-            A divisor that divides the average length of a group of 'regular' observations into n number of keyframes 
+            A divisor that divides the average length of a group of 'regular' observations into n number of keyframes
             for that group
 
         Returns
@@ -354,8 +357,8 @@ class DemonstrationKeyframeLabeler():
         """
         This function generates groups of observations based on the constraint transitions of a demonstration.
 
-        It will create a list of observation lists, where each index alternates between being a group of regular 
-        observations and observations that surround a constraint transition. The group structure is generated 
+        It will create a list of observation lists, where each index alternates between being a group of regular
+        observations and observations that surround a constraint transition. The group structure is generated
         using _generate_group_structure().
 
         Parameters
@@ -373,7 +376,7 @@ class DemonstrationKeyframeLabeler():
         """
 
         constraints = copy.deepcopy(constraint_transitions)
-        groups = self._generate_group_structure(constraints)  
+        groups = self._generate_group_structure(constraints)
         curr_constraints = []
         counter = 0
         for idx, ob in enumerate(observations):

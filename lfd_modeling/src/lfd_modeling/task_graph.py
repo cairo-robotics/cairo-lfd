@@ -120,7 +120,7 @@ class TaskGraph(MultiDiGraph):
             self.add_edge(i, i+1)
         self._tail = len(nodes)+1
 
-    def build_model(self, model="kde_gauss"):
+    def build_model(self, model="kde_gauss", bandwidth=.001):
         """
         create models with observations in node
         """
@@ -136,7 +136,7 @@ class TaskGraph(MultiDiGraph):
             if model == "kde_gauss":
                 #TODO kernel density method is unwrapped change that
                 #TODO load bandwidth from roslaunch params
-                kde = KernelDensity(kernel='gaussian', bandwidth=.002).fit(np_array)
+                kde = KernelDensity(kernel='gaussian', bandwidth=bandwidth).fit(np_array)
                 self.nodes[node]['kde_gauss'] = kde
                 rospy.loginfo("keyframe %s has build kde gaussian model", node)
             else:
@@ -194,6 +194,9 @@ class TaskGraph(MultiDiGraph):
         rospy.loginfo("%s valid of %s attempts", len(valid_sample_obsv), attempts)
         if len(valid_sample_obsv) < n:
             rospy.logwarn("only %s of %s waypoints provided", len(valid_sample_obsv), n)
+        if len(valid_sample_obsv) == 0:
+            self.cull_node(node_num)
+
 
         #TODO append method for adding more points?
         self.nodes[node_num]['samples'] = valid_sample_obsv
@@ -251,6 +254,37 @@ class TaskGraph(MultiDiGraph):
         rospy.loginfo("keyframe %s samples have been reorderd", node_num)
         return 0
 
+    def cull_node(self, node):
+        """
+        takes received node and removes it from the task graph
+        Parameters
+        ----------
+        node: hashable networkx node name
+            the node to be removed from network x graph
+
+        Returns
+        -------
+        -1 for failure
+        0 for success
+
+        """
+        next_node = [x for x in self.successors(node)]
+        if next_node == []:
+            rospy.loginfo("unable to cull node %s, no successor nodes", node)
+            return -1
+        next_node = next_node[0]
+
+        prev_node = [x for x in self.predecessors(node)]
+        if prev_node == []:
+            rospy.loginfo("unable to cull node %s, no previous node", node)
+            return -1
+
+        prev_node = prev_node[0]
+        self.add_edge(prev_node, next_node)
+        self.remove_edge(prev_node, node)
+        self.remove_edge(node, next_node)
+        rospy.loginfo("node %s has been culled", node)
+        return 0
 
 
 

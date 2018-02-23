@@ -25,6 +25,8 @@ from sklearn.mixture import GaussianMixture
 
 import pdb
 
+
+
 #TODO temporary wild loop killer
 class DeathNote(object):
     '''DeathNote for exiting runaway loops'''
@@ -40,8 +42,21 @@ class DeathNote(object):
 
 
 class TaskGraph(MultiDiGraph):
-    """
-    TODO add class defenition
+    """ For creating a graphical representation of a task
+    Inherited from the MultiDiGraph graph from networkx
+
+    Attributes:
+        _head: the first node of the graph
+        _tail: the last node of the graph
+        enviroment: object containg the applied contraints for task
+        analyzer: object that analyzes Observation objects for constaint violations
+        MultiDiGraph: the inherited graph object
+
+    Node Attributes:
+        obsvs: list of observation objects the node uses to create its model
+        kde_gauss: the kernel Gaussian model of the obsvs sklean KernelDenisty
+        gmm: Gaussian Mixture Model of obsvs wrapped class of sklearn GMM
+        samples: List of observation objects containing the samples
     """
     def __init__(self, config_path):
         MultiDiGraph.__init__(self)
@@ -165,7 +180,6 @@ class TaskGraph(MultiDiGraph):
         constraint_ids = node["obsv"][-1].data["applied_constraints"]
         model = node[model]
 
-        yagami = DeathNote()
         valid_sample_obsv = []
         attempts = 0
         while len(valid_sample_obsv) < n:

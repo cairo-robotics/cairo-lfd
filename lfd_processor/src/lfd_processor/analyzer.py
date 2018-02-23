@@ -3,6 +3,7 @@ import numpy as np
 import copy
 import pdb
 
+
 class TaskGraphAnalyzer():
     """
     Class with methods to support the analysis of a motion plan.
@@ -63,14 +64,13 @@ class TaskGraphAnalyzer():
             rospy.loginfo("Prev: {}; Curr: {}".format(prev, curr))
             max_ll, mean_ll = self.keyframe_liklihood_check(self.graph.nodes[prev], self.graph.nodes[curr])
             if mean_ll < threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
-                self.graph.remove_edge(prev, curr)
                 succ = self.graph.successors(curr).next()
-                self.graph.add_edge(prev, succ)
-                self.graph.remove_edge(curr, succ)
+                self.graph.cull_node(curr)
                 curr = succ
                 continue
             prev = curr
             curr = self.graph.successors(curr).next()
+
 
 class MotionPlanAnalyzer():
 

@@ -311,11 +311,37 @@ class Observation(object):
 
         Returns
         -------
-        : float
-            Integer timestamp in milliseconds representing time from epoch.
+        : dictionary
+            dictionary of robot data
         """
 
         return self.data["robot"]
+
+    def get_pose_list(self):
+        """
+        Get the pose pose of the observatoin as a list
+
+        Returns
+        ------
+        : list
+            combined data from position and orientation
+        """
+
+        robot = self.get_robot_data()
+        pose = [robot["position"].append["orientation"]]
+        return pose
+
+    def get_keyframe_info(self):
+        """
+        send back tuple of keyframe num and type
+
+        Returns
+        -------
+        : tuple
+            (keyframe_id, keyframe_type)
+        """
+        
+        return (self.data["keyframe_id"], self.data["keyframe_type"])
 
     def get_item_data(self, item_id):
 

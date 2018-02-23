@@ -1,7 +1,76 @@
 import rospy
 import numpy as np
 import copy
+import pdb
 
+class TaskGraphAnalyzer():
+    """
+    Class with methods to support the analysis of a motion plan.
+    """
+
+    def __init__(self, task_graph, sawyer_moveit_interface):
+
+        """
+        Parameters
+        ----------
+        enivornment : Environment
+           Environment object for the current LFD environment.
+        """
+
+        self.graph = task_graph
+        self.interface = sawyer_moveit_interface
+
+    def evaluate_keyframe_occlusion(self, keyframe_samples):
+        samples = keyframe_samples.tolist()
+        occluded_observations = []
+        free_observations = []
+        for observation in samples:
+            data = observation.get_robot_data()
+            position = data["position"].tolist()
+            orientation = data["orientation"].tolist()
+            pose_vector = position + orientation
+            if len(self.interface.get_pose_IK_joints(pose_vector)) == 0:
+                occluded_observations.append(observation)
+            else:
+                free_observations.append(observation)
+        return (free_observations, occluded_observations)
+
+    def samples_log_liklihood(self, model, samples):
+        # scikit learn model yo!
+        # assume samples are numpy arrays
+        return model.score_samples(samples)
+
+    def keyframe_liklihood_check(self, prior_node, curr_node):
+        curr_obs = curr_node["obsv"]
+        curr_pose_vectors = []
+        for ob in curr_obs:
+            data = ob.get_robot_data()
+            position = data["position"]
+            orientation = data["orientation"]
+            pose_vector = position + orientation
+            curr_pose_vectors.append(pose_vector)
+        curr_samples = np.array(curr_pose_vectors)
+        curr_ll = self.samples_log_liklihood(prior_node["kde_gauss"], curr_samples)
+        max_ll = np.amax(curr_ll)
+        mean_ll = np.mean(curr_ll)
+        rospy.loginfo("Mean log liklihood:{}, Max log liklihood:{}".format(mean_ll, max_ll))
+        return (max_ll, mean_ll)
+
+    def keyframe_culler(self, threshold=-10000):
+        prev = self.graph._head
+        curr = self.graph.successors(prev).next()
+        while([x for x in self.graph.successors(curr)] != []):
+            rospy.loginfo("Prev: {}; Curr: {}".format(prev, curr))
+            max_ll, mean_ll = self.keyframe_liklihood_check(self.graph.nodes[prev], self.graph.nodes[curr])
+            if mean_ll < threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
+                self.graph.remove_edge(prev, curr)
+                succ = self.graph.successors(curr).next()
+                self.graph.add_edge(prev, succ)
+                self.graph.remove_edge(curr, succ)
+                curr = succ
+                continue
+            prev = curr
+            curr = self.graph.successors(curr).next()
 
 class MotionPlanAnalyzer():
 
@@ -275,7 +344,7 @@ class DemonstrationKeyframeLabeler():
 
         labeled_observations = []
         group = copy.deepcopy(observation_group)
-        group_index_splits = [list(n) for n in np.array_split(list(range(0, len(group)-1)), num_keyframes)]
+        group_index_splits = [list(n) for n in np.array_split(list(range(0, len(group))), num_keyframes)]
 
         for group_idxs in group_index_splits:
             current_id = current_id + 1

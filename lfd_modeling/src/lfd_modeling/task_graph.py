@@ -23,6 +23,7 @@ from geometry_msgs.msg import Pose
 from sklearn.neighbors.kde import KernelDensity
 from sklearn.mixture import GaussianMixture
 
+import pdb
 
 #TODO temporary wild loop killer
 class DeathNote(object):
@@ -99,14 +100,17 @@ class TaskGraph(MultiDiGraph):
         link keyframes nodes together with edges
         """
         nodes = self.nodes
+        self._head = 1
         for i in range(1, len(nodes)):
             self.add_edge(i, i+1)
+        self._tail = len(nodes)+1
 
     def build_model(self, model="kde_gauss"):
         """
         create models with observations in node
         """
         for node in self.nodes():
+            print node
             obsvs = self.nodes[node]['obsv']
             np_array = []
             for obsv in obsvs:
@@ -117,11 +121,16 @@ class TaskGraph(MultiDiGraph):
             if model == "kde_gauss":
                 #TODO kernel density method is unwrapped change that
                 #TODO load bandwidth from roslaunch params
-                kde = KernelDensity(kernel='gaussian', bandwidth=.1).fit(np_array)
+                kde = KernelDensity(kernel='gaussian', bandwidth=.002).fit(np_array)
                 self.nodes[node]['kde_gauss'] = kde
                 rospy.loginfo("keyframe %s has build kde gaussian model", node)
             else:
                 rospy.logwarn("No valid model created")
+
+    def attribute_keyframe_type(self):
+        for node in self.nodes():
+            kf_id, kf_type = self.nodes[node]['obsv'][0].get_keyframe_info()
+            self.nodes[node]["keyframe_type"] = kf_type
 
     def sample_n_obsv_objects(self, n, model):
         """
@@ -193,6 +202,7 @@ class TaskGraph(MultiDiGraph):
             robot = sample.data["robot"]
             np_array.append(np.concatenate([robot["position"], robot["orientation"]]))
 
+        # pdb.set_trace()
         scores = model.score_samples(np_array)
         order = np.argsort(-scores)
         scores = scores[order]
@@ -200,6 +210,33 @@ class TaskGraph(MultiDiGraph):
         self.nodes[node_num]['samples'] = samples
         rospy.loginfo("keyframe %s samples have been reorderd", node_num)
         return 0
+
+    def rank_waypoint_free_samples(self, node_num, model="kde_gauss"):
+        """
+        re arrange all sampled points based on Prob Density
+        """
+        #TODO add desnity values to samples?
+        if model != "kde_gauss":
+            rospy.logerr("warning ranking valid waypoints only accepts kde_gauss models")
+            return 0
+
+        model = self.nodes[node_num][model]
+        samples = self.nodes[node_num]['free_samples']
+
+        np_array = []
+        for sample in samples:
+            robot = sample.data["robot"]
+            np_array.append(np.concatenate([robot["position"], robot["orientation"]]))
+
+        # pdb.set_trace()
+        scores = model.score_samples(np_array)
+        order = np.argsort(-scores)
+        scores = scores[order]
+        samples = np.asarray(samples)
+        self.nodes[node_num]['free_samples'] = samples
+        rospy.loginfo("keyframe %s samples have been reorderd", node_num)
+        return 0
+
 
 
 

@@ -1,6 +1,8 @@
 import json
+import numpy as np
 from collections import OrderedDict
-
+import geometry_msgs.msg
+from geometry_msgs.msg import Pose
 
 def import_configuration(filepath):
 
@@ -328,8 +330,28 @@ class Observation(object):
         """
 
         robot = self.get_robot_data()
-        pose = [robot["position"].append["orientation"]]
+        pose = np.append(robot["position"], robot["orientation"])
         return pose
+
+
+    def get_pose_msg(self):
+        """
+        Get pose data and return a pose msg type
+        Returns:
+        --------
+        : geometry_msg Pose
+            a pose message of the observation
+        """
+        pose_list = self.get_pose_list()
+        pose_msg = Pose()
+        pose_msg.position.x = pose_list[0]
+        pose_msg.position.y = pose_list[1]
+        pose_msg.position.z = pose_list[2]
+        pose_msg.orientation.w = pose_list[3]
+        pose_msg.orientation.x = pose_list[4]
+        pose_msg.orientation.y = pose_list[5]
+        pose_msg.orientation.z = pose_list[6]
+        return pose_msg
 
     def get_keyframe_info(self):
         """
@@ -340,7 +362,7 @@ class Observation(object):
         : tuple
             (keyframe_id, keyframe_type)
         """
-        
+
         return (self.data["keyframe_id"], self.data["keyframe_type"])
 
     def get_item_data(self, item_id):

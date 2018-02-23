@@ -202,6 +202,16 @@ class TaskGraph(MultiDiGraph):
         self.nodes[node_num]['samples'] = valid_sample_obsv
         return 0
 
+    def sample_n_waypoints(self, node_num, n = 100, model = "kde_gauss"):
+        if model != "kde_gauss":
+            rospy.logerr("warning sampling valid waypoints only accepts kde_gauss models")
+            return 0
+        node = self.nodes[node_num]
+        model = node[model]
+
+        self.nodes[node_num]['samples'] = self.sample_n_obsv_objects(n, model)
+        return 0
+
     def rank_waypoint_samples(self, node_num, model="kde_gauss"):
         """
         re arrange all sampled points based on Prob Density

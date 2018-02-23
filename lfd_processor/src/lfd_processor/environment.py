@@ -347,10 +347,11 @@ class Observation(object):
         pose_msg.position.x = pose_list[0]
         pose_msg.position.y = pose_list[1]
         pose_msg.position.z = pose_list[2]
-        pose_msg.orientation.w = pose_list[3]
-        pose_msg.orientation.x = pose_list[4]
-        pose_msg.orientation.y = pose_list[5]
-        pose_msg.orientation.z = pose_list[6]
+
+        pose_msg.orientation.x = pose_list[3]
+        pose_msg.orientation.y = pose_list[4]
+        pose_msg.orientation.z = pose_list[5]
+        pose_msg.orientation.w = pose_list[6]
         return pose_msg
 
     def get_keyframe_info(self):

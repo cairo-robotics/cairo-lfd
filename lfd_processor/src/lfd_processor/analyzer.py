@@ -22,7 +22,7 @@ class TaskGraphAnalyzer():
         self.interface = sawyer_moveit_interface
 
     def evaluate_keyframe_occlusion(self, keyframe_samples):
-        samples = keyframe_samples.tolist()
+        samples = keyframe_samples
         occluded_observations = []
         free_observations = []
         for observation in samples:
@@ -63,7 +63,7 @@ class TaskGraphAnalyzer():
         while([x for x in self.graph.successors(curr)] != []):
             rospy.loginfo("Prev: {}; Curr: {}".format(prev, curr))
             max_ll, mean_ll = self.keyframe_liklihood_check(self.graph.nodes[prev], self.graph.nodes[curr])
-            if mean_ll < threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
+            if mean_ll > threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
                 succ = self.graph.successors(curr).next()
                 self.graph.cull_node(curr)
                 curr = succ
@@ -290,7 +290,7 @@ class DemonstrationKeyframeLabeler():
                 # Recall that every even index in groupings is a regular group while all odd indices are transition groups.
                 if idx%2 == 0:
                     keyframe_type = "regular"
-                    current_id, labeled_group = self._get_labeled_group(group, keyframe_type, current_id, 
+                    current_id, labeled_group = self._get_labeled_group(group, keyframe_type, current_id,
                                                                         keyframe_counts[idx], keyframe_window_size)
                 else:
                     keyframe_type = "constraint_transition"

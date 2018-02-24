@@ -6,11 +6,7 @@ from lfd_modeling.task_graph import TaskGraph
 from lfd_processor.environment import Observation, Environment, import_configuration
 from lfd_processor.data_io import DataImporter
 from lfd_processor.items import RobotFactory, ConstraintFactory
-from lfd_processor.analyzer import ConstraintAnalyzer, MotionPlanAnalyzer, TaskGraphAnalyzer, get_observation_pose_vector
-
-#import moveit_msgs.msg
-#from moveit_msgs.msg import PositinoConstraint
-
+from lfd_processor.analyzer import ConstraintAnalyzer, MotionPlanAnalyzer, TaskGraphAnalyzer, get_observation_joint_vector
 
 import geometry_msgs.msg
 from geometry_msgs.msg import Pose
@@ -61,12 +57,10 @@ def main():
     #moveit_interface.move_to_joint_target(start_joint1)
     start_pose1 = [0.723175561368, 0.404886545639, 0.000902259841386, 0.723185938034, -0.00519365801061, 0.690262924376, -0.0226322817993 ]
 
-
     moveit_interface.move_to_pose_target(start_pose1)
 
-
     ''' build graph '''
-    task_graph = TaskGraph(config_filepath, moveit_interface, get_observation_pose_vector)
+    task_graph = TaskGraph(config_filepath, moveit_interface, get_observation_joint_vector)
     importer = DataImporter()
 
     rospack = rospkg.RosPack()
@@ -85,12 +79,12 @@ def main():
     #build the graph
     task_graph.add_obsvs_to_graph(obsv_objects)
     task_graph.link_graph() #step where head and tail are set
-    task_graph.build_model(bandwidth=.0001)
+    task_graph.build_model(bandwidth=.005)
     task_graph.attribute_keyframe_type()
 
     '''create analyzer adn motion interface'''
 
-    task_graph_analyzer = TaskGraphAnalyzer(task_graph, moveit_interface, get_observation_pose_vector)
+    task_graph_analyzer = TaskGraphAnalyzer(task_graph, moveit_interface, get_observation_joint_vector)
     '''full task graph model built all methods from here down iterate
     through the graph'''
 
@@ -104,14 +98,14 @@ def main():
         #node list comes fist
         node_list = [x for x in task_graph.successors(node)]
         #removes node if no valid waypoints
-        task_graph.sample_n_waypoints(node, n=50)
+        task_graph.sample_n_waypoints(node, n=50, run_fk=True)
         if node_list == []:
             print "last node"
             break
         node = node_list[0]
 
     ''' cull high liklihood nodes'''
-    task_graph_analyzer.keyframe_culler(threshold=-1800000)
+    task_graph_analyzer.keyframe_culler(threshold=-100000)
 
     print list(set(itertools.chain(*task_graph.edges())))
 
@@ -129,8 +123,6 @@ def main():
             break
         node = node_list[0]
 
-
-
     '''clear occluded points'''
     #TODO super contrived method for iterating through nodes
     node_list = [task_graph._head]
@@ -145,26 +137,25 @@ def main():
             task_graph.cull_node(node)
         else:
             task_graph.nodes[node]["free_samples"] = free_samples
-
         if node_list == []:
             print "last node"
             break
         node = node_list[0]
 
-    print list(set(itertools.chain(*task_graph.edges())))
+    rospy.loginfo(list(set(itertools.chain(*task_graph.edges()))))
 
     '''run through best waypoints'''
     #TODO super contrived method for iterating through nodes
     node_list = [task_graph._head]
     node = node_list[0]
-    pose_array = []
+    joint_config_array = []
     while node_list != []:
         #node list comes fist
         node_list = [x for x in task_graph.successors(node)]
         #removes node if no valid waypoints
-        pose_sample = task_graph.nodes[node]["free_samples"][0]
-        pose = pose_sample.get_pose_msg()
-        pose_array.append(pose)
+        sample = task_graph.nodes[node]["free_samples"][0]
+        joints = sample.get_joint_list()
+        joint_config_array.append(joints)
 
 
         if node_list == []:
@@ -173,7 +164,7 @@ def main():
         node = node_list[0]
 
 
-    moveit_interface.move_to_pose_targets(pose_array)
+    moveit_interface.move_to_joint_targets(joint_config_array)
         #create ranked samples as attribute for graph
 
 

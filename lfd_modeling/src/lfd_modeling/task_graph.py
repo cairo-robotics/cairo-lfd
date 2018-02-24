@@ -9,7 +9,7 @@ from lfd_processor.data_io import DataImporter
 from lfd_processor.environment import Environment, import_configuration, Observation
 from lfd_processor.items import RobotFactory, ConstraintFactory
 from lfd_processor.analyzer import ConstraintAnalyzer
-
+from sawyer_interface.moveit_interface import SawyerMoveitInterface
 import math
 
 import rospy
@@ -58,7 +58,7 @@ class TaskGraph(MultiDiGraph):
         gmm: Gaussian Mixture Model of obsvs wrapped class of sklearn GMM
         samples: List of observation objects containing the samples
     """
-    def __init__(self, config_path):
+    def __init__(self, config_path, sawyer_moveit_interface, observation_vectorizor):
         MultiDiGraph.__init__(self)
         self._head = None
         self._tail = None
@@ -73,7 +73,8 @@ class TaskGraph(MultiDiGraph):
         self.environment = Environment(items=None, robot=robot,
                                        constraints=constraints)
         self.analyzer = ConstraintAnalyzer(self.environment)
-
+        self.interface = sawyer_moveit_interface
+        self.vectorizor = observation_vectorizor
 
     def add_obsvs_to_graph(self, obsv_objects):
         """
@@ -125,14 +126,11 @@ class TaskGraph(MultiDiGraph):
         create models with observations in node
         """
         for node in self.nodes():
-            print node
             obsvs = self.nodes[node]['obsv']
             np_array = []
             for obsv in obsvs:
-                robot = obsv.data["robot"]
-                np_array.append(robot['position'] + robot['orientation'])
+                np_array.append(np.array(self.vectorizor(obsv)))
             np_array = np.array(np_array)
-
             if model == "kde_gauss":
                 #TODO kernel density method is unwrapped change that
                 #TODO load bandwidth from roslaunch params
@@ -147,12 +145,27 @@ class TaskGraph(MultiDiGraph):
             kf_id, kf_type = self.nodes[node]['obsv'][0].get_keyframe_info()
             self.nodes[node]["keyframe_type"] = kf_type
 
-    def sample_n_obsv_objects(self, n, model):
+    def sample_n_obsv_objects(self, n, model, run_fk = False):
         """
         wrapper for sampling points
         return obsv objects
         """
         samples = model.sample(n)
+
+        if run_fk is True:
+            new_samples = []
+            for sample in samples:
+                pose = self.interface.get_end_effector_pose(sample.tolist())
+                sample = np.insert(sample, 0, pose.orientation.w, axis=0)
+                sample = np.insert(sample, 0, pose.orientation.z, axis=0)
+                sample = np.insert(sample, 0, pose.orientation.y, axis=0)
+                sample = np.insert(sample, 0, pose.orientation.x, axis=0)
+                sample = np.insert(sample, 0, pose.position.z, axis=0)
+                sample = np.insert(sample, 0, pose.position.y, axis=0)
+                sample = np.insert(sample, 0, pose.position.x, axis=0)
+                new_samples.append(sample)
+            samples = new_samples
+
         obsv_array = []
         for sample in samples:
             normalize = math.sqrt(sample[3]**2 + sample[4]**2 +
@@ -161,12 +174,17 @@ class TaskGraph(MultiDiGraph):
             sample[4] = sample[4]/normalize
             sample[5] = sample[5]/normalize
             sample[6] = sample[6]/normalize
-            obsv_array.append(Observation.init_samples(sample[0:3],
-                                                       sample[3:7]))
+
+            if len(sample) > 7:
+                # If length > 7, we know there must be joint data, so creat Obs w/ joints.
+                obsv = Observation.init_samples(sample[0:3], sample[3:7], sample[7:14])
+            else:
+                obsv = Observation.init_samples(sample[0:3], sample[3:7], None)
+            obsv_array.append(obsv)
         return obsv_array
 
 
-    def sample_n_valid_waypoints(self, node_num, n = 100, model = "kde_gauss"):
+    def sample_n_valid_waypoints(self, node_num, n = 100, model = "kde_gauss", run_fk = False):
         """
         returns a number of keypoints that are valid based on the constraints
         TODO messy and want to clean up
@@ -186,7 +204,7 @@ class TaskGraph(MultiDiGraph):
             attempts += 1
             if attempts >= n*20:
                 break
-            sample = self.sample_n_obsv_objects(1, model)[0]
+            sample = self.sample_n_obsv_objects(1, model, run_fk=run_fk)[0]
             matched_ids = self.analyzer._evaluator(constraint_ids, sample)
             if constraint_ids == matched_ids:
                 valid_sample_obsv.append(sample)
@@ -202,14 +220,14 @@ class TaskGraph(MultiDiGraph):
         self.nodes[node_num]['samples'] = valid_sample_obsv
         return 0
 
-    def sample_n_waypoints(self, node_num, n = 100, model = "kde_gauss"):
+    def sample_n_waypoints(self, node_num, n = 100, model = "kde_gauss", run_fk = False):
         if model != "kde_gauss":
             rospy.logerr("warning sampling valid waypoints only accepts kde_gauss models")
             return 0
         node = self.nodes[node_num]
         model = node[model]
 
-        self.nodes[node_num]['samples'] = self.sample_n_obsv_objects(n, model)
+        self.nodes[node_num]['samples'] = self.sample_n_obsv_objects(n, model, run_fk=run_fk)
         return 0
 
     def rank_waypoint_samples(self, node_num, model="kde_gauss"):
@@ -226,8 +244,7 @@ class TaskGraph(MultiDiGraph):
 
         np_array = []
         for sample in samples:
-            robot = sample.data["robot"]
-            np_array.append(np.concatenate([robot["position"], robot["orientation"]]))
+            np_array.append(np.array(self.vectorizor(sample)))
 
         # pdb.set_trace()
         scores = model.score_samples(np_array)
@@ -253,7 +270,7 @@ class TaskGraph(MultiDiGraph):
         np_array = []
         for sample in samples:
             robot = sample.data["robot"]
-            np_array.append(np.concatenate([robot["position"], robot["orientation"]]))
+            np_array.append(np.array(self.vectorizor(sample)))
 
         # pdb.set_trace()
         scores = model.score_samples(np_array)

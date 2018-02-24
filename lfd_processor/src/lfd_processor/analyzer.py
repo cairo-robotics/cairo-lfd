@@ -4,12 +4,24 @@ import copy
 import pdb
 
 
+def get_observation_pose_vector(observation):
+    # position_data = observation.data["robot"]["position"]
+    # orientation_data = observation.data["robot"]["orientation"]
+    return observation.get_pose_list()
+
+
+def get_observation_joint_vector(observation):
+    # position_data = observation.data["robot"]["position"]
+    # orientation_data = observation.data["robot"]["orientation"]
+    return observation.get_joint_list()
+
+
 class TaskGraphAnalyzer():
     """
     Class with methods to support the analysis of a motion plan.
     """
 
-    def __init__(self, task_graph, sawyer_moveit_interface):
+    def __init__(self, task_graph, sawyer_moveit_interface, observation_vectorizor):
 
         """
         Parameters
@@ -20,17 +32,15 @@ class TaskGraphAnalyzer():
 
         self.graph = task_graph
         self.interface = sawyer_moveit_interface
+        self.vectorizor = observation_vectorizor
 
     def evaluate_keyframe_occlusion(self, keyframe_samples):
         samples = keyframe_samples
         occluded_observations = []
         free_observations = []
         for observation in samples:
-            data = observation.get_robot_data()
-            position = data["position"].tolist()
-            orientation = data["orientation"].tolist()
-            pose_vector = position + orientation
-            if len(self.interface.get_pose_IK_joints(pose_vector)) == 0:
+            joints = observation.get_joint_list()
+            if not self.interface.checkPointValidity(joints):
                 occluded_observations.append(observation)
             else:
                 free_observations.append(observation)
@@ -45,6 +55,7 @@ class TaskGraphAnalyzer():
         curr_obs = curr_node["obsv"]
         curr_pose_vectors = []
         for ob in curr_obs:
+            # TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SWITCH TO JOINT VECTORS IF NEEDED
             data = ob.get_robot_data()
             position = data["position"]
             orientation = data["orientation"]

@@ -280,7 +280,7 @@ class Observation(object):
         self.data = observation_data
 
     @classmethod
-    def init_samples(cls, pose, orientation):
+    def init_samples(cls, pose, orientation, joints):
         """
         Parameters
         ----------
@@ -288,7 +288,8 @@ class Observation(object):
         orientation: array of orientation data
         """
         observation_data = {"robot":{"orientation": orientation,
-                                     "position": pose}}
+                                     "position": pose,
+                                     "joints": joints}}
         return cls(observation_data)
 
 
@@ -330,9 +331,14 @@ class Observation(object):
         """
 
         robot = self.get_robot_data()
-        pose = np.append(robot["position"], robot["orientation"])
-        return pose
+        if isinstance(robot["orientation"], np.ndarray) and isinstance(robot["orientation"], np.ndarray):
+            return np.concatenate((robot["position"], robot["orientation"]))
+        else:
+            return robot["position"] + robot["orientation"]
 
+    def get_joint_list(self):
+        robot = self.get_robot_data()
+        return robot["joints"]
 
     def get_pose_msg(self):
         """

@@ -1,0 +1,54 @@
+{
+    "constraints": [
+        {
+            "class": "HeightConstraint",
+            "init_args" : 
+                {
+                    "id": 1,
+                    "item": 1,
+                    "button": "right_button_square",
+                    "reference_height": 0.0,
+                    "threshold_distance": 0.25
+                
+                }
+        },
+        {
+            "class": "UprightConstraint",
+            "init_args" : 
+                {
+                    "id": 2,
+                    "item": 1,
+                    "button": "right_button_circle",
+                    "threshold_angle": 20,
+                    "axis": "z"
+                }
+        }
+    ],
+    "items": [],
+    "robots": [
+        {
+            "class": "SawyerRobot",
+            "init_args":
+                {
+                    "id": 1,
+                    "upright_pose": 
+                        {
+                            "position": 
+                                [
+                                    0.279888505622,
+                                    0.700100141776,
+                                    0.0478115131425
+                                ],
+                            "orientation": [
+                                   -0.690061018558,
+                                    0.723491785729,
+                                    -0.0169375429533,
+                                    0.00940990376896
+                            ]
+                        }  
+                }
+        }
+    ]
+       
+}
+    

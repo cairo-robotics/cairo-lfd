@@ -3,6 +3,7 @@ import os, signal
 import numpy as np
 import networkx as nx
 from networkx import MultiDiGraph
+import itertools
 
 from lfd_modeling.modeling import GaussianMixtureModel
 from lfd_processor.data_io import DataImporter
@@ -58,20 +59,12 @@ class TaskGraph(MultiDiGraph):
         gmm: Gaussian Mixture Model of obsvs wrapped class of sklearn GMM
         samples: List of observation objects containing the samples
     """
-    def __init__(self, config_path, sawyer_moveit_interface, observation_vectorizor):
+    def __init__(self, environment, sawyer_moveit_interface, observation_vectorizor):
         MultiDiGraph.__init__(self)
         self._head = None
         self._tail = None
 
-        configs = import_configuration(config_path)
-        robot_factory = RobotFactory(configs["robots"])
-        constraint_factory = ConstraintFactory(configs["constraints"])
-
-        robot = robot_factory.generate_robots()[0]
-        constraints = constraint_factory.generate_constraints()
-
-        self.environment = Environment(items=None, robot=robot,
-                                       constraints=constraints)
+        self.environment = environment
         self.analyzer = ConstraintAnalyzer(self.environment)
         self.interface = sawyer_moveit_interface
         self.vectorizor = observation_vectorizor
@@ -156,14 +149,15 @@ class TaskGraph(MultiDiGraph):
             new_samples = []
             for sample in samples:
                 pose = self.interface.get_end_effector_pose(sample.tolist())
-                sample = np.insert(sample, 0, pose.orientation.w, axis=0)
-                sample = np.insert(sample, 0, pose.orientation.z, axis=0)
-                sample = np.insert(sample, 0, pose.orientation.y, axis=0)
-                sample = np.insert(sample, 0, pose.orientation.x, axis=0)
-                sample = np.insert(sample, 0, pose.position.z, axis=0)
-                sample = np.insert(sample, 0, pose.position.y, axis=0)
-                sample = np.insert(sample, 0, pose.position.x, axis=0)
-                new_samples.append(sample)
+                if pose is not None:
+                    sample = np.insert(sample, 0, pose.orientation.w, axis=0)
+                    sample = np.insert(sample, 0, pose.orientation.z, axis=0)
+                    sample = np.insert(sample, 0, pose.orientation.y, axis=0)
+                    sample = np.insert(sample, 0, pose.orientation.x, axis=0)
+                    sample = np.insert(sample, 0, pose.position.z, axis=0)
+                    sample = np.insert(sample, 0, pose.position.y, axis=0)
+                    sample = np.insert(sample, 0, pose.position.x, axis=0)
+                    new_samples.append(sample)
             samples = new_samples
 
         obsv_array = []
@@ -204,10 +198,12 @@ class TaskGraph(MultiDiGraph):
             attempts += 1
             if attempts >= n*20:
                 break
-            sample = self.sample_n_obsv_objects(1, model, run_fk=run_fk)[0]
-            matched_ids = self.analyzer._evaluator(constraint_ids, sample)
-            if constraint_ids == matched_ids:
-                valid_sample_obsv.append(sample)
+            samples = self.sample_n_obsv_objects(1, model, run_fk=run_fk)
+            if len(samples) > 0:
+                sample = samples[0]
+                matched_ids = self.analyzer._evaluator(constraint_ids, sample)
+                if constraint_ids == matched_ids:
+                    valid_sample_obsv.append(sample)
 
         rospy.loginfo("%s valid of %s attempts", len(valid_sample_obsv), attempts)
         if len(valid_sample_obsv) < n:
@@ -295,25 +291,30 @@ class TaskGraph(MultiDiGraph):
         0 for success
 
         """
-        next_node = [x for x in self.successors(node)]
-        if next_node == []:
-            rospy.loginfo("unable to cull node %s, no successor nodes", node)
-            return -1
-        next_node = next_node[0]
 
-        prev_node = [x for x in self.predecessors(node)]
-        if prev_node == []:
-            rospy.loginfo("unable to cull node %s, no previous node", node)
-            return -1
-
-        prev_node = prev_node[0]
-        self.add_edge(prev_node, next_node)
-        self.remove_edge(prev_node, node)
-        self.remove_edge(node, next_node)
-        rospy.loginfo("node %s has been culled", node)
+        next_nodes = [x for x in self.successors(node)]
+        prev_nodes = [x for x in self.predecessors(node)]
+        if next_nodes == []:
+            prev_node = prev_nodes[0]
+            self.remove_edge(prev_node, node)
+            rospy.loginfo("node %s has been culled", node)
+        elif prev_nodes == []:
+            next_node = next_nodes[0]
+            self.remove_edge(node, next_node)
+            rospy.loginfo("node %s has been culled", node)
+        else:
+            prev_node = prev_nodes[0]
+            next_node = next_nodes[0]
+            self.add_edge(prev_node, next_node)
+            self.remove_edge(prev_node, node)
+            self.remove_edge(node, next_node)
+            rospy.loginfo("node %s has been culled", node)
         return 0
 
-
+    def get_keyframe_sequence(self):
+        node_chain = list(set(itertools.chain(*self.edges())))
+        node_chain.sort()
+        return node_chain
 
 def main():
     #TODO remove when module is done

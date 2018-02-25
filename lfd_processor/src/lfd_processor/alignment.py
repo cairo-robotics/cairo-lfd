@@ -24,9 +24,7 @@ def vectorize_demonstration(demonstration):
     vectors = []
     for observation in demonstration.observations:
         position_data = observation.data["robot"]["position"]
-        orientation_data = observation.data["robot"]["orientation"]
-        joint_data = observation.data["robot"]["joints"]
-        vector = position_data + orientation_data + joint_data
+        vector = position_data 
         vectors.append(vector)
     return vectors
 

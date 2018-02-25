@@ -66,7 +66,7 @@ def main():
 
 
     ''' build graph '''
-    task_graph = TaskGraph(config_filepath, moveit_interface, get_observation_pose_vector)
+    task_graph = TaskGraph(environment, moveit_interface, get_observation_pose_vector)
     importer = DataImporter()
 
     rospack = rospkg.RosPack()

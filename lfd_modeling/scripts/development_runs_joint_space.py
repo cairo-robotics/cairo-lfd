@@ -15,6 +15,8 @@ import itertools
 import glob
 import rospy
 import rospkg
+import pdb
+
 
 def main():
     """
@@ -49,6 +51,8 @@ def main():
     #analyzer = ConstraintAnalyzer(environment)
 
     moveit_interface = SawyerMoveitInterface()
+    moveit_interface.set_velocity_scaling(.35)
+    moveit_interface.set_acceleration_scaling(.35)
 
     motion_plan_analyzer = MotionPlanAnalyzer(environment)
     start_joint1 = [0.315572265625, -0.0999033203125, 3.0444072265625, -1.0162578125, 0.363646484375, 0.8749013671875, 1.6634150390625]
@@ -57,18 +61,17 @@ def main():
     #moveit_interface.move_to_joint_target(start_joint1)
     start_pose1 = [0.723175561368, 0.404886545639, 0.000902259841386, 0.723185938034, -0.00519365801061, 0.690262924376, -0.0226322817993 ]
 
-    moveit_interface.move_to_pose_target(start_pose1)
+    # moveit_interface.move_to_pose_target(start_pose1)
 
     ''' build graph '''
-    task_graph = TaskGraph(config_filepath, moveit_interface, get_observation_joint_vector)
+    task_graph = TaskGraph(environment, moveit_interface, get_observation_joint_vector)
     importer = DataImporter()
 
     rospack = rospkg.RosPack()
     pkg_path = rospack.get_path('lfd_processor_examples')
 
-    file_path = "/toy_data/full_system_test/"
+    file_path = "/toy_data/poor_demonstration_resilience/"
     traj_files = glob.glob(pkg_path + file_path + "*.json")
-
 
     obsv_objects = []
     #create array of trajectory objects
@@ -79,7 +82,7 @@ def main():
     #build the graph
     task_graph.add_obsvs_to_graph(obsv_objects)
     task_graph.link_graph() #step where head and tail are set
-    task_graph.build_model(bandwidth=.005)
+    task_graph.build_model(bandwidth=.008)
     task_graph.attribute_keyframe_type()
 
     '''create analyzer adn motion interface'''
@@ -88,95 +91,42 @@ def main():
     '''full task graph model built all methods from here down iterate
     through the graph'''
 
-
-
     '''create samples from graph'''
-    #TODO super contrived method for iterating through nodes
-    node_list = [task_graph._head]
-    node = node_list[0]
-    while node_list != []:
-        #node list comes fist
-        node_list = [x for x in task_graph.successors(node)]
-        #removes node if no valid waypoints
-        task_graph.sample_n_waypoints(node, n=50, run_fk=True)
-        if node_list == []:
-            print "last node"
-            break
-        node = node_list[0]
-
-    ''' cull high liklihood nodes'''
-    task_graph_analyzer.keyframe_culler(threshold=-100000)
-
-    print list(set(itertools.chain(*task_graph.edges())))
-
-    '''rank sampled points'''
-    #TODO super contrived method for iterating through nodes
-    node_list = [task_graph._head]
-    node = node_list[0]
-    while node_list != []:
-        #node list comes fist
-        node_list = [x for x in task_graph.successors(node)]
-        #rank waypoints
-        task_graph.rank_waypoint_samples(node)
-        if node_list == []:
-            print "last node"
-            break
-        node = node_list[0]
+    for node in task_graph.get_keyframe_sequence():
+        # Sample point according to constraints
+        task_graph.sample_n_valid_waypoints(node, n=20, run_fk=True)
+        # Sample points ignoring constraints:
+        # task_graph.sample_n_waypoints(node, n=20, run_fk=True)
 
     '''clear occluded points'''
-    #TODO super contrived method for iterating through nodes
-    node_list = [task_graph._head]
-    node = node_list[0]
-    while node_list != []:
-        #node list comes fist
-        node_list = [x for x in task_graph.successors(node)]
-        #clear samples of occluded points
+    for node in task_graph.get_keyframe_sequence():
         samples = task_graph.nodes[node]["samples"]
         free_samples, trash = task_graph_analyzer.evaluate_keyframe_occlusion(samples)
         if free_samples == []:
             task_graph.cull_node(node)
         else:
             task_graph.nodes[node]["free_samples"] = free_samples
-        if node_list == []:
-            print "last node"
-            break
-        node = node_list[0]
 
-    rospy.loginfo(list(set(itertools.chain(*task_graph.edges()))))
+    ''' cull high liklihood nodes'''
+    task_graph_analyzer.keyframe_culler(threshold=-1000)
+
+    '''rank sampled points'''
+    for node in task_graph.get_keyframe_sequence():
+        task_graph.rank_waypoint_samples(node)
+
+    rospy.loginfo(task_graph.get_keyframe_sequence())
 
     '''run through best waypoints'''
     #TODO super contrived method for iterating through nodes
-    node_list = [task_graph._head]
-    node = node_list[0]
+    
     joint_config_array = []
-    while node_list != []:
-        #node list comes fist
-        node_list = [x for x in task_graph.successors(node)]
-        #removes node if no valid waypoints
+    for node in task_graph.get_keyframe_sequence():
         sample = task_graph.nodes[node]["free_samples"][0]
         joints = sample.get_joint_list()
         joint_config_array.append(joints)
 
-
-        if node_list == []:
-            print "last node"
-            break
-        node = node_list[0]
-
-
     moveit_interface.move_to_joint_targets(joint_config_array)
         #create ranked samples as attribute for graph
-
-
-
-
-
-
-
-
-
-
-
 
     return 0
 

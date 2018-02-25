@@ -2,6 +2,7 @@ import rospy
 import numpy as np
 import copy
 import pdb
+import time
 
 
 def get_observation_pose_vector(observation):
@@ -39,6 +40,8 @@ class TaskGraphAnalyzer():
         occluded_observations = []
         free_observations = []
         for observation in samples:
+            if observation.get_joint_list() is None:
+                observation.data["robot"]["joints"] = self.interface.get_pose_IK_joints(observation.get_pose_list())
             joints = observation.get_joint_list()
             if not self.interface.checkPointValidity(joints):
                 occluded_observations.append(observation)
@@ -53,15 +56,11 @@ class TaskGraphAnalyzer():
 
     def keyframe_liklihood_check(self, prior_node, curr_node):
         curr_obs = curr_node["obsv"]
-        curr_pose_vectors = []
+        vectors = []
         for ob in curr_obs:
-            # TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SWITCH TO JOINT VECTORS IF NEEDED
-            data = ob.get_robot_data()
-            position = data["position"]
-            orientation = data["orientation"]
-            pose_vector = position + orientation
-            curr_pose_vectors.append(pose_vector)
-        curr_samples = np.array(curr_pose_vectors)
+            vector = self.vectorizor(ob)
+            vectors.append(vector)
+        curr_samples = np.array(vectors)
         curr_ll = self.samples_log_liklihood(prior_node["kde_gauss"], curr_samples)
         max_ll = np.amax(curr_ll)
         mean_ll = np.mean(curr_ll)

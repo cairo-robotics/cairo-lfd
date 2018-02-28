@@ -113,30 +113,39 @@ class TaskGraph(MultiDiGraph):
         for i in range(1, len(nodes)):
             self.add_edge(i, i+1)
         self._tail = len(nodes)+1
+        # Remove the nodes that didn't get any observations.
+        for node in self.nodes():
+            if 'obsv' not in self.nodes[node].keys():
+                self.cull_node(node)
 
     def build_model(self, model="kde_gauss", bandwidth=.001):
         """
         create models with observations in node
         """
         for node in self.nodes():
-            obsvs = self.nodes[node]['obsv']
-            np_array = []
-            for obsv in obsvs:
-                np_array.append(np.array(self.vectorizor(obsv)))
-            np_array = np.array(np_array)
-            if model == "kde_gauss":
-                #TODO kernel density method is unwrapped change that
-                #TODO load bandwidth from roslaunch params
-                kde = KernelDensity(kernel='gaussian', bandwidth=bandwidth).fit(np_array)
-                self.nodes[node]['kde_gauss'] = kde
-                rospy.loginfo("keyframe %s has build kde gaussian model", node)
+            if 'obsv' in self.nodes[node].keys():
+                obsvs = self.nodes[node]['obsv']
+                np_array = []
+                for obsv in obsvs:
+                    np_array.append(np.array(self.vectorizor(obsv)))
+                np_array = np.array(np_array)
+                if model == "kde_gauss":
+                    #TODO kernel density method is unwrapped change that
+                    #TODO load bandwidth from roslaunch params
+                    kde = KernelDensity(kernel='gaussian', bandwidth=bandwidth).fit(np_array)
+                    self.nodes[node]['kde_gauss'] = kde
+                    rospy.loginfo("keyframe %s has build kde gaussian model", node)
+                else:
+                    rospy.logwarn("No valid model created")
             else:
-                rospy.logwarn("No valid model created")
+                rospy.logwarn("No observations for keyframe ID: {}".format(node))
+
 
     def attribute_keyframe_type(self):
         for node in self.nodes():
-            kf_id, kf_type = self.nodes[node]['obsv'][0].get_keyframe_info()
-            self.nodes[node]["keyframe_type"] = kf_type
+            if 'obsv' in  self.nodes[node].keys():
+                kf_id, kf_type = self.nodes[node]['obsv'][0].get_keyframe_info()
+                self.nodes[node]["keyframe_type"] = kf_type
 
     def sample_n_obsv_objects(self, n, model, run_fk = False):
         """
@@ -209,6 +218,7 @@ class TaskGraph(MultiDiGraph):
         if len(valid_sample_obsv) < n:
             rospy.logwarn("only %s of %s waypoints provided", len(valid_sample_obsv), n)
         if len(valid_sample_obsv) == 0:
+            rospy.loginfo("Node {} has no valid sample observations".format(node_num))
             self.cull_node(node_num)
 
 
@@ -297,18 +307,18 @@ class TaskGraph(MultiDiGraph):
         if next_nodes == []:
             prev_node = prev_nodes[0]
             self.remove_edge(prev_node, node)
-            rospy.loginfo("node %s has been culled", node)
+            rospy.loginfo("Node %s has been culled", node)
         elif prev_nodes == []:
             next_node = next_nodes[0]
             self.remove_edge(node, next_node)
-            rospy.loginfo("node %s has been culled", node)
+            rospy.loginfo("Node %s has been culled", node)
         else:
             prev_node = prev_nodes[0]
             next_node = next_nodes[0]
             self.add_edge(prev_node, next_node)
             self.remove_edge(prev_node, node)
             self.remove_edge(node, next_node)
-            rospy.loginfo("node %s has been culled", node)
+            rospy.loginfo("Node %s has been culled", node)
         return 0
 
     def get_keyframe_sequence(self):

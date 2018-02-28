@@ -37,8 +37,8 @@ def main():
         help='the directory to save raw demonstration .json files'
     )
     parser.add_argument(
-        '-r', '--record-rate', type=int, default=50, metavar='RECORDRATE',
-        help='rate at which to record (default: 50)'
+        '-r', '--record_rate', type=int, default=45, metavar='RECORDRATE',
+        help='rate at which to record (default: 45)'
     )
     args = parser.parse_args(rospy.myargv()[1:])
 
@@ -76,6 +76,7 @@ def main():
     exp = DataExporter()
     for idx, demo in enumerate(demos):
         raw_data = [obs.data for obs in demo.observations]
+        print("'/raw_demonstration{}.json': {} observations".format(idx, len(raw_data)))
         exp.export_to_json(args.directory + "/raw_demonstration{}.json".format(idx), raw_data)
 
 if __name__ == '__main__':

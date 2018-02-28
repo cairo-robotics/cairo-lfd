@@ -29,12 +29,12 @@ def main():
     )
 
     parser.add_argument(
-        '-b', '--bandwidth', type=int, default=.008, metavar='BANDWIDTH',
+        '-b', '--bandwidth', type=float, default=.008, metavar='BANDWIDTH',
         help='gaussian kernel density bandwidth'
     )
 
     parser.add_argument(
-        '-w', '--threshold', type=int, default=-1000, metavar='THRESHOLD',
+        '-t', '--threshold', type=int, default=-1000, metavar='THRESHOLD',
         help='log-liklihood threshold value'
     )
 
@@ -56,6 +56,10 @@ def main():
         for entry in datum:
             observations.append(Observation(entry))
         demonstrations.append(Demonstration(observations))
+
+    if len(demonstrations) == 0:
+        rospy.logwarn("No demonstration data to model!!")
+        return 0
 
     rospy.init_node("graph_traverse")
 
@@ -107,7 +111,7 @@ def main():
             task_graph.nodes[node]["free_samples"] = free_samples
 
     """ Cull/remove keyframes/nodes that via change point estimation using log-liklihood """
-    task_graph_analyzer.keyframe_culler(threshold=-1000)
+    task_graph_analyzer.keyframe_culler(threshold=args.threshold)
 
     """ Order sampled points based on their intramodel log-liklihood """
     for node in task_graph.get_keyframe_sequence():

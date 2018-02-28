@@ -1,0 +1,7 @@
+Type,Poor Demonstrations,Repairs,Attempts,Correct,Incorrect,Bandwidth,Threshold,# Sampled Points
+Broken,3,0,10,0,10,0.008,-1000,50
+Constrained,3,1,10,10,0,0.008,-1000,50
+7 Repairs,3,7,10,4,6,0.008,-1000,50
+14 Repairs,3,14,10,6,4,0.008,-1000,50
+21 Repairs,3,21,10,7,3,0.008,-1000,50
+28 Repairs,3,28,10,6,4,0.008,-1000,50

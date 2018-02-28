@@ -1,9 +1,6 @@
 import rospy
 import numpy as np
 import copy
-import pdb
-import time
-
 
 def get_observation_pose_vector(observation):
     # position_data = observation.data["robot"]["position"]
@@ -68,12 +65,13 @@ class TaskGraphAnalyzer():
         return (max_ll, mean_ll)
 
     def keyframe_culler(self, threshold=-10000):
-        prev = self.graph._head
+        prev = self.graph.get_keyframe_sequence()[0]
         curr = self.graph.successors(prev).next()
         while([x for x in self.graph.successors(curr)] != []):
             rospy.loginfo("Prev: {}; Curr: {}".format(prev, curr))
             max_ll, mean_ll = self.keyframe_liklihood_check(self.graph.nodes[prev], self.graph.nodes[curr])
             if mean_ll > threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
+                rospy.loginfo("Node {} average LL is above threshold".format(curr))
                 succ = self.graph.successors(curr).next()
                 self.graph.cull_node(curr)
                 curr = succ

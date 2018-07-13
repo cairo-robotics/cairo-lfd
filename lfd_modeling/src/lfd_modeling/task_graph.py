@@ -301,7 +301,7 @@ class TaskGraph(MultiDiGraph):
         0 for success
 
         """
-
+        
         next_nodes = [x for x in self.successors(node)]
         prev_nodes = [x for x in self.predecessors(node)]
         if next_nodes == []:

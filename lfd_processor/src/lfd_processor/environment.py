@@ -1,8 +1,8 @@
 import json
 import numpy as np
 from collections import OrderedDict
-import geometry_msgs.msg
 from geometry_msgs.msg import Pose
+
 
 def import_configuration(filepath):
 

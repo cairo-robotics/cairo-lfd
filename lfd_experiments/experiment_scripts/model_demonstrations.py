@@ -3,13 +3,14 @@
 import argparse
 import rospy
 
-from sawyer_interface.moveit_interface import SawyerMoveitInterface
+from robot_interface.moveit_interface import SawyerMoveitInterface
 
-from lfd_modeling.task_graph import TaskGraph
+from lfd_modeling.graphing import KeyframeGraphDataGenerator, KeyframeGraph
+from lfd_modeling.modeling import KDEModel
 from lfd_processor.environment import Demonstration, Observation, Environment, import_configuration
 from lfd_processor.data_io import DataImporter
 from lfd_processor.items import RobotFactory, ConstraintFactory
-from lfd_processor.analyzer import TaskGraphAnalyzer, get_observation_joint_vector
+from lfd_processor.analyzer import KeyframeGraphAnalyzer, get_observation_joint_vector
 
 
 def main():
@@ -79,50 +80,54 @@ def main():
     moveit_interface.set_acceleration_scaling(.25)
 
     """ Create TaskGraph object. """
-    task_graph = TaskGraph(environment, moveit_interface, get_observation_joint_vector)
+    graph = KeyframeGraph()
+    cluster_generator = KeyframeGraphDataGenerator()
 
     """ Using labeled observations, build the models, graphs, and atributes of the TaskGraph """
-    obsv_objects = []
-    for demo in demonstrations:
-        for ob in demo.observations:
-            obsv_objects.append(ob)
-    task_graph.add_obsvs_to_graph(obsv_objects)
-    task_graph.link_graph()
-    task_graph.build_model(bandwidth=args.bandwidth)
-    task_graph.attribute_keyframe_type()
+    clusters = cluster_generator(demonstrations)
+    for cluster_id in clusters.leys():
+        graph.add_node(cluster_id)
+        graph[cluster_id]["observations"] = clusters[cluster_id]["observations"]
+        graph[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
+        graph[cluster_id]["keyframe_type"] = clusters[cluster_id]["observations"]
+        graph[cluster_id]["model"] = KDEModel(bandwidth=args.bandwidth)
+    graph.add_path(graph.nodes())
+    graph.fit_models()
 
-    """ Build a TaskGraphAnalyzer """
-    task_graph_analyzer = TaskGraphAnalyzer(task_graph, moveit_interface, get_observation_joint_vector)
+    """ Build a KeyframeGraphAnalyzer """
+    graph_analyzer = KeyframeGraphAnalyzer(graph, moveit_interface, get_observation_joint_vector)
+
+    sampler = 
 
     """ Generate samples from graph """
-    for node in task_graph.get_keyframe_sequence():
+    for node in graph.get_keyframe_sequence():
         # Sample point according to constraints
-        task_graph.sample_n_valid_waypoints(node, n=args.number_of_samples, run_fk=True)
+        graph.sample_n_valid_waypoints(node, n=args.number_of_samples, run_fk=True)
         # Sample points ignoring constraints:
-        # task_graph.sample_n_waypoints(node, n=args.number_of_samples, run_fk=True)
+        # graph.sample_n_waypoints(node, n=args.number_of_samples, run_fk=True)
 
     """ Clear occluded points (points in collision etc,.) """
-    for node in task_graph.get_keyframe_sequence():
-        samples = task_graph.nodes[node]["samples"]
-        free_samples, trash = task_graph_analyzer.evaluate_keyframe_occlusion(samples)
+    for node in graph.get_keyframe_sequence():
+        samples = graph.nodes[node]["samples"]
+        free_samples, trash = graph_analyzer.evaluate_keyframe_occlusion(samples)
         if free_samples == []:
-            task_graph.cull_node(node)
+            graph.cull_node(node)
         else:
-            task_graph.nodes[node]["free_samples"] = free_samples
+            graph.nodes[node]["free_samples"] = free_samples
 
     """ Cull/remove keyframes/nodes that via change point estimation using log-liklihood """
-    task_graph_analyzer.keyframe_culler(threshold=args.threshold)
+    graph_analyzer.keyframe_culler(threshold=args.threshold)
 
     """ Order sampled points based on their intramodel log-liklihood """
-    for node in task_graph.get_keyframe_sequence():
-        task_graph.rank_waypoint_samples(node)
+    for node in graph.get_keyframe_sequence():
+        graph.rank_waypoint_samples(node)
 
-    rospy.loginfo(task_graph.get_keyframe_sequence())
+    rospy.loginfo(graph.get_keyframe_sequence())
 
     """ Create a seequence of keyframe waypoints and excute motion plans to reconstruct skill """
     joint_config_array = []
-    for node in task_graph.get_keyframe_sequence():
-        sample = task_graph.nodes[node]["free_samples"][0]
+    for node in graph.get_keyframe_sequence():
+        sample = graph.nodes[node]["free_samples"][0]
         joints = sample.get_joint_list()
         joint_config_array.append(joints)
 

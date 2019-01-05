@@ -4,7 +4,7 @@ import rospy
 import argparse
 import intera_interface
 from intera_interface import CHECK_VERSION
-from sawyer_interface.recorder import Recorder
+from lfd_processor.record import Recorder
 from lfd_processor.environment import Environment, import_configuration
 from lfd_processor.items import RobotFactory, ConstraintFactory
 from lfd_processor.analyzer import ConstraintAnalyzer

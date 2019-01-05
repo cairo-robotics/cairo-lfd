@@ -35,7 +35,6 @@ class DataProcessor(object):
     Data prcoessing class with a variety of methods to support manipulating imported data.
     """
 
-
     def fixed_length_sampler(self, entries, fixed_length=250):
 
         """

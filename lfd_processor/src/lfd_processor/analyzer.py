@@ -2,6 +2,7 @@ import rospy
 import numpy as np
 import copy
 
+
 def get_observation_pose_vector(observation):
     # position_data = observation.data["robot"]["position"]
     # orientation_data = observation.data["robot"]["orientation"]
@@ -14,7 +15,7 @@ def get_observation_joint_vector(observation):
     return observation.get_joint_list()
 
 
-class TaskGraphAnalyzer():
+class KeyframeGraphAnalyzer():
     """
     Class with methods to support the analysis of a motion plan.
     """
@@ -203,7 +204,7 @@ class ConstraintAnalyzer():
         prev = []
         for observation in observations:
             triggered = observation.get_triggered_constraint_data()
-            new = list(set(triggered)-set(prev))
+            new = list(set(triggered) - set(prev))
             evaluated = self._evaluator(constraint_ids=prev, observation=observation)
             applied = list(set(evaluated).union(set(new)))
             prev = applied
@@ -298,7 +299,7 @@ class DemonstrationKeyframeLabeler():
             current_id = 0
             for idx, group in enumerate(groupings):
                 # Recall that every even index in groupings is a regular group while all odd indices are transition groups.
-                if idx%2 == 0:
+                if idx % 2 == 0:
                     keyframe_type = "regular"
                     current_id, labeled_group = self._get_labeled_group(group, keyframe_type, current_id,
                                                                         keyframe_counts[idx], keyframe_window_size)
@@ -358,7 +359,7 @@ class DemonstrationKeyframeLabeler():
 
         for group_idxs in group_index_splits:
             current_id = current_id + 1
-            middle = (len(group_idxs))/2
+            middle = (len(group_idxs)) / 2
             keyframe_idxs = self._retrieve_data_window(group_idxs, middle, window_size)
             ignored_idxs = list(set(group_idxs) - set(keyframe_idxs))
             for i in keyframe_idxs:
@@ -426,8 +427,8 @@ class DemonstrationKeyframeLabeler():
             groupings.append(self._get_observation_groups(demo.aligned_observations, self.constraint_transitions))
         combined_groups = list(zip(*groupings))
         for combination in combined_groups:
-            average_length = int(sum([len(group) for group in combination])/len(combination))
-            keyframe_count = int(average_length/divisor)
+            average_length = int(sum([len(group) for group in combination]) / len(combination))
+            keyframe_count = int(average_length / divisor)
             keyframe_counts.append(keyframe_count if keyframe_count != 0 else 1)
         return keyframe_counts
 
@@ -498,7 +499,7 @@ class DemonstrationKeyframeLabeler():
         """
 
         groups = []
-        for idx in range(2*len(constraint_transitions)+1):
+        for idx in range(2 * len(constraint_transitions) + 1):
             groups.append([])
         return groups
 
@@ -526,7 +527,7 @@ class DemonstrationKeyframeLabeler():
             List of elements captured by the window.
         """
 
-        for spread in reversed(range(int(window_size/2)+1)):
-            if 0 <= central_idx-spread < len(sequence) and 0 <= central_idx+spread < len(sequence):
-                return sequence[central_idx-spread:central_idx+spread+1]
+        for spread in reversed(range(int(window_size / 2) + 1)):
+            if 0 <= central_idx - spread < len(sequence) and 0 <= central_idx + spread < len(sequence):
+                return sequence[central_idx - spread:central_idx + spread + 1]
         return []

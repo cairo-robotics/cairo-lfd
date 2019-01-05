@@ -2,6 +2,7 @@
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
+from sklearn.neighbors.kde import KernelDensity
 
 
 class KMeansModel(object):
@@ -48,7 +49,7 @@ class GaussianMixtureModel(object):
                                      covariance_type='full',
                                      means_init=means_init)
 
-    def gmm_fit(self):
+    def fit(self):
         """
         Wrapper method for fit() method of kmeans model.
         """
@@ -69,3 +70,33 @@ class GaussianMixtureModel(object):
 
     def predict_proba(self, X):
         return self.model.predict_proba(X)
+
+
+class KDEModel(object):
+    """
+    Wrapper class for Scikit Learn's Gaussian Mixture Model.
+    """
+    def __init__(self, kernel='gaussian', bandwidth=.001):
+        self.model = KernelDensity(kernel='gaussian', bandwidth=bandwidth)
+
+    def fit(self, observation_vectors):
+        """
+        Wrapper method for fit() method of Kernel Density model.
+        """
+        self.model.fit(observation_vectors)
+
+    def generate_samples(self, n_samples):
+        """
+        Generates the random samples according to the fitted distrubution.
+
+        Returns
+        -------
+        list
+            List of numpy arrays of randomly generated observations.
+
+        """
+        points, labels = self.model.sample(n_samples)
+        return points
+
+    def score_samples(self, X):
+        return self.model.score_samples(X)

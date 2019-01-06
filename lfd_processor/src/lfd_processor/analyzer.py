@@ -122,13 +122,13 @@ class MotionPlanAnalyzer():
         """
 
         for observation in plan_observations:
-            evaluation = self._evaluate(constraint_ids, observation)
+            evaluation = self.evaluate(constraint_ids, observation)
             print constraint_ids, evaluation
             if constraint_ids != evaluation:
                 return False
         return True
 
-    def _evaluate(self, constraint_ids, observation):
+    def evaluate(self, constraint_ids, observation):
 
         """
         This function evaluates an observation for all the constraints in the list constraint_ids. It depends on
@@ -190,7 +190,7 @@ class ConstraintAnalyzer():
             new = list(set(triggered)-set(prev))
 
         The evaluated constraints are those that are still valid from the previous observation's applied constraints.
-            evaluated = self._evaluator(constraint_ids=prev, observation=observation)
+            evaluated = self.evaluate(constraint_ids=prev, observation=observation)
 
         The current observation's applied constraints are the union of the evaluted constraints and new constraints.
              applied = list(set(evaluated).union(set(new)))
@@ -205,12 +205,12 @@ class ConstraintAnalyzer():
         for observation in observations:
             triggered = observation.get_triggered_constraint_data()
             new = list(set(triggered) - set(prev))
-            evaluated = self._evaluator(constraint_ids=prev, observation=observation)
+            evaluated = self.evaluate(constraint_ids=prev, observation=observation)
             applied = list(set(evaluated).union(set(new)))
             prev = applied
             observation.data["applied_constraints"] = applied
 
-    def _evaluator(self, constraint_ids, observation):
+    def evaluate(self, constraint_ids, observation):
 
         """
         This function evaluates an observation for all the constraints in the list constraint_ids. It depends on

@@ -5,13 +5,14 @@ import rospy
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
 
-from lfd_modeling.graphing import KeyframeGraphDataGenerator, KeyframeGraph
+from lfd_modeling.graphing import ObservationClusterer, KeyframeGraph
 from lfd_modeling.modeling import KDEModel
-from lfd_processor.environment import Demonstration, Observation, Environment, import_configuration
-from lfd_processor.data_io import DataImporter
-from lfd_processor.items import RobotFactory, ConstraintFactory
-from lfd_processor.analyzer import KeyframeGraphAnalyzer, get_observation_joint_vector
-
+from lfd.environment import Demonstration, Observation, Environment, import_configuration
+from lfd.data_io import DataImporter
+from lfd.items import RobotFactory, ConstraintFactory
+from lfd.analyzer import KeyframeGraphAnalyzer, ConstraintAnalyzer, get_observation_joint_vector
+from lfd.sampling import KeyframeSampler
+from lfd.processing import SawyerSampleConverter
 
 def main():
     arg_fmt = argparse.RawDescriptionHelpFormatter
@@ -79,30 +80,38 @@ def main():
     moveit_interface.set_velocity_scaling(.35)
     moveit_interface.set_acceleration_scaling(.25)
 
-    """ Create TaskGraph object. """
+    """ Create KeyframeGraph object. """
     graph = KeyframeGraph()
-    cluster_generator = KeyframeGraphDataGenerator()
+    cluster_generator = ObservationClusterer()
 
-    """ Using labeled observations, build the models, graphs, and atributes of the TaskGraph """
+    """
+    Generate clusters using labeled observations, build the models, graphs, and atributes for each
+    cluster in the KeyFrameGraph
+    """
     clusters = cluster_generator(demonstrations)
-    for cluster_id in clusters.leys():
+    for cluster_id in clusters.keys():
         graph.add_node(cluster_id)
         graph[cluster_id]["observations"] = clusters[cluster_id]["observations"]
         graph[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
-        graph[cluster_id]["keyframe_type"] = clusters[cluster_id]["observations"]
+        graph[cluster_id]["applied_constraints"] = clusters[cluster_id]["applied_constraints"]
         graph[cluster_id]["model"] = KDEModel(bandwidth=args.bandwidth)
     graph.add_path(graph.nodes())
     graph.fit_models()
 
-    """ Build a KeyframeGraphAnalyzer """
+    """ Build a ConstraintAnalyzer and KeyframeGraphAnalyzer """
+    constraint_analyzer = ConstraintAnalyzer(environment)
     graph_analyzer = KeyframeGraphAnalyzer(graph, moveit_interface, get_observation_joint_vector)
 
-    sampler = 
+    sample_converter = SawyerSampleConverter(moveit_interface)
+    sampler = KeyframeSampler(constraint_analyzer, sample_converter)
 
-    """ Generate samples from graph """
+# NEED TO INTEGRATE THE ABOVE CHANGES INTO THE SCRIPT BELOW!
+
+    """ Generate raw_samples from graph for each keyframe """
     for node in graph.get_keyframe_sequence():
         # Sample point according to constraints
-        graph.sample_n_valid_waypoints(node, n=args.number_of_samples, run_fk=True)
+        samples = sampler.generate_n_valid_samples(graph[node], graph[node]["applied_constraints"])
+        graph[node][samples]
         # Sample points ignoring constraints:
         # graph.sample_n_waypoints(node, n=args.number_of_samples, run_fk=True)
 

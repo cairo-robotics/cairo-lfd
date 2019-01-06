@@ -4,11 +4,11 @@ import rospy
 import argparse
 import intera_interface
 from intera_interface import CHECK_VERSION
-from lfd_processor.record import Recorder
-from lfd_processor.environment import Environment, import_configuration
-from lfd_processor.items import RobotFactory, ConstraintFactory
-from lfd_processor.analyzer import ConstraintAnalyzer
-from lfd_processor.data_io import DataExporter
+from lfd.record import Recorder
+from lfd.environment import Environment, import_configuration
+from lfd.items import RobotFactory, ConstraintFactory
+from lfd.analyzer import ConstraintAnalyzer
+from lfd.data_io import DataExporter
 
 
 def main():

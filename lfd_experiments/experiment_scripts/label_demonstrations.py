@@ -1,12 +1,12 @@
-#!/usr/bin/env python2
+ #!/usr/bin/env python2
 
 import rospy
 import argparse
 
-from lfd_processor.data_io import DataImporter, DataExporter
-from lfd_processor.alignment import DemonstrationAligner, vectorize_demonstration
-from lfd_processor.analyzer import DemonstrationKeyframeLabeler
-from lfd_processor.environment import Observation, Demonstration
+from lfd.data_io import DataImporter, DataExporter
+from lfd.alignment import DemonstrationAligner, vectorize_demonstration
+from lfd.analyzer import DemonstrationKeyframeLabeler
+from lfd.environment import Observation, Demonstration
 
 
 def main():

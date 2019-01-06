@@ -287,12 +287,10 @@ class Observation(object):
         pose : array of pose data
         orientation: array of orientation data
         """
-        observation_data = {"robot":{"orientation": orientation,
-                                     "position": pose,
-                                     "joints": joints}}
+        observation_data = {"robot": {"orientation": orientation,
+                                      "position": pose,
+                                      "joints": joints}}
         return cls(observation_data)
-
-
 
     def get_timestamp(self):
 

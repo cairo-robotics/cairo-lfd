@@ -17,7 +17,7 @@ def get_observation_joint_vector(observation):
 
 class KeyframeGraphAnalyzer():
     """
-    Class with methods to support the analysis of a motion plan.
+    Class with methods to support the analysis of a KeyframeGraph.
     """
 
     def __init__(self, task_graph, sawyer_moveit_interface, observation_vectorizor):
@@ -43,7 +43,7 @@ class KeyframeGraphAnalyzer():
                 observation.data["robot"]["joints"] = self.interface.get_pose_IK_joints(observation.get_pose_list())
             if type(joints) is not list:
                 joints = joints.tolist()
-            if not self.interface.check_point_validity(joints):
+            if not self.interface.check_point_validity(self.interface.create_robot_state(joints)):
                 occluded_observations.append(observation)
             else:
                 free_observations.append(observation)
@@ -55,13 +55,13 @@ class KeyframeGraphAnalyzer():
         return model.score_samples(samples)
 
     def keyframe_liklihood_check(self, prior_node, curr_node):
-        curr_obs = curr_node["obsv"]
+        curr_obs = curr_node["observations"]
         vectors = []
         for ob in curr_obs:
             vector = self.vectorizor(ob)
             vectors.append(vector)
         curr_samples = np.array(vectors)
-        curr_ll = self.samples_log_liklihood(prior_node["kde_gauss"], curr_samples)
+        curr_ll = self.samples_log_liklihood(prior_node["model"], curr_samples)
         max_ll = np.amax(curr_ll)
         mean_ll = np.mean(curr_ll)
         rospy.loginfo("Mean log liklihood:{}, Max log liklihood:{}".format(mean_ll, max_ll))
@@ -123,7 +123,7 @@ class MotionPlanAnalyzer():
 
         for observation in plan_observations:
             evaluation = self.evaluate(constraint_ids, observation)
-            print constraint_ids, evaluation
+            # print constraint_ids, evaluation
             if constraint_ids != evaluation:
                 return False
         return True

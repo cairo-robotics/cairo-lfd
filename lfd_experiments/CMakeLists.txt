@@ -1,17 +1,17 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(lfd_processor_examples)
+project(lfd_experiments)
 
 find_package(catkin 
 	REQUIRED
 	COMPONENTS
     rospy
-	lfd_processor
+	lfd
 )
 
 catkin_package(
 	CATKIN_DEPENDS 
 	rospy
-	lfd_processor
+	lfd
 )
 
 ###########

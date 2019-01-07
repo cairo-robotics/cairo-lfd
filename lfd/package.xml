@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>lfd_processor</name>
+  <name>lfd</name>
   <version>0.0.0</version>
   <description>The LFD package managing experimentation environments.</description>
 

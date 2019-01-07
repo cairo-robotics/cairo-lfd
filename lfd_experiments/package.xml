@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>lfd_processor_examples</name>
+  <name>lfd_experiments</name>
   <version>0.0.0</version>
-  <description>lfd-keyframe example scripts</description>
+  <description>CAIRO lab LfD  experiment scripts</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -34,6 +34,6 @@
   <!-- Use depend as a shortcut for packages that are both build and exec dependencies -->
   <buildtool_depend>catkin</buildtool_depend>
   <depend>rospy</depend>
-  <depend>lfd_processor</depend>
+  <depend>lfd</depend>
   
 </package>

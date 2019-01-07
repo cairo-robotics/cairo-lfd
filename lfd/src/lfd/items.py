@@ -1,7 +1,7 @@
 import rospy
 import intera_interface
 from abc import ABCMeta, abstractmethod
-from lfd_processor.constraints import UprightConstraint, HeightConstraint
+from lfd.constraints import UprightConstraint, HeightConstraint
 
 
 class AbstractItem(object):

@@ -49,13 +49,11 @@ def main():
             observations.append(Observation(entry))
         demonstrations.append(Demonstration(observations))
 
-    
     # For more details about alignment, see the alignment_example.
     rospy.loginfo("Aligning demonstrations...this can take some time.")
     aligner = DemonstrationAligner(demonstrations, vectorize_demonstration)
     aligned_demos, constraint_transitions = aligner.align()
 
-    
     # Create DemosntrationkeyframeLabeler passing in the aligned demonstrations and the constraint transition
     # ordering, both of which are returned from the DemonstratinAligner object.
     keyframe_labeler = DemonstrationKeyframeLabeler(aligned_demos, constraint_transitions)

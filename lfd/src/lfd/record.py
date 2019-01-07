@@ -1,5 +1,5 @@
 import rospy
-from lfd_processor.environment import Observation, Demonstration
+from lfd.environment import Observation, Demonstration
 
 
 class SawyerRecorder(object):

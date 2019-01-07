@@ -5,7 +5,7 @@ find_package(catkin
 	REQUIRED
 	COMPONENTS
 	rospy
-	lfd_processor
+	lfd
     predicate_classification_msgs
     predicate_classification
 )
@@ -15,7 +15,7 @@ catkin_python_setup()
 catkin_package(
 	CATKIN_DEPENDS
 	rospy
-	lfd_processor
+	lfd
     predicate_classification_msgs
     predicate_classification
 )

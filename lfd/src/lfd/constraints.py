@@ -1,6 +1,6 @@
 import intera_interface
 from predicate_classification.predicate_classifiers import height, upright
-from lfd_processor.processing import convert_data_to_pose
+from lfd.processing import convert_data_to_pose
 
 
 class HeightConstraint(object):
@@ -172,5 +172,4 @@ class UprightConstraint(object):
 
         current_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
         upright_pose = convert_data_to_pose(item_info["upright_pose"]["position"], item_info["upright_pose"]["orientation"])
-
         return upright(upright_pose, current_pose, self.threshold_angle, self.axis)

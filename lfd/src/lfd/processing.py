@@ -31,7 +31,7 @@ class SawyerSampleConverter(object):
     def __init__(self, interface):
         self.interface = interface
 
-    def convert(self, sample, run_fk=True):
+    def convert(self, sample, run_fk=False):
         """
 
 
@@ -44,21 +44,10 @@ class SawyerSampleConverter(object):
 
         """
         if run_fk is True:
-            pose = self.interface.get_end_effector_pose(sample.tolist())
-            if pose is not None:
-                sample = np.insert(sample, 0, pose.orientation.w, axis=0)
-                sample = np.insert(sample, 0, pose.orientation.z, axis=0)
-                sample = np.insert(sample, 0, pose.orientation.y, axis=0)
-                sample = np.insert(sample, 0, pose.orientation.x, axis=0)
-                sample = np.insert(sample, 0, pose.position.z, axis=0)
-                sample = np.insert(sample, 0, pose.position.y, axis=0)
+            sample = self._run_foward_kinematics(sample)
 
-        normalize = np.sqrt(sample[3]**2 + sample[4]**2 +
-                            sample[5]**2 + sample[6]**2)
-        sample[3] = sample[3] / normalize
-        sample[4] = sample[4] / normalize
-        sample[5] = sample[5] / normalize
-        sample[6] = sample[6] / normalize
+        # Normalize the quaternion values otherwise they will not be valid.
+        sample[3], sample[4], sample[5], sample[6] = self._normalize_quaternion(sample[3], sample[4], sample[5], sample[6])
 
         if len(sample) > 7:
             # If length > 7, we know there must be joint data, so creat Obs w/ joints.
@@ -67,3 +56,24 @@ class SawyerSampleConverter(object):
             obsv = Observation.init_samples(sample[0:3], sample[3:7], None)
         return obsv
 
+    def _run_foward_kinematics(self, sample):
+        pose = self.interface.get_FK_pose(sample.tolist())
+        if pose is not None:
+            sample = np.insert(sample, 0, pose.orientation.w, axis=0)
+            sample = np.insert(sample, 0, pose.orientation.z, axis=0)
+            sample = np.insert(sample, 0, pose.orientation.y, axis=0)
+            sample = np.insert(sample, 0, pose.orientation.x, axis=0)
+            sample = np.insert(sample, 0, pose.position.z, axis=0)
+            sample = np.insert(sample, 0, pose.position.y, axis=0)
+            sample = np.insert(sample, 0, pose.position.x, axis=0)
+        return sample
+
+    def _normalize_quaternion(self, x, y, z, w):
+
+        normalize = np.sqrt(x**2 + y**2 +
+                            z**2 + w**2)
+        x = x / normalize
+        y = y / normalize
+        z = z / normalize
+        w = w / normalize
+        return x, y, z, w

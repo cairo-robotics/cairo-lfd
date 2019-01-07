@@ -68,7 +68,7 @@ class GaussianMixtureModel(object):
         points, labels = self.model.sample(n_samples)
         return points
 
-    def predict_proba(self, X):
+    def score_samples(self, X):
         return self.model.predict_proba(X)
 
 
@@ -95,7 +95,7 @@ class KDEModel(object):
             List of numpy arrays of randomly generated observations.
 
         """
-        points, labels = self.model.sample(n_samples)
+        points = self.model.sample(n_samples)
         return points
 
     def score_samples(self, X):

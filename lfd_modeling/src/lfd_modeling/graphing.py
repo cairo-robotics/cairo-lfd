@@ -53,9 +53,12 @@ class KeyframeGraph(MultiDiGraph):
         """
         for node in self.nodes():
             np_array = []
-            for obsv in self[node]["observations"]:
+            for obsv in self.nodes[node]["observations"]:
+                vector = np.array(observation_vectorizor(obsv))
+                print(vector)
                 np_array.append(np.array(observation_vectorizor(obsv)))
-            self[node]["model"].fit(np_array)
+            np.array(np_array)
+            self.nodes[node]["model"].fit(np_array)
 
 
 class ObservationClusterer():
@@ -78,6 +81,7 @@ class ObservationClusterer():
             keyframe_id = obsv.get_keyframe_info()[0]
             if keyframe_id is not None:
                 clusters[keyframe_id]["observations"].append(obsv)
+        return clusters
 
     def assign_keyframe_type(self, cluster):
         keyframe_type = cluster['observations'][0].get_keyframe_info()[1]

@@ -42,7 +42,7 @@ class TaskGraphAnalyzer():
                 observation.data["robot"]["joints"] = self.interface.get_pose_IK_joints(observation.get_pose_list())
             if type(joints) is not list:
                 joints = joints.tolist()
-            if not self.interface.check_point_validity(joints):
+            if not self.interface.check_point_validity(self.interface.create_robot_state(joints)):
                 occluded_observations.append(observation)
             else:
                 free_observations.append(observation)

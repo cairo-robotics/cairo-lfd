@@ -10,7 +10,7 @@ from lfd_processor.data_io import DataImporter
 from lfd_processor.environment import Environment, import_configuration, Observation
 from lfd_processor.items import RobotFactory, ConstraintFactory
 from lfd_processor.analyzer import ConstraintAnalyzer
-from sawyer_interface.moveit_interface import SawyerMoveitInterface
+from robot_interface.moveit_interface import SawyerMoveitInterface
 import math
 
 import rospy

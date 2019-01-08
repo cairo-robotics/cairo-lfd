@@ -3,7 +3,7 @@
 import argparse
 import rospy
 
-from sawyer_interface.moveit_interface import SawyerMoveitInterface
+from robot_interface.moveit_interface import SawyerMoveitInterface
 
 from lfd_modeling.task_graph import TaskGraph
 from lfd_processor.environment import Demonstration, Observation, Environment, import_configuration

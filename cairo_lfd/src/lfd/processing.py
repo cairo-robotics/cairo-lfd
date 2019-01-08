@@ -31,7 +31,7 @@ class SawyerSampleConverter(object):
     def __init__(self, interface):
         self.interface = interface
 
-    def convert(self, sample, run_fk=False):
+    def convert(self, sample, run_fk=False, normalize_quaternion=False):
         """
 
 
@@ -45,9 +45,10 @@ class SawyerSampleConverter(object):
         """
         if run_fk is True:
             sample = self._run_foward_kinematics(sample)
-
-        # Normalize the quaternion values otherwise they will not be valid.
-        sample[3], sample[4], sample[5], sample[6] = self._normalize_quaternion(sample[3], sample[4], sample[5], sample[6])
+        if normalize_quaternion:
+            # Normalize the quaternion values otherwise they will not be valid. This may be needed if FK is done
+            # using MoveIt's FK server. However, generally this is not needed if using Intera.
+            sample[3], sample[4], sample[5], sample[6] = self._normalize_quaternion(sample[3], sample[4], sample[5], sample[6])
 
         if len(sample) > 7:
             # If length > 7, we know there must be joint data, so creat Obs w/ joints.
@@ -57,7 +58,7 @@ class SawyerSampleConverter(object):
         return obsv
 
     def _run_foward_kinematics(self, sample):
-        pose = self.interface.get_FK_pose(sample.tolist())
+        pose = self.interface.get_FK_pose(sample)
         if pose is not None:
             sample = np.insert(sample, 0, pose.orientation.w, axis=0)
             sample = np.insert(sample, 0, pose.orientation.z, axis=0)

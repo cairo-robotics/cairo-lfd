@@ -70,5 +70,5 @@ class SawyerRecorder(object):
                 user_input = raw_input("Demostration captured!\n Press 'r' to record again or 'q' to end the session.\n")
             if user_input == 'q':
                 self.stop()
-                
+
         return demonstrations

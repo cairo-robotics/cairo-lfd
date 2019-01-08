@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>lfd</name>
+  <name>cairo_lfd</name>
   <version>0.0.0</version>
   <description>The LFD package managing experimentation environments.</description>
 

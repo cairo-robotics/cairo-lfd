@@ -31,17 +31,17 @@ def main():
     )
 
     parser.add_argument(
-        '-b', '--bandwidth', type=float, default=.001, metavar='BANDWIDTH',
+        '-b', '--bandwidth', type=float, default=.025, metavar='BANDWIDTH',
         help='gaussian kernel density bandwidth'
     )
 
     parser.add_argument(
-        '-t', '--threshold', type=int, default=-1000, metavar='THRESHOLD',
+        '-t', '--threshold', type=int, default=-1200, metavar='THRESHOLD',
         help='log-liklihood threshold value'
     )
 
     parser.add_argument(
-        '-n', '--number_of_samples', type=int, default=100, metavar='NUMBEROFSAMPLES',
+        '-n', '--number_of_samples', type=int, default=50, metavar='NUMBEROFSAMPLES',
         help='log-liklihood threshold value'
     )
 
@@ -80,15 +80,6 @@ def main():
     moveit_interface.set_velocity_scaling(.35)
     moveit_interface.set_acceleration_scaling(.25)
 
-  #   joints = [-0.90494922,  0.69658398, -0.89285254, -0.65935449,  0.4332373,  -0.1818584,
-  # 0.75842188]
-
-
-  #   moveit_interface.set_joint_target(joints)
-  #   plan = moveit_interface.plan()
-  #   moveit_interface.execute(plan)
-
-    # return 1
     """ Create KeyframeGraph object. """
     graph = KeyframeGraph()
     cluster_generator = ObservationClusterer()
@@ -131,17 +122,13 @@ def main():
 
         # User converter object to conver raw sample vectors into LfD observations
         graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(sample, run_fk=True) for sample in ranked_samples]
-        joints = graph.nodes[node]["samples"][0].get_joint_list()
-        moveit_interface.set_joint_target(joints)
-        plan = moveit_interface.plan()
-        moveit_interface.execute(plan)
 
-    return 1
     """ Clear occluded points (points in collision etc,.) """
     for node in graph.get_keyframe_sequence():
         samples = graph.nodes[node]["samples"]
         free_samples, trash = graph_analyzer.evaluate_keyframe_occlusion(samples)
         if free_samples == []:
+            rospy.loginfo("Keyframe {} has no free samples and will be culled.".format(node))
             graph.cull_node(node)
         else:
             graph.nodes[node]["free_samples"] = free_samples
@@ -162,10 +149,6 @@ def main():
         joints = sample.get_joint_list()
         joint_config_array.append(joints)
 
-    for joints in joint_config_array:
-            moveit_interface.set_joint_target(joints)
-            plan = moveit_interface.plan()
-            moveit_interface.execute(plan)
     moveit_interface.move_to_joint_targets(joint_config_array)
 
     return 0

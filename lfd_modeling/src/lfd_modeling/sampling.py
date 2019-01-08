@@ -30,7 +30,8 @@ class KeyframeSampler():
             samples = self.generate_raw_samples(model, 1)
             if len(samples) > 0:
                 sample = samples[0]
-                matched_ids = self.analyzer.evaluate(constraint_ids, self.converter.convert(sample))
+                observation = self.converter.convert(sample, run_fk=True)
+                matched_ids = self.analyzer.evaluate(constraint_ids, observation)
                 # print(constraint_ids, matched_ids)
                 if constraint_ids == matched_ids:
                     valid_samples.append(sample)

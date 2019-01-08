@@ -37,12 +37,21 @@ class SawyerSampleConverter(object):
 
         Parameters
         ----------
+        sample : list
+            Raw sample to convert. Either joint configuration or pose [x,y,z,x,y,z,w] as a list.
 
+        run_fk : bool
+            Flag indicating whether to run foward kinematrics or not.
+
+        normalize_quaternion : bool
+            Flag indicating whether to normalize the values of the quaternion entries.
 
         Returns
         -------
-
+        obsv : lfd.environment.Observation
+            Observation object constructed from the converted sample.
         """
+
         if run_fk is True:
             sample = self._run_foward_kinematics(sample)
         if normalize_quaternion:

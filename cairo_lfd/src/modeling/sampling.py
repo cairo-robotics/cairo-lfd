@@ -3,22 +3,56 @@ import rospy
 
 
 class KeyframeSampler():
+    """
+    Sampling class that uses model representing a keyframe to sample points.
+    """
 
     def __init__(self, analyzer, data_converter):
+        """
+        Parameters
+        ----------
+        analyzer : object
+            Analysis object that evaluates sampled points for their validity (constraint satisfcation).
+        data_converter : func
+            Function to convert a raw sample into an Observation object for use by the analyzer.
+
+        """
         self.analyzer = analyzer
         self.converter = data_converter
 
     def generate_raw_samples(self, model, num_of_samples):
         """
-        wrapper for sampling points
-        return obsv objects
+        Parameters
+        ----------
+        model : object
+            Model object used to generate raw samples.
+        num_of_samples : int
+            Number of samples to generate.
+
+        Returns
+        -------
+        raw_samples : list
+            List of raw samples generated from the model.
         """
+
         raw_samples = model.generate_samples(num_of_samples)
         return raw_samples
 
     def generate_n_valid_samples(self, model, constraint_ids, n=100):
         """
-        returns n valid samples based on the constraints
+        Parameters
+        ----------
+        model : object
+            Model object used to generate raw samples.
+        constraint_ids : list
+            List of constraint IDs required for validity.
+        n : int
+            Number of valid samples to generate.
+
+        Returns
+        -------
+        raw_samples : list
+            List of valid raw samples generated from the model.
         """
 
         valid_samples = []
@@ -39,8 +73,19 @@ class KeyframeSampler():
 
     def rank_samples(self, model, samples):
         """
-        re arrange all sampled points based on Prob Density
+        Parameters
+        ----------
+        model : object
+            Model object used to generate raw samples.
+        samples : list
+            List of samples to rank according to their score as measured by the model.
+
+        Returns
+        -------
+        rank_sorted_sampled : list
+            List of rank (according to model scoring function) sorted samples (descending order).
         """
+
         if len(samples) == 0:
             rospy.logwarn("No samples to rank.")
             return []
@@ -49,9 +94,8 @@ class KeyframeSampler():
             array.append(sample)
         np_array = np.array(array)
 
-        # pdb.set_trace()
         scores = model.score_samples(np_array)
         order = np.argsort(-scores)
         scores = scores[order]
-        sorted_sampled = np.asarray(samples)
-        return sorted_sampled
+        rank_sorted_sampled = np.asarray(samples)
+        return rank_sorted_sampled

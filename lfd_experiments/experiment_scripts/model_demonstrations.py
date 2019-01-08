@@ -80,15 +80,15 @@ def main():
     moveit_interface.set_velocity_scaling(.35)
     moveit_interface.set_acceleration_scaling(.25)
 
-    joints = [-0.90494922,  0.69658398, -0.89285254, -0.65935449,  0.4332373,  -0.1818584,
-  0.75842188]
+  #   joints = [-0.90494922,  0.69658398, -0.89285254, -0.65935449,  0.4332373,  -0.1818584,
+  # 0.75842188]
 
 
-    moveit_interface.set_joint_target(joints)
-    plan = moveit_interface.plan()
-    moveit_interface.execute(plan)
+  #   moveit_interface.set_joint_target(joints)
+  #   plan = moveit_interface.plan()
+  #   moveit_interface.execute(plan)
 
-    return 1
+    # return 1
     """ Create KeyframeGraph object. """
     graph = KeyframeGraph()
     cluster_generator = ObservationClusterer()
@@ -114,13 +114,12 @@ def main():
     sample_to_obsv_converter = SawyerSampleConverter(moveit_interface)
     sampler = KeyframeSampler(constraint_analyzer, sample_to_obsv_converter)
 
-
     """ Generate raw_samples from graph for each keyframe """
     for node in graph.get_keyframe_sequence():
         # Sample point according to constraints
         n_samples = args.number_of_samples
         attempts, samples = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["applied_constraints"], n=n_samples)
-        
+
         rospy.loginfo("Keyframe %d: %s valid of %s attempts", node, len(samples), attempts)
         if len(samples) < n_samples:
             rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(samples), n_samples)

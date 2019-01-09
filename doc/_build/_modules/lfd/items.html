@@ -1,0 +1,484 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lfd.items &mdash; Cairo_LfD  documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="Cairo_LfD  documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Cairo_LfD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Cairo_LfD</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>lfd.items</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for lfd.items</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The items.py module contains container classes for items uses in the Cario LfD ecosystem.</span>
+<span class="sd">These could include robots, constraints, and environment objects such as a cup etc,.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">rospy</span>
+<span class="kn">import</span> <span class="nn">intera_interface</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">lfd.constraints</span> <span class="k">import</span> <span class="n">UprightConstraint</span><span class="p">,</span> <span class="n">HeightConstraint</span>
+
+
+<div class="viewcode-block" id="AbstractItem"><a class="viewcode-back" href="../../lfd.html#lfd.items.AbstractItem">[docs]</a><span class="k">class</span> <span class="nc">AbstractItem</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract Base class for represent items in an Environment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+
+<div class="viewcode-block" id="AbstractItem.get_state"><a class="viewcode-back" href="../../lfd.html#lfd.items.AbstractItem.get_state">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract method to get the Item&#39;s state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractItem.get_info"><a class="viewcode-back" href="../../lfd.html#lfd.items.AbstractItem.get_info">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract method to get the Item&#39;s info.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="SawyerRobot"><a class="viewcode-back" href="../../lfd.html#lfd.items.SawyerRobot">[docs]</a><span class="k">class</span> <span class="nc">SawyerRobot</span><span class="p">(</span><span class="n">AbstractItem</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class representing the Saywer robot in the LFD Environment object.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    upright pose:</span>
+
+<span class="sd">    .. code-block:: json</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &quot;position&quot;:</span>
+<span class="sd">                [</span>
+<span class="sd">                    0.604698787426,</span>
+<span class="sd">                    -0.439894686226,</span>
+<span class="sd">                    0.159350584992</span>
+<span class="sd">                ],</span>
+<span class="sd">            &quot;orientation&quot;:</span>
+<span class="sd">                [</span>
+<span class="sd">                    0.712590112587,</span>
+<span class="sd">                    -0.00994445446764,</span>
+<span class="sd">                    0.701496927312,</span>
+<span class="sd">                    -0.00430119065513</span>
+<span class="sd">                ]</span>
+<span class="sd">        }</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id : int</span>
+<span class="sd">            Id of robot assigned in the config.json configuration files.</span>
+<span class="sd">    upright_pose : dict</span>
+<span class="sd">       Dictionary with position and orientation fields indicating the upright orientation of the Sawyer end-effector.</span>
+<span class="sd">    _limb : object</span>
+<span class="sd">        Intera SDK class object that provides controlling functionality of the Sawyer Robot.</span>
+<span class="sd">    _cuff : object</span>
+<span class="sd">        Intera SDK class object that provides controlling interface of the cuff bottons of Sawyer robot.</span>
+<span class="sd">    _navigator : object</span>
+<span class="sd">        Intera SDK class object that provides controlling functionality of the button/wheel interface on the Sawer Robot.</span>
+<span class="sd">    _gripper : object</span>
+<span class="sd">        Intera SDK class object that provides controlling functionalirty of the Sawyer Robot gripper.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">robot_id</span><span class="p">,</span> <span class="n">upright_pose</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        robot_id : int</span>
+<span class="sd">            Id of robot assigned in the config.json configuration files.</span>
+<span class="sd">        upright_pose : dict</span>
+<span class="sd">           Dictionary with position and orientation fields</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">robot_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">upright_pose</span> <span class="o">=</span> <span class="n">upright_pose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_limb</span> <span class="o">=</span> <span class="n">intera_interface</span><span class="o">.</span><span class="n">Limb</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cuff</span> <span class="o">=</span> <span class="n">intera_interface</span><span class="o">.</span><span class="n">Cuff</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_navigator</span> <span class="o">=</span> <span class="n">intera_interface</span><span class="o">.</span><span class="n">Navigator</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_gripper</span> <span class="o">=</span> <span class="n">intera_interface</span><span class="o">.</span><span class="n">Gripper</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Electric gripper detected.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gripper</span><span class="o">.</span><span class="n">has_error</span><span class="p">():</span>
+                <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Gripper error...rebooting.&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_gripper</span><span class="o">.</span><span class="n">reboot</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gripper</span><span class="o">.</span><span class="n">is_calibrated</span><span class="p">():</span>
+                <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Calibrating gripper.&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_gripper</span><span class="o">.</span><span class="n">calibrate</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_gripper</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;No electric gripper detected.&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SawyerRobot.get_state"><a class="viewcode-back" href="../../lfd.html#lfd.items.SawyerRobot.get_state">[docs]</a>    <span class="k">def</span> <span class="nf">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get&#39;s the current state of the robot.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        State returned:</span>
+
+<span class="sd">        .. code-block:: json</span>
+
+<span class="sd">        {</span>
+<span class="sd">            id: robot_id</span>
+<span class="sd">            position: [x, y ,z],</span>
+<span class="sd">            orientation: [x, y, z, w]</span>
+<span class="sd">            joints: [j0, j1, j2, j3, j4, j5, j6],</span>
+<span class="sd">            gripper: .123123123123</span>
+<span class="sd">        }</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        state : dict</span>
+<span class="sd">            The state of the robot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limb</span><span class="o">.</span><span class="n">joint_names</span><span class="p">()</span>
+        <span class="n">pose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limb</span><span class="o">.</span><span class="n">endpoint_pose</span><span class="p">()</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">state</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pose</span><span class="p">[</span><span class="s2">&quot;position&quot;</span><span class="p">]]</span>
+        <span class="n">state</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pose</span><span class="p">[</span><span class="s2">&quot;orientation&quot;</span><span class="p">]]</span>
+        <span class="n">state</span><span class="p">[</span><span class="s1">&#39;gripper&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gripper</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+        <span class="n">state</span><span class="p">[</span><span class="s1">&#39;joints&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_limb</span><span class="o">.</span><span class="n">joint_angle</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">state</span></div>
+
+<div class="viewcode-block" id="SawyerRobot.get_info"><a class="viewcode-back" href="../../lfd.html#lfd.items.SawyerRobot.get_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get&#39;s the robot item&#39;s information.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        state : dict</span>
+<span class="sd">            The info of the robot item</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        Info returned:</span>
+
+<span class="sd">        .. code-block:: json</span>
+<span class="sd">        {</span>
+<span class="sd">            id: robot_id</span>
+<span class="sd">            upright_pose: {</span>
+<span class="sd">                position: [x, y ,z],</span>
+<span class="sd">                orientation: [x, y, z, w]</span>
+<span class="sd">            }</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                    <span class="s2">&quot;upright_pose&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">upright_pose</span>
+               <span class="p">}</span></div></div>
+
+
+<div class="viewcode-block" id="RobotFactory"><a class="viewcode-back" href="../../lfd.html#lfd.items.RobotFactory">[docs]</a><span class="k">class</span> <span class="nc">RobotFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Factory class that builds robot items. These items are defined in the config.json file.</span>
+<span class="sd">    The class field in the configuration determines which AbstractItem robot class to use.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    configs : list</span>
+<span class="sd">            List of configuration dictionaries.</span>
+<span class="sd">    classes : dict</span>
+<span class="sd">        Dictionary with values as uninitialized class references i.e. SawyerRobot</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    Example entry in config.json:</span>
+
+<span class="sd">    .. code-block:: json</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &quot;class&quot;: &quot;SawyerRobot&quot;,</span>
+<span class="sd">            &quot;init_args&quot;:</span>
+<span class="sd">                {</span>
+<span class="sd">                    &quot;id&quot;: 1,</span>
+<span class="sd">                    &quot;upright_pose&quot;:</span>
+<span class="sd">                        {</span>
+<span class="sd">                            &quot;position&quot;:</span>
+<span class="sd">                                [</span>
+<span class="sd">                                    0.604698787426,</span>
+<span class="sd">                                    -0.439894686226,</span>
+<span class="sd">                                    0.159350584992</span>
+<span class="sd">                                ],</span>
+<span class="sd">                            &quot;orientation&quot;:</span>
+<span class="sd">                                [</span>
+<span class="sd">                                    0.712590112587,</span>
+<span class="sd">                                    -0.00994445446764,</span>
+<span class="sd">                                    0.701496927312,</span>
+<span class="sd">                                    -0.00430119065513</span>
+<span class="sd">                                ]</span>
+<span class="sd">                        }</span>
+<span class="sd">                }</span>
+<span class="sd">        }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">robot_configs</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        robot_configs : list</span>
+<span class="sd">            List of configuration dictionaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">robot_configs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;SawyerRobot&quot;</span><span class="p">:</span> <span class="n">SawyerRobot</span><span class="p">,</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="RobotFactory.generate_robots"><a class="viewcode-back" href="../../lfd.html#lfd.items.RobotFactory.generate_robots">[docs]</a>    <span class="k">def</span> <span class="nf">generate_robots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build the robots defined in the configuration dictionaries of self.configs.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        robots : list</span>
+<span class="sd">            List of AbstractItem robot objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">robots</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">:</span>
+            <span class="n">robots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes</span><span class="p">[</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]](</span><span class="o">*</span><span class="nb">tuple</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;init_args&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+        <span class="k">return</span> <span class="n">robots</span></div></div>
+
+
+<div class="viewcode-block" id="ConstraintFactory"><a class="viewcode-back" href="../../lfd.html#lfd.items.ConstraintFactory">[docs]</a><span class="k">class</span> <span class="nc">ConstraintFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Factory class that builds LFD constraints. These items are defined in the config.json file.</span>
+<span class="sd">    The class field in the configuration determines which constraint class to use.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    configs : list</span>
+<span class="sd">            List of configuration dictionaries.</span>
+<span class="sd">    classes : dict</span>
+<span class="sd">        Dictionary with values as uninitialized class references to constraint classes i.e. HeightConstraint</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    Example entry in config.json:</span>
+
+<span class="sd">    .. code-block:: json</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &quot;class&quot;: &quot;HeightConstraint&quot;,</span>
+<span class="sd">            &quot;init_args&quot; :</span>
+<span class="sd">                {</span>
+<span class="sd">                    &quot;id&quot;: 1,</span>
+<span class="sd">                    &quot;item&quot;: 1,</span>
+<span class="sd">                    &quot;button&quot;: &quot;right_button_square&quot;,</span>
+<span class="sd">                    &quot;reference_height&quot;: 0.0,</span>
+<span class="sd">                    &quot;threshold_distance&quot;: 0.25</span>
+
+<span class="sd">                }</span>
+<span class="sd">        }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constraint_configs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        constraint_configs : list</span>
+<span class="sd">            List of configuration dictionaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">constraint_configs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;UprightConstraint&quot;</span><span class="p">:</span> <span class="n">UprightConstraint</span><span class="p">,</span>
+            <span class="s2">&quot;HeightConstraint&quot;</span><span class="p">:</span> <span class="n">HeightConstraint</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="ConstraintFactory.generate_constraints"><a class="viewcode-back" href="../../lfd.html#lfd.items.ConstraintFactory.generate_constraints">[docs]</a>    <span class="k">def</span> <span class="nf">generate_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build the constraint objects defined in the configuration dictionaries of self.configs.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        robots : list</span>
+<span class="sd">            List of constraint objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">constraints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">:</span>
+            <span class="n">constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes</span><span class="p">[</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]](</span><span class="o">*</span><span class="nb">tuple</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;init_args&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+        <span class="k">return</span> <span class="n">constraints</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Carl Mueller.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

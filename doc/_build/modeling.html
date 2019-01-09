@@ -1,0 +1,678 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>modeling package &mdash; Cairo_LfD  documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Cairo_LfD  documentation" href="index.html"/>
+        <link rel="up" title="src" href="modules.html"/>
+        <link rel="prev" title="lfd package" href="lfd.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Cairo_LfD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="lfd.html">lfd package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">modeling package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-modeling.graphing">modeling.graphing module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-modeling.models">modeling.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-modeling.sampling">modeling.sampling module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-modeling.visualization">modeling.visualization module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Cairo_LfD</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="modules.html">src</a> &raquo;</li>
+      
+    <li>modeling package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/modeling.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="modeling-package">
+<h1>modeling package<a class="headerlink" href="#modeling-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-modeling.graphing">
+<span id="modeling-graphing-module"></span><h2>modeling.graphing module<a class="headerlink" href="#module-modeling.graphing" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="modeling.graphing.KeyframeGraph">
+<em class="property">class </em><code class="descclassname">modeling.graphing.</code><code class="descname">KeyframeGraph</code><a class="reference internal" href="_modules/modeling/graphing.html#KeyframeGraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.graphing.KeyframeGraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>NetworkX MultiDiGraph extended graph class for containing keyframes and their corresponding models.</p>
+<dl class="method">
+<dt id="modeling.graphing.KeyframeGraph.cull_node">
+<code class="descname">cull_node</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/graphing.html#KeyframeGraph.cull_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.graphing.KeyframeGraph.cull_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes received node and removes it from the task graph</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>node: hashable networkx node name (usually int)</strong></dt>
+<dd><p class="first last">the node to be removed from network x graph</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="modeling.graphing.KeyframeGraph.fit_models">
+<code class="descname">fit_models</code><span class="sig-paren">(</span><em>observation_vectorizor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/graphing.html#KeyframeGraph.fit_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.graphing.KeyframeGraph.fit_models" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits all models in graph. Expects that each keyframe node in graph has populated “observation” key
+as a list of Observation objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>observation_vectorizor</strong> <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd><p class="first last">Function that takes observations stored in graph and converts their data into vector form for use by model
+fitting function.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="modeling.graphing.KeyframeGraph.get_keyframe_sequence">
+<code class="descname">get_keyframe_sequence</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/graphing.html#KeyframeGraph.get_keyframe_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.graphing.KeyframeGraph.get_keyframe_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides the keyframe sequence in order.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>node_chain</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of keyframe/node sequence.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="modeling.graphing.ObservationClusterer">
+<em class="property">class </em><code class="descclassname">modeling.graphing.</code><code class="descname">ObservationClusterer</code><a class="reference internal" href="_modules/modeling/graphing.html#ObservationClusterer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.graphing.ObservationClusterer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clusters together observations by keyframe ID and gathers pertinent information regarding each keyframe. This will
+be used by a KeyframeGraph object.</p>
+<dl class="method">
+<dt id="modeling.graphing.ObservationClusterer.assign_applied_constraints">
+<code class="descname">assign_applied_constraints</code><span class="sig-paren">(</span><em>cluster</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/graphing.html#ObservationClusterer.assign_applied_constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.graphing.ObservationClusterer.assign_applied_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assigns the applied constraints for the given keyframe cluster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>cluster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary to assign the applied constraints..</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="modeling.graphing.ObservationClusterer.assign_keyframe_type">
+<code class="descname">assign_keyframe_type</code><span class="sig-paren">(</span><em>cluster</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/graphing.html#ObservationClusterer.assign_keyframe_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.graphing.ObservationClusterer.assign_keyframe_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assigns the keyframe type for the given keyframe cluster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>cluster</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary to assign the keyframe type.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="modeling.graphing.ObservationClusterer.cluster_observations_by_id">
+<code class="descname">cluster_observations_by_id</code><span class="sig-paren">(</span><em>observations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/graphing.html#ObservationClusterer.cluster_observations_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.graphing.ObservationClusterer.cluster_observations_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in a the entirety of observations from all Demosntrations and groups them together 
+by keyframe ID.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>observations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of the Observation objects to cluster.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>clusters</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary of clusters with top level keys the keyframe IDs and values another dictionary populated
+with ‘observations’ key with list of Observations.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="modeling.graphing.ObservationClusterer.generate_clusters">
+<code class="descname">generate_clusters</code><span class="sig-paren">(</span><em>demonstrations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/graphing.html#ObservationClusterer.generate_clusters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.graphing.ObservationClusterer.generate_clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the clustered Observations from a list of Demonstrations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>demonstrations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of the Demonstration objects from which labeled Observations.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>clusters</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary of clusters with top level keys the keyframe IDs and values another dictionary populated
+with pertinent information associated with each keyframe (i.e. keyframe type, applied constraints etc,.)</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-modeling.models">
+<span id="modeling-models-module"></span><h2>modeling.models module<a class="headerlink" href="#module-modeling.models" title="Permalink to this headline">¶</a></h2>
+<p>python object wrappers for modeling</p>
+<dl class="class">
+<dt id="modeling.models.GaussianMixtureModel">
+<em class="property">class </em><code class="descclassname">modeling.models.</code><code class="descname">GaussianMixtureModel</code><span class="sig-paren">(</span><em>observations</em>, <em>n_components=5</em>, <em>means_init=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/models.html#GaussianMixtureModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.models.GaussianMixtureModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper class for Scikit Learn’s Gaussian Mixture Model.</p>
+<dl class="method">
+<dt id="modeling.models.GaussianMixtureModel.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/models.html#GaussianMixtureModel.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.models.GaussianMixtureModel.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper method for fit() method of kmeans model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="modeling.models.GaussianMixtureModel.generate_samples">
+<code class="descname">generate_samples</code><span class="sig-paren">(</span><em>n_samples</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/models.html#GaussianMixtureModel.generate_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.models.GaussianMixtureModel.generate_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the random samples according to the fitted distrubution.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>list</strong></dt>
+<dd><p class="first last">List of numpy arrays of randomly generated observations.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="modeling.models.GaussianMixtureModel.score_samples">
+<code class="descname">score_samples</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/models.html#GaussianMixtureModel.score_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.models.GaussianMixtureModel.score_samples" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="modeling.models.KDEModel">
+<em class="property">class </em><code class="descclassname">modeling.models.</code><code class="descname">KDEModel</code><span class="sig-paren">(</span><em>kernel='gaussian'</em>, <em>bandwidth=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/models.html#KDEModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.models.KDEModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper class for Scikit Learn’s Gaussian Mixture Model.</p>
+<dl class="method">
+<dt id="modeling.models.KDEModel.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>observation_vectors</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/models.html#KDEModel.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.models.KDEModel.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper method for fit() method of Kernel Density model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="modeling.models.KDEModel.generate_samples">
+<code class="descname">generate_samples</code><span class="sig-paren">(</span><em>n_samples</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/models.html#KDEModel.generate_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.models.KDEModel.generate_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the random samples according to the fitted distrubution.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>list</strong></dt>
+<dd><p class="first last">List of numpy arrays of randomly generated observations.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="modeling.models.KDEModel.score_samples">
+<code class="descname">score_samples</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/models.html#KDEModel.score_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.models.KDEModel.score_samples" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="modeling.models.KMeansModel">
+<em class="property">class </em><code class="descclassname">modeling.models.</code><code class="descname">KMeansModel</code><span class="sig-paren">(</span><em>observations</em>, <em>n_clusters=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/models.html#KMeansModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.models.KMeansModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper class for Scikit Learn’s KMeans clustering.</p>
+<dl class="method">
+<dt id="modeling.models.KMeansModel.get_cluster_samples">
+<code class="descname">get_cluster_samples</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/models.html#KMeansModel.get_cluster_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.models.KMeansModel.get_cluster_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the raw samples associated with each cluster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>list</strong></dt>
+<dd><p class="first last">List of numpy arrays of observations.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="modeling.models.KMeansModel.kmeans_fit">
+<code class="descname">kmeans_fit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/models.html#KMeansModel.kmeans_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.models.KMeansModel.kmeans_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper method for fit() method of kmeans model.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-modeling.sampling">
+<span id="modeling-sampling-module"></span><h2>modeling.sampling module<a class="headerlink" href="#module-modeling.sampling" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="modeling.sampling.KeyframeSampler">
+<em class="property">class </em><code class="descclassname">modeling.sampling.</code><code class="descname">KeyframeSampler</code><span class="sig-paren">(</span><em>analyzer</em>, <em>data_converter</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/sampling.html#KeyframeSampler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.sampling.KeyframeSampler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sampling class that uses model representing a keyframe to sample points.</p>
+<dl class="method">
+<dt id="modeling.sampling.KeyframeSampler.generate_n_valid_samples">
+<code class="descname">generate_n_valid_samples</code><span class="sig-paren">(</span><em>model</em>, <em>constraint_ids</em>, <em>n=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/sampling.html#KeyframeSampler.generate_n_valid_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.sampling.KeyframeSampler.generate_n_valid_samples" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>model</strong> <span class="classifier-delimiter">:</span> <span class="classifier">object</span></dt>
+<dd><p class="first last">Model object used to generate raw samples.</p>
+</dd>
+<dt><strong>constraint_ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of constraint IDs required for validity.</p>
+</dd>
+<dt><strong>n</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of valid samples to generate.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>raw_samples</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of valid raw samples generated from the model.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="modeling.sampling.KeyframeSampler.generate_raw_samples">
+<code class="descname">generate_raw_samples</code><span class="sig-paren">(</span><em>model</em>, <em>num_of_samples</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/sampling.html#KeyframeSampler.generate_raw_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.sampling.KeyframeSampler.generate_raw_samples" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>model</strong> <span class="classifier-delimiter">:</span> <span class="classifier">object</span></dt>
+<dd><p class="first last">Model object used to generate raw samples.</p>
+</dd>
+<dt><strong>num_of_samples</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of samples to generate.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>raw_samples</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of raw samples generated from the model.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="modeling.sampling.KeyframeSampler.rank_samples">
+<code class="descname">rank_samples</code><span class="sig-paren">(</span><em>model</em>, <em>samples</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/sampling.html#KeyframeSampler.rank_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.sampling.KeyframeSampler.rank_samples" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>model</strong> <span class="classifier-delimiter">:</span> <span class="classifier">object</span></dt>
+<dd><p class="first last">Model object used to generate raw samples.</p>
+</dd>
+<dt><strong>samples</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of samples to rank according to their score as measured by the model.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>rank_sorted_sampled</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of rank (according to model scoring function) sorted samples (descending order).</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-modeling.visualization">
+<span id="modeling-visualization-module"></span><h2>modeling.visualization module<a class="headerlink" href="#module-modeling.visualization" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="modeling.visualization.GaussianMixtureModelViewer">
+<em class="property">class </em><code class="descclassname">modeling.visualization.</code><code class="descname">GaussianMixtureModelViewer</code><span class="sig-paren">(</span><em>gmm</em>, <em>observations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/visualization.html#GaussianMixtureModelViewer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.visualization.GaussianMixtureModelViewer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="modeling.visualization.GaussianMixtureModelViewer.view_2D_gaussians">
+<code class="descname">view_2D_gaussians</code><span class="sig-paren">(</span><em>x_index</em>, <em>y_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/visualization.html#GaussianMixtureModelViewer.view_2D_gaussians"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.visualization.GaussianMixtureModelViewer.view_2D_gaussians" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates 2D graph of distribution components of the of Gaussian Mixture model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>x_index</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Index of sample point to represent the x-axis value.</p>
+</dd>
+<dt><strong>y_index</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Index of sample point to represent the y-axis value.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="modeling.visualization.KMeansModelViewer">
+<em class="property">class </em><code class="descclassname">modeling.visualization.</code><code class="descname">KMeansModelViewer</code><span class="sig-paren">(</span><em>kmm</em>, <em>observations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/visualization.html#KMeansModelViewer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.visualization.KMeansModelViewer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="modeling.visualization.KMeansModelViewer.view_3D_clusters">
+<code class="descname">view_3D_clusters</code><span class="sig-paren">(</span><em>x_index</em>, <em>y_index</em>, <em>z_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/visualization.html#KMeansModelViewer.view_3D_clusters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.visualization.KMeansModelViewer.view_3D_clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates 3D graph of the clusters of KMeans model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>x_index</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Index of sample point to represent the x-axis value.</p>
+</dd>
+<dt><strong>y_index</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Index of sample point to represent the y-axis value.</p>
+</dd>
+<dt><strong>z_index</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Index of sample point to represent the z-axis value.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="modeling.visualization.SamplePointViewer">
+<em class="property">class </em><code class="descclassname">modeling.visualization.</code><code class="descname">SamplePointViewer</code><a class="reference internal" href="_modules/modeling/visualization.html#SamplePointViewer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.visualization.SamplePointViewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for viewing samples points via Matplotlib’s pyplot.</p>
+<dl class="method">
+<dt id="modeling.visualization.SamplePointViewer.view_3D_scatter">
+<code class="descname">view_3D_scatter</code><span class="sig-paren">(</span><em>sample_points</em>, <em>x_index</em>, <em>y_index</em>, <em>z_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/visualization.html#SamplePointViewer.view_3D_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#modeling.visualization.SamplePointViewer.view_3D_scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates 3D graph according of the passed in sample points.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>sample_points</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of numpy arrays (usually observations)</p>
+</dd>
+<dt><strong>x_index</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Index of sample point to represent the x-axis value.</p>
+</dd>
+<dt><strong>y_index</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Index of sample point to represent the y-axis value.</p>
+</dd>
+<dt><strong>z_index</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Index of sample point to represent the z-axis value.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="lfd.html" class="btn btn-neutral" title="lfd package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Carl Mueller.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

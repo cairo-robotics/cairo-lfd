@@ -127,7 +127,10 @@
            <div itemprop="articleBody">
             
   <h1>Source code for modeling.visualization</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The visualization.py module constains classes for viewing sample poitns and models used in Cairo LfD.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="k">import</span> <span class="n">colorConverter</span>
 <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="k">import</span> <span class="n">Axes3D</span>
@@ -136,11 +139,9 @@
 
 
 <div class="viewcode-block" id="SamplePointViewer"><a class="viewcode-back" href="../../modeling.html#modeling.visualization.SamplePointViewer">[docs]</a><span class="k">class</span> <span class="nc">SamplePointViewer</span><span class="p">:</span>
-
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for viewing samples points via Matplotlib&#39;s pyplot.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
 <div class="viewcode-block" id="SamplePointViewer.view_3D_scatter"><a class="viewcode-back" href="../../modeling.html#modeling.visualization.SamplePointViewer.view_3D_scatter">[docs]</a>    <span class="k">def</span> <span class="nf">view_3D_scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_points</span><span class="p">,</span> <span class="n">x_index</span><span class="p">,</span> <span class="n">y_index</span><span class="p">,</span> <span class="n">z_index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generates 3D graph according of the passed in sample points.</span>
@@ -164,10 +165,27 @@
 
 
 <div class="viewcode-block" id="KMeansModelViewer"><a class="viewcode-back" href="../../modeling.html#modeling.visualization.KMeansModelViewer">[docs]</a><span class="k">class</span> <span class="nc">KMeansModelViewer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for viewing observation vector representation with KMeansModel.</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kmm</span><span class="p">,</span> <span class="n">observations</span><span class="p">):</span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    kmm : KMeansModel</span>
+<span class="sd">        Model to visualize.</span>
+<span class="sd">    observation_vectors : list</span>
+<span class="sd">        List of vectorized Observations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kmm</span><span class="p">,</span> <span class="n">observation_vectors</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        kmm : KMeansModel</span>
+<span class="sd">            Model to visualize.</span>
+<span class="sd">        observation_vectors : list</span>
+<span class="sd">            List of vectorized Observations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kmm</span> <span class="o">=</span> <span class="n">kmm</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">observations</span> <span class="o">=</span> <span class="n">observations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observation_vectors</span> <span class="o">=</span> <span class="n">observation_vectors</span>
 
 <div class="viewcode-block" id="KMeansModelViewer.view_3D_clusters"><a class="viewcode-back" href="../../modeling.html#modeling.visualization.KMeansModelViewer.view_3D_clusters">[docs]</a>    <span class="k">def</span> <span class="nf">view_3D_clusters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_index</span><span class="p">,</span> <span class="n">y_index</span><span class="p">,</span> <span class="n">z_index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -192,7 +210,7 @@
         <span class="n">ax</span> <span class="o">=</span> <span class="n">Axes3D</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">autoscale_view</span><span class="p">()</span>
 
-        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observations</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_vectors</span>
 
         <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">colors</span><span class="p">):</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">n</span><span class="p">)]</span>
@@ -203,10 +221,27 @@
 
 
 <div class="viewcode-block" id="GaussianMixtureModelViewer"><a class="viewcode-back" href="../../modeling.html#modeling.visualization.GaussianMixtureModelViewer">[docs]</a><span class="k">class</span> <span class="nc">GaussianMixtureModelViewer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for viewing observation vector representaions within Gaussian Mixture Model.</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gmm</span><span class="p">,</span> <span class="n">observations</span><span class="p">):</span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    kmm : KMeansModel</span>
+<span class="sd">        Model to visualize.</span>
+<span class="sd">    observation_vectors : list</span>
+<span class="sd">        List of vectorized Observations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gmm</span><span class="p">,</span> <span class="n">observation_vectors</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gmm : GaussianMixtureModel</span>
+<span class="sd">            Model to visualize.</span>
+<span class="sd">        observation_vectors : list</span>
+<span class="sd">            List of vectorized Observations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gmm</span> <span class="o">=</span> <span class="n">gmm</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">observations</span> <span class="o">=</span> <span class="n">observations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observation_vectors</span> <span class="o">=</span> <span class="n">observation_vectors</span>
 
 <div class="viewcode-block" id="GaussianMixtureModelViewer.view_2D_gaussians"><a class="viewcode-back" href="../../modeling.html#modeling.visualization.GaussianMixtureModelViewer.view_2D_gaussians">[docs]</a>    <span class="k">def</span> <span class="nf">view_2D_gaussians</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_index</span><span class="p">,</span> <span class="n">y_index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -224,8 +259,8 @@
         <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
 
-        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observations</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gmm</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observations</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_vectors</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gmm</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_vectors</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__make_ellipses</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gmm</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">colors</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">colors</span><span class="p">):</span>

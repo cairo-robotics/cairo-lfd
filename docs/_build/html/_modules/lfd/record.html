@@ -127,15 +127,35 @@
            <div itemprop="articleBody">
             
   <h1>Source code for lfd.record</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">rospy</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The record.py module contains classes and methods for recording data during live demonstrations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">rospy</span>
 <span class="kn">from</span> <span class="nn">lfd.environment</span> <span class="k">import</span> <span class="n">Observation</span><span class="p">,</span> <span class="n">Demonstration</span>
 
 
 <div class="viewcode-block" id="SawyerRecorder"><a class="viewcode-back" href="../../lfd.html#lfd.record.SawyerRecorder">[docs]</a><span class="k">class</span> <span class="nc">SawyerRecorder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to record state data from the ReThink Robotics Sawyer robot for capturing demonstrated data for </span>
+<span class="sd">    LfD experimentation.</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">):</span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _raw_rate : int</span>
+<span class="sd">        The rate at which to capture state data.</span>
+<span class="sd">    _rate : int</span>
+<span class="sd">        The ROScore rate.</span>
+<span class="sd">    _start_time : float</span>
+<span class="sd">        Current time in ROScore.</span>
+<span class="sd">    _done : bool</span>
+<span class="sd">        Termination flag.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rate</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Records joint data to a file at a specified rate.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rate : int</span>
+<span class="sd">            The rate at which to capture state data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raw_rate</span> <span class="o">=</span> <span class="n">rate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rate</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Rate</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span>
@@ -143,17 +163,29 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_done</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">_time_stamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Captures time difference from start time to current time.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ----------</span>
+<span class="sd">         : float</span>
+<span class="sd">            Current time passed so far.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
 
 <div class="viewcode-block" id="SawyerRecorder.stop"><a class="viewcode-back" href="../../lfd.html#lfd.record.SawyerRecorder.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Stop recording.</span>
+<span class="sd">        Stop recording by setting _done flag to True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_done</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="SawyerRecorder.done"><a class="viewcode-back" href="../../lfd.html#lfd.record.SawyerRecorder.done">[docs]</a>    <span class="k">def</span> <span class="nf">done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return whether or not recording is done.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        : bool</span>
+<span class="sd">            The _done attribute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rospy</span><span class="o">.</span><span class="n">is_shutdown</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
@@ -166,6 +198,16 @@
 <span class="sd">        joint angles in a csv format.</span>
 
 <span class="sd">        If a file exists, the function will overwrite existing file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        environment: Environment</span>
+<span class="sd">            The Environment object of the current LfD experiment.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        demosntrations : list</span>
+<span class="sd">            List of Demonstration objects each of which captures Observations during user demonstrations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">robot</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">robot</span>
 

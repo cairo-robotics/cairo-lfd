@@ -18,7 +18,17 @@ def import_configuration(filepath):
 
 class Environment(object):
     """
-    HeightConstraint class to evaluate the height predicate classifier assigned to a given item.
+    Environment container class that houses various objects (items, robots, constraints) relevant to conducting 
+    LfD experimentation.
+
+    Attributes
+    ----------
+    items : list
+        List of environment items/objects i.e. blocks, spatulasm, cups etc,.. of the AbstractItem class.
+    robot : SawyerRobot
+        AbstractItem extended class object representing the robot.
+    constraints : list
+        List of constrain class objects representing the available constraints for the Demonstration.
     """
     def __init__(self, items, robot, constraints):
         """
@@ -124,6 +134,15 @@ class Environment(object):
 class Demonstration(object):
     """
     Demonstration object to contain list of osbervations and various methods to perform on those observations.
+
+    Attributes
+    ----------
+    observations : list
+        List of Observation objects representing raw observations from demonstration. (Requried)
+    aligned_observation : SawyerRobot
+        List of Observation objects representing DTW aligned observations.
+    labeled_observations : list
+        List of Observation objects representing keyframe labeled observations.
     """
     def __init__(self, observations, aligned_observation=None, labeled_observations=None):
         """
@@ -135,7 +154,6 @@ class Demonstration(object):
             List of Observation objects representing DTW aligned observations.
         labeled_observations : list
             List of Observation objects representing keyframe labeled observations.
-
         """
         self.observations = observations
         self.aligned_observation = aligned_observation
@@ -180,15 +198,8 @@ class Observation(object):
     """
     Observation object to contain raw dictionary data for an observation and retrieval methods for that data.
 
-    Attributes
-    ----------
-
-    data : dict
-        Dictionary of raw data collecting item, robot and constraint states.
-
     Example
     -------
-
     .. code-block:: json
 
         {
@@ -252,6 +263,12 @@ class Observation(object):
             "time": 0.38476085662841797,
             "triggered_constraints": []
         }
+
+    Attributes
+    ----------
+    data : dict
+        Dictionary of raw data collecting item, robot and constraint states.
+
     """
 
     def __init__(self, observation_data):

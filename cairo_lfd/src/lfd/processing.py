@@ -38,13 +38,21 @@ def convert_data_to_pose(position, orientation):
 
 
 class SawyerSampleConverter(object):
+    """
+    Converts raw samples generated from models into Observation objects.
+
+    Attributes
+    ----------
+    interface : object
+        SawyerMoveitInterface to help run forward kinematics.
+    """
 
     def __init__(self, interface):
         self.interface = interface
 
     def convert(self, sample, run_fk=False, normalize_quaternion=False):
         """
-
+        Converts raw samples generated from models into Observation objects.
 
         Parameters
         ----------
@@ -62,7 +70,6 @@ class SawyerSampleConverter(object):
         obsv : lfd.environment.Observation
             Observation object constructed from the converted sample.
         """
-
         if run_fk is True:
             sample = self._run_foward_kinematics(sample)
         if normalize_quaternion:
@@ -78,6 +85,19 @@ class SawyerSampleConverter(object):
         return obsv
 
     def _run_foward_kinematics(self, sample):
+        """
+        Runs forward kinematics on raw sample vector of robot joint configuration.
+
+        Parameters
+        ----------
+        sample : list
+            Raw sample joint configuration on which to run FK.
+
+        Returns
+        -------
+        sample : list
+            Appended list of numerical values now containing pose information.
+        """
         pose = self.interface.get_FK_pose(sample)
         if pose is not None:
             sample = np.insert(sample, 0, pose.orientation.w, axis=0)
@@ -90,7 +110,19 @@ class SawyerSampleConverter(object):
         return sample
 
     def _normalize_quaternion(self, x, y, z, w):
+        """
+        Normalizes quaternion values.
 
+        Parameters
+        ----------
+        x,y,z,w : float
+            Quaternion values
+
+        Returns
+        -------
+        x,y,z,w : float
+            Normalized quaternion values
+        """
         normalize = np.sqrt(x**2 + y**2 +
                             z**2 + w**2)
         x = x / normalize

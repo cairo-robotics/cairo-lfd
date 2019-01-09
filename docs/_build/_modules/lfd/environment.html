@@ -147,7 +147,17 @@
 
 <div class="viewcode-block" id="Environment"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Environment">[docs]</a><span class="k">class</span> <span class="nc">Environment</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    HeightConstraint class to evaluate the height predicate classifier assigned to a given item.</span>
+<span class="sd">    Environment container class that houses various objects (items, robots, constraints) relevant to conducting </span>
+<span class="sd">    LfD experimentation.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    items : list</span>
+<span class="sd">        List of environment items/objects i.e. blocks, spatulasm, cups etc,.. of the AbstractItem class.</span>
+<span class="sd">    robot : SawyerRobot</span>
+<span class="sd">        AbstractItem extended class object representing the robot.</span>
+<span class="sd">    constraints : list</span>
+<span class="sd">        List of constrain class objects representing the available constraints for the Demonstration.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">robot</span><span class="p">,</span> <span class="n">constraints</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -253,6 +263,15 @@
 <div class="viewcode-block" id="Demonstration"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Demonstration">[docs]</a><span class="k">class</span> <span class="nc">Demonstration</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Demonstration object to contain list of osbervations and various methods to perform on those observations.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    observations : list</span>
+<span class="sd">        List of Observation objects representing raw observations from demonstration. (Requried)</span>
+<span class="sd">    aligned_observation : SawyerRobot</span>
+<span class="sd">        List of Observation objects representing DTW aligned observations.</span>
+<span class="sd">    labeled_observations : list</span>
+<span class="sd">        List of Observation objects representing keyframe labeled observations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">,</span> <span class="n">aligned_observation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labeled_observations</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -264,7 +283,6 @@
 <span class="sd">            List of Observation objects representing DTW aligned observations.</span>
 <span class="sd">        labeled_observations : list</span>
 <span class="sd">            List of Observation objects representing keyframe labeled observations.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observations</span> <span class="o">=</span> <span class="n">observations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">aligned_observation</span> <span class="o">=</span> <span class="n">aligned_observation</span>
@@ -309,15 +327,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Observation object to contain raw dictionary data for an observation and retrieval methods for that data.</span>
 
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-
-<span class="sd">    data : dict</span>
-<span class="sd">        Dictionary of raw data collecting item, robot and constraint states.</span>
-
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
-
 <span class="sd">    .. code-block:: json</span>
 
 <span class="sd">        {</span>
@@ -381,6 +392,12 @@
 <span class="sd">            &quot;time&quot;: 0.38476085662841797,</span>
 <span class="sd">            &quot;triggered_constraints&quot;: []</span>
 <span class="sd">        }</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : dict</span>
+<span class="sd">        Dictionary of raw data collecting item, robot and constraint states.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_data</span><span class="p">):</span>

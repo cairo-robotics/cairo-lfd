@@ -1,3 +1,6 @@
+"""
+The module graphing.py contains classes for building graphical structures of learned skills for Keyframe-based LfD.
+"""
 import itertools
 from collections import defaultdict
 import rospy
@@ -9,7 +12,6 @@ class KeyframeGraph(MultiDiGraph):
     """
     NetworkX MultiDiGraph extended graph class for containing keyframes and their corresponding models.
     """
-
     def __init__(self):
         MultiDiGraph.__init__(self)
 
@@ -22,7 +24,6 @@ class KeyframeGraph(MultiDiGraph):
         node_chain : list
             List of keyframe/node sequence.
         """
-
         node_chain = list(set(itertools.chain(*self.edges())))
         node_chain.sort()
         return node_chain
@@ -36,7 +37,6 @@ class KeyframeGraph(MultiDiGraph):
         node: hashable networkx node name (usually int)
             the node to be removed from network x graph
         """
-
         next_nodes = [x for x in self.successors(node)]
         prev_nodes = [x for x in self.predecessors(node)]
         if next_nodes == []:
@@ -66,7 +66,6 @@ class KeyframeGraph(MultiDiGraph):
             Function that takes observations stored in graph and converts their data into vector form for use by model
             fitting function.
         """
-
         for node in self.nodes():
             np_array = []
             for obsv in self.nodes[node]["observations"]:
@@ -81,7 +80,6 @@ class ObservationClusterer():
     Clusters together observations by keyframe ID and gathers pertinent information regarding each keyframe. This will
     be used by a KeyframeGraph object.
     """
-
     def generate_clusters(self, demonstrations):
         """
         Generates the clustered Observations from a list of Demonstrations.
@@ -97,7 +95,6 @@ class ObservationClusterer():
             Dictionary of clusters with top level keys the keyframe IDs and values another dictionary populated
             with pertinent information associated with each keyframe (i.e. keyframe type, applied constraints etc,.)
         """
-
         observations = []
         for demo in demonstrations:
             for obsv in demo.observations:
@@ -110,7 +107,7 @@ class ObservationClusterer():
 
     def cluster_observations_by_id(self, observations):
         """
-        Takes in a the entirety of observations from all Demosntrations and groups them together 
+        Takes in a the entirety of observations from all Demosntrations and groups them together
         by keyframe ID.
 
         Parameters
@@ -124,7 +121,6 @@ class ObservationClusterer():
             Dictionary of clusters with top level keys the keyframe IDs and values another dictionary populated
             with 'observations' key with list of Observations.
         """
-
         clusters = defaultdict(lambda: {"observations": []})
 
         for obsv in observations:
@@ -137,13 +133,11 @@ class ObservationClusterer():
         """
         Assigns the keyframe type for the given keyframe cluster.
 
-
         Parameters
         ----------
         cluster : dict
             Dictionary to assign the keyframe type.
         """
-
         keyframe_type = cluster['observations'][0].get_keyframe_info()[1]
         cluster["keyframe_type"] = keyframe_type
 
@@ -156,6 +150,5 @@ class ObservationClusterer():
         cluster : dict
             Dictionary to assign the applied constraints..
         """
-
         applied_constraints = cluster['observations'][0].get_applied_constraint_data()
         cluster["applied_constraints"] = applied_constraints

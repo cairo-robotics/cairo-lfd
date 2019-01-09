@@ -127,24 +127,32 @@
            <div itemprop="articleBody">
             
   <h1>Source code for modeling.sampling</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The module sampling.py contains classes for sampling and ranking points from Keyframe models.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">rospy</span>
 
 
 <div class="viewcode-block" id="KeyframeSampler"><a class="viewcode-back" href="../../modeling.html#modeling.sampling.KeyframeSampler">[docs]</a><span class="k">class</span> <span class="nc">KeyframeSampler</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sampling class that uses model representing a keyframe to sample points.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    analyzer : object</span>
+<span class="sd">        Analysis object that evaluates sampled points for their validity (constraint satisfcation).</span>
+<span class="sd">    data_converter : func</span>
+<span class="sd">        Function to convert a raw sample into an Observation object for use by the analyzer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analyzer</span><span class="p">,</span> <span class="n">data_converter</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        analyzer : object</span>
-<span class="sd">            Analysis object that evaluates sampled points for their validity (constraint satisfcation).</span>
+<span class="sd">        analyzer : ConstraintAnalyzer</span>
+<span class="sd">            Evaluates sampled points for their validity (constraint satisfcation).</span>
 <span class="sd">        data_converter : func</span>
 <span class="sd">            Function to convert a raw sample into an Observation object for use by the analyzer.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">analyzer</span> <span class="o">=</span> <span class="n">analyzer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">converter</span> <span class="o">=</span> <span class="n">data_converter</span>
@@ -163,7 +171,6 @@
 <span class="sd">        raw_samples : list</span>
 <span class="sd">            List of raw samples generated from the model.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">raw_samples</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate_samples</span><span class="p">(</span><span class="n">num_of_samples</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">raw_samples</span></div>
 
@@ -183,7 +190,6 @@
 <span class="sd">        raw_samples : list</span>
 <span class="sd">            List of valid raw samples generated from the model.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">valid_samples</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">attempts</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_samples</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
@@ -214,7 +220,6 @@
 <span class="sd">        rank_sorted_sampled : list</span>
 <span class="sd">            List of rank (according to model scoring function) sorted samples (descending order).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;No samples to rank.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[]</span>

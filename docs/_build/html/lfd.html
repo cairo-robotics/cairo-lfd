@@ -981,6 +981,25 @@ are the Environment, Demonstration, and Obsevation used throughout Cairo LfD’s
 <dt id="lfd.environment.Demonstration">
 <em class="property">class </em><code class="descclassname">lfd.environment.</code><code class="descname">Demonstration</code><span class="sig-paren">(</span><em>observations</em>, <em>aligned_observation=None</em>, <em>labeled_observations=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Demonstration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Demonstration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Demonstration object to contain list of osbervations and various methods to perform on those observations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>observations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of Observation objects representing raw observations from demonstration. (Requried)</p>
+</dd>
+<dt><strong>aligned_observation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SawyerRobot</span></dt>
+<dd><p class="first last">List of Observation objects representing DTW aligned observations.</p>
+</dd>
+<dt><strong>labeled_observations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of Observation objects representing keyframe labeled observations.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="lfd.environment.Demonstration.get_applied_constraint_order">
 <code class="descname">get_applied_constraint_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Demonstration.get_applied_constraint_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Demonstration.get_applied_constraint_order" title="Permalink to this definition">¶</a></dt>
@@ -1032,7 +1051,27 @@ the set of constraints applied.</p>
 <dl class="class">
 <dt id="lfd.environment.Environment">
 <em class="property">class </em><code class="descclassname">lfd.environment.</code><code class="descname">Environment</code><span class="sig-paren">(</span><em>items</em>, <em>robot</em>, <em>constraints</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Environment" title="Permalink to this definition">¶</a></dt>
-<dd><p>HeightConstraint class to evaluate the height predicate classifier assigned to a given item.</p>
+<dd><p>Environment container class that houses various objects (items, robots, constraints) relevant to conducting 
+LfD experimentation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>items</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of environment items/objects i.e. blocks, spatulasm, cups etc,.. of the AbstractItem class.</p>
+</dd>
+<dt><strong>robot</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SawyerRobot</span></dt>
+<dd><p class="first last">AbstractItem extended class object representing the robot.</p>
+</dd>
+<dt><strong>constraints</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of constrain class objects representing the available constraints for the Demonstration.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="lfd.environment.Environment.check_constraint_triggers">
 <code class="descname">check_constraint_triggers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Environment.check_constraint_triggers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Environment.check_constraint_triggers" title="Permalink to this definition">¶</a></dt>
@@ -1552,10 +1591,25 @@ The class field in the configuration determines which AbstractItem robot class t
 <dl class="class">
 <dt id="lfd.processing.SawyerSampleConverter">
 <em class="property">class </em><code class="descclassname">lfd.processing.</code><code class="descname">SawyerSampleConverter</code><span class="sig-paren">(</span><em>interface</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/processing.html#SawyerSampleConverter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.processing.SawyerSampleConverter" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Converts raw samples generated from models into Observation objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>interface</strong> <span class="classifier-delimiter">:</span> <span class="classifier">object</span></dt>
+<dd><p class="first last">SawyerMoveitInterface to help run forward kinematics.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
 <dt id="lfd.processing.SawyerSampleConverter.convert">
 <code class="descname">convert</code><span class="sig-paren">(</span><em>sample</em>, <em>run_fk=False</em>, <em>normalize_quaternion=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/processing.html#SawyerSampleConverter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.processing.SawyerSampleConverter.convert" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Converts raw samples generated from models into Observation objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -1620,13 +1674,42 @@ The class field in the configuration determines which AbstractItem robot class t
 </div>
 <div class="section" id="module-lfd.record">
 <span id="lfd-record-module"></span><h2>lfd.record module<a class="headerlink" href="#module-lfd.record" title="Permalink to this headline">¶</a></h2>
+<p>The record.py module contains classes and methods for recording data during live demonstrations.</p>
 <dl class="class">
 <dt id="lfd.record.SawyerRecorder">
-<em class="property">class </em><code class="descclassname">lfd.record.</code><code class="descname">SawyerRecorder</code><span class="sig-paren">(</span><em>rate</em>, <em>side='right'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/record.html#SawyerRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.record.SawyerRecorder" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<em class="property">class </em><code class="descclassname">lfd.record.</code><code class="descname">SawyerRecorder</code><span class="sig-paren">(</span><em>rate</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/record.html#SawyerRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.record.SawyerRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to record state data from the ReThink Robotics Sawyer robot for capturing demonstrated data for 
+LfD experimentation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>_raw_rate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The rate at which to capture state data.</p>
+</dd>
+<dt><strong>_rate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The ROScore rate.</p>
+</dd>
+<dt><strong>_start_time</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Current time in ROScore.</p>
+</dd>
+<dt><strong>_done</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">Termination flag.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
 <dt id="lfd.record.SawyerRecorder.done">
 <code class="descname">done</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/record.html#SawyerRecorder.done"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.record.SawyerRecorder.done" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return whether or not recording is done.</p>
+<p>Returns
+: bool</p>
+<blockquote>
+<div>The _done attribute.</div></blockquote>
 </dd></dl>
 
 <dl class="method">
@@ -1636,12 +1719,32 @@ The class field in the configuration determines which AbstractItem robot class t
 provided at construction this function will record the latest set of
 joint angles in a csv format.</p>
 <p>If a file exists, the function will overwrite existing file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>environment: Environment</strong></dt>
+<dd><p class="first last">The Environment object of the current LfD experiment.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>demosntrations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of Demonstration objects each of which captures Observations during user demonstrations.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lfd.record.SawyerRecorder.stop">
 <code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/record.html#SawyerRecorder.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.record.SawyerRecorder.stop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stop recording.</p>
+<dd><p>Stop recording by setting _done flag to True.</p>
 </dd></dl>
 
 </dd></dl>

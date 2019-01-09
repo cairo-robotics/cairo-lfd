@@ -1,12 +1,32 @@
+"""
+The record.py module contains classes and methods for recording data during live demonstrations.
+"""
 import rospy
 from lfd.environment import Observation, Demonstration
 
 
 class SawyerRecorder(object):
+    """
+    Class to record state data from the ReThink Robotics Sawyer robot for capturing demonstrated data for 
+    LfD experimentation.
 
-    def __init__(self, rate, side="right"):
+    Attributes
+    ----------
+    _raw_rate : int
+        The rate at which to capture state data.
+    _rate : int
+        The ROScore rate.
+    _start_time : float
+        Current time in ROScore.
+    _done : bool
+        Termination flag.
+    """
+    def __init__(self, rate):
         """
-        Records joint data to a file at a specified rate.
+        Parameters
+        ----------
+        rate : int
+            The rate at which to capture state data.
         """
         self._raw_rate = rate
         self._rate = rospy.Rate(rate)
@@ -14,17 +34,29 @@ class SawyerRecorder(object):
         self._done = False
 
     def _time_stamp(self):
+        """
+        Captures time difference from start time to current time.
+
+        Returns
+        ----------
+         : float
+            Current time passed so far.
+        """
         return rospy.get_time() - self._start_time
 
     def stop(self):
         """
-        Stop recording.
+        Stop recording by setting _done flag to True.
         """
         self._done = True
 
     def done(self):
         """
         Return whether or not recording is done.
+
+        Returns
+        : bool
+            The _done attribute.
         """
         if rospy.is_shutdown():
             self.stop()
@@ -37,6 +69,16 @@ class SawyerRecorder(object):
         joint angles in a csv format.
 
         If a file exists, the function will overwrite existing file.
+
+        Parameters
+        ----------
+        environment: Environment
+            The Environment object of the current LfD experiment.
+
+        Returns
+        -------
+        demosntrations : list
+            List of Demonstration objects each of which captures Observations during user demonstrations.
         """
         robot = environment.robot
 

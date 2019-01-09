@@ -1,3 +1,6 @@
+"""
+The visualization.py module constains classes for viewing sample poitns and models used in Cairo LfD.
+"""
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 from matplotlib.colors import colorConverter
@@ -7,11 +10,9 @@ import numpy as np
 
 
 class SamplePointViewer:
-
     """
     Class for viewing samples points via Matplotlib's pyplot.
     """
-
     def view_3D_scatter(self, sample_points, x_index, y_index, z_index):
         """
         Generates 3D graph according of the passed in sample points.
@@ -35,10 +36,27 @@ class SamplePointViewer:
 
 
 class KMeansModelViewer:
+    """
+    Class for viewing observation vector representation with KMeansModel.
 
-    def __init__(self, kmm, observations):
+    Attributes
+    ----------
+    kmm : KMeansModel
+        Model to visualize.
+    observation_vectors : list
+        List of vectorized Observations.
+    """
+    def __init__(self, kmm, observation_vectors):
+        """
+        Parameters
+        ----------
+        kmm : KMeansModel
+            Model to visualize.
+        observation_vectors : list
+            List of vectorized Observations.
+        """
         self.kmm = kmm
-        self.observations = observations
+        self.observation_vectors = observation_vectors
 
     def view_3D_clusters(self, x_index, y_index, z_index):
         """
@@ -63,7 +81,7 @@ class KMeansModelViewer:
         ax = Axes3D(fig)
         ax.autoscale_view()
 
-        X = self.observations
+        X = self.observation_vectors
 
         for n, color in enumerate(colors):
             data = X[np.where(labels == n)]
@@ -74,10 +92,27 @@ class KMeansModelViewer:
 
 
 class GaussianMixtureModelViewer:
+    """
+    Class for viewing observation vector representaions within Gaussian Mixture Model.
 
-    def __init__(self, gmm, observations):
+    Attributes
+    ----------
+    kmm : KMeansModel
+        Model to visualize.
+    observation_vectors : list
+        List of vectorized Observations.
+    """
+    def __init__(self, gmm, observation_vectors):
+        """
+        Parameters
+        ----------
+        gmm : GaussianMixtureModel
+            Model to visualize.
+        observation_vectors : list
+            List of vectorized Observations.
+        """
         self.gmm = gmm
-        self.observations = observations
+        self.observation_vectors = observation_vectors
 
     def view_2D_gaussians(self, x_index, y_index):
         """
@@ -95,8 +130,8 @@ class GaussianMixtureModelViewer:
         fig = plt.figure(figsize=(10, 10))
         ax = plt.subplot(111)
 
-        X = self.observations
-        labels = self.gmm.model.predict(self.observations)
+        X = self.observation_vectors
+        labels = self.gmm.model.predict(self.observation_vectors)
 
         self.__make_ellipses(self.gmm.model, ax, colors)
         for n, color in enumerate(colors):

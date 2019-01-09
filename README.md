@@ -5,8 +5,7 @@ Learnning from demonstration (lfd) packages supporting robotic:kinesthetic learn
 
 ## Packages
 
-cairo_lfd - ROS package containing core libraries for building LFD environment, I/O, data processsing, and DTW alignment etc,. as well as core functionality for modeling keyframes and building graph structure of keyframes representing learned skills and path evaluation results.
-
+cairo_lfd - ROS package containing core libraries for building LFD environment, I/O, data processsing, and DTW alignment etc,. as well as core functionality for modeling keyframes and building graph structure of learned skills.
 
 lfd_experiments - ROS package containing executable scripts exemplifying some lfd_processor capabilities.
 

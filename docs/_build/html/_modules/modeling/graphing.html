@@ -127,7 +127,10 @@
            <div itemprop="articleBody">
             
   <h1>Source code for modeling.graphing</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The module graphing.py contains classes for building graphical structures of learned skills for Keyframe-based LfD.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
 <span class="kn">import</span> <span class="nn">rospy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -138,7 +141,6 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    NetworkX MultiDiGraph extended graph class for containing keyframes and their corresponding models.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">MultiDiGraph</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -151,7 +153,6 @@
 <span class="sd">        node_chain : list</span>
 <span class="sd">            List of keyframe/node sequence.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">node_chain</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">())))</span>
         <span class="n">node_chain</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">node_chain</span></div>
@@ -165,7 +166,6 @@
 <span class="sd">        node: hashable networkx node name (usually int)</span>
 <span class="sd">            the node to be removed from network x graph</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">next_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">node</span><span class="p">)]</span>
         <span class="n">prev_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">predecessors</span><span class="p">(</span><span class="n">node</span><span class="p">)]</span>
         <span class="k">if</span> <span class="n">next_nodes</span> <span class="o">==</span> <span class="p">[]:</span>
@@ -195,7 +195,6 @@
 <span class="sd">            Function that takes observations stored in graph and converts their data into vector form for use by model</span>
 <span class="sd">            fitting function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
             <span class="n">np_array</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">obsv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s2">&quot;observations&quot;</span><span class="p">]:</span>
@@ -210,7 +209,6 @@
 <span class="sd">    Clusters together observations by keyframe ID and gathers pertinent information regarding each keyframe. This will</span>
 <span class="sd">    be used by a KeyframeGraph object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
 <div class="viewcode-block" id="ObservationClusterer.generate_clusters"><a class="viewcode-back" href="../../modeling.html#modeling.graphing.ObservationClusterer.generate_clusters">[docs]</a>    <span class="k">def</span> <span class="nf">generate_clusters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demonstrations</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generates the clustered Observations from a list of Demonstrations.</span>
@@ -226,7 +224,6 @@
 <span class="sd">            Dictionary of clusters with top level keys the keyframe IDs and values another dictionary populated</span>
 <span class="sd">            with pertinent information associated with each keyframe (i.e. keyframe type, applied constraints etc,.)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">observations</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">demo</span> <span class="ow">in</span> <span class="n">demonstrations</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">obsv</span> <span class="ow">in</span> <span class="n">demo</span><span class="o">.</span><span class="n">observations</span><span class="p">:</span>
@@ -239,7 +236,7 @@
 
 <div class="viewcode-block" id="ObservationClusterer.cluster_observations_by_id"><a class="viewcode-back" href="../../modeling.html#modeling.graphing.ObservationClusterer.cluster_observations_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">cluster_observations_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Takes in a the entirety of observations from all Demosntrations and groups them together </span>
+<span class="sd">        Takes in a the entirety of observations from all Demosntrations and groups them together</span>
 <span class="sd">        by keyframe ID.</span>
 
 <span class="sd">        Parameters</span>
@@ -253,7 +250,6 @@
 <span class="sd">            Dictionary of clusters with top level keys the keyframe IDs and values another dictionary populated</span>
 <span class="sd">            with &#39;observations&#39; key with list of Observations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">clusters</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;observations&quot;</span><span class="p">:</span> <span class="p">[]})</span>
 
         <span class="k">for</span> <span class="n">obsv</span> <span class="ow">in</span> <span class="n">observations</span><span class="p">:</span>
@@ -266,13 +262,11 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Assigns the keyframe type for the given keyframe cluster.</span>
 
-
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cluster : dict</span>
 <span class="sd">            Dictionary to assign the keyframe type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">keyframe_type</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">[</span><span class="s1">&#39;observations&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_keyframe_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">cluster</span><span class="p">[</span><span class="s2">&quot;keyframe_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">keyframe_type</span></div>
 
@@ -285,7 +279,6 @@
 <span class="sd">        cluster : dict</span>
 <span class="sd">            Dictionary to assign the applied constraints..</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">applied_constraints</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">[</span><span class="s1">&#39;observations&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_applied_constraint_data</span><span class="p">()</span>
         <span class="n">cluster</span><span class="p">[</span><span class="s2">&quot;applied_constraints&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">applied_constraints</span></div></div>
 </pre></div>

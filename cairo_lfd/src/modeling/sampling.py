@@ -1,3 +1,6 @@
+"""
+The module sampling.py contains classes for sampling and ranking points from Keyframe models.
+"""
 import numpy as np
 import rospy
 
@@ -5,17 +8,22 @@ import rospy
 class KeyframeSampler():
     """
     Sampling class that uses model representing a keyframe to sample points.
-    """
 
+    Attributes
+    ----------
+    analyzer : object
+        Analysis object that evaluates sampled points for their validity (constraint satisfcation).
+    data_converter : func
+        Function to convert a raw sample into an Observation object for use by the analyzer.
+    """
     def __init__(self, analyzer, data_converter):
         """
         Parameters
         ----------
-        analyzer : object
-            Analysis object that evaluates sampled points for their validity (constraint satisfcation).
+        analyzer : ConstraintAnalyzer
+            Evaluates sampled points for their validity (constraint satisfcation).
         data_converter : func
             Function to convert a raw sample into an Observation object for use by the analyzer.
-
         """
         self.analyzer = analyzer
         self.converter = data_converter
@@ -34,7 +42,6 @@ class KeyframeSampler():
         raw_samples : list
             List of raw samples generated from the model.
         """
-
         raw_samples = model.generate_samples(num_of_samples)
         return raw_samples
 
@@ -54,7 +61,6 @@ class KeyframeSampler():
         raw_samples : list
             List of valid raw samples generated from the model.
         """
-
         valid_samples = []
         attempts = 0
         while len(valid_samples) < n:
@@ -85,7 +91,6 @@ class KeyframeSampler():
         rank_sorted_sampled : list
             List of rank (according to model scoring function) sorted samples (descending order).
         """
-
         if len(samples) == 0:
             rospy.logwarn("No samples to rank.")
             return []

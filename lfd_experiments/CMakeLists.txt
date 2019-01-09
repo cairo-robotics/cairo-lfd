@@ -5,13 +5,13 @@ find_package(catkin
 	REQUIRED
 	COMPONENTS
     rospy
-	lfd
+	cairo_lfd
 )
 
 catkin_package(
 	CATKIN_DEPENDS 
 	rospy
-	lfd
+	cairo_lfd
 )
 
 ###########

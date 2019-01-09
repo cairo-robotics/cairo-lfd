@@ -34,6 +34,6 @@
   <!-- Use depend as a shortcut for packages that are both build and exec dependencies -->
   <buildtool_depend>catkin</buildtool_depend>
   <depend>rospy</depend>
-  <depend>lfd</depend>
+  <depend>cairo_lfd</depend>
   
 </package>

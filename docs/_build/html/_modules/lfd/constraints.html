@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lfd.constraints &mdash; Cairo_LfD  documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="Cairo_LfD  documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Cairo_LfD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Cairo_LfD</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>lfd.constraints</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for lfd.constraints</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The constraints.py module contains a classes that encapsulate predicate classifiers used to</span>
+<span class="sd">evaluate binary value conceptual constraints.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">intera_interface</span>
+<span class="kn">from</span> <span class="nn">predicate_classification.predicate_classifiers</span> <span class="k">import</span> <span class="n">height</span><span class="p">,</span> <span class="n">upright</span>
+<span class="kn">from</span> <span class="nn">lfd.processing</span> <span class="k">import</span> <span class="n">convert_data_to_pose</span>
+
+
+<div class="viewcode-block" id="HeightConstraint"><a class="viewcode-back" href="../../lfd.html#lfd.constraints.HeightConstraint">[docs]</a><span class="k">class</span> <span class="nc">HeightConstraint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    HeightConstraint class to evaluate the height predicate classifier assigned to a given item.</span>
+
+<span class="sd">    height() returns true if object distance from reference_height is greater than threshold distnace.</span>
+
+<span class="sd">        A positive threshold distance mean height above</span>
+
+<span class="sd">        A negative threshold distance means height below.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id : int</span>
+<span class="sd">        Id of the constraint as defined in the config.json file.</span>
+<span class="sd">    item_id : int</span>
+<span class="sd">        Id of the item on which the constraint can be applied.</span>
+<span class="sd">    reference_height : int</span>
+<span class="sd">        The reference or starting height to compare an objects height distance against the threshold_distance.</span>
+<span class="sd">    threshold_distance : int</span>
+<span class="sd">        The distance from reference (positive: above; negative; below) to compare an object&#39;s distance</span>
+<span class="sd">        from reference.</span>
+<span class="sd">    button : string</span>
+<span class="sd">        String of a button for the intera_interface.Navigator().get_button_state(self.button) function to</span>
+<span class="sd">        check the trigger.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constraint_id</span><span class="p">,</span> <span class="n">item_id</span><span class="p">,</span> <span class="n">button</span><span class="p">,</span> <span class="n">reference_height</span><span class="p">,</span> <span class="n">threshold_distance</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        These arguemnts should be in the &quot;init_args&quot; field of the config.json file&#39;s entry representing</span>
+<span class="sd">        this constraint.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        constraint_id : int</span>
+<span class="sd">            Id of the constraint as defined in the config.json file.</span>
+<span class="sd">        item_id : int</span>
+<span class="sd">            Id of the item on which the constraint can be applied.</span>
+<span class="sd">        button : string</span>
+<span class="sd">            String of a button for the intera_interface.Navigator().get_button_state(self.button) function to</span>
+<span class="sd">            check the trigger.</span>
+<span class="sd">        reference_height : int</span>
+<span class="sd">            The reference or starting height to compare an objects height distance against the threshold_distance.</span>
+<span class="sd">        threshold_distance : int</span>
+<span class="sd">            The distance from reference (positive: above; negative; below) to compare an object&#39;s distance</span>
+<span class="sd">            from reference.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">constraint_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">item_id</span> <span class="o">=</span> <span class="n">item_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_height</span> <span class="o">=</span> <span class="n">reference_height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold_distance</span> <span class="o">=</span> <span class="n">threshold_distance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button</span> <span class="o">=</span> <span class="n">button</span>
+
+<div class="viewcode-block" id="HeightConstraint.check_trigger"><a class="viewcode-back" href="../../lfd.html#lfd.constraints.HeightConstraint.check_trigger">[docs]</a>    <span class="k">def</span> <span class="nf">check_trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function evaluates whether the constrain has been triggered. In this case,</span>
+<span class="sd">        this class&#39;s trigger uses the cuff buttons of Sawyer.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : int</span>
+<span class="sd">            Boolean value of trigger result.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">intera_interface</span><span class="o">.</span><span class="n">Navigator</span><span class="p">()</span><span class="o">.</span><span class="n">get_button_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">button</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="HeightConstraint.evaluate"><a class="viewcode-back" href="../../lfd.html#lfd.constraints.HeightConstraint.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">,</span> <span class="n">observation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function evaluates an observation for the assigned constraint of the class. It differentiates</span>
+<span class="sd">        betweeen Sawyer (end-effector) and general items (blocks etc,.).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        environment : Environment</span>
+<span class="sd">            The Environment object containing the current demonstrations environment (SawyerRobot, Items, Constraints)</span>
+<span class="sd">            and helper methods.</span>
+
+<span class="sd">        observation : Observation</span>
+<span class="sd">            The observation to evaluate for the constraint.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">         : int</span>
+<span class="sd">            Boolean value of constraint evaluation for the height constraint.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_id</span> <span class="o">==</span> <span class="n">environment</span><span class="o">.</span><span class="n">get_robot_info</span><span class="p">()[</span><span class="s2">&quot;id&quot;</span><span class="p">]:</span>
+            <span class="n">item_data</span> <span class="o">=</span> <span class="n">observation</span><span class="o">.</span><span class="n">get_robot_data</span><span class="p">()</span>
+            <span class="n">item_pose</span> <span class="o">=</span> <span class="n">convert_data_to_pose</span><span class="p">(</span><span class="n">item_data</span><span class="p">[</span><span class="s2">&quot;position&quot;</span><span class="p">],</span> <span class="n">item_data</span><span class="p">[</span><span class="s2">&quot;orientation&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">item_data</span> <span class="o">=</span> <span class="n">observation</span><span class="o">.</span><span class="n">get_item_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_id</span><span class="p">)</span>
+            <span class="n">item_pose</span> <span class="o">=</span> <span class="n">convert_data_to_pose</span><span class="p">(</span><span class="n">item_data</span><span class="p">[</span><span class="s2">&quot;position&quot;</span><span class="p">],</span> <span class="n">item_data</span><span class="p">[</span><span class="s2">&quot;orientation&quot;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">height</span><span class="p">(</span><span class="n">item_pose</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold_distance</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="UprightConstraint"><a class="viewcode-back" href="../../lfd.html#lfd.constraints.UprightConstraint">[docs]</a><span class="k">class</span> <span class="nc">UprightConstraint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Upright Constraint class to evaluate the upright predicate classifier assigned to a given item.</span>
+
+<span class="sd">    upright() returns true if object distance is within a threshold angle from its defined upright orientation,</span>
+<span class="sd">    pivoting around a given axis.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id : int</span>
+<span class="sd">        Id of the constraint as defined in the config.json file.</span>
+<span class="sd">    item_id : int</span>
+<span class="sd">        Id of the item on which the constraint can be applied.</span>
+<span class="sd">     threshold_angle : int</span>
+<span class="sd">        The angle within which the assigned item&#39;s (from item_id) current orientation must be compared with its</span>
+<span class="sd">        defined upright position.</span>
+<span class="sd">    axis : int</span>
+<span class="sd">        The axis from which angle of deviation is calculated.</span>
+<span class="sd">    button : string</span>
+<span class="sd">        String of a button for the intera_interface.Navigator().get_button_state(self.button) function to</span>
+<span class="sd">        check the trigger.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constraint_id</span><span class="p">,</span> <span class="n">item_id</span><span class="p">,</span> <span class="n">button</span><span class="p">,</span> <span class="n">threshold_angle</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        These arguments should be in the &quot;init_args&quot; field of the config.json file&#39;s entry representing this constraint.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        constraint_id : int</span>
+<span class="sd">            Id of the constraint as defined in the config.json file.</span>
+<span class="sd">        item_id : int</span>
+<span class="sd">            Id of the item on which the constraint can be applied.</span>
+<span class="sd">        button : string</span>
+<span class="sd">            String of a button for the intera_interface.Navigator().get_button_state(self.button) function to</span>
+<span class="sd">            check trigger.</span>
+<span class="sd">        threshold_angle : int</span>
+<span class="sd">            The angle within which the assigned item&#39;s (from item_id) current orientation must be compared with its</span>
+<span class="sd">            defined upright position.</span>
+<span class="sd">        axis : int</span>
+<span class="sd">            The axis from which angle of deviation is calculated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">constraint_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">item_id</span> <span class="o">=</span> <span class="n">item_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold_angle</span> <span class="o">=</span> <span class="n">threshold_angle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button</span> <span class="o">=</span> <span class="n">button</span>
+
+<div class="viewcode-block" id="UprightConstraint.check_trigger"><a class="viewcode-back" href="../../lfd.html#lfd.constraints.UprightConstraint.check_trigger">[docs]</a>    <span class="k">def</span> <span class="nf">check_trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function evaluates whether the constraint has been triggered. In this case,</span>
+<span class="sd">        this class&#39;s trigger uses the cuff buttons of Sawyer.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : int</span>
+<span class="sd">            Boolean value of trigger result.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">intera_interface</span><span class="o">.</span><span class="n">Navigator</span><span class="p">()</span><span class="o">.</span><span class="n">get_button_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">button</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="UprightConstraint.evaluate"><a class="viewcode-back" href="../../lfd.html#lfd.constraints.UprightConstraint.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">,</span> <span class="n">observation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function evaluates an observation for the assigned constraint of the class. It differentiates</span>
+<span class="sd">        betweeen Sawyer (end-effector) and general items (blocks etc,.).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        environment : Environment</span>
+<span class="sd">            The Environment object containing the current demonstrations environment (SawyerRobot, Items, Constraints)</span>
+<span class="sd">            and helper methods.</span>
+
+<span class="sd">        observation : Observation</span>
+<span class="sd">            The observation to evaluate for the constraint.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">         : int</span>
+<span class="sd">            Boolean value of constraint evaluation for the associate constraint and item.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_id</span> <span class="o">==</span> <span class="n">environment</span><span class="o">.</span><span class="n">get_robot_info</span><span class="p">()[</span><span class="s2">&quot;id&quot;</span><span class="p">]:</span>
+            <span class="n">item_data</span> <span class="o">=</span> <span class="n">observation</span><span class="o">.</span><span class="n">get_robot_data</span><span class="p">()</span>
+            <span class="n">item_info</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">get_robot_info</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">item_data</span> <span class="o">=</span> <span class="n">observation</span><span class="o">.</span><span class="n">get_item_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_id</span><span class="p">)</span>
+            <span class="n">item_info</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">get_item_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_id</span><span class="p">)</span>
+
+        <span class="n">current_pose</span> <span class="o">=</span> <span class="n">convert_data_to_pose</span><span class="p">(</span><span class="n">item_data</span><span class="p">[</span><span class="s2">&quot;position&quot;</span><span class="p">],</span> <span class="n">item_data</span><span class="p">[</span><span class="s2">&quot;orientation&quot;</span><span class="p">])</span>
+        <span class="n">upright_pose</span> <span class="o">=</span> <span class="n">convert_data_to_pose</span><span class="p">(</span><span class="n">item_info</span><span class="p">[</span><span class="s2">&quot;upright_pose&quot;</span><span class="p">][</span><span class="s2">&quot;position&quot;</span><span class="p">],</span> <span class="n">item_info</span><span class="p">[</span><span class="s2">&quot;upright_pose&quot;</span><span class="p">][</span><span class="s2">&quot;orientation&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">upright</span><span class="p">(</span><span class="n">upright_pose</span><span class="p">,</span> <span class="n">current_pose</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold_angle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Carl Mueller.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

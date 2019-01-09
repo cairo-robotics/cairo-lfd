@@ -1,0 +1,453 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lfd.alignment &mdash; Cairo_LfD  documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="Cairo_LfD  documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Cairo_LfD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Cairo_LfD</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>lfd.alignment</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for lfd.alignment</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The alignment.py module contains a variety of methods and classes used to align</span>
+<span class="sd">Demonstrations captured during the LfD process.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">rospy</span>
+<span class="kn">from</span> <span class="nn">fastdtw</span> <span class="k">import</span> <span class="n">fastdtw</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="k">import</span> <span class="n">euclidean</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+
+<div class="viewcode-block" id="vectorize_demonstration"><a class="viewcode-back" href="../../lfd.html#lfd.alignment.vectorize_demonstration">[docs]</a><span class="k">def</span> <span class="nf">vectorize_demonstration</span><span class="p">(</span><span class="n">demonstration</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Vectorizes a demonstration&#39;s observations through the union of the</span>
+<span class="sd">    robot&#39;s postion and robot&#39;s joints.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    demonstration : Demonstration</span>
+<span class="sd">      Demonstraions to vectorize.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    vectors : list</span>
+<span class="sd">        List of observation vectors.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">vectors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">observation</span> <span class="ow">in</span> <span class="n">demonstration</span><span class="o">.</span><span class="n">observations</span><span class="p">:</span>
+        <span class="n">position_data</span> <span class="o">=</span> <span class="n">observation</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;robot&quot;</span><span class="p">][</span><span class="s2">&quot;position&quot;</span><span class="p">]</span>
+        <span class="n">vector</span> <span class="o">=</span> <span class="n">position_data</span> 
+        <span class="n">vectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">vectors</span></div>
+
+
+<div class="viewcode-block" id="DemonstrationAligner"><a class="viewcode-back" href="../../lfd.html#lfd.alignment.DemonstrationAligner">[docs]</a><span class="k">class</span> <span class="nc">DemonstrationAligner</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Demonstration aligning class to align demonstrations, ensuring uniform constraint transitions across </span>
+<span class="sd">    all demosntrations.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    demonstrations : list</span>
+<span class="sd">       List of demonstraions to align.</span>
+
+<span class="sd">    vectorize_func : func</span>
+<span class="sd">        A function used to vectorize the dictionary data of a demonstrations observations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demonstrations</span><span class="p">,</span> <span class="n">vectorize_func</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        demonstrations : list</span>
+<span class="sd">           List of demonstraions to align.</span>
+
+<span class="sd">        vectorize_func : func</span>
+<span class="sd">            A function used to vectorize the dictionary data of a demonstrations observations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">demonstrations</span> <span class="o">=</span> <span class="n">demonstrations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vectorize_func</span> <span class="o">=</span> <span class="n">vectorize_func</span>
+
+<div class="viewcode-block" id="DemonstrationAligner.align"><a class="viewcode-back" href="../../lfd.html#lfd.alignment.DemonstrationAligner.align">[docs]</a>    <span class="k">def</span> <span class="nf">align</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alignment is performed using the FastDTW algorithm. It first separates trajectories that are constraint</span>
+<span class="sd">        annotated, and aligns those first. Secondly, arbitrarily uses one of those trajectories as a reference</span>
+<span class="sd">        against which to align all the remainin trajectories captured during demonstrations. If there are no </span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self.demonstrations : tuple</span>
+<span class="sd">            Returns the demonstrations each having a new parameter called aligned_observations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;Aligning demosntrations...&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">demonstrations</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Error! You are attempting to align ONLY ONE OR ZERO demonstrations.&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">demo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">demonstrations</span><span class="p">:</span>
+            <span class="n">demo</span><span class="o">.</span><span class="n">aligned_observations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deep_copy_observations</span><span class="p">(</span><span class="n">demo</span><span class="o">.</span><span class="n">observations</span><span class="p">)</span>
+
+        <span class="n">constrained_demonstrations</span> <span class="o">=</span> <span class="p">[</span><span class="n">demo</span> <span class="k">for</span> <span class="n">demo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">demonstrations</span> <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">ob</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;applied_constraints&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span>  <span class="k">for</span> <span class="n">ob</span> <span class="ow">in</span> <span class="n">demo</span><span class="o">.</span><span class="n">observations</span><span class="p">])]</span>
+
+        <span class="c1"># Align constrained demosntrations first, else if there are none, align all the trajectories without considering</span>
+        <span class="c1"># constraints.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">constrained_demonstrations</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">constrained_demonstrations</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">observations</span><span class="p">))</span>
+            <span class="n">reference_demo</span> <span class="o">=</span> <span class="n">constrained_demonstrations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># Align constrained demonstrations first to ensure equivalent constraint transition mappings.</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_equivalent_constraint_transitions</span><span class="p">(</span><span class="n">constrained_demonstrations</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">curr_demo</span> <span class="ow">in</span> <span class="n">constrained_demonstrations</span><span class="p">:</span>
+                    <span class="c1"># first loop collects applied constraints into shortest demonstration as master reference</span>
+                    <span class="n">alignments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_alignment</span><span class="p">(</span><span class="n">curr_demo</span><span class="p">,</span> <span class="n">reference_demo</span><span class="p">)</span>
+                    <span class="n">curr_demo</span><span class="o">.</span><span class="n">aligned_observations</span> <span class="o">=</span> <span class="n">alignments</span><span class="p">[</span><span class="s2">&quot;current&quot;</span><span class="p">]</span>
+                    <span class="n">reference_demo</span><span class="o">.</span><span class="n">aligned_observations</span> <span class="o">=</span> <span class="n">alignments</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">]</span>
+
+            <span class="c1"># Realign until uniform constraint transition mappings across all demostrations</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_equivalent_constraint_transitions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">demonstrations</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">demonstrations</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">observations</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">curr_demo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">demonstrations</span><span class="p">:</span>
+                    <span class="n">alignments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_alignment</span><span class="p">(</span><span class="n">curr_demo</span><span class="p">,</span> <span class="n">reference_demo</span><span class="p">)</span>
+                    <span class="n">curr_demo</span><span class="o">.</span><span class="n">aligned_observations</span> <span class="o">=</span> <span class="n">alignments</span><span class="p">[</span><span class="s2">&quot;current&quot;</span><span class="p">]</span>
+                    <span class="n">reference_demo</span><span class="o">.</span><span class="n">aligned_observations</span> <span class="o">=</span> <span class="n">alignments</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">demonstrations</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">aligned_observations</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">reference_demo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">demonstrations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">curr_demo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">demonstrations</span><span class="p">:</span>
+                <span class="n">alignments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_alignment</span><span class="p">(</span><span class="n">curr_demo</span><span class="p">,</span> <span class="n">reference_demo</span><span class="p">)</span>
+                <span class="n">curr_demo</span><span class="o">.</span><span class="n">aligned_observations</span> <span class="o">=</span> <span class="n">alignments</span><span class="p">[</span><span class="s2">&quot;current&quot;</span><span class="p">]</span>
+                <span class="n">reference_demo</span><span class="o">.</span><span class="n">aligned_observations</span> <span class="o">=</span> <span class="n">alignments</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">]</span>
+
+        <span class="n">constraint_transitions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_universal_constraint_transitions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">demonstrations</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">demonstrations</span><span class="p">,</span> <span class="n">constraint_transitions</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_demo</span><span class="p">,</span> <span class="n">reference_demo</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function aligns two demonstrations and builds new observation lists.</span>
+
+<span class="sd">        Alignment is performed using the FastDTW algorithm.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        current_demo : Demonstration</span>
+<span class="sd">           The current demosntration being aligned.</span>
+
+<span class="sd">        current_demo : Demonstration</span>
+<span class="sd">           The reference demosntration.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : dict</span>
+<span class="sd">            Key: current; Value: A list of the current demonstration&#39;s new aligned observation list.</span>
+<span class="sd">            Key: reference; Value: A list of the reference demonstration&#39;s new aligned observation list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">demos</span> <span class="o">=</span> <span class="p">[</span><span class="n">current_demo</span><span class="p">,</span> <span class="n">reference_demo</span><span class="p">]</span>
+        <span class="n">demo_vectors</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">vectorize_func</span><span class="p">(</span><span class="n">demo</span><span class="p">)</span> <span class="k">for</span> <span class="n">demo</span> <span class="ow">in</span> <span class="n">demos</span><span class="p">]</span>
+        <span class="n">dist</span><span class="p">,</span> <span class="n">idx_pairs</span> <span class="o">=</span> <span class="n">fastdtw</span><span class="p">(</span><span class="n">demo_vectors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">demo_vectors</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dist</span><span class="o">=</span><span class="n">euclidean</span><span class="p">)</span>
+        <span class="c1"># idx_pairs = zip(path[0].tolist(), path[1].tolist())</span>
+
+        <span class="n">current_aligned_observations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">reference_aligned_observations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">idx_pairs</span><span class="p">:</span>
+            <span class="c1"># build new observation trajectory</span>
+            <span class="n">current_ob</span> <span class="o">=</span> <span class="n">demos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_observation_by_index</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">reference_ob</span> <span class="o">=</span> <span class="n">demos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_observation_by_index</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">constraint_union</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">current_ob</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;applied_constraints&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">reference_ob</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;applied_constraints&quot;</span><span class="p">]))</span>
+            <span class="n">current_ob</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;applied_constraints&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">constraint_union</span>
+            <span class="n">reference_ob</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;applied_constraints&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">constraint_union</span>
+            <span class="n">current_aligned_observations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_ob</span><span class="p">)</span>
+            <span class="n">reference_aligned_observations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reference_ob</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;current&quot;</span><span class="p">:</span> <span class="n">current_aligned_observations</span><span class="p">,</span>
+            <span class="s2">&quot;reference&quot;</span><span class="p">:</span> <span class="n">reference_aligned_observations</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_deep_copy_observations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterates of a list of observations and deep copies each.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        observations : list</span>
+<span class="sd">           Observations to be deep copied.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        new_observations: list</span>
+<span class="sd">            The deep copied observation list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_observations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ob</span> <span class="ow">in</span> <span class="n">observations</span><span class="p">:</span>
+            <span class="n">new_observations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">ob</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">new_observations</span>
+
+    <span class="k">def</span> <span class="nf">_get_applied_constraint_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the applied constraint order of a Demonstration&#39;s aligned observation list.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        constraint_order: list</span>
+<span class="sd">            List of list where each element is ordered by the sequence of the applied constraints and represents</span>
+<span class="sd">            the set of constraints applied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">constraint_order</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">curr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ob</span> <span class="ow">in</span> <span class="n">observations</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">curr</span> <span class="o">!=</span> <span class="n">ob</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;applied_constraints&quot;</span><span class="p">]:</span>
+                <span class="n">constraint_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ob</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;applied_constraints&quot;</span><span class="p">])</span>
+                <span class="n">curr</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;applied_constraints&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">constraint_order</span>
+
+    <span class="k">def</span> <span class="nf">_check_for_equivalent_constraint_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demonstrations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks for euivalent constraint transitions across all demonstrations. This should</span>
+<span class="sd">        occur after alignment.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        demonstrations : list</span>
+<span class="sd">           Demosntrations with which to generate the universal constraint transition map.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : boolean</span>
+<span class="sd">            Boolean value with True indicating equivalent constraint transitions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mappings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_applied_constraint_order</span><span class="p">(</span><span class="n">demo</span><span class="o">.</span><span class="n">observations</span><span class="p">)</span> <span class="k">for</span> <span class="n">demo</span> <span class="ow">in</span> <span class="n">demonstrations</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">mappings</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">mappings</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_get_universal_constraint_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demonstrations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates the universal constraint transition mapping for all ALIGNED demonstrations.</span>
+<span class="sd">        Raises an exception if any of the demosntrations has a difference mapping than</span>
+<span class="sd">        the others or if observations do not have aligned_observations instance variable populated.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        demonstrations : list</span>
+<span class="sd">           Demosntrations with which to generate the universal constraint transition map.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        mapping: list</span>
+<span class="sd">            The universal mapping of constraint transitions for all the demonstraionts.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mappings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_applied_constraint_order</span><span class="p">(</span><span class="n">demo</span><span class="o">.</span><span class="n">aligned_observations</span><span class="p">)</span> <span class="k">for</span> <span class="n">demo</span> <span class="ow">in</span> <span class="n">demonstrations</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AlignmentException</span><span class="p">(</span><span class="s2">&quot;_get_universal_constraint_transitions() can only align demos</span><span class="se">\</span>
+<span class="s2">                                     that have their aligned_observations instance variable populated&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mappings</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">mappings</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">mappings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unequivalent constraint transition mappings!&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AlignmentException"><a class="viewcode-back" href="../../lfd.html#lfd.alignment.AlignmentException">[docs]</a><span class="k">class</span> <span class="nc">AlignmentException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for exceptions in this module.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        expression : str</span>
+<span class="sd">            Expression used by Exception parent class.</span>
+
+<span class="sd">        message : str</span>
+<span class="sd">            Message used by Exception parent class describing the issue.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Carl Mueller.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

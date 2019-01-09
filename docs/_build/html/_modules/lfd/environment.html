@@ -1,0 +1,593 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lfd.environment &mdash; Cairo_LfD  documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="Cairo_LfD  documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Cairo_LfD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Cairo_LfD</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>lfd.environment</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for lfd.environment</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The enviornment.py module contains core data container classes and retrieval methods. The core classes</span>
+<span class="sd">are the Environment, Demonstration, and Obsevation used throughout Cairo LfD&#39;s codebase.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">geometry_msgs.msg</span> <span class="k">import</span> <span class="n">Pose</span>
+
+
+<div class="viewcode-block" id="import_configuration"><a class="viewcode-back" href="../../lfd.html#lfd.environment.import_configuration">[docs]</a><span class="k">def</span> <span class="nf">import_configuration</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper function around json.load() to import a config.json file used to inform the Environment object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Environment"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Environment">[docs]</a><span class="k">class</span> <span class="nc">Environment</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    HeightConstraint class to evaluate the height predicate classifier assigned to a given item.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">robot</span><span class="p">,</span> <span class="n">constraints</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        items : list</span>
+<span class="sd">            List of environment items/objects i.e. blocks, spatulasm, cups etc,.. of the AbstractItem class.</span>
+<span class="sd">        robot : SawyerRobot</span>
+<span class="sd">            AbstractItem extended class object representing the robot.</span>
+<span class="sd">        constraints : list</span>
+<span class="sd">            List of constrain class objects representing the available constraints for the Demonstration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="n">items</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">robot</span> <span class="o">=</span> <span class="n">robot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span> <span class="o">=</span> <span class="n">constraints</span>
+
+<div class="viewcode-block" id="Environment.get_robot_state"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Environment.get_robot_state">[docs]</a>    <span class="k">def</span> <span class="nf">get_robot_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the robot item&#39;s current state</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        entries : dict</span>
+<span class="sd">            Dictionary representing robot&#39;s state. See SawyerRobot class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="o">.</span><span class="n">get_state</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Environment.get_robot_info"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Environment.get_robot_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_robot_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the robot item&#39;s configuration information.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        entries : dict</span>
+<span class="sd">            Dictionary representing robot&#39;s information. See SawyerRobot class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="o">.</span><span class="n">get_info</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Environment.get_item_states"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Environment.get_item_states">[docs]</a>    <span class="k">def</span> <span class="nf">get_item_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the Environment&#39;s items states.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        entries : list</span>
+<span class="sd">            List of dictionaries for each of the Environment&#39;s items (exluding the robot item)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">item_states</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">:</span>
+                <span class="n">item_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">get_state</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">item_states</span></div>
+
+<div class="viewcode-block" id="Environment.get_item_info"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Environment.get_item_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_item_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the Environment&#39;s items information.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        entries : list</span>
+<span class="sd">            List of dictionaries for each of the Environment&#39;s items (exluding the robot item)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">item_info</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">:</span>
+                <span class="n">item_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">get_info</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">item_info</span></div>
+
+<div class="viewcode-block" id="Environment.get_constraint_by_id"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Environment.get_constraint_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_constraint_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constraint_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves a constraint from the Environment by it&#39;s id.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        iconstraint_id : int</span>
+<span class="sd">            The id of the constraint to retrieve.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : Constraint class</span>
+<span class="sd">            Constraint class for the given id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">constraint</span> <span class="k">for</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span> <span class="k">if</span> <span class="n">constraint</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">constraint_id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Environment.check_constraint_triggers"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Environment.check_constraint_triggers">[docs]</a>    <span class="k">def</span> <span class="nf">check_constraint_triggers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks all constraints for their trigger. A triggered constraint might be a button press on Sawyer&#39;s</span>
+<span class="sd">        cuff or a natural language dicated constraint.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        triggered_cosntraints: list</span>
+<span class="sd">          List of the id&#39;s of all the constraints currently triggered</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">triggered_constraints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">constraint</span><span class="o">.</span><span class="n">check_trigger</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">triggered_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">constraint</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">triggered_constraints</span></div></div>
+
+
+<div class="viewcode-block" id="Demonstration"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Demonstration">[docs]</a><span class="k">class</span> <span class="nc">Demonstration</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Demonstration object to contain list of osbervations and various methods to perform on those observations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">,</span> <span class="n">aligned_observation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labeled_observations</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        observations : list</span>
+<span class="sd">            List of Observation objects representing raw observations from demonstration. (Requried)</span>
+<span class="sd">        aligned_observation : SawyerRobot</span>
+<span class="sd">            List of Observation objects representing DTW aligned observations.</span>
+<span class="sd">        labeled_observations : list</span>
+<span class="sd">            List of Observation objects representing keyframe labeled observations.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observations</span> <span class="o">=</span> <span class="n">observations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aligned_observation</span> <span class="o">=</span> <span class="n">aligned_observation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labeled_observations</span> <span class="o">=</span> <span class="n">labeled_observations</span>
+
+<div class="viewcode-block" id="Demonstration.get_observation_by_index"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Demonstration.get_observation_by_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_observation_by_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns an raw observation by its index.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        idx : int</span>
+<span class="sd">            Index integer</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : Observation</span>
+<span class="sd">            The retrieved observation object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">observations</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Demonstration.get_applied_constraint_order"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Demonstration.get_applied_constraint_order">[docs]</a>    <span class="k">def</span> <span class="nf">get_applied_constraint_order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the applied constraint order of a Demonstration&#39;s aligned observation list.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        constraint_order: list</span>
+<span class="sd">            List of list where each element is ordered by the sequence of the applied constraints and represents</span>
+<span class="sd">            the set of constraints applied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">constraint_order</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">curr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ob</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aligned_observations</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">curr</span> <span class="o">!=</span> <span class="n">ob</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;applied_constraints&quot;</span><span class="p">]:</span>
+                <span class="n">constraint_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ob</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;applied_constraints&quot;</span><span class="p">])</span>
+                <span class="n">curr</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;applied_constraints&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">constraint_order</span></div></div>
+
+
+<div class="viewcode-block" id="Observation"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Observation">[docs]</a><span class="k">class</span> <span class="nc">Observation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Observation object to contain raw dictionary data for an observation and retrieval methods for that data.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    data : dict</span>
+<span class="sd">        Dictionary of raw data collecting item, robot and constraint states.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    .. code-block:: json</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &quot;applied_constraints&quot;: [],</span>
+<span class="sd">            &quot;items&quot;: [</span>
+<span class="sd">                {</span>
+<span class="sd">                    &quot;id&quot;: 1,</span>
+<span class="sd">                    &quot;orientation&quot;: [</span>
+<span class="sd">                        0.6874194527002508,</span>
+<span class="sd">                        -0.06937214001305077,</span>
+<span class="sd">                        0.7140914218104518,</span>
+<span class="sd">                        0.1127627754891884</span>
+<span class="sd">                    ],</span>
+<span class="sd">                    &quot;position&quot;: [</span>
+<span class="sd">                        0.8263962716618255,</span>
+<span class="sd">                        0.3449914200419018,</span>
+<span class="sd">                        -0.1353068521650853</span>
+
+<span class="sd">                },</span>
+<span class="sd">                {</span>
+<span class="sd">                    &quot;id&quot;: 2,</span>
+<span class="sd">                    &quot;orientation&quot;: [</span>
+<span class="sd">                        0.7874194527002508,</span>
+<span class="sd">                        -0.16937214001305077,</span>
+<span class="sd">                        0.23140914218104518,</span>
+<span class="sd">                        0.2327627754891884</span>
+<span class="sd">                    ],</span>
+<span class="sd">                    &quot;position&quot;: [</span>
+<span class="sd">                        0.1034962716618255,</span>
+<span class="sd">                        0.9469914200419018,</span>
+<span class="sd">                        -0.54330685216508534</span>
+<span class="sd">                    ]</span>
+<span class="sd">                }</span>
+<span class="sd">            ],</span>
+<span class="sd">            &quot;keyframe_id&quot;: null, =&gt; labeled_demosntration only</span>
+<span class="sd">            &quot;keyframe_type&quot;: null,  =&gt; labeled_demosntration only</span>
+<span class="sd">            &quot;robot&quot;: {</span>
+<span class="sd">                &quot;gripper&quot;: 0.0,</span>
+<span class="sd">                &quot;id&quot;: 1,</span>
+<span class="sd">                &quot;joints&quot;: [</span>
+<span class="sd">                    -0.1242646484375,</span>
+<span class="sd">                    0.1710810546875,</span>
+<span class="sd">                    3.044984375,</span>
+<span class="sd">                    -1.006376953125,</span>
+<span class="sd">                    -2.976296875,</span>
+<span class="sd">                    -1.216076171875,</span>
+<span class="sd">                    -1.41415234375</span>
+<span class="sd">                ],</span>
+<span class="sd">                &quot;orientation&quot;: [</span>
+<span class="sd">                    0.6874194527002508,</span>
+<span class="sd">                    -0.06937214001305077,</span>
+<span class="sd">                    0.7140914218104518,</span>
+<span class="sd">                    0.11276277548918841</span>
+<span class="sd">                ],</span>
+<span class="sd">                &quot;position&quot;: [</span>
+<span class="sd">                    0.8263962716618255,</span>
+<span class="sd">                    0.3449914200419018,</span>
+<span class="sd">                    -0.13530685216508534</span>
+<span class="sd">                ]</span>
+<span class="sd">            },</span>
+<span class="sd">            &quot;time&quot;: 0.38476085662841797,</span>
+<span class="sd">            &quot;triggered_constraints&quot;: []</span>
+<span class="sd">        }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        observation_data : dict</span>
+<span class="sd">            Dictionary of raw data collecting item, robot and constraint states.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">observation_data</span>
+
+<div class="viewcode-block" id="Observation.init_samples"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Observation.init_samples">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">init_samples</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pose</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">joints</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pose : array of pose data</span>
+<span class="sd">        orientation: array of orientation data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">observation_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;robot&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="n">orientation</span><span class="p">,</span>
+                                      <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="n">pose</span><span class="p">,</span>
+                                      <span class="s2">&quot;joints&quot;</span><span class="p">:</span> <span class="n">joints</span><span class="p">}}</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">observation_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Observation.get_timestamp"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Observation.get_timestamp">[docs]</a>    <span class="k">def</span> <span class="nf">get_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get&#39;s osbervations timestamp</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : float</span>
+<span class="sd">            Integer timestamp in milliseconds representing time from epoch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Observation.get_robot_data"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Observation.get_robot_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_robot_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the observation&#39;s robot data.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : dictionary</span>
+<span class="sd">            dictionary of robot data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;robot&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Observation.get_pose_list"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Observation.get_pose_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_pose_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the pose data of the observation as a list of numerical values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : list</span>
+<span class="sd">            combined data from position and orientation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">robot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_robot_data</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">robot</span><span class="p">[</span><span class="s2">&quot;orientation&quot;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">robot</span><span class="p">[</span><span class="s2">&quot;orientation&quot;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">robot</span><span class="p">[</span><span class="s2">&quot;position&quot;</span><span class="p">],</span> <span class="n">robot</span><span class="p">[</span><span class="s2">&quot;orientation&quot;</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">robot</span><span class="p">[</span><span class="s2">&quot;position&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">robot</span><span class="p">[</span><span class="s2">&quot;orientation&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Observation.get_joint_list"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Observation.get_joint_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_joint_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the joint data of the observation as a list of numerical values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : list</span>
+<span class="sd">            list of numerical joint values for the given robot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">robot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_robot_data</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">robot</span><span class="p">[</span><span class="s2">&quot;joints&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Observation.get_pose_msg"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Observation.get_pose_msg">[docs]</a>    <span class="k">def</span> <span class="nf">get_pose_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get pose data and return a pose msg type</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        --------</span>
+<span class="sd">        : geometry_msg Pose</span>
+<span class="sd">            a pose message of the observation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pose_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pose_list</span><span class="p">()</span>
+        <span class="n">pose_msg</span> <span class="o">=</span> <span class="n">Pose</span><span class="p">()</span>
+        <span class="n">pose_msg</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">pose_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pose_msg</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">pose_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">pose_msg</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">pose_list</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">pose_msg</span><span class="o">.</span><span class="n">orientation</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">pose_list</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">pose_msg</span><span class="o">.</span><span class="n">orientation</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">pose_list</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">pose_msg</span><span class="o">.</span><span class="n">orientation</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">pose_list</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+        <span class="n">pose_msg</span><span class="o">.</span><span class="n">orientation</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">pose_list</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">pose_msg</span></div>
+
+<div class="viewcode-block" id="Observation.get_keyframe_info"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Observation.get_keyframe_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_keyframe_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        send back tuple of keyframe num and type</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : tuple</span>
+<span class="sd">            (keyframe_id, keyframe_type)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;keyframe_id&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;keyframe_type&quot;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Observation.get_item_data"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Observation.get_item_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_item_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets an items information based on its id</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        observation_data : dict</span>
+<span class="sd">            Dictionary of raw data collecting item, robot and constraint states.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : float</span>
+<span class="sd">            Integer timestamp in milliseconds representing time from epoch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;items&quot;</span><span class="p">]:</span>
+            <span class="c1"># return first occurance, should only be one</span>
+            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">item_id</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">item</span></div>
+
+<div class="viewcode-block" id="Observation.get_triggered_constraint_data"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Observation.get_triggered_constraint_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_triggered_constraint_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the triggered constraints of an object.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : list</span>
+<span class="sd">            List of constraint id&#39;s.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;triggered_constraints&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Observation.get_applied_constraint_data"><a class="viewcode-back" href="../../lfd.html#lfd.environment.Observation.get_applied_constraint_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_applied_constraint_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the applied constraints of an object.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        : list</span>
+<span class="sd">            List of constraint id&#39;s.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;applied_constraints&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;applied_constraints&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Carl Mueller.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

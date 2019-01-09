@@ -1,0 +1,1721 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lfd package &mdash; Cairo_LfD  documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Cairo_LfD  documentation" href="index.html"/>
+        <link rel="up" title="src" href="modules.html"/>
+        <link rel="next" title="modeling package" href="modeling.html"/>
+        <link rel="prev" title="src" href="modules.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Cairo_LfD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">lfd package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-lfd.alignment">lfd.alignment module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lfd.analysis">lfd.analysis module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lfd.constraints">lfd.constraints module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lfd.data_io">lfd.data_io module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lfd.environment">lfd.environment module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lfd.items">lfd.items module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lfd.processing">lfd.processing module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lfd.record">lfd.record module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modeling.html">modeling package</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Cairo_LfD</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="modules.html">src</a> &raquo;</li>
+      
+    <li>lfd package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/lfd.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="lfd-package">
+<h1>lfd package<a class="headerlink" href="#lfd-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-lfd.alignment">
+<span id="lfd-alignment-module"></span><h2>lfd.alignment module<a class="headerlink" href="#module-lfd.alignment" title="Permalink to this headline">¶</a></h2>
+<p>The alignment.py module contains a variety of methods and classes used to align
+Demonstrations captured during the LfD process.</p>
+<dl class="exception">
+<dt id="lfd.alignment.AlignmentException">
+<em class="property">exception </em><code class="descclassname">lfd.alignment.</code><code class="descname">AlignmentException</code><span class="sig-paren">(</span><em>expression</em>, <em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/alignment.html#AlignmentException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.alignment.AlignmentException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for exceptions in this module.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lfd.alignment.DemonstrationAligner">
+<em class="property">class </em><code class="descclassname">lfd.alignment.</code><code class="descname">DemonstrationAligner</code><span class="sig-paren">(</span><em>demonstrations</em>, <em>vectorize_func</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/alignment.html#DemonstrationAligner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.alignment.DemonstrationAligner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Demonstration aligning class to align demonstrations, ensuring uniform constraint transitions across 
+all demosntrations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>demonstrations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of demonstraions to align.</p>
+</dd>
+<dt><strong>vectorize_func</strong> <span class="classifier-delimiter">:</span> <span class="classifier">func</span></dt>
+<dd><p class="first last">A function used to vectorize the dictionary data of a demonstrations observations.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="lfd.alignment.DemonstrationAligner.align">
+<code class="descname">align</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/alignment.html#DemonstrationAligner.align"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.alignment.DemonstrationAligner.align" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alignment is performed using the FastDTW algorithm. It first separates trajectories that are constraint
+annotated, and aligns those first. Secondly, arbitrarily uses one of those trajectories as a reference
+against which to align all the remainin trajectories captured during demonstrations. If there are no</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>self.demonstrations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
+<dd><p class="first last">Returns the demonstrations each having a new parameter called aligned_observations.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="lfd.alignment.vectorize_demonstration">
+<code class="descclassname">lfd.alignment.</code><code class="descname">vectorize_demonstration</code><span class="sig-paren">(</span><em>demonstration</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/alignment.html#vectorize_demonstration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.alignment.vectorize_demonstration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vectorizes a demonstration’s observations through the union of the
+robot’s postion and robot’s joints.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>demonstration</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Demonstration</span></dt>
+<dd><p class="first last">Demonstraions to vectorize.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>vectors</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of observation vectors.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lfd.analysis">
+<span id="lfd-analysis-module"></span><h2>lfd.analysis module<a class="headerlink" href="#module-lfd.analysis" title="Permalink to this headline">¶</a></h2>
+<p>The analysis.py module contains a variety of methods and classes used to  analyze specific structures
+and objects in the Cairo LfD ecosystem. This includes KeyframeGraphs, MotionPlans, and Constraints.</p>
+<dl class="class">
+<dt id="lfd.analysis.ConstraintAnalyzer">
+<em class="property">class </em><code class="descclassname">lfd.analysis.</code><code class="descname">ConstraintAnalyzer</code><span class="sig-paren">(</span><em>environment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/analysis.html#ConstraintAnalyzer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.analysis.ConstraintAnalyzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constraint analysis class to evaluate observations for constraints.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>enivornment</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Environment</span></dt>
+<dd><p class="first last">Environment object for the current LFD environment.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="lfd.analysis.ConstraintAnalyzer.applied_constraint_evaluator">
+<code class="descname">applied_constraint_evaluator</code><span class="sig-paren">(</span><em>observations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/analysis.html#ConstraintAnalyzer.applied_constraint_evaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.analysis.ConstraintAnalyzer.applied_constraint_evaluator" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function evaluates observations for constraints that were triggered during the demonstration.
+It will label a demonstration’s entire list of observations with the constraints that were triggered
+and wheter or not they are still applicable.</p>
+<p>New constraints are those where the triggered constraints are different from the previously applied constraints:</p>
+<blockquote>
+<div>triggered = observation.get_triggered_constraint_data()
+new = list(set(triggered)-set(prev))</div></blockquote>
+<p>The evaluated constraints are those that are still valid from the previous observation’s applied constraints.</p>
+<blockquote>
+<div>evaluated = self.evaluate(constraint_ids=prev, observation=observation)</div></blockquote>
+<p>The current observation’s applied constraints are the union of the evaluted constraints and new constraints.</p>
+<blockquote>
+<div>applied = list(set(evaluated).union(set(new)))</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>observations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">List of observations to be evaluated for constraints.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.analysis.ConstraintAnalyzer.evaluate">
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>constraint_ids</em>, <em>observation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/analysis.html#ConstraintAnalyzer.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.analysis.ConstraintAnalyzer.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function evaluates an observation for all the constraints in the list constraint_ids. It depends on
+being able to access the constraint objects from the self.environment object. Every constraint object
+should have an ‘evaluate()’’ function that takes in the environment and the observation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>constraint_ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of constraint id’s to evalaute.</p>
+</dd>
+<dt><strong>observation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Observation</span></dt>
+<dd><p class="first last">The observation to evaluate for the constraints.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>valid_constraints</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">Returns the list of valid contraints evaluated for the observation.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lfd.analysis.DemonstrationKeyframeLabeler">
+<em class="property">class </em><code class="descclassname">lfd.analysis.</code><code class="descname">DemonstrationKeyframeLabeler</code><span class="sig-paren">(</span><em>aligned_demonstrations</em>, <em>constraint_transitions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/analysis.html#DemonstrationKeyframeLabeler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.analysis.DemonstrationKeyframeLabeler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Keyframe labeling class.</p>
+<p>This class depends on constraint aligned demosntrations. This means that all demosntrations should have the same
+sequence of constraint transitions. Without such alignment, the class functions will fail ungracefully.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>demonstrations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of demonstraionts. These must be constraint aligned</p>
+</dd>
+<dt><strong>constraint_transitions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">A 2D list containing the set of constraint transitions that are applicable to all of the aligned
+demosntrations.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="lfd.analysis.DemonstrationKeyframeLabeler.label_demonstrations">
+<code class="descname">label_demonstrations</code><span class="sig-paren">(</span><em>divisor=20</em>, <em>keyframe_window_size=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/analysis.html#DemonstrationKeyframeLabeler.label_demonstrations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.analysis.DemonstrationKeyframeLabeler.label_demonstrations" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function serves to take each demonstration and create a list of observations labeled with keyframe_ids.
+For each demonstation, the function gets the observation grouping and then iteratively calls
+_get_labeled_group() from which it extends a list using the function’s returned labeled_group. This list becomes
+the labeled_observations list of observation obejcts assigned to the demonstration object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>group_divisor</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The divisor used by the _get_keyframe_count_per_group function</p>
+</dd>
+<dt><strong>keyframe_window_size: string</strong></dt>
+<dd><p class="first last">The size of the window of each split used to capture a subset of data for the keyframe.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>demonstrations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
+<dd><p class="first last">Returns the classes demonstrations attribute each of which will have a new parameter assigned with a list called
+‘labeled_observations’.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lfd.analysis.KeyframeGraphAnalyzer">
+<em class="property">class </em><code class="descclassname">lfd.analysis.</code><code class="descname">KeyframeGraphAnalyzer</code><span class="sig-paren">(</span><em>task_graph</em>, <em>sawyer_moveit_interface</em>, <em>observation_vectorizor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/analysis.html#KeyframeGraphAnalyzer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.analysis.KeyframeGraphAnalyzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class with methods to support the analysis of a KeyframeGraph.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>graph</strong> <span class="classifier-delimiter">:</span> <span class="classifier">KeyframeGraph</span></dt>
+<dd><p class="first last">KeyframeGraph class obejct on which to perform analysis</p>
+</dd>
+<dt><strong>interface</strong> <span class="classifier-delimiter">:</span> <span class="classifier">robot_interface.moveit_interface.SawyerMoveitInterface</span></dt>
+<dd><p class="first last">Sawyer Robot interface.</p>
+</dd>
+<dt><strong>vectorizer</strong> <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd><p class="first last">Function that vectorizes Observation object.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="lfd.analysis.KeyframeGraphAnalyzer.cull_keyframes">
+<code class="descname">cull_keyframes</code><span class="sig-paren">(</span><em>threshold=-10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/analysis.html#KeyframeGraphAnalyzer.cull_keyframes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.analysis.KeyframeGraphAnalyzer.cull_keyframes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Culls consecutive keyframes sequentially until the one such keyframe’s observations has an average LL is below
+a threshold as scored by the current keyframes model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The threshold average log likilhood.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.analysis.KeyframeGraphAnalyzer.evaluate_keyframe_occlusion">
+<code class="descname">evaluate_keyframe_occlusion</code><span class="sig-paren">(</span><em>keyframe_observations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/analysis.html#KeyframeGraphAnalyzer.evaluate_keyframe_occlusion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.analysis.KeyframeGraphAnalyzer.evaluate_keyframe_occlusion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates a given list of keyframe observations for occlusion using the interface’s check_point_validity()
+function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>keyframe_observations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of keyframe observations to evaluate. Expects Observation objects.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>(free_observations, occluded_observations)</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
+<dd><p class="first last">A tuple containing a list of free observations as the first element and a list of occlueded observations as the second element.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.analysis.KeyframeGraphAnalyzer.max_mean_ll">
+<code class="descname">max_mean_ll</code><span class="sig-paren">(</span><em>model</em>, <em>observation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/analysis.html#KeyframeGraphAnalyzer.max_mean_ll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.analysis.KeyframeGraphAnalyzer.max_mean_ll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a set of observations, generate the mean log likilhood and max log liklihood of the set scored by a given model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>priod_model</strong> <span class="classifier-delimiter">:</span> <span class="classifier">object</span></dt>
+<dd><p class="first last">An modeling.models class object that has a score_samples() method.</p>
+</dd>
+<dt><strong>observations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of keyframe observations to evaluate their score.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>(max_ll, mean_ll)</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
+<dd><p class="first last">Returns the maximum log liklihood of scored samples as well as the average of all the sample scores.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lfd.analysis.MotionPlanAnalyzer">
+<em class="property">class </em><code class="descclassname">lfd.analysis.</code><code class="descname">MotionPlanAnalyzer</code><span class="sig-paren">(</span><em>environment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/analysis.html#MotionPlanAnalyzer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.analysis.MotionPlanAnalyzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class with methods to support the analysis of a motion plan.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>enivornment</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Environment</span></dt>
+<dd><p class="first last">Environment object for the current LFD environment.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="lfd.analysis.MotionPlanAnalyzer.evaluate">
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>constraint_ids</em>, <em>observation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/analysis.html#MotionPlanAnalyzer.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.analysis.MotionPlanAnalyzer.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function evaluates an observation for all the constraints in the list constraint_ids. It depends on
+being able to access the constraint objects from the self.environment object. Every constraint object
+should have an ‘evaluate()’’ function that takes in the environment and the observation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>constraint_ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of constraint id’s to evalaute.</p>
+</dd>
+<dt><strong>observation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Observation</span></dt>
+<dd><p class="first last">The observation to evaluate for the constraints.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>valid_constraints</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">Returns the list of valid contraints evaluated for the observation.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.analysis.MotionPlanAnalyzer.evaluate_plan">
+<code class="descname">evaluate_plan</code><span class="sig-paren">(</span><em>constraint_ids</em>, <em>plan_observations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/analysis.html#MotionPlanAnalyzer.evaluate_plan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.analysis.MotionPlanAnalyzer.evaluate_plan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates plan observations to ensure that the constraints specified in the list of constraint ids
+is valid throughout the entire plan. If one observation in the plan violates the constraints,
+the plan is invalidated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>constraint_ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of constraint id’s to evalaute.</p>
+</dd>
+<dt><strong>plan_observations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">lsit</span></dt>
+<dd><p class="first last">The observation to evaluate for the constraints.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: boolean</strong></dt>
+<dd><p class="first last">Returns true if the given constraints are valid throughout the entirety of the plan, false otherwise.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="lfd.analysis.get_observation_joint_vector">
+<code class="descclassname">lfd.analysis.</code><code class="descname">get_observation_joint_vector</code><span class="sig-paren">(</span><em>observation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/analysis.html#get_observation_joint_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.analysis.get_observation_joint_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vectorizes a Observation object by obtaining joint configuration data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>observation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Observation</span></dt>
+<dd><p class="first last">Observation object to vectorize.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: list</strong></dt>
+<dd><p class="first last">Returns list of joint configuration data. Formatting is dependent on robot DOF etc,.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lfd.analysis.get_observation_pose_vector">
+<code class="descclassname">lfd.analysis.</code><code class="descname">get_observation_pose_vector</code><span class="sig-paren">(</span><em>observation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/analysis.html#get_observation_pose_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.analysis.get_observation_pose_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vectorizes a Observation object by obtaining pose data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>observation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Observation</span></dt>
+<dd><p class="first last">Observation object to vectorize.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: list</strong></dt>
+<dd><p class="first last">Returns list of pose data as the following [x, y, z, q_x, q_y, q_z, q_w]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lfd.constraints">
+<span id="lfd-constraints-module"></span><h2>lfd.constraints module<a class="headerlink" href="#module-lfd.constraints" title="Permalink to this headline">¶</a></h2>
+<p>The constraints.py module contains a classes that encapsulate predicate classifiers used to
+evaluate binary value conceptual constraints.</p>
+<dl class="class">
+<dt id="lfd.constraints.HeightConstraint">
+<em class="property">class </em><code class="descclassname">lfd.constraints.</code><code class="descname">HeightConstraint</code><span class="sig-paren">(</span><em>constraint_id</em>, <em>item_id</em>, <em>button</em>, <em>reference_height</em>, <em>threshold_distance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/constraints.html#HeightConstraint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.constraints.HeightConstraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>HeightConstraint class to evaluate the height predicate classifier assigned to a given item.</p>
+<p>height() returns true if object distance from reference_height is greater than threshold distnace.</p>
+<blockquote>
+<div><p>A positive threshold distance mean height above</p>
+<p>A negative threshold distance means height below.</p>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Id of the constraint as defined in the config.json file.</p>
+</dd>
+<dt><strong>item_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Id of the item on which the constraint can be applied.</p>
+</dd>
+<dt><strong>reference_height</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The reference or starting height to compare an objects height distance against the threshold_distance.</p>
+</dd>
+<dt><strong>threshold_distance</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The distance from reference (positive: above; negative; below) to compare an object’s distance
+from reference.</p>
+</dd>
+<dt><strong>button</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">String of a button for the intera_interface.Navigator().get_button_state(self.button) function to
+check the trigger.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="lfd.constraints.HeightConstraint.check_trigger">
+<code class="descname">check_trigger</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/constraints.html#HeightConstraint.check_trigger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.constraints.HeightConstraint.check_trigger" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function evaluates whether the constrain has been triggered. In this case,
+this class’s trigger uses the cuff buttons of Sawyer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: int</strong></dt>
+<dd><p class="first last">Boolean value of trigger result.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.constraints.HeightConstraint.evaluate">
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>environment</em>, <em>observation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/constraints.html#HeightConstraint.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.constraints.HeightConstraint.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function evaluates an observation for the assigned constraint of the class. It differentiates
+betweeen Sawyer (end-effector) and general items (blocks etc,.).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>environment</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Environment</span></dt>
+<dd><p class="first last">The Environment object containing the current demonstrations environment (SawyerRobot, Items, Constraints)
+and helper methods.</p>
+</dd>
+<dt><strong>observation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Observation</span></dt>
+<dd><p class="first last">The observation to evaluate for the constraint.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: int</strong></dt>
+<dd><p class="first last">Boolean value of constraint evaluation for the height constraint.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lfd.constraints.UprightConstraint">
+<em class="property">class </em><code class="descclassname">lfd.constraints.</code><code class="descname">UprightConstraint</code><span class="sig-paren">(</span><em>constraint_id</em>, <em>item_id</em>, <em>button</em>, <em>threshold_angle</em>, <em>axis</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/constraints.html#UprightConstraint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.constraints.UprightConstraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upright Constraint class to evaluate the upright predicate classifier assigned to a given item.</p>
+<p>upright() returns true if object distance is within a threshold angle from its defined upright orientation,
+pivoting around a given axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Id of the constraint as defined in the config.json file.</p>
+</dd>
+<dt><strong>item_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><blockquote class="first">
+<div><p>Id of the item on which the constraint can be applied.</p>
+</div></blockquote>
+<dl class="last docutils">
+<dt>threshold_angle <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The angle within which the assigned item’s (from item_id) current orientation must be compared with its
+defined upright position.</p>
+</dd>
+</dl>
+</dd>
+<dt><strong>axis</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The axis from which angle of deviation is calculated.</p>
+</dd>
+<dt><strong>button</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">String of a button for the intera_interface.Navigator().get_button_state(self.button) function to
+check the trigger.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="lfd.constraints.UprightConstraint.check_trigger">
+<code class="descname">check_trigger</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/constraints.html#UprightConstraint.check_trigger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.constraints.UprightConstraint.check_trigger" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function evaluates whether the constraint has been triggered. In this case,
+this class’s trigger uses the cuff buttons of Sawyer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: int</strong></dt>
+<dd><p class="first last">Boolean value of trigger result.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.constraints.UprightConstraint.evaluate">
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>environment</em>, <em>observation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/constraints.html#UprightConstraint.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.constraints.UprightConstraint.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function evaluates an observation for the assigned constraint of the class. It differentiates
+betweeen Sawyer (end-effector) and general items (blocks etc,.).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>environment</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Environment</span></dt>
+<dd><p class="first last">The Environment object containing the current demonstrations environment (SawyerRobot, Items, Constraints)
+and helper methods.</p>
+</dd>
+<dt><strong>observation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Observation</span></dt>
+<dd><p class="first last">The observation to evaluate for the constraint.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: int</strong></dt>
+<dd><p class="first last">Boolean value of constraint evaluation for the associate constraint and item.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lfd.data_io">
+<span id="lfd-data-io-module"></span><h2>lfd.data_io module<a class="headerlink" href="#module-lfd.data_io" title="Permalink to this headline">¶</a></h2>
+<p>The data_io.py module contains a classes that contain methods for importing and exporting data.</p>
+<dl class="class">
+<dt id="lfd.data_io.DataExporter">
+<em class="property">class </em><code class="descclassname">lfd.data_io.</code><code class="descname">DataExporter</code><a class="reference internal" href="_modules/lfd/data_io.html#DataExporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.data_io.DataExporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data exporint class with a variety of methods to support importing trajectory/observation data from 
+csv, json etc.</p>
+<dl class="method">
+<dt id="lfd.data_io.DataExporter.export_to_json">
+<code class="descname">export_to_json</code><span class="sig-paren">(</span><em>path</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/data_io.html#DataExporter.export_to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.data_io.DataExporter.export_to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exports dictioanry data to a .json file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Path of directory to save .json file.</p>
+</dd>
+<dt><strong>dict_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict/JSON serializable type</span></dt>
+<dd><p class="first last">Data to be serialized to json.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lfd.data_io.DataImporter">
+<em class="property">class </em><code class="descclassname">lfd.data_io.</code><code class="descname">DataImporter</code><a class="reference internal" href="_modules/lfd/data_io.html#DataImporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.data_io.DataImporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data importing class with a variety of methods to support importing trajectory/observation data from 
+csv, json etc.</p>
+<dl class="method">
+<dt id="lfd.data_io.DataImporter.import_csv_to_dict">
+<code class="descname">import_csv_to_dict</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/data_io.html#DataImporter.import_csv_to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.data_io.DataImporter.import_csv_to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import trajectories stored as .csv files into a Ordered Dictionary. In this case, each file represents
+a single trajectory/demonstration.</p>
+<p>This method expects a directory path and will automatically import all files with an approporaite .csv
+file signature.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Path of directory containing the .csv files.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>entries</strong> <span class="classifier-delimiter">:</span> <span class="classifier">OrderedDict</span></dt>
+<dd><p class="first last">Dictionary of trajectories. Trajectories themselves are dictionaries of observations (rows of the
+.csv file).</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.data_io.DataImporter.import_csv_to_list">
+<code class="descname">import_csv_to_list</code><span class="sig-paren">(</span><em>path</em>, <em>exclude_header=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/data_io.html#DataImporter.import_csv_to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.data_io.DataImporter.import_csv_to_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import trajectories stored as .csv files into a list of trajectories. In this case, each file represents
+a single trajectory/demonstration.</p>
+<p>This method expects a directory path and will automatically import all files with an approporaite .csv
+file signature.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Path of directory containing the .csv files.</p>
+</dd>
+<dt><strong>exclude_header</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">If true, first entry for each trajectory will be removed i.e. ignores the header.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>entries</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of trajectories. Trajectories themselves are lists of observations (rows of the .csv file).</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.data_io.DataImporter.import_json_to_dict">
+<code class="descname">import_json_to_dict</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/data_io.html#DataImporter.import_json_to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.data_io.DataImporter.import_json_to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import trajectories stored as .json files into a Ordered Dictionary. In this case, each file represents
+a single trajectory/demonstration.</p>
+<p>This method expects a directory path and will automatically import all files with an approporaite .json
+file signature.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Path of directory containing the .json files.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>entries</strong> <span class="classifier-delimiter">:</span> <span class="classifier">OrderedDict</span></dt>
+<dd><p class="first last">Dictionary of trajectories. Trajectories themselves are dictionaries of observations.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.data_io.DataImporter.load_json_file">
+<code class="descname">load_json_file</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/data_io.html#DataImporter.load_json_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.data_io.DataImporter.load_json_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import JSON file as a Python dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Path of directory containing the .csv files.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>entries</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary representation of the JSON file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.data_io.DataImporter.load_json_files">
+<code class="descname">load_json_files</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/data_io.html#DataImporter.load_json_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.data_io.DataImporter.load_json_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import JSON files as a Python dictionary from .json files in the directory signified by the path..</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Path of directory containing the ..json files.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>entries</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary representation of the JSON file.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lfd.environment">
+<span id="lfd-environment-module"></span><h2>lfd.environment module<a class="headerlink" href="#module-lfd.environment" title="Permalink to this headline">¶</a></h2>
+<p>The enviornment.py module contains core data container classes and retrieval methods. The core classes
+are the Environment, Demonstration, and Obsevation used throughout Cairo LfD’s codebase.</p>
+<dl class="class">
+<dt id="lfd.environment.Demonstration">
+<em class="property">class </em><code class="descclassname">lfd.environment.</code><code class="descname">Demonstration</code><span class="sig-paren">(</span><em>observations</em>, <em>aligned_observation=None</em>, <em>labeled_observations=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Demonstration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Demonstration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Demonstration object to contain list of osbervations and various methods to perform on those observations.</p>
+<dl class="method">
+<dt id="lfd.environment.Demonstration.get_applied_constraint_order">
+<code class="descname">get_applied_constraint_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Demonstration.get_applied_constraint_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Demonstration.get_applied_constraint_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the applied constraint order of a Demonstration’s aligned observation list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>constraint_order: list</strong></dt>
+<dd><p class="first last">List of list where each element is ordered by the sequence of the applied constraints and represents
+the set of constraints applied.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.environment.Demonstration.get_observation_by_index">
+<code class="descname">get_observation_by_index</code><span class="sig-paren">(</span><em>idx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Demonstration.get_observation_by_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Demonstration.get_observation_by_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an raw observation by its index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>idx</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Index integer</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: Observation</strong></dt>
+<dd><p class="first last">The retrieved observation object.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lfd.environment.Environment">
+<em class="property">class </em><code class="descclassname">lfd.environment.</code><code class="descname">Environment</code><span class="sig-paren">(</span><em>items</em>, <em>robot</em>, <em>constraints</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Environment" title="Permalink to this definition">¶</a></dt>
+<dd><p>HeightConstraint class to evaluate the height predicate classifier assigned to a given item.</p>
+<dl class="method">
+<dt id="lfd.environment.Environment.check_constraint_triggers">
+<code class="descname">check_constraint_triggers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Environment.check_constraint_triggers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Environment.check_constraint_triggers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks all constraints for their trigger. A triggered constraint might be a button press on Sawyer’s
+cuff or a natural language dicated constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>triggered_cosntraints: list</strong></dt>
+<dd><p class="first last">List of the id’s of all the constraints currently triggered</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.environment.Environment.get_constraint_by_id">
+<code class="descname">get_constraint_by_id</code><span class="sig-paren">(</span><em>constraint_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Environment.get_constraint_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Environment.get_constraint_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves a constraint from the Environment by it’s id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>iconstraint_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The id of the constraint to retrieve.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: Constraint class</strong></dt>
+<dd><p class="first last">Constraint class for the given id.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.environment.Environment.get_item_info">
+<code class="descname">get_item_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Environment.get_item_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Environment.get_item_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the Environment’s items information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>entries</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of dictionaries for each of the Environment’s items (exluding the robot item)</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.environment.Environment.get_item_states">
+<code class="descname">get_item_states</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Environment.get_item_states"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Environment.get_item_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the Environment’s items states.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>entries</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of dictionaries for each of the Environment’s items (exluding the robot item)</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.environment.Environment.get_robot_info">
+<code class="descname">get_robot_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Environment.get_robot_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Environment.get_robot_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the robot item’s configuration information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>entries</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary representing robot’s information. See SawyerRobot class.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.environment.Environment.get_robot_state">
+<code class="descname">get_robot_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Environment.get_robot_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Environment.get_robot_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the robot item’s current state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>entries</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary representing robot’s state. See SawyerRobot class.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lfd.environment.Observation">
+<em class="property">class </em><code class="descclassname">lfd.environment.</code><code class="descname">Observation</code><span class="sig-paren">(</span><em>observation_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Observation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Observation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Observation object to contain raw dictionary data for an observation and retrieval methods for that data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary of raw data collecting item, robot and constraint states.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="lfd.environment.Observation.get_applied_constraint_data">
+<code class="descname">get_applied_constraint_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Observation.get_applied_constraint_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Observation.get_applied_constraint_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the applied constraints of an object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: list</strong></dt>
+<dd><p class="first last">List of constraint id’s.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.environment.Observation.get_item_data">
+<code class="descname">get_item_data</code><span class="sig-paren">(</span><em>item_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Observation.get_item_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Observation.get_item_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets an items information based on its id</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>observation_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary of raw data collecting item, robot and constraint states.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: float</strong></dt>
+<dd><p class="first last">Integer timestamp in milliseconds representing time from epoch.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.environment.Observation.get_joint_list">
+<code class="descname">get_joint_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Observation.get_joint_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Observation.get_joint_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the joint data of the observation as a list of numerical values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: list</strong></dt>
+<dd><p class="first last">list of numerical joint values for the given robot.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.environment.Observation.get_keyframe_info">
+<code class="descname">get_keyframe_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Observation.get_keyframe_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Observation.get_keyframe_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>send back tuple of keyframe num and type</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: tuple</strong></dt>
+<dd><p class="first last">(keyframe_id, keyframe_type)</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.environment.Observation.get_pose_list">
+<code class="descname">get_pose_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Observation.get_pose_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Observation.get_pose_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the pose data of the observation as a list of numerical values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: list</strong></dt>
+<dd><p class="first last">combined data from position and orientation</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.environment.Observation.get_pose_msg">
+<code class="descname">get_pose_msg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Observation.get_pose_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Observation.get_pose_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get pose data and return a pose msg type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.environment.Observation.get_robot_data">
+<code class="descname">get_robot_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Observation.get_robot_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Observation.get_robot_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the observation’s robot data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: dictionary</strong></dt>
+<dd><p class="first last">dictionary of robot data</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.environment.Observation.get_timestamp">
+<code class="descname">get_timestamp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Observation.get_timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Observation.get_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get’s osbervations timestamp</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: float</strong></dt>
+<dd><p class="first last">Integer timestamp in milliseconds representing time from epoch.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.environment.Observation.get_triggered_constraint_data">
+<code class="descname">get_triggered_constraint_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Observation.get_triggered_constraint_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Observation.get_triggered_constraint_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the triggered constraints of an object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>: list</strong></dt>
+<dd><p class="first last">List of constraint id’s.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="lfd.environment.Observation.init_samples">
+<em class="property">classmethod </em><code class="descname">init_samples</code><span class="sig-paren">(</span><em>pose</em>, <em>orientation</em>, <em>joints</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#Observation.init_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.Observation.init_samples" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>pose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of pose data</span></dt>
+<dd></dd>
+<dt><strong>orientation: array of orientation data</strong></dt>
+<dd></dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="lfd.environment.import_configuration">
+<code class="descclassname">lfd.environment.</code><code class="descname">import_configuration</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/environment.html#import_configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.environment.import_configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function around json.load() to import a config.json file used to inform the Environment object.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lfd.items">
+<span id="lfd-items-module"></span><h2>lfd.items module<a class="headerlink" href="#module-lfd.items" title="Permalink to this headline">¶</a></h2>
+<p>The items.py module contains container classes for items uses in the Cario LfD ecosystem.
+These could include robots, constraints, and environment objects such as a cup etc,.</p>
+<dl class="class">
+<dt id="lfd.items.AbstractItem">
+<em class="property">class </em><code class="descclassname">lfd.items.</code><code class="descname">AbstractItem</code><a class="reference internal" href="_modules/lfd/items.html#AbstractItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.items.AbstractItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract Base class for represent items in an Environment.</p>
+<dl class="method">
+<dt id="lfd.items.AbstractItem.get_info">
+<code class="descname">get_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/items.html#AbstractItem.get_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.items.AbstractItem.get_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method to get the Item’s info.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.items.AbstractItem.get_state">
+<code class="descname">get_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/items.html#AbstractItem.get_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.items.AbstractItem.get_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method to get the Item’s state.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lfd.items.ConstraintFactory">
+<em class="property">class </em><code class="descclassname">lfd.items.</code><code class="descname">ConstraintFactory</code><span class="sig-paren">(</span><em>constraint_configs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/items.html#ConstraintFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.items.ConstraintFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory class that builds LFD constraints. These items are defined in the config.json file.
+The class field in the configuration determines which constraint class to use.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>configs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of configuration dictionaries.</p>
+</dd>
+<dt><strong>classes</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary with values as uninitialized class references to constraint classes i.e. HeightConstraint</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="lfd.items.ConstraintFactory.generate_constraints">
+<code class="descname">generate_constraints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/items.html#ConstraintFactory.generate_constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.items.ConstraintFactory.generate_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the constraint objects defined in the configuration dictionaries of self.configs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>robots</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of constraint objects.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lfd.items.RobotFactory">
+<em class="property">class </em><code class="descclassname">lfd.items.</code><code class="descname">RobotFactory</code><span class="sig-paren">(</span><em>robot_configs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/items.html#RobotFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.items.RobotFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory class that builds robot items. These items are defined in the config.json file.
+The class field in the configuration determines which AbstractItem robot class to use.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>configs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of configuration dictionaries.</p>
+</dd>
+<dt><strong>classes</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary with values as uninitialized class references i.e. SawyerRobot</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="lfd.items.RobotFactory.generate_robots">
+<code class="descname">generate_robots</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/items.html#RobotFactory.generate_robots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.items.RobotFactory.generate_robots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the robots defined in the configuration dictionaries of self.configs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>robots</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of AbstractItem robot objects.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lfd.items.SawyerRobot">
+<em class="property">class </em><code class="descclassname">lfd.items.</code><code class="descname">SawyerRobot</code><span class="sig-paren">(</span><em>robot_id</em>, <em>upright_pose</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/items.html#SawyerRobot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.items.SawyerRobot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class representing the Saywer robot in the LFD Environment object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Id of robot assigned in the config.json configuration files.</p>
+</dd>
+<dt><strong>upright_pose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary with position and orientation fields indicating the upright orientation of the Sawyer end-effector.</p>
+</dd>
+<dt><strong>_limb</strong> <span class="classifier-delimiter">:</span> <span class="classifier">object</span></dt>
+<dd><p class="first last">Intera SDK class object that provides controlling functionality of the Sawyer Robot.</p>
+</dd>
+<dt><strong>_cuff</strong> <span class="classifier-delimiter">:</span> <span class="classifier">object</span></dt>
+<dd><p class="first last">Intera SDK class object that provides controlling interface of the cuff bottons of Sawyer robot.</p>
+</dd>
+<dt><strong>_navigator</strong> <span class="classifier-delimiter">:</span> <span class="classifier">object</span></dt>
+<dd><p class="first last">Intera SDK class object that provides controlling functionality of the button/wheel interface on the Sawer Robot.</p>
+</dd>
+<dt><strong>_gripper</strong> <span class="classifier-delimiter">:</span> <span class="classifier">object</span></dt>
+<dd><p class="first last">Intera SDK class object that provides controlling functionalirty of the Sawyer Robot gripper.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="lfd.items.SawyerRobot.get_info">
+<code class="descname">get_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/items.html#SawyerRobot.get_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.items.SawyerRobot.get_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get’s the robot item’s information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>state</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">The info of the robot item</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.items.SawyerRobot.get_state">
+<code class="descname">get_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/items.html#SawyerRobot.get_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.items.SawyerRobot.get_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get’s the current state of the robot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>state</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">The state of the robot</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lfd.processing">
+<span id="lfd-processing-module"></span><h2>lfd.processing module<a class="headerlink" href="#module-lfd.processing" title="Permalink to this headline">¶</a></h2>
+<p>The processing.py module contains classes and methods for manipulating data/objects into difference forms.</p>
+<dl class="class">
+<dt id="lfd.processing.SawyerSampleConverter">
+<em class="property">class </em><code class="descclassname">lfd.processing.</code><code class="descname">SawyerSampleConverter</code><span class="sig-paren">(</span><em>interface</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/processing.html#SawyerSampleConverter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.processing.SawyerSampleConverter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="lfd.processing.SawyerSampleConverter.convert">
+<code class="descname">convert</code><span class="sig-paren">(</span><em>sample</em>, <em>run_fk=False</em>, <em>normalize_quaternion=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/processing.html#SawyerSampleConverter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.processing.SawyerSampleConverter.convert" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>sample</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">Raw sample to convert. Either joint configuration or pose [x,y,z,x,y,z,w] as a list.</p>
+</dd>
+<dt><strong>run_fk</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">Flag indicating whether to run foward kinematrics or not.</p>
+</dd>
+<dt><strong>normalize_quaternion</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">Flag indicating whether to normalize the values of the quaternion entries.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>obsv</strong> <span class="classifier-delimiter">:</span> <span class="classifier">lfd.environment.Observation</span></dt>
+<dd><p class="first last">Observation object constructed from the converted sample.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="lfd.processing.convert_data_to_pose">
+<code class="descclassname">lfd.processing.</code><code class="descname">convert_data_to_pose</code><span class="sig-paren">(</span><em>position</em>, <em>orientation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/processing.html#convert_data_to_pose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.processing.convert_data_to_pose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts raw position and orientation data to a ROS message Pose object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>position</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of numerical values representing x,y,z position.</p>
+</dd>
+<dt><strong>orientation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of numerical values representing the x,y,z,w values of a quaternion.</p>
+</dd>
+<dt><strong>normalize_quaternion</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">Flag indicating whether to normalize the values of the quaternion entries.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>pose: geometry_msgs.msgs.Pose</strong></dt>
+<dd><p class="first last">The Pose object</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lfd.record">
+<span id="lfd-record-module"></span><h2>lfd.record module<a class="headerlink" href="#module-lfd.record" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lfd.record.SawyerRecorder">
+<em class="property">class </em><code class="descclassname">lfd.record.</code><code class="descname">SawyerRecorder</code><span class="sig-paren">(</span><em>rate</em>, <em>side='right'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/record.html#SawyerRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.record.SawyerRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="lfd.record.SawyerRecorder.done">
+<code class="descname">done</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/record.html#SawyerRecorder.done"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.record.SawyerRecorder.done" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether or not recording is done.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.record.SawyerRecorder.record_demonstrations">
+<code class="descname">record_demonstrations</code><span class="sig-paren">(</span><em>environment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/record.html#SawyerRecorder.record_demonstrations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.record.SawyerRecorder.record_demonstrations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Records the current joint positions to a csv file if outputFilename was
+provided at construction this function will record the latest set of
+joint angles in a csv format.</p>
+<p>If a file exists, the function will overwrite existing file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lfd.record.SawyerRecorder.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lfd/record.html#SawyerRecorder.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lfd.record.SawyerRecorder.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop recording.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="modeling.html" class="btn btn-neutral float-right" title="modeling package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral" title="src" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Carl Mueller.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -5,9 +5,9 @@ import rospy
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
 
-from lfd.graphing import ObservationClusterer, KeyframeGraph
-from lfd.models import KDEModel
-from lfd.sampling import KeyframeSampler
+from modeling.graphing import ObservationClusterer, KeyframeGraph
+from modeling.models import KDEModel
+from modeling.sampling import KeyframeSampler
 from lfd.environment import Demonstration, Observation, Environment, import_configuration
 from lfd.data_io import DataImporter
 from lfd.items import RobotFactory, ConstraintFactory

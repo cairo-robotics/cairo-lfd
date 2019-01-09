@@ -1,3 +1,7 @@
+"""
+The alignment.py module contains a variety of methods and classes used to align
+Demonstrations captured during the LfD process.
+"""
 import rospy
 from fastdtw import fastdtw
 from scipy.spatial.distance import euclidean
@@ -34,10 +38,17 @@ class DemonstrationAligner(object):
     """
     Demonstration aligning class to align demonstrations, ensuring uniform constraint transitions across 
     all demosntrations.
+
+    Attributes
+    ----------
+    demonstrations : list
+       List of demonstraions to align.
+
+    vectorize_func : func
+        A function used to vectorize the dictionary data of a demonstrations observations.
     """
 
     def __init__(self, demonstrations, vectorize_func):
-
         """
         Parameters
         ----------
@@ -47,18 +58,15 @@ class DemonstrationAligner(object):
         vectorize_func : func
             A function used to vectorize the dictionary data of a demonstrations observations.
         """
-
         self.demonstrations = demonstrations
         self.vectorize_func = vectorize_func
 
     def align(self):
 
         """
-
         Alignment is performed using the FastDTW algorithm. It first separates trajectories that are constraint
         annotated, and aligns those first. Secondly, arbitrarily uses one of those trajectories as a reference
         against which to align all the remainin trajectories captured during demonstrations. If there are no 
-
 
         Returns
         -------
@@ -127,7 +135,6 @@ class DemonstrationAligner(object):
             Key: current; Value: A list of the current demonstration's new aligned observation list.
             Key: reference; Value: A list of the reference demonstration's new aligned observation list.
         """
-
         demos = [current_demo, reference_demo]
         demo_vectors = [self.vectorize_func(demo) for demo in demos]
         dist, idx_pairs = fastdtw(demo_vectors[0], demo_vectors[1], dist=euclidean)
@@ -164,7 +171,6 @@ class DemonstrationAligner(object):
         new_observations: list
             The deep copied observation list.
         """
-
         new_observations = []
         for ob in observations:
             new_observations.append(copy.deepcopy(ob))
@@ -181,7 +187,6 @@ class DemonstrationAligner(object):
             List of list where each element is ordered by the sequence of the applied constraints and represents
             the set of constraints applied.
         """
-
         constraint_order = []
         curr = []
         for ob in observations:
@@ -191,7 +196,6 @@ class DemonstrationAligner(object):
         return constraint_order
 
     def _check_for_equivalent_constraint_transitions(self, demonstrations):
-
         """
         Checks for euivalent constraint transitions across all demonstrations. This should
         occur after alignment.
@@ -206,7 +210,6 @@ class DemonstrationAligner(object):
         : boolean
             Boolean value with True indicating equivalent constraint transitions
         """
-
         mappings = [self._get_applied_constraint_order(demo.observations) for demo in demonstrations]
 
         if mappings[1:] == mappings[:-1]:
@@ -215,7 +218,6 @@ class DemonstrationAligner(object):
             return False
 
     def _get_universal_constraint_transitions(self, demonstrations):
-
         """
         Generates the universal constraint transition mapping for all ALIGNED demonstrations.
         Raises an exception if any of the demosntrations has a difference mapping than
@@ -241,10 +243,20 @@ class DemonstrationAligner(object):
         else:
             raise Exception("Unequivalent constraint transition mappings!")
 
+
 class AlignmentException(Exception):
-
-    """Base class for exceptions in this module."""
-
+    """
+    Base class for exceptions in this module.
+    """
     def __init__(self, expression, message):
+        """
+        Parameters
+        ----------
+        expression : str
+            Expression used by Exception parent class.
+
+        message : str
+            Message used by Exception parent class describing the issue.
+        """
         self.expression = expression
         self.message = message

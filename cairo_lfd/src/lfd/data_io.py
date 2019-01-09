@@ -1,3 +1,6 @@
+"""
+The data_io.py module contains a classes that contain methods for importing and exporting data.
+"""
 import glob
 import errno
 import csv

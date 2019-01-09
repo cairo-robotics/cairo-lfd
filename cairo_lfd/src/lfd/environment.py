@@ -1,3 +1,7 @@
+"""
+The enviornment.py module contains core data container classes and retrieval methods. The core classes
+are the Environment, Demonstration, and Obsevation used throughout Cairo LfD's codebase.
+"""
 import json
 import numpy as np
 from collections import OrderedDict
@@ -5,23 +9,18 @@ from geometry_msgs.msg import Pose
 
 
 def import_configuration(filepath):
-
     """
     Wrapper function around json.load() to import a config.json file used to inform the Environment object.
     """
-
     with open(filepath) as json_data:
         return json.load(json_data, object_pairs_hook=OrderedDict)
 
 
 class Environment(object):
-
     """
     HeightConstraint class to evaluate the height predicate classifier assigned to a given item.
     """
-
     def __init__(self, items, robot, constraints):
-
         """
         Parameters
         ----------
@@ -32,13 +31,11 @@ class Environment(object):
         constraints : list
             List of constrain class objects representing the available constraints for the Demonstration.
         """
-
         self.items = items
         self.robot = robot
         self.constraints = constraints
 
     def get_robot_state(self):
-
         """
         Retrieves the robot item's current state
 
@@ -47,11 +44,9 @@ class Environment(object):
         entries : dict
             Dictionary representing robot's state. See SawyerRobot class.
         """
-
         return self.robot.get_state()
 
     def get_robot_info(self):
-
         """
         Retrieves the robot item's configuration information.
 
@@ -60,11 +55,9 @@ class Environment(object):
         entries : dict
             Dictionary representing robot's information. See SawyerRobot class.
         """
-
         return self.robot.get_info()
 
     def get_item_states(self):
-
         """
         Retrieves the Environment's items states.
 
@@ -73,7 +66,6 @@ class Environment(object):
         entries : list
             List of dictionaries for each of the Environment's items (exluding the robot item)
         """
-
         item_states = []
         if self.items is not None:
             for item in self.items:
@@ -81,7 +73,6 @@ class Environment(object):
         return item_states
 
     def get_item_info(self):
-
         """
         Retrieves the Environment's items information.
 
@@ -90,7 +81,6 @@ class Environment(object):
         entries : list
             List of dictionaries for each of the Environment's items (exluding the robot item)
         """
-
         item_info = []
         if self.items is not None:
             for item in self.items:
@@ -98,7 +88,6 @@ class Environment(object):
         return item_info
 
     def get_constraint_by_id(self, constraint_id):
-
         """
         Retrieves a constraint from the Environment by it's id.
 
@@ -112,11 +101,9 @@ class Environment(object):
         : Constraint class
             Constraint class for the given id.
         """
-
         return [constraint for constraint in self.constraints if constraint.id == constraint_id][0]
 
     def check_constraint_triggers(self):
-
         """
         Checks all constraints for their trigger. A triggered constraint might be a button press on Sawyer's
         cuff or a natural language dicated constraint.
@@ -126,7 +113,6 @@ class Environment(object):
         triggered_cosntraints: list
           List of the id's of all the constraints currently triggered
         """
-
         triggered_constraints = []
         for constraint in self.constraints:
             result = constraint.check_trigger()
@@ -136,13 +122,10 @@ class Environment(object):
 
 
 class Demonstration(object):
-
     """
     Demonstration object to contain list of osbervations and various methods to perform on those observations.
     """
-
     def __init__(self, observations, aligned_observation=None, labeled_observations=None):
-
         """
         Parameters
         ----------
@@ -154,13 +137,11 @@ class Demonstration(object):
             List of Observation objects representing keyframe labeled observations.
 
         """
-
         self.observations = observations
         self.aligned_observation = aligned_observation
         self.labeled_observations = labeled_observations
 
     def get_observation_by_index(self, idx):
-
         """
         Returns an raw observation by its index.
 
@@ -174,11 +155,9 @@ class Demonstration(object):
         : Observation
             The retrieved observation object.
         """
-
         return self.observations[idx]
 
     def get_applied_constraint_order(self):
-
         """
         Returns the applied constraint order of a Demonstration's aligned observation list.
 
@@ -188,7 +167,6 @@ class Demonstration(object):
             List of list where each element is ordered by the sequence of the applied constraints and represents
             the set of constraints applied.
         """
-
         constraint_order = []
         curr = []
         for ob in self.aligned_observations:
@@ -199,11 +177,20 @@ class Demonstration(object):
 
 
 class Observation(object):
-
     """
     Observation object to contain raw dictionary data for an observation and retrieval methods for that data.
 
-    Example:
+    Attributes
+    ----------
+
+    data : dict
+        Dictionary of raw data collecting item, robot and constraint states.
+
+    Example
+    -------
+
+    .. code-block:: json
+
         {
             "applied_constraints": [],
             "items": [
@@ -268,15 +255,12 @@ class Observation(object):
     """
 
     def __init__(self, observation_data):
-
         """
         Parameters
         ----------
         observation_data : dict
             Dictionary of raw data collecting item, robot and constraint states.
-
         """
-
         self.data = observation_data
 
     @classmethod
@@ -293,7 +277,6 @@ class Observation(object):
         return cls(observation_data)
 
     def get_timestamp(self):
-
         """
         Get's osbervations timestamp
 
@@ -302,11 +285,9 @@ class Observation(object):
         : float
             Integer timestamp in milliseconds representing time from epoch.
         """
-
         return self.data["time"]
 
     def get_robot_data(self):
-
         """
         Get the observation's robot data.
 
@@ -315,19 +296,17 @@ class Observation(object):
         : dictionary
             dictionary of robot data
         """
-
         return self.data["robot"]
 
     def get_pose_list(self):
         """
-        Get the pose pose of the observatoin as a list
+        Get the pose data of the observation as a list of numerical values.
 
         Returns
-        ------
+        -------
         : list
             combined data from position and orientation
         """
-
         robot = self.get_robot_data()
         if isinstance(robot["orientation"], np.ndarray) and isinstance(robot["orientation"], np.ndarray):
             return np.concatenate((robot["position"], robot["orientation"]))
@@ -335,12 +314,21 @@ class Observation(object):
             return robot["position"] + robot["orientation"]
 
     def get_joint_list(self):
+        """
+        Get the joint data of the observation as a list of numerical values.
+
+        Returns
+        -------
+        : list
+            list of numerical joint values for the given robot.
+        """
         robot = self.get_robot_data()
         return robot["joints"]
 
     def get_pose_msg(self):
         """
         Get pose data and return a pose msg type
+
         Returns:
         --------
         : geometry_msg Pose
@@ -367,11 +355,9 @@ class Observation(object):
         : tuple
             (keyframe_id, keyframe_type)
         """
-
         return (self.data["keyframe_id"], self.data["keyframe_type"])
 
     def get_item_data(self, item_id):
-
         """
         Gets an items information based on its id
 
@@ -385,14 +371,12 @@ class Observation(object):
         : float
             Integer timestamp in milliseconds representing time from epoch.
         """
-
         for item in self.data["items"]:
             # return first occurance, should only be one
             if item["id"] == item_id:
                 return item
 
     def get_triggered_constraint_data(self):
-
         """
         Get the triggered constraints of an object.
 
@@ -401,11 +385,9 @@ class Observation(object):
         : list
             List of constraint id's.
         """
-
         return self.data["triggered_constraints"]
 
     def get_applied_constraint_data(self):
-
         """
         Get the applied constraints of an object.
 
@@ -414,7 +396,6 @@ class Observation(object):
         : list
             List of constraint id's.
         """
-
         if "applied_constraints" in self.data.keys():
             return self.data["applied_constraints"]
         else:

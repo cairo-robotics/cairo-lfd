@@ -1,20 +1,31 @@
+"""
+The processing.py module contains classes and methods for manipulating data/objects into difference forms.
+"""
 import numpy as np
 from geometry_msgs.msg import Pose
 from environment import Observation
 
 
 def convert_data_to_pose(position, orientation):
-
     """
     Converts raw position and orientation data to a ROS message Pose object.
 
+    Parameters
+    ----------
+    position : list
+        List of numerical values representing x,y,z position.
+
+    orientation : list
+        List of numerical values representing the x,y,z,w values of a quaternion.
+
+    normalize_quaternion : bool
+        Flag indicating whether to normalize the values of the quaternion entries.
+
     Returns
     -------
-
     pose: geometry_msgs.msgs.Pose
         The Pose object
     """
-
     pose = Pose()
     pose.position.x = position[0]
     pose.position.y = position[1]

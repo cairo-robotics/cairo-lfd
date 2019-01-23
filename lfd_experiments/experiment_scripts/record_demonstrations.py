@@ -4,7 +4,7 @@ import rospy
 import argparse
 import intera_interface
 from intera_interface import CHECK_VERSION
-from lfd.record import Recorder
+from lfd.record import SawyerRecorder
 from lfd.environment import Environment, import_configuration
 from lfd.items import RobotFactory, ConstraintFactory
 from lfd.analyzer import ConstraintAnalyzer
@@ -49,7 +49,7 @@ def main():
     print("Enabling robot... ")
     rs.enable()
 
-    recorder = Recorder(args.record_rate)
+    recorder = SawyerRecorder(args.record_rate)
     rospy.on_shutdown(recorder.stop)
 
     config_filepath = args.config

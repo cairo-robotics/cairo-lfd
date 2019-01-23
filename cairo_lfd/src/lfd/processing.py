@@ -130,3 +130,10 @@ class SawyerSampleConverter(object):
         z = z / normalize
         w = w / normalize
         return x, y, z, w
+
+
+ObjectRelativeDataProcessor():
+
+    def __init__(self, environment):
+        self.environment = environment
+

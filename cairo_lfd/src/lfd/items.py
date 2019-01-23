@@ -6,7 +6,7 @@ import rospy
 import intera_interface
 from abc import ABCMeta, abstractmethod
 from lfd.constraints import UprightConstraint, HeightConstraint
-
+from tf2_ros import 
 
 class AbstractItem(object):
     """
@@ -80,6 +80,7 @@ class SawyerRobot(AbstractItem):
         upright_pose : dict
            Dictionary with position and orientation fields
         """
+
         self.id = robot_id
         self.upright_pose = upright_pose
         self._limb = intera_interface.Limb("right")
@@ -97,6 +98,7 @@ class SawyerRobot(AbstractItem):
         except Exception as e:
             self._gripper = None
             rospy.loginfo("No electric gripper detected.")
+        super().__init__()
 
     def get_state(self):
         """
@@ -124,13 +126,15 @@ class SawyerRobot(AbstractItem):
         """
 
         state = {}
-        joints = self._limb.joint_names()
-        pose = self._limb.endpoint_pose()
-        state["id"] = self.id
-        state['position'] = [x for x in pose["position"]]
-        state['orientation'] = [x for x in pose["orientation"]]
+        endpoint_pose = self._limb.endpoint_pose()
+        endpoint_velocity = self._limb.endpoint_pose()
+        state['id'] = self.id
+        state['endpoint_position'] = [x for x in endpoint_pose["position"]]
+        state['endpoint_orientation'] = [x for x in endpoint_pose["orientation"]]
+        state['']
         state['gripper'] = self._gripper.get_position()
-        state['joints'] = [self._limb.joint_angle(j) for j in joints]
+        state['joint_angle'] = [self._limb.joint_angle(j) for j in self._limb.joint_names()]
+        state['joint_velocity'] =  [self._limb.joint_velocity(j) for j in ]
         return state
 
     def get_info(self):
@@ -157,9 +161,38 @@ class SawyerRobot(AbstractItem):
         }
         """
         return {
-                    "id": self.id,
-                    "upright_pose": self.upright_pose
+                "id": self.id,
+                "upright_pose": self.upright_pose
                }
+
+
+class StaticObject(AbstractItem):
+
+    def __init__(self, robot_id, upright_pose, world_frame, child_frame):
+        self.id = robot_id
+        self.upright_pose = upright_pose
+        self.world_frame = world_frame
+        self.child_frame = child_frame
+        tfb = tf2_ros.Buffer()
+        super().__init__()
+
+    def get_state(self):
+        state = {}
+        trans = self._get_transform()
+        state['id'] = self.id
+        state['endpoint_position'] = [x for x in trans["position"]]
+        state['endpoint_orientation'] = [x for x in endpoint_pose["orientation"]]
+        state['']
+        state['gripper'] = self._gripper.get_position()
+        state['joint_angle'] = [self._limb.joint_angle(j) for j in self._limb.joint_names()]
+        state['joint_velocity'] =  [self._limb.joint_velocity(j) for j in ]
+        return state
+
+    def _get_transform(self):
+        try:
+            trans = self.tfb.lookup_transform(self.world_frame, self.child_frame, rospy.get_rostime())
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            return None
 
 
 class RobotFactory(object):
@@ -261,7 +294,6 @@ class ConstraintFactory(object):
                     "button": "right_button_square",
                     "reference_height": 0.0,
                     "threshold_distance": 0.25
-
                 }
         }
     """

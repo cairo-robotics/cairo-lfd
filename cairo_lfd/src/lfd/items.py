@@ -6,7 +6,8 @@ import rospy
 import intera_interface
 from abc import ABCMeta, abstractmethod
 from lfd.constraints import UprightConstraint, HeightConstraint
-from tf2_ros import 
+from robot_clients.transform_clients import TransformLookupClient
+
 
 class AbstractItem(object):
     """
@@ -98,7 +99,6 @@ class SawyerRobot(AbstractItem):
         except Exception as e:
             self._gripper = None
             rospy.loginfo("No electric gripper detected.")
-        super().__init__()
 
     def get_state(self):
         """
@@ -129,12 +129,12 @@ class SawyerRobot(AbstractItem):
         endpoint_pose = self._limb.endpoint_pose()
         endpoint_velocity = self._limb.endpoint_pose()
         state['id'] = self.id
-        state['endpoint_position'] = [x for x in endpoint_pose["position"]]
-        state['endpoint_orientation'] = [x for x in endpoint_pose["orientation"]]
-        state['']
-        state['gripper'] = self._gripper.get_position()
+        state['position'] = [x for x in endpoint_pose["position"]]
+        state['orientation'] = [x for x in endpoint_pose["orientation"]]
+        state['gripper_position'] = self._gripper.get_position()
+        state['gripper_state'] = self._gripper.is_gripping()
         state['joint_angle'] = [self._limb.joint_angle(j) for j in self._limb.joint_names()]
-        state['joint_velocity'] =  [self._limb.joint_velocity(j) for j in ]
+        state['joint_velocity'] = [self._limb.joint_velocity(j) for j in self._limb.joint_names()]
         return state
 
     def get_info(self):
@@ -160,39 +160,114 @@ class SawyerRobot(AbstractItem):
             }
         }
         """
-        return {
-                "id": self.id,
+        return {"id": self.id,
                 "upright_pose": self.upright_pose
-               }
+                }
 
 
 class StaticObject(AbstractItem):
 
-    def __init__(self, robot_id, upright_pose, world_frame, child_frame):
-        self.id = robot_id
+    def __init__(self, object_id, name, upright_pose, world_frame, child_frame, service_name="transform_lookup_service"):
+        self.id = object_id
+        self.name = name
         self.upright_pose = upright_pose
         self.world_frame = world_frame
         self.child_frame = child_frame
-        tfb = tf2_ros.Buffer()
-        super().__init__()
+        self.tlc = TransformLookupClient(service_name)
 
     def get_state(self):
         state = {}
         trans = self._get_transform()
         state['id'] = self.id
-        state['endpoint_position'] = [x for x in trans["position"]]
-        state['endpoint_orientation'] = [x for x in endpoint_pose["orientation"]]
-        state['']
-        state['gripper'] = self._gripper.get_position()
-        state['joint_angle'] = [self._limb.joint_angle(j) for j in self._limb.joint_names()]
-        state['joint_velocity'] =  [self._limb.joint_velocity(j) for j in ]
+        state['position'] = trans["position"]
+        state['orientation'] = trans["orientation"]
         return state
 
+    def get_info(self):
+        info = {}
+        info["id"] = self.id
+        info["name"] = self.name
+        return info
+
     def _get_transform(self):
-        try:
-            trans = self.tfb.lookup_transform(self.world_frame, self.child_frame, rospy.get_rostime())
-        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            return None
+        trans = self.tlc.call(self.world_frame, self.child_frame).transform
+        transform = {
+            "position": [trans.translation.x, trans.translation.y, trans.translation.z],
+            "orientation": [trans.rotation.x, trans.rotation.y, trans.rotation.z, trans.rotation.w]
+        }
+        return transform
+
+
+class ItemFactory(object):
+    """
+    Factory class that builds environment items. These items are defined in the config.json file.
+    The class field in the configuration determines which AbstractItem object class to use.
+
+    Attributes
+    ----------
+    configs : list
+            List of configuration dictionaries.
+    classes : dict
+        Dictionary with values as uninitialized class references i.e. StaticObject
+
+    Example
+    -------
+
+    Example entry in config.json:
+
+    .. code-block:: json
+
+        {
+            "class": "StaticObject",
+            "init_args":
+                {
+                    "id": 1,
+                    "upright_pose":
+                        {
+                            "position":
+                                [
+                                    0.604698787426,
+                                    -0.439894686226,
+                                    0.159350584992
+                                ],
+                            "orientation": [
+                                0.712590112587,
+                                -0.00994445446764,
+                                0.701496927312,
+                                -0.00430119065513
+                            ]
+                        },
+                    "world_frame": "world",
+                    "child_frame": "block"
+                }
+        }
+    """
+    def __init__(self, robot_configs):
+
+        """
+        Parameters
+        ----------
+        robot_configs : list
+            List of configuration dictionaries.
+        """
+        self.configs = robot_configs
+        self.classes = {
+            "StaticObject": StaticObject,
+        }
+
+    def generate_items(self):
+        """
+        Build the items defined in the configuration dictionaries of self.configs.
+
+        Returns
+        -------
+        items : list
+            List of AbstractItem item objects.
+        """
+        items = []
+        for config in self.configs:
+            items.append(self.classes[config["class"]](*tuple(config["init_args"].values())))
+        return items
 
 
 class RobotFactory(object):

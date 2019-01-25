@@ -219,6 +219,7 @@ class ItemFactory(object):
 
         {
             "class": "StaticObject",
+            "name": "Block1",
             "init_args":
                 {
                     "id": 1,
@@ -242,7 +243,7 @@ class ItemFactory(object):
                 }
         }
     """
-    def __init__(self, robot_configs):
+    def __init__(self, item_configs):
 
         """
         Parameters
@@ -250,7 +251,7 @@ class ItemFactory(object):
         robot_configs : list
             List of configuration dictionaries.
         """
-        self.configs = robot_configs
+        self.configs = item_configs
         self.classes = {
             "StaticObject": StaticObject,
         }

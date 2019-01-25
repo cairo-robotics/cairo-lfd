@@ -99,7 +99,7 @@ class SawyerRecorder(object):
                         data = {
                             "time": self._time_stamp(),
                             "robot": environment.get_robot_state(),
-                            "items": environment.get_item_states(),
+                            "items": environment.get_item_state(),
                             "triggered_constraints": environment.check_constraint_triggers()
                         } 
                         observation = Observation(data)

@@ -67,7 +67,7 @@ class Environment(object):
         """
         return self.robot.get_info()
 
-    def get_item_states(self):
+    def get_item_state(self):
         """
         Retrieves the Environment's items states.
 
@@ -239,7 +239,7 @@ class Observation(object):
             "robot": {
                 "gripper": 0.0,
                 "id": 1,
-                "joints": [
+                "joint_angle": [
                     -0.1242646484375,
                     0.1710810546875,
                     3.044984375,
@@ -290,7 +290,7 @@ class Observation(object):
         """
         observation_data = {"robot": {"orientation": orientation,
                                       "position": pose,
-                                      "joints": joints}}
+                                      "joint_angle": joints}}
         return cls(observation_data)
 
     def get_timestamp(self):
@@ -330,17 +330,17 @@ class Observation(object):
         else:
             return robot["position"] + robot["orientation"]
 
-    def get_joint_list(self):
+    def get_joint_angles(self):
         """
-        Get the joint data of the observation as a list of numerical values.
+        Get the joint angles of the observation as a list of numerical values.
 
         Returns
         -------
         : list
-            list of numerical joint values for the given robot.
+            list of numerical joint angle values for the given robot.
         """
         robot = self.get_robot_data()
-        return robot["joints"]
+        return robot["joint_angle"]
 
     def get_pose_msg(self):
         """

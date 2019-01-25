@@ -38,7 +38,7 @@ def get_observation_joint_vector(observation):
     : list
        Returns list of joint configuration data. Formatting is dependent on robot DOF etc,.
     """
-    return observation.get_joint_angles()
+    return observation.get_joint_angle()
 
 
 class KeyframeGraphAnalyzer():
@@ -139,7 +139,7 @@ class KeyframeGraphAnalyzer():
         curr = self.graph.successors(prev).next()
         while([x for x in self.graph.successors(curr)] != []):
             rospy.loginfo("Prev: {}; Curr: {}".format(prev, curr))
-            max_ll, mean_ll = self.keyframe_liklihood_check(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["observations"])
+            max_ll, mean_ll = self.max_mean_ll(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["observations"])
             if mean_ll > threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
                 rospy.loginfo("Node {} average LL is above threshold".format(curr))
                 succ = self.graph.successors(curr).next()

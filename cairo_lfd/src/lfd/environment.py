@@ -330,7 +330,7 @@ class Observation(object):
         else:
             return robot["position"] + robot["orientation"]
 
-    def get_joint_angles(self):
+    def get_joint_angle(self):
         """
         Get the joint angles of the observation as a list of numerical values.
 

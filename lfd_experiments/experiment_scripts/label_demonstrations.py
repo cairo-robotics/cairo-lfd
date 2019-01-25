@@ -1,11 +1,11 @@
- #!/usr/bin/env python2
+#!/usr/bin/env python
 
 import rospy
 import argparse
 
 from lfd.data_io import DataImporter, DataExporter
 from lfd.alignment import DemonstrationAligner, vectorize_demonstration
-from lfd.analyzer import DemonstrationKeyframeLabeler
+from lfd.analysis import DemonstrationKeyframeLabeler
 from lfd.environment import Observation, Demonstration
 
 
@@ -74,6 +74,7 @@ def main():
         labeled_data = [obs.data for obs in demo.labeled_observations]
         exp.export_to_json(args.output_directory + "/labeled_demonstration{}.json".format(idx), labeled_data)
     print("\nDone.")
+
 
 if __name__ == '__main__':
     main()

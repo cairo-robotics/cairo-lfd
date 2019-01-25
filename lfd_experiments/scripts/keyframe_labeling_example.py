@@ -1,4 +1,9 @@
 #!/usr/bin/env python2.7
+
+"""
+DEPRECATED / NEEDS UPDATE
+"""
+
 import rospy
 import argparse
 import os

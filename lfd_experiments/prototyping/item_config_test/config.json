@@ -1,0 +1,76 @@
+{
+    "constraints": [
+        {
+            "class": "HeightConstraint",
+            "init_args" : 
+                {
+                    "id": 1,
+                    "item": 1,
+                    "button": "right_button_square",
+                    "reference_height": 0.0,
+                    "threshold_distance": 0.25
+                
+                }
+        },
+        {
+            "class": "UprightConstraint",
+            "init_args" : 
+                {
+                    "id": 2,
+                    "item": 1,
+                    "button": "right_button_circle",
+                    "threshold_angle": 20,
+                    "axis": "x"
+                }
+        }
+    ],
+    "items": [
+        {
+            "class": "StaticObject",
+            "init_args":
+                {
+                    "id": 1,
+                    "name": "block",
+                    "upright_pose": 
+                        {
+                            "position":[0.604698787426, -0.439894686226, 0.159350584992],
+                            "orientation": [0.015391, -0.0089937, 0.70554, 0.70845]
+                        },
+                    "world_frame": "world",
+                    "child_frame": "optitrack_block"
+                }
+        },
+        {
+            "class": "StaticObject",
+            "init_args":
+                {
+                    "id": 2,
+                    "name": "megablock",
+                    "upright_pose": 
+                        {
+                            "position":[0.604698787426, -0.439894686226, 0.159350584992],
+                            "orientation": [0.015391, -0.0089937, 0.70554, 0.70845]
+                        },
+                    "world_frame": "world",
+                    "child_frame": "optitrack_megablock"
+                }
+        }
+    ],
+    "robots": [
+        {
+            "class": "SawyerRobot",
+            "init_args":
+                {
+                    "id": 1,
+                    "upright_pose": 
+                        {
+                            "position": [0.604698787426, -0.439894686226, 0.159350584992],
+                            "orientation": [0.712590112587, -0.00994445446764, 0.701496927312, -0.00430119065513]
+                        }
+                }
+        }
+
+    ]
+        
+}
+

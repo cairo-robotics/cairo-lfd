@@ -1,4 +1,9 @@
 #!/usr/bin/env python2.7
+
+"""
+DEPRECATED / NEEDS UPDATE
+"""
+
 from lfd_processor.processing import DataProcessor
 from lfd_processor.interfaces import Demonstration, Observation
 from lfd_processor.data_io import DataImporter

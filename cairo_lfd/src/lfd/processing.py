@@ -4,7 +4,7 @@ The processing.py module contains classes and methods for manipulating data/obje
 import numpy as np
 from geometry_msgs.msg import Pose
 from environment import Observation
-
+from scipy.spatial.distance import euclidean
 
 def convert_data_to_pose(position, orientation):
     """
@@ -60,7 +60,7 @@ class SawyerSampleConverter(object):
             Raw sample to convert. Either joint configuration or pose [x,y,z,x,y,z,w] as a list.
 
         run_fk : bool
-            Flag indicating whether to run foward kinematrics or not.
+            Flag indicating whether to run forward kinematics or not.
 
         normalize_quaternion : bool
             Flag indicating whether to normalize the values of the quaternion entries.
@@ -132,8 +132,24 @@ class SawyerSampleConverter(object):
         return x, y, z, w
 
 
-ObjectRelativeDataProcessor():
+class ObjectRelativeDataProcessor():
 
-    def __init__(self, environment):
+    def __init__(self, environment, demo_observations):
         self.environment = environment
+        self.observations = demo_observations
+
+    def get_object_object_distance(obj1_posistion, obj2_position):
+        if isinstance(obj1_posistion, (list, np.ndarray)) and isinstance(obj2_posistion, (list, np.ndarray)):
+            return euclidean(obj1_posistion, obj2_position)
+        else:
+            raise ValueError("Argument must be array-like (list or ndarray)")
+
+    def get_object_object_velocity(obj1_window, obj2_window):
+        pass
+
+    def get_object_oject_acceleration(obj1_window, obj2_window):
+        pass
+
+    def get_window():
+        pass
 

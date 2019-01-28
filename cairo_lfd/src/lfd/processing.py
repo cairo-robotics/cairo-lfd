@@ -5,6 +5,8 @@ import numpy as np
 from geometry_msgs.msg import Pose
 from environment import Observation
 from scipy.spatial.distance import euclidean
+from itertools import combinations
+
 
 def convert_data_to_pose(position, orientation):
     """
@@ -134,22 +136,34 @@ class SawyerSampleConverter(object):
 
 class ObjectRelativeDataProcessor():
 
-    def __init__(self, environment, demo_observations):
-        self.environment = environment
-        self.observations = demo_observations
+    def __init__(self, object_ids):
+        self.ids = object_ids
 
-    def get_object_object_distance(obj1_posistion, obj2_position):
+    def generate_relative_data(observations):
+        for obsv in observations:
+            self.relative_distance(obsv)
+
+    def relative_distance(self, observation):
+        relative_distances = {}
+        for obj_id in ids:
+            obj1_posistion = self.observations.get_item_data(obj_id)["position"]
+            for target_id in ids:
+                if obj_id != target_id:
+                    target_posistion = self.observations.get_item_data(obj_id)["position"]
+                    relative_distances[target_id] = self._euclidean(obj1_posistion, target_posistion)
+        observation["relative_distance"] = relative_distances
+
+    def relative_velocity(self, obj1_window, obj2_window):
+        pass
+
+    def relative_acceleration(self, obj1_window, obj2_window):
+        pass
+
+    def _get_window(self):
+        pass  
+
+    def _euclidean(self, obj1_posistion, obj2_posistion):
         if isinstance(obj1_posistion, (list, np.ndarray)) and isinstance(obj2_posistion, (list, np.ndarray)):
             return euclidean(obj1_posistion, obj2_position)
         else:
             raise ValueError("Argument must be array-like (list or ndarray)")
-
-    def get_object_object_velocity(obj1_window, obj2_window):
-        pass
-
-    def get_object_oject_acceleration(obj1_window, obj2_window):
-        pass
-
-    def get_window():
-        pass
-

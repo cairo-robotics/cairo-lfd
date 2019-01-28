@@ -36,7 +36,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -107,7 +107,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -178,7 +178,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -249,7 +249,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -320,7 +320,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -391,7 +391,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -462,7 +462,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -533,7 +533,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -604,7 +604,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -675,7 +675,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -746,7 +746,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -817,7 +817,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -888,7 +888,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -959,7 +959,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -1030,7 +1030,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -1101,7 +1101,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -1172,7 +1172,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -1243,7 +1243,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -1314,7 +1314,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -1385,7 +1385,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -1456,7 +1456,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -1527,7 +1527,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -1598,7 +1598,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -1669,7 +1669,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -1740,7 +1740,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.554064453125, 
@@ -1811,7 +1811,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210650390625, 
                 -0.554064453125, 
@@ -1882,7 +1882,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2099296875, 
                 -0.5542705078125, 
@@ -1953,7 +1953,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210650390625, 
                 -0.5541669921875, 
@@ -2024,7 +2024,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210546875, 
                 -0.5539619140625, 
@@ -2095,7 +2095,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2104443359375, 
                 -0.55365234375, 
@@ -2166,7 +2166,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.210958984375, 
                 -0.553755859375, 
@@ -2237,7 +2237,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2110615234375, 
                 -0.55365234375, 
@@ -2308,7 +2308,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.211884765625, 
                 -0.55334375, 
@@ -2379,7 +2379,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.215390625, 
                 -0.5531318359375, 
@@ -2450,7 +2450,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.21631640625, 
                 -0.5541669921875, 
@@ -2521,7 +2521,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.214978515625, 
                 -0.54044140625, 
@@ -2592,7 +2592,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.217037109375, 
                 -0.5043271484375, 
@@ -2663,7 +2663,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2198154296875, 
                 -0.4611953125, 
@@ -2734,7 +2734,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.221255859375, 
                 -0.429828125, 
@@ -2805,7 +2805,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.22661328125, 
                 -0.4072265625, 
@@ -2876,7 +2876,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2345380859375, 
                 -0.39061328125, 
@@ -2947,7 +2947,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2436005859375, 
                 -0.3758583984375, 
@@ -3018,7 +3018,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.251427734375, 
                 -0.3519130859375, 
@@ -3089,7 +3089,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2529716796875, 
                 -0.3303408203125, 
@@ -3160,7 +3160,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2529716796875, 
                 -0.311869140625, 
@@ -3231,7 +3231,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.251015625, 
                 -0.30319921875, 
@@ -3302,7 +3302,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2470986328125, 
                 -0.295873046875, 
@@ -3373,7 +3373,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2431884765625, 
                 -0.2950498046875, 
@@ -3444,7 +3444,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.24071875, 
                 -0.294947265625, 
@@ -3515,7 +3515,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2409248046875, 
                 -0.29133203125, 
@@ -3586,7 +3586,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.24071875, 
                 -0.2785390625, 
@@ -3657,7 +3657,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.241439453125, 
                 -0.2515, 
@@ -3728,7 +3728,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2406162109375, 
                 -0.2127998046875, 
@@ -3799,7 +3799,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.24164453125, 
                 -0.17596484375, 
@@ -3870,7 +3870,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2421591796875, 
                 -0.148919921875, 
@@ -3941,7 +3941,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2436005859375, 
                 -0.1250830078125, 
@@ -4012,7 +4012,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.243703125, 
                 -0.1015556640625, 
@@ -4083,7 +4083,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2438056640625, 
                 -0.0790576171875, 
@@ -4154,7 +4154,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.243703125, 
                 -0.0619296875, 
@@ -4225,7 +4225,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.242673828125, 
                 -0.05212109375, 
@@ -4296,7 +4296,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2421591796875, 
                 -0.047580078125, 
@@ -4367,7 +4367,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.242056640625, 
                 -0.0443837890625, 
@@ -4438,7 +4438,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.241953125, 
                 -0.0443837890625, 
@@ -4509,7 +4509,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.241953125, 
                 -0.0443837890625, 
@@ -4580,7 +4580,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2418505859375, 
                 -0.0443837890625, 
@@ -4651,7 +4651,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2418505859375, 
                 -0.0443837890625, 
@@ -4722,7 +4722,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2418505859375, 
                 -0.0443837890625, 
@@ -4793,7 +4793,7 @@
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.241748046875, 
                 -0.0443837890625, 
@@ -4864,7 +4864,7 @@
         "robot": {
             "gripper_position": 0.0371282732142857, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2415419921875, 
                 -0.043869140625, 
@@ -4935,7 +4935,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.24041015625, 
                 -0.0395341796875, 
@@ -5006,7 +5006,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2405126953125, 
                 -0.0395341796875, 
@@ -5077,7 +5077,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2405126953125, 
                 -0.0395341796875, 
@@ -5148,7 +5148,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2406162109375, 
                 -0.039740234375, 
@@ -5219,7 +5219,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2406162109375, 
                 -0.03963671875, 
@@ -5290,7 +5290,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.24071875, 
                 -0.03963671875, 
@@ -5361,7 +5361,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.241439453125, 
                 -0.0405634765625, 
@@ -5432,7 +5432,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2427763671875, 
                 -0.0451044921875, 
@@ -5503,7 +5503,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2454521484375, 
                 -0.0636787109375, 
@@ -5574,7 +5574,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2460703125, 
                 -0.090615234375, 
@@ -5645,7 +5645,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2464814453125, 
                 -0.122607421875, 
@@ -5716,7 +5716,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.246275390625, 
                 -0.1599697265625, 
@@ -5787,7 +5787,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2464814453125, 
                 -0.2021748046875, 
@@ -5858,7 +5858,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.247716796875, 
                 -0.248509765625, 
@@ -5929,7 +5929,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2499873046875, 
                 -0.29453515625, 
@@ -6000,7 +6000,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2538974609375, 
                 -0.3342646484375, 
@@ -6071,7 +6071,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2612099609375, 
                 -0.3630595703125, 
@@ -6142,7 +6142,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.269751953125, 
                 -0.38751953125, 
@@ -6213,7 +6213,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.273875, 
                 -0.4185791015625, 
@@ -6284,7 +6284,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.273875, 
                 -0.4475732421875, 
@@ -6355,7 +6355,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2739775390625, 
                 -0.4687275390625, 
@@ -6426,7 +6426,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2744921875, 
                 -0.4880224609375, 
@@ -6497,7 +6497,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2749033203125, 
                 -0.5060830078125, 
@@ -6568,7 +6568,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.275830078125, 
                 -0.5188759765625, 
@@ -6639,7 +6639,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2766533203125, 
                 -0.5185673828125, 
@@ -6710,7 +6710,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.276447265625, 
                 -0.5181552734375, 
@@ -6781,7 +6781,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2762412109375, 
                 -0.5176416015625, 
@@ -6852,7 +6852,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.276138671875, 
                 -0.51660546875, 
@@ -6923,7 +6923,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.27603515625, 
                 -0.5165029296875, 
@@ -6994,7 +6994,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2759326171875, 
                 -0.5163994140625, 
@@ -7065,7 +7065,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2753154296875, 
                 -0.51660546875, 
@@ -7136,7 +7136,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.27541796875, 
                 -0.5168115234375, 
@@ -7207,7 +7207,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2757265625, 
                 -0.51660546875, 
@@ -7278,7 +7278,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2756240234375, 
                 -0.516296875, 
@@ -7349,7 +7349,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.276447265625, 
                 -0.5161943359375, 
@@ -7420,7 +7420,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2757265625, 
                 -0.5163994140625, 
@@ -7491,7 +7491,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.27603515625, 
                 -0.51660546875, 
@@ -7562,7 +7562,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2762412109375, 
                 -0.5160908203125, 
@@ -7633,7 +7633,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2762412109375, 
                 -0.5169140625, 
@@ -7704,7 +7704,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.27603515625, 
                 -0.516708984375, 
@@ -7775,7 +7775,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.276447265625, 
                 -0.517744140625, 
@@ -7846,7 +7846,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2772705078125, 
                 -0.521146484375, 
@@ -7917,7 +7917,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.27716796875, 
                 -0.5697451171875, 
@@ -7988,7 +7988,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.276447265625, 
                 -0.517744140625, 
@@ -8062,7 +8062,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2772705078125, 
                 -0.521146484375, 
@@ -8136,7 +8136,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.27716796875, 
                 -0.5697451171875, 
@@ -8210,7 +8210,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.27778515625, 
                 -0.6108125, 
@@ -8287,7 +8287,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2772705078125, 
                 -0.597607421875, 
@@ -8364,7 +8364,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2776826171875, 
                 -0.601318359375, 
@@ -8438,7 +8438,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2778876953125, 
                 -0.6019365234375, 
@@ -8512,7 +8512,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2772705078125, 
                 -0.597607421875, 
@@ -8589,7 +8589,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2776826171875, 
                 -0.601318359375, 
@@ -8663,7 +8663,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2778876953125, 
                 -0.6019365234375, 
@@ -8737,7 +8737,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2776826171875, 
                 -0.6021416015625, 
@@ -8811,7 +8811,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2774765625, 
                 -0.602451171875, 
@@ -8885,7 +8885,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2744921875, 
                 -0.60234765625, 
@@ -8959,7 +8959,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2654296875, 
                 -0.59987109375, 
@@ -9033,7 +9033,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2774765625, 
                 -0.602451171875, 
@@ -9106,7 +9106,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2744921875, 
                 -0.60234765625, 
@@ -9179,7 +9179,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2654296875, 
                 -0.59987109375, 
@@ -9252,7 +9252,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.2391748046875, 
                 -0.593787109375, 
@@ -9325,7 +9325,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.190068359375, 
                 -0.5873876953125, 
@@ -9398,7 +9398,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.1268564453125, 
                 -0.5670634765625, 
@@ -9471,7 +9471,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.060255859375, 
                 -0.541888671875, 
@@ -9544,7 +9544,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.190068359375, 
                 -0.5873876953125, 
@@ -9617,7 +9617,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.1268564453125, 
                 -0.5670634765625, 
@@ -9690,7 +9690,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 0.060255859375, 
                 -0.541888671875, 
@@ -9763,7 +9763,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.017857421875, 
                 -0.515576171875, 
@@ -9836,7 +9836,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.0998759765625, 
                 -0.4881259765625, 
@@ -9909,7 +9909,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.1772626953125, 
                 -0.465427734375, 
@@ -9982,7 +9982,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.2497939453125, 
                 -0.4366396484375, 
@@ -10055,7 +10055,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.320576171875, 
                 -0.3914365234375, 
@@ -10128,7 +10128,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.3720048828125, 
                 -0.3175478515625, 
@@ -10201,7 +10201,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.2497939453125, 
                 -0.4366396484375, 
@@ -10272,7 +10272,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.320576171875, 
                 -0.3914365234375, 
@@ -10343,7 +10343,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.3720048828125, 
                 -0.3175478515625, 
@@ -10414,7 +10414,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.397822265625, 
                 -0.221984375, 
@@ -10485,7 +10485,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.401423828125, 
                 -0.1237392578125, 
@@ -10556,7 +10556,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.3992626953125, 
                 -0.0443837890625, 
@@ -10627,7 +10627,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.3989541015625, 
                 0.0026708984375, 
@@ -10698,7 +10698,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.401423828125, 
                 -0.1237392578125, 
@@ -10769,7 +10769,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.3992626953125, 
                 -0.0443837890625, 
@@ -10840,7 +10840,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.3989541015625, 
                 0.0026708984375, 
@@ -10911,7 +10911,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.40563671875, 
                 0.0193935546875, 
@@ -10982,7 +10982,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4131484375, 
                 0.022384765625, 
@@ -11053,7 +11053,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.420345703125, 
                 0.0243466796875, 
@@ -11124,7 +11124,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4215810546875, 
                 0.042818359375, 
@@ -11195,7 +11195,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4212724609375, 
                 0.0605703125, 
@@ -11266,7 +11266,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4215810546875, 
                 0.0624228515625, 
@@ -11337,7 +11337,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4219921875, 
                 0.0624228515625, 
@@ -11408,7 +11408,7 @@
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.422095703125, 
                 0.062216796875, 
@@ -11479,7 +11479,7 @@
         "robot": {
             "gripper_position": 0.0259674696428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.422712890625, 
                 0.0613935546875, 
@@ -11550,7 +11550,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4255947265625, 
                 0.059740234375, 
@@ -11621,7 +11621,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4259033203125, 
                 0.0593291015625, 
@@ -11692,7 +11692,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4261083984375, 
                 0.0508642578125, 
@@ -11763,7 +11763,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4259033203125, 
                 0.028373046875, 
@@ -11834,7 +11834,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4251826171875, 
                 -0.0039345703125, 
@@ -11905,7 +11905,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4215810546875, 
                 -0.04871875, 
@@ -11976,7 +11976,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4195224609375, 
                 -0.0971181640625, 
@@ -12047,7 +12047,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4182880859375, 
                 -0.1445849609375, 
@@ -12118,7 +12118,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4169501953125, 
                 -0.18412109375, 
@@ -12189,7 +12189,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.417361328125, 
                 -0.1976337890625, 
@@ -12260,7 +12260,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4189052734375, 
                 -0.202798828125, 
@@ -12331,7 +12331,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4184931640625, 
                 -0.2022841796875, 
@@ -12402,7 +12402,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4182880859375, 
                 -0.20042578125, 
@@ -12473,7 +12473,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.41808203125, 
                 -0.200013671875, 
@@ -12544,7 +12544,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4178759765625, 
                 -0.1998017578125, 
@@ -12615,7 +12615,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4178759765625, 
                 -0.198669921875, 
@@ -12686,7 +12686,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.41746484375, 
                 -0.1990810546875, 
@@ -12757,7 +12757,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.41746484375, 
                 -0.19918359375, 
@@ -12828,7 +12828,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4172587890625, 
                 -0.1993896484375, 
@@ -12899,7 +12899,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4167509765625, 
                 -0.199287109375, 
@@ -12970,7 +12970,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.4153095703125, 
                 -0.1987724609375, 
@@ -13041,7 +13041,7 @@
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
-            "id": 1, 
+            "id": 0, 
             "joint_angle": [
                 -0.414486328125, 
                 -0.1990810546875, 

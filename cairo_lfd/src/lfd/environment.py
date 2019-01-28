@@ -89,13 +89,29 @@ class Environment(object):
         Returns
         -------
         entries : list
-            List of dictionaries for each of the Environment's items (exluding the robot item)
+            List of dictionaries for each of the Environment's items (excluding the robot item)
         """
         item_info = []
         if self.items is not None:
             for item in self.items:
                 item_info.append(item.get_info())
         return item_info
+
+    def get_item_ids(self):
+        """
+        Retrieves the all AbstractItem id's in the environment.
+
+        Returns
+        -------
+        ids : list
+            List of ids of the Environment's items
+        """
+        ids = []
+        for item in self.items:
+            ids.append(item.id)
+        ids.append(self.robot.id)
+        ids.sort(reverse=False)
+        return ids
 
     def get_constraint_by_id(self, constraint_id):
         """

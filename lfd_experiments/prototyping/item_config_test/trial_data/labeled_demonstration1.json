@@ -31,6 +31,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -100,6 +102,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -169,6 +173,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -238,6 +244,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -307,6 +315,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -376,6 +386,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -445,6 +457,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 1, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -514,6 +528,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 1, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -583,6 +599,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 1, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -652,6 +670,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 1, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -721,6 +741,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 1, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -790,6 +812,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 1, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -859,6 +883,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 1, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -928,6 +954,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 1, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -997,6 +1025,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 1, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -1066,6 +1096,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 1, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -1135,6 +1167,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 1, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -1204,6 +1238,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -1273,6 +1309,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -1342,6 +1380,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -1411,6 +1451,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -1480,6 +1522,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -1549,6 +1593,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -1618,6 +1664,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -1687,6 +1735,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -1756,6 +1806,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -1825,6 +1877,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -1894,6 +1948,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -1963,6 +2019,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2032,6 +2090,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 2, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2101,6 +2161,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 2, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2170,6 +2232,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 2, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2239,6 +2303,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 2, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2308,6 +2374,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 2, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2377,6 +2445,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 2, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2446,6 +2516,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 2, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2515,6 +2587,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 2, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2584,6 +2658,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 2, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2653,6 +2729,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 2, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2722,6 +2800,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 2, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2791,6 +2871,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2860,6 +2942,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2929,6 +3013,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -2998,6 +3084,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -3067,6 +3155,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -3136,6 +3226,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -3205,6 +3297,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -3274,6 +3368,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -3343,6 +3439,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -3412,6 +3510,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -3481,6 +3581,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -3550,6 +3652,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -3619,6 +3723,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 3, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -3688,6 +3794,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 3, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -3757,6 +3865,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 3, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -3826,6 +3936,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 3, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -3895,6 +4007,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 3, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -3964,6 +4078,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 3, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -4033,6 +4149,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 3, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -4102,6 +4220,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 3, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -4171,6 +4291,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 3, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -4240,6 +4362,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 3, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -4309,6 +4433,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 3, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -4378,6 +4504,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -4447,6 +4575,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -4516,6 +4646,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -4585,6 +4717,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -4654,6 +4788,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.041667, 
             "gripper_state": false, 
@@ -4723,6 +4859,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0371282732142857, 
             "gripper_state": false, 
@@ -4792,6 +4930,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -4861,6 +5001,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -4930,6 +5072,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -4999,6 +5143,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -5068,6 +5214,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -5137,6 +5285,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 4, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -5206,6 +5356,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 4, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -5275,6 +5427,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 4, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -5344,6 +5498,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 4, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -5413,6 +5569,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 4, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -5482,6 +5640,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 4, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -5551,6 +5711,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 4, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -5620,6 +5782,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 4, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -5689,6 +5853,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 4, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -5758,6 +5924,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 4, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -5827,6 +5995,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 4, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -5896,6 +6066,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -5965,6 +6137,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -6034,6 +6208,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -6103,6 +6279,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -6172,6 +6350,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -6241,6 +6421,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -6310,6 +6492,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -6379,6 +6563,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -6448,6 +6634,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -6517,6 +6705,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -6586,6 +6776,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -6655,6 +6847,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 5, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -6724,6 +6918,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 5, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -6793,6 +6989,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 5, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -6862,6 +7060,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 5, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -6931,6 +7131,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 5, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7000,6 +7202,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 5, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7069,6 +7273,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 5, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7138,6 +7344,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 5, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7207,6 +7415,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 5, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7276,6 +7486,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 5, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7345,6 +7557,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 5, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7414,6 +7628,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7483,6 +7699,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7552,6 +7770,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7621,6 +7841,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7690,6 +7912,227 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                0.27716796875, 
+                -0.5697451171875, 
+                1.68880078125, 
+                -0.563669921875, 
+                1.347447265625, 
+                -1.9685390625, 
+                -1.3905126953125
+            ], 
+            "joint_velocity": [
+                0.007, 
+                -0.409, 
+                -0.029, 
+                -0.002, 
+                0.727, 
+                -0.024, 
+                -0.001
+            ], 
+            "orientation": [
+                0.13278876683506152, 
+                0.9873527303818833, 
+                0.08365786690792275, 
+                0.022429679317382583
+            ], 
+            "position": [
+                0.7508704988425237, 
+                0.11363374697694574, 
+                0.3956292416583921
+            ]
+        }, 
+        "time": 28.510633945465088, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.03113705330215727, 
+                    -0.01643319116371456, 
+                    0.719394449247102, 
+                    0.6937090011710716
+                ], 
+                "position": [
+                    0.4161999148703753, 
+                    -0.4357245209977935, 
+                    -0.13378369219829628
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8280043416837967, 
+                    0.5597857971265887, 
+                    -0.010559391524230105, 
+                    -0.030614659935286833
+                ], 
+                "position": [
+                    0.7287358437329855, 
+                    0.11578361918078599, 
+                    0.24465783715813616
+                ]
+            }
+        ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                0.276447265625, 
+                -0.517744140625, 
+                1.6903798828125, 
+                -0.563669921875, 
+                1.255767578125, 
+                -1.9674931640625, 
+                -1.39092578125
+            ], 
+            "joint_velocity": [
+                -0.001, 
+                -0.016, 
+                -0.001, 
+                -0.001, 
+                -0.001, 
+                -0.001, 
+                -0.001
+            ], 
+            "orientation": [
+                0.15142559195813635, 
+                0.9878834469947615, 
+                0.03320437596420436, 
+                -0.007352188157587425
+            ], 
+            "position": [
+                0.7464541213765291, 
+                0.10380225937995868, 
+                0.3711379758067233
+            ]
+        }, 
+        "time": 28.110780954360962, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            1, 
+            2
+        ], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.03111304753061257, 
+                    -0.0164336275548273, 
+                    0.7193897969724389, 
+                    0.6937148692580128
+                ], 
+                "position": [
+                    0.41619853089601505, 
+                    -0.43572266489867983, 
+                    -0.13378725086582638
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8278004998500433, 
+                    0.5601923878826836, 
+                    -0.008018354805460669, 
+                    -0.029437608672397895
+                ], 
+                "position": [
+                    0.7291950391775208, 
+                    0.11660150359480086, 
+                    0.24726237881443563
+                ]
+            }
+        ], 
+        "keyframe_id": 6, 
+        "keyframe_type": "constraint_transition", 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                0.2772705078125, 
+                -0.521146484375, 
+                1.6903798828125, 
+                -0.563814453125, 
+                1.25659375, 
+                -1.967287109375, 
+                -1.3907197265625
+            ], 
+            "joint_velocity": [
+                -0.001, 
+                -0.02, 
+                -0.008, 
+                -0.007, 
+                0.004, 
+                -0.001, 
+                -0.001
+            ], 
+            "orientation": [
+                0.15092395665559877, 
+                0.9879342555968817, 
+                0.03427903661544542, 
+                -0.00572831339678747
+            ], 
+            "position": [
+                0.7462495366238476, 
+                0.10448788742328158, 
+                0.37320839012801116
+            ]
+        }, 
+        "time": 28.310883045196533, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            1, 
+            2
+        ], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.031044988979235594, 
+                    -0.016286180951686064, 
+                    0.7194459289179731, 
+                    0.6936631375479828
+                ], 
+                "position": [
+                    0.41620832958183773, 
+                    -0.4357183639996731, 
+                    -0.133773111433804
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8196582198122572, 
+                    0.5704799900293634, 
+                    0.03448705805894591, 
+                    -0.03903491942556253
+                ], 
+                "position": [
+                    0.7405733178527119, 
+                    0.13301107193766207, 
+                    0.26829182093172427
+                ]
+            }
+        ], 
+        "keyframe_id": 6, 
+        "keyframe_type": "constraint_transition", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7762,6 +8205,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 6, 
+        "keyframe_type": "constraint_transition", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7804,7 +8249,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [
             {
@@ -7836,6 +8282,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 6, 
+        "keyframe_type": "constraint_transition", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7878,7 +8326,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [
             {
@@ -7910,6 +8359,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 6, 
+        "keyframe_type": "constraint_transition", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -7949,7 +8400,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [
             {
@@ -7981,6 +8433,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -8020,7 +8474,233 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
+        ], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.03116517347752994, 
+                    -0.016409784002433044, 
+                    0.7194360826062063, 
+                    0.6936650952072034
+                ], 
+                "position": [
+                    0.41620069564231255, 
+                    -0.43572588266902024, 
+                    -0.133769227138741
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8080381597250585, 
+                    0.5845931751858493, 
+                    0.05586794944060246, 
+                    -0.046946717360513146
+                ], 
+                "position": [
+                    0.7430874031985207, 
+                    0.14181194897678112, 
+                    0.28772541039510596
+                ]
+            }
+        ], 
+        "keyframe_id": 7, 
+        "keyframe_type": "regular", 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                0.2772705078125, 
+                -0.597607421875, 
+                1.6830439453125, 
+                -0.5633720703125, 
+                1.3872392578125, 
+                -1.982728515625, 
+                -1.3905126953125
+            ], 
+            "joint_velocity": [
+                0.012, 
+                -0.052, 
+                0.003, 
+                0.015, 
+                0.028, 
+                -0.001, 
+                -0.001
+            ], 
+            "orientation": [
+                0.1235674671406211, 
+                0.9860372955686444, 
+                0.1066584151913434, 
+                0.03294715892147333
+            ], 
+            "position": [
+                0.7500506965467428, 
+                0.11687883063332849, 
+                0.41248883636161127
+            ]
+        }, 
+        "time": 28.910717010498047, 
+        "triggered_constraints": [
+            1, 
+            2
+        ]
+    }, 
+    {
+        "applied_constraints": [
+            1, 
+            2
+        ], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.030805174409635133, 
+                    -0.016435359451567825, 
+                    0.7193114613692894, 
+                    0.6938097573531067
+                ], 
+                "position": [
+                    0.41628248103517496, 
+                    -0.4358042905220423, 
+                    -0.1336647871927089
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8079001834909667, 
+                    0.5843997876472099, 
+                    0.0596426186763444, 
+                    -0.047086085648690164
+                ], 
+                "position": [
+                    0.7435548451576852, 
+                    0.1430515102945138, 
+                    0.2905352140957125
+                ]
+            }
+        ], 
+        "keyframe_id": 7, 
+        "keyframe_type": "regular", 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                0.2776826171875, 
+                -0.601318359375, 
+                1.6828994140625, 
+                -0.5633720703125, 
+                1.389912109375, 
+                -1.982728515625, 
+                -1.3905126953125
+            ], 
+            "joint_velocity": [
+                -0.003, 
+                0.003, 
+                -0.001, 
+                -0.001, 
+                0.014, 
+                -0.001, 
+                -0.001
+            ], 
+            "orientation": [
+                0.12255709731116617, 
+                0.985879714668834, 
+                0.10863620912173863, 
+                0.03491590140349219
+            ], 
+            "position": [
+                0.7498915822129485, 
+                0.11748699166081275, 
+                0.41482675996737634
+            ]
+        }, 
+        "time": 29.112356901168823, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            1, 
+            2
+        ], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.030775530220493355, 
+                    -0.01659518140041302, 
+                    0.7191238914927344, 
+                    0.6940016558524469
+                ], 
+                "position": [
+                    0.416326200525543, 
+                    -0.43583671796568973, 
+                    -0.1336195563321767
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8077602578142173, 
+                    0.5846149143192051, 
+                    0.060107020718389026, 
+                    -0.046216673095422066
+                ], 
+                "position": [
+                    0.7434847025722626, 
+                    0.14318283550275973, 
+                    0.29122762940215663
+                ]
+            }
+        ], 
+        "keyframe_id": 7, 
+        "keyframe_type": "regular", 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                0.2778876953125, 
+                -0.6019365234375, 
+                1.6830439453125, 
+                -0.5632275390625, 
+                1.389912109375, 
+                -1.982728515625, 
+                -1.3905126953125
+            ], 
+            "joint_velocity": [
+                -0.002, 
+                0.006, 
+                0.006, 
+                -0.001, 
+                -0.001, 
+                -0.001, 
+                -0.001
+            ], 
+            "orientation": [
+                0.1222774557938558, 
+                0.9858888642280568, 
+                0.10878604631761123, 
+                0.03517054623227905
+            ], 
+            "position": [
+                0.7498336379523456, 
+                0.11778845367556043, 
+                0.4152367686072252
+            ]
+        }, 
+        "time": 29.310720920562744, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            1, 
+            2
         ], 
         "items": [
             {
@@ -8052,6 +8732,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 7, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -8091,7 +8773,8 @@
     }, 
     {
         "applied_constraints": [
-            1
+            1, 
+            2
         ], 
         "items": [
             {
@@ -8123,6 +8806,230 @@
                 ]
             }
         ], 
+        "keyframe_id": 7, 
+        "keyframe_type": "regular", 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                0.2774765625, 
+                -0.602451171875, 
+                1.68434375, 
+                -0.5633720703125, 
+                1.389912109375, 
+                -1.9789716796875, 
+                -1.3905126953125
+            ], 
+            "joint_velocity": [
+                -0.004, 
+                -0.001, 
+                -0.001, 
+                -0.011, 
+                -0.001, 
+                -0.001, 
+                -0.001
+            ], 
+            "orientation": [
+                0.12244594527751568, 
+                0.9857557473191889, 
+                0.10918803095459624, 
+                0.03702122375802256
+            ], 
+            "position": [
+                0.7504034430146026, 
+                0.11765696081759583, 
+                0.4152713697109507
+            ]
+        }, 
+        "time": 29.710787057876587, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            1, 
+            2
+        ], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.030941633802117154, 
+                    -0.016216651421237068, 
+                    0.7192592291029405, 
+                    0.6938629145364156
+                ], 
+                "position": [
+                    0.41635184256333724, 
+                    -0.43581898978380745, 
+                    -0.13355967335507402
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8104571514851318, 
+                    0.5795129896090353, 
+                    0.06029988170112513, 
+                    -0.06072785775666679
+                ], 
+                "position": [
+                    0.7447494879009339, 
+                    0.13955600627910025, 
+                    0.2919598894617612
+                ]
+            }
+        ], 
+        "keyframe_id": 7, 
+        "keyframe_type": "regular", 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                0.2744921875, 
+                -0.60234765625, 
+                1.68391015625, 
+                -0.5643916015625, 
+                1.3890859375, 
+                -1.979177734375, 
+                -1.3903056640625
+            ], 
+            "joint_velocity": [
+                -0.019, 
+                0.008, 
+                -0.001, 
+                -0.012, 
+                -0.001, 
+                -0.001, 
+                -0.001
+            ], 
+            "orientation": [
+                0.12471672756805656, 
+                0.9855143082636095, 
+                0.10884755329112197, 
+                0.03687134680142993
+            ], 
+            "position": [
+                0.7504005654894293, 
+                0.11490692186066673, 
+                0.4152443020596224
+            ]
+        }, 
+        "time": 29.910725831985474, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            1, 
+            2
+        ], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.030787955171597867, 
+                    -0.0160978093197246, 
+                    0.7192709217187477, 
+                    0.693860430554838
+                ], 
+                "position": [
+                    0.41634275649067265, 
+                    -0.43581886710235335, 
+                    -0.13357293458332434
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8157789079976226, 
+                    0.5730376378678125, 
+                    0.051650090199045644, 
+                    -0.05886466122175805
+                ], 
+                "position": [
+                    0.7411498026697967, 
+                    0.1277499656563691, 
+                    0.2922230365813229
+                ]
+            }
+        ], 
+        "keyframe_id": 7, 
+        "keyframe_type": "regular", 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                0.2654296875, 
+                -0.59987109375, 
+                1.6738310546875, 
+                -0.566287109375, 
+                1.374728515625, 
+                -1.99316015625, 
+                -1.3903056640625
+            ], 
+            "joint_velocity": [
+                -0.078, 
+                0.032, 
+                -0.149, 
+                -0.011, 
+                -0.222, 
+                -0.25, 
+                -0.001
+            ], 
+            "orientation": [
+                0.13467084970149765, 
+                0.9853991080044984, 
+                0.09966618099059285, 
+                0.030315219797429415
+            ], 
+            "position": [
+                0.7475299868212627, 
+                0.10341356718943312, 
+                0.41667647810665315
+            ]
+        }, 
+        "time": 30.111034870147705, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            1, 
+            2
+        ], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.03093686393102752, 
+                    -0.016295350031449395, 
+                    0.7192661849981312, 
+                    0.6938541863674509
+                ], 
+                "position": [
+                    0.416352670515381, 
+                    -0.4358177561319281, 
+                    -0.13356075767786685
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8091445171295236, 
+                    0.5814623199898433, 
+                    0.05986108299759891, 
+                    -0.060027969358076416
+                ], 
+                "position": [
+                    0.7447433219649624, 
+                    0.1424661798284702, 
+                    0.29201298710193946
+                ]
+            }
+        ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -8194,6 +9101,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 8, 
+        "keyframe_type": "constraint_transition", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -8265,6 +9174,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 8, 
+        "keyframe_type": "constraint_transition", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -8336,6 +9247,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 8, 
+        "keyframe_type": "constraint_transition", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -8407,6 +9320,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 8, 
+        "keyframe_type": "constraint_transition", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -8478,6 +9393,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 8, 
+        "keyframe_type": "constraint_transition", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -8549,6 +9466,227 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                0.060255859375, 
+                -0.541888671875, 
+                1.540681640625, 
+                -0.5665751953125, 
+                1.3827333984375, 
+                -2.12383203125, 
+                -1.471361328125
+            ], 
+            "joint_velocity": [
+                -0.354, 
+                0.125, 
+                -0.145, 
+                -0.031, 
+                -0.001, 
+                -0.289, 
+                -1.226
+            ], 
+            "orientation": [
+                0.22689436258585016, 
+                0.9720488271729127, 
+                0.05391464521200134, 
+                -0.027078346518758754
+            ], 
+            "position": [
+                0.7244112919112055, 
+                -0.07833494198308812, 
+                0.4128014412345565
+            ]
+        }, 
+        "time": 30.910894870758057, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            1
+        ], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.03106009738557377, 
+                    -0.01623974704256527, 
+                    0.719398334377171, 
+                    0.6937129191550377
+                ], 
+                "position": [
+                    0.41619977331657065, 
+                    -0.4357170025400899, 
+                    -0.13374902625735224
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8456099378365175, 
+                    0.5309319100654724, 
+                    0.020696414034953956, 
+                    -0.051252728545505014
+                ], 
+                "position": [
+                    0.7263649975597809, 
+                    0.045985112355958035, 
+                    0.3011971571079754
+                ]
+            }
+        ], 
+        "keyframe_id": 9, 
+        "keyframe_type": "regular", 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                0.190068359375, 
+                -0.5873876953125, 
+                1.5971142578125, 
+                -0.565123046875, 
+                1.37246875, 
+                -2.05098828125, 
+                -1.3911328125
+            ], 
+            "joint_velocity": [
+                -0.298, 
+                0.059, 
+                -0.145, 
+                0.003, 
+                0.103, 
+                -0.003, 
+                -0.016
+            ], 
+            "orientation": [
+                0.18897520457251515, 
+                0.9794326139329212, 
+                0.06952729834858717, 
+                0.012887265250955751
+            ], 
+            "position": [
+                0.7384921771611312, 
+                0.026754881049161086, 
+                0.4280319694947579
+            ]
+        }, 
+        "time": 30.510809898376465, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            1
+        ], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.03283394537757398, 
+                    -0.017084759869251755, 
+                    0.7194852359733355, 
+                    0.6935208286073097
+                ], 
+                "position": [
+                    0.41629388220869495, 
+                    -0.4358159314914899, 
+                    -0.13357157873416178
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8645145574735236, 
+                    0.49990693211257203, 
+                    0.01014303605340021, 
+                    -0.05103789447087902
+                ], 
+                "position": [
+                    0.7219621774492789, 
+                    -0.007934522566611639, 
+                    0.2931462364030103
+                ]
+            }
+        ], 
+        "keyframe_id": 9, 
+        "keyframe_type": "regular", 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                0.1268564453125, 
+                -0.5670634765625, 
+                1.570052734375, 
+                -0.564978515625, 
+                1.3798544921875, 
+                -2.065810546875, 
+                -1.3921650390625
+            ], 
+            "joint_velocity": [
+                -0.332, 
+                0.113, 
+                -0.126, 
+                0.01, 
+                0.012, 
+                -0.169, 
+                -0.007
+            ], 
+            "orientation": [
+                0.22459509159339744, 
+                0.9726117746464179, 
+                0.059730361792350695, 
+                0.0039578442938164385
+            ], 
+            "position": [
+                0.7364188106609055, 
+                -0.025692545614301687, 
+                0.4212378946246335
+            ]
+        }, 
+        "time": 30.711135864257812, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            1
+        ], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.0336050460005937, 
+                    -0.017076176882958462, 
+                    0.7195873613103319, 
+                    0.6933781078037711
+                ], 
+                "position": [
+                    0.4164517247256318, 
+                    -0.4359035976292639, 
+                    -0.1333808726945629
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8667936246379909, 
+                    0.49378584796296704, 
+                    -0.01826840955922234, 
+                    -0.06716271920428972
+                ], 
+                "position": [
+                    0.7029119990976557, 
+                    -0.059864325797647, 
+                    0.28376599617206827
+                ]
+            }
+        ], 
+        "keyframe_id": 9, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -8620,6 +9758,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 9, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -8691,6 +9831,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 9, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -8762,6 +9904,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 9, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -8833,6 +9977,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 9, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -8904,6 +10050,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 9, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -8975,6 +10123,223 @@
                 ]
             }
         ], 
+        "keyframe_id": 9, 
+        "keyframe_type": "regular", 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                -0.3720048828125, 
+                -0.3175478515625, 
+                1.418748046875, 
+                -0.834029296875, 
+                1.45187109375, 
+                -1.9914951171875, 
+                -2.558294921875
+            ], 
+            "joint_velocity": [
+                -0.197, 
+                0.429, 
+                -0.001, 
+                -0.147, 
+                0.075, 
+                0.296, 
+                -0.27
+            ], 
+            "orientation": [
+                0.0396376084912861, 
+                0.9979935728257487, 
+                0.04858197671477955, 
+                -0.008802279822493266
+            ], 
+            "position": [
+                0.5275445058442941, 
+                -0.4212384324612292, 
+                0.27469175128834256
+            ]
+        }, 
+        "time": 32.11072897911072, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [
+            1
+        ], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.03247555311384715, 
+                    -0.01777786980597157, 
+                    0.7192958519853521, 
+                    0.6937165948323186
+                ], 
+                "position": [
+                    0.4166003985339961, 
+                    -0.43601591850983434, 
+                    -0.1331095318084021
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8272663009029714, 
+                    0.5550743400885914, 
+                    -0.07992633849139272, 
+                    -0.033685638173116046
+                ], 
+                "position": [
+                    0.6448115074815178, 
+                    -0.19829731449637422, 
+                    0.2555584825437856
+                ]
+            }
+        ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                -0.2497939453125, 
+                -0.4366396484375, 
+                1.42292578125, 
+                -0.7515732421875, 
+                1.4327890625, 
+                -2.0674755859375, 
+                -2.2047021484375
+            ], 
+            "joint_velocity": [
+                -0.373, 
+                0.159, 
+                -0.061, 
+                -0.274, 
+                0.118, 
+                0.237, 
+                -0.943
+            ], 
+            "orientation": [
+                0.11759871787814247, 
+                0.9917234753149421, 
+                0.051526542173424644, 
+                -0.00032482968019210517
+            ], 
+            "position": [
+                0.5982053510927903, 
+                -0.34043284577344135, 
+                0.35320071749664184
+            ]
+        }, 
+        "time": 31.71128487586975, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.03260135472287256, 
+                    -0.017752479055583577, 
+                    0.7193146213509761, 
+                    0.6936919827664005
+                ], 
+                "position": [
+                    0.4166441632286291, 
+                    -0.4359958332056226, 
+                    -0.13310781730295287
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8272663009029714, 
+                    0.5550743400885914, 
+                    -0.07992633849139272, 
+                    -0.033685638173116046
+                ], 
+                "position": [
+                    0.6448115074815178, 
+                    -0.19829731449637422, 
+                    0.2555584825437856
+                ]
+            }
+        ], 
+        "keyframe_id": 10, 
+        "keyframe_type": "constraint_transition", 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                -0.320576171875, 
+                -0.3914365234375, 
+                1.418748046875, 
+                -0.800580078125, 
+                1.440173828125, 
+                -2.0326162109375, 
+                -2.4074296875
+            ], 
+            "joint_velocity": [
+                -0.323, 
+                0.292, 
+                -0.001, 
+                -0.214, 
+                0.045, 
+                0.141, 
+                -1.011
+            ], 
+            "orientation": [
+                0.07484721877681605, 
+                0.9959672640617815, 
+                0.049363184150786325, 
+                0.0032216159238636147
+            ], 
+            "position": [
+                0.5584347013624396, 
+                -0.38843306912099995, 
+                0.3217131433687925
+            ]
+        }, 
+        "time": 31.910919904708862, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.03270211473850366, 
+                    -0.0178370478048607, 
+                    0.719273871992382, 
+                    0.6937273646731766
+                ], 
+                "position": [
+                    0.41663408033493043, 
+                    -0.4359861866743201, 
+                    -0.13309977771662415
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8272663009029714, 
+                    0.5550743400885914, 
+                    -0.07992633849139272, 
+                    -0.033685638173116046
+                ], 
+                "position": [
+                    0.6448115074815178, 
+                    -0.19829731449637422, 
+                    0.2555584825437856
+                ]
+            }
+        ], 
+        "keyframe_id": 10, 
+        "keyframe_type": "constraint_transition", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -9044,6 +10409,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 10, 
+        "keyframe_type": "constraint_transition", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -9113,6 +10480,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 10, 
+        "keyframe_type": "constraint_transition", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -9182,6 +10551,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 10, 
+        "keyframe_type": "constraint_transition", 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -9251,6 +10622,221 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                -0.3989541015625, 
+                0.0026708984375, 
+                1.4194697265625, 
+                -0.926095703125, 
+                1.6035361328125, 
+                -1.6953564453125, 
+                -2.6865517578125
+            ], 
+            "joint_velocity": [
+                -0.002, 
+                0.167, 
+                -0.001, 
+                -0.001, 
+                0.266, 
+                0.257, 
+                -0.885
+            ], 
+            "orientation": [
+                0.017138715814553774, 
+                0.9993241476216979, 
+                -0.006583311691029866, 
+                -0.031846073660249406
+            ], 
+            "position": [
+                0.46742102550095666, 
+                -0.45215817457360313, 
+                0.07165356869172959
+            ]
+        }, 
+        "time": 32.910789012908936, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.03285220021984134, 
+                    -0.016644794854324713, 
+                    0.7200611075226026, 
+                    0.692932707245001
+                ], 
+                "position": [
+                    0.4164377069738042, 
+                    -0.4360615037634256, 
+                    -0.13344620219447811
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8272663009029714, 
+                    0.5550743400885914, 
+                    -0.07992633849139272, 
+                    -0.033685638173116046
+                ], 
+                "position": [
+                    0.6448115074815178, 
+                    -0.19829731449637422, 
+                    0.2555584825437856
+                ]
+            }
+        ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                -0.401423828125, 
+                -0.1237392578125, 
+                1.419037109375, 
+                -0.892212890625, 
+                1.525541015625, 
+                -1.8274482421875, 
+                -2.6400078125
+            ], 
+            "joint_velocity": [
+                0.007, 
+                0.477, 
+                -0.001, 
+                -0.171, 
+                0.345, 
+                0.38, 
+                0.014
+            ], 
+            "orientation": [
+                0.03241920862864258, 
+                0.998763580000936, 
+                0.02161431778054194, 
+                -0.030872762145435516
+            ], 
+            "position": [
+                0.4895847930494129, 
+                -0.44845948397594404, 
+                0.15187036180562877
+            ]
+        }, 
+        "time": 32.51080298423767, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.034705976867046455, 
+                    -0.018855325702646062, 
+                    0.7195820166353343, 
+                    0.6932833436091251
+                ], 
+                "position": [
+                    0.41637563822294793, 
+                    -0.4361136502291076, 
+                    -0.13326121665152132
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8272663009029714, 
+                    0.5550743400885914, 
+                    -0.07992633849139272, 
+                    -0.033685638173116046
+                ], 
+                "position": [
+                    0.6448115074815178, 
+                    -0.19829731449637422, 
+                    0.2555584825437856
+                ]
+            }
+        ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
+        "robot": {
+            "gripper_position": 0.0122768839285714, 
+            "gripper_state": true, 
+            "id": 1, 
+            "joint_angle": [
+                -0.3992626953125, 
+                -0.0443837890625, 
+                1.419037109375, 
+                -0.919986328125, 
+                1.575416015625, 
+                -1.7585810546875, 
+                -2.6406279296875
+            ], 
+            "joint_velocity": [
+                0.007, 
+                0.318, 
+                -0.001, 
+                -0.099, 
+                0.151, 
+                0.345, 
+                -0.015
+            ], 
+            "orientation": [
+                0.03902592513445702, 
+                0.9986666088801344, 
+                0.010709767704639469, 
+                -0.03205124570068421
+            ], 
+            "position": [
+                0.47425655199033007, 
+                -0.4489713508234621, 
+                0.10099429152706986
+            ]
+        }, 
+        "time": 32.71180582046509, 
+        "triggered_constraints": []
+    }, 
+    {
+        "applied_constraints": [], 
+        "items": [
+            {
+                "id": 1, 
+                "orientation": [
+                    0.03459589387720999, 
+                    -0.01923931009363421, 
+                    0.7195087582466356, 
+                    0.6933542649371826
+                ], 
+                "position": [
+                    0.4163917356873614, 
+                    -0.4360591569108092, 
+                    -0.13332776465361995
+                ]
+            }, 
+            {
+                "id": 2, 
+                "orientation": [
+                    0.8272663009029714, 
+                    0.5550743400885914, 
+                    -0.07992633849139272, 
+                    -0.033685638173116046
+                ], 
+                "position": [
+                    0.6448115074815178, 
+                    -0.19829731449637422, 
+                    0.2555584825437856
+                ]
+            }
+        ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -9320,6 +10906,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -9389,6 +10977,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -9458,6 +11048,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -9527,6 +11119,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -9596,6 +11190,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -9665,6 +11261,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -9734,6 +11332,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": true, 
@@ -9803,6 +11403,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0122768839285714, 
             "gripper_state": false, 
@@ -9872,6 +11474,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0259674696428571, 
             "gripper_state": false, 
@@ -9941,6 +11545,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 11, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10010,6 +11616,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 11, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10079,6 +11687,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 11, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10148,6 +11758,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 11, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10217,6 +11829,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 11, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10286,6 +11900,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 11, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10355,6 +11971,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 11, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10424,6 +12042,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 11, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10493,6 +12113,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 11, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10562,6 +12184,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 11, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10631,6 +12255,8 @@
                 ]
             }
         ], 
+        "keyframe_id": 11, 
+        "keyframe_type": "regular", 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10700,6 +12326,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10769,6 +12397,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10838,6 +12468,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10907,6 +12539,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -10976,6 +12610,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -11045,6 +12681,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -11114,6 +12752,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -11183,6 +12823,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -11252,6 +12894,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -11321,6 +12965,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 
@@ -11390,6 +13036,8 @@
                 ]
             }
         ], 
+        "keyframe_id": null, 
+        "keyframe_type": null, 
         "robot": {
             "gripper_position": 0.0405509196428571, 
             "gripper_state": false, 

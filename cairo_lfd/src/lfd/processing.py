@@ -136,22 +136,39 @@ class SawyerSampleConverter(object):
 
 class ObjectRelativeDataProcessor():
 
-    def __init__(self, object_ids):
-        self.ids = object_ids
+    def __init__(self, item_ids, robot_id):
+        self.item_ids = item_ids
+        self.robot_id = robot_id
 
-    def generate_relative_data(observations):
+    def generate_relative_data(self, observations):
         for obsv in observations:
             self.relative_distance(obsv)
 
     def relative_distance(self, observation):
+        # relative to items
+        for item_id in self.item_ids:
+            relative_distances = {}
+            item_data = observation.get_item_data(item_id)
+            item_position = item_data["position"]
+            for target_id in self.item_ids:
+                if item_id != target_id:
+                    target_position = observation.get_item_data(target_id)["position"]
+                    relative_distances[target_id] = self._euclidean(item_position, target_position)
+            if item_id != self.robot_id:
+                robot_position = observation.get_robot_data()["position"]
+                relative_distances[self.robot_id] = self._euclidean(item_position, robot_position)
+            item_data["relative_distance"] = relative_distances
+
+        # relative to robots
+
         relative_distances = {}
-        for obj_id in ids:
-            obj1_posistion = self.observations.get_item_data(obj_id)["position"]
-            for target_id in ids:
-                if obj_id != target_id:
-                    target_posistion = self.observations.get_item_data(obj_id)["position"]
-                    relative_distances[target_id] = self._euclidean(obj1_posistion, target_posistion)
-        observation["relative_distance"] = relative_distances
+        robot_data = observation.get_robot_data()
+        robot_position = robot_data["position"]
+        for item_id in self.item_ids:
+            if item_id != self.robot_id:
+                item_position = observation.get_item_data(item_id)["position"]
+                relative_distances[item_id] = self._euclidean(robot_position, item_position)
+        robot_data["relative_distance"] = relative_distances
 
     def relative_velocity(self, obj1_window, obj2_window):
         pass
@@ -162,8 +179,8 @@ class ObjectRelativeDataProcessor():
     def _get_window(self):
         pass  
 
-    def _euclidean(self, obj1_posistion, obj2_posistion):
-        if isinstance(obj1_posistion, (list, np.ndarray)) and isinstance(obj2_posistion, (list, np.ndarray)):
+    def _euclidean(self, obj1_posistion, obj2_position):
+        if isinstance(obj1_posistion, (list, np.ndarray)) and isinstance(obj2_position, (list, np.ndarray)):
             return euclidean(obj1_posistion, obj2_position)
         else:
             raise ValueError("Argument must be array-like (list or ndarray)")

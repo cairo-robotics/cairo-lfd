@@ -6,7 +6,8 @@ import intera_interface
 from intera_interface import CHECK_VERSION
 from lfd.record import SawyerRecorder
 from lfd.environment import Environment, import_configuration
-from lfd.items import RobotFactory, ConstraintFactory
+from lfd.items import ItemFactory
+from lfd.constraints import ConstraintFactory
 from lfd.analyzer import ConstraintAnalyzer
 from lfd.data_io import DataExporter
 
@@ -16,12 +17,7 @@ def main():
     Demonstration Recorder
 
     Record a series of demonstrations.
-
-    Single click Sawyer Wheel button to initiate start demonstration. 
-    Double click Sawyer wheel button to capture the demonstration.
-    Hold down Sawyer wheel button to finish recording all demonstrations.
     """
-   
     arg_fmt = argparse.RawDescriptionHelpFormatter
     parser = argparse.ArgumentParser(formatter_class=arg_fmt,
                                      description=main.__doc__)
@@ -55,14 +51,10 @@ def main():
     config_filepath = args.config
     configs = import_configuration(config_filepath)
 
-    robot_factory = RobotFactory(configs["robots"])
-    constraint_factory = ConstraintFactory(configs["constraints"])
-
-    robot = robot_factory.generate_robots()[0]
-    constraints = constraint_factory.generate_constraints()
-
+    items = ItemFactory(configs).generate_items()
+    constraints = ConstraintFactory(configs["constraints"]).generate_constraints()
     # We only have just the one robot...for now.......
-    environment = Environment(items=None, robot=robot, constraints=constraints)
+    environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints)
 
     exp = DataExporter()
 

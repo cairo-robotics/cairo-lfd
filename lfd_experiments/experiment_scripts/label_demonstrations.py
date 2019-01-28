@@ -57,13 +57,12 @@ def main():
     # Create DemosntrationkeyframeLabeler passing in the aligned demonstrations and the constraint transition
     # ordering, both of which are returned from the DemonstratinAligner object.
     keyframe_labeler = DemonstrationKeyframeLabeler(aligned_demos, constraint_transitions)
+    """Call label_demontrations. The first parameter is the average group length divisor which determines the number of keyframes for that group. So if the first grouping of data before the first constraint transition has an average length of 100, then that first grouping will generate 5 keyframes (100/20 = 5). 
 
-    # Call label_demontrations. The first paremeter is the average group length divisor which determines
-    # the number of keyframes for that group. So if the first grouping of data before the first constraint transtion
-    # has an average length of 100, then that first grouping will generate 5 keyframes (100/20 = 5). The second parameter
-    # is the window size i.e. how big each keyframe size should be (+/- one depending on if odd number of elements in 
-    # the grouping list per demonstration)
-    rospy.loginfo("Labeleing demonstrations.")
+    The second parameter is the window size i.e. how big each keyframe size should be (+/- one depending on if odd number of elements in the grouping list per demonstration) 
+    """
+    rospy.loginfo("Labeling demonstrations.")
+
     labeled_demonstrations = keyframe_labeler.label_demonstrations(args.divisor, args.window)
 
     # Export the dictionary data representation of the observations of the labeled demos.

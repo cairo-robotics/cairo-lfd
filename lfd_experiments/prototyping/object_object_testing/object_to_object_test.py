@@ -8,8 +8,6 @@ from lfd.environment import Environment, import_configuration
 from lfd.items import ItemFactory
 from lfd.constraints import ConstraintFactory
 from lfd.data_io import DataImporter, DataExporter
-from lfd.alignment import DemonstrationAligner, vectorize_demonstration
-from lfd.analysis import DemonstrationKeyframeLabeler
 from lfd.environment import Observation, Demonstration
 from lfd.processing import ObjectRelativeDataProcessor
 
@@ -29,6 +27,11 @@ def main():
         '-i', '--input', dest='input_directory', required=True,
         help='the input directory to pull in raw demonstration .json files'
     )
+
+    required.add_argument(
+        '-o', '--output', dest='output_directory', required=True,
+        help='the output directory for saving relative distance labeled demonstration .json files'
+    )
     args = parser.parse_args(rospy.myargv()[1:])
 
     print("Initializing node... ")
@@ -46,10 +49,8 @@ def main():
     # We only have just the one robot...for now.......
     environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints)
 
-    exp = DataExporter()
     # Import the data
     importer = DataImporter()
-
     rospy.loginfo("Importing demonstration .json files...")
     raw_demonstrations = importer.load_json_files(args.input_directory + "/*.json")
 
@@ -62,13 +63,15 @@ def main():
         demonstrations.append(Demonstration(observations))
     args = parser.parse_args(rospy.myargv()[1:])
 
-    ordp = ObjectRelativeDataProcessor(environment.get_item_ids())
+    ordp = ObjectRelativeDataProcessor(environment.get_item_ids(), environment.get_robot_id())
 
+    exp = DataExporter()
     rospy.loginfo("Exporting demonstrations.")
     for idx, demo in enumerate(demonstrations):
-        print ordp._generate_pairs(demo.observations)
-        # labeled_data = [obs.data for obs in demo.labeled_observations]
-        # exp.export_to_json(args.output_directory + "/object_object_labeled_demonstration{}.json".format(idx), labeled_data)
+        ordp.generate_relative_data(demo.observations)
+        print(demo.observations[0].data)
+        labeled_data = [obs.data for obs in demo.observations]
+        exp.export_to_json(args.output_directory + "/labeled_demonstration{}.json".format(idx), labeled_data)
     print("\nDone.")
 
 

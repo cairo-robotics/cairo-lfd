@@ -208,7 +208,7 @@ class ItemFactory(object):
     configs : list
             List of configuration dictionaries.
     classes : dict
-        Dictionary with values as uninitialized class references i.e. StaticObject
+        Dictionary with values as uninitialized class references i.e. StaticObject, SawyerRobot
 
     Example
     -------
@@ -243,7 +243,7 @@ class ItemFactory(object):
                 }
         }
     """
-    def __init__(self, item_configs):
+    def __init__(self, configs):
 
         """
         Parameters
@@ -251,9 +251,10 @@ class ItemFactory(object):
         robot_configs : list
             List of configuration dictionaries.
         """
-        self.configs = item_configs
+        self.configs = configs
         self.classes = {
             "StaticObject": StaticObject,
+            "SawyerRobot": SawyerRobot
         }
 
     def generate_items(self):
@@ -265,137 +266,21 @@ class ItemFactory(object):
         items : list
             List of AbstractItem item objects.
         """
-        items = []
-        for config in self.configs:
-            items.append(self.classes[config["class"]](*tuple(config["init_args"].values())))
+        item_ids = []
+        items = {
+            "robots": [],
+            "items": []
+        }
+        for config in self.configs["robots"]:
+            if config["init_args"]["id"] in item_ids:
+                raise ValueError("Robots and items must each have a unique integer 'id'")
+            else:
+                item_ids.append(config["init_args"]["id"])
+            items["robots"].append(self.classes[config["class"]](*tuple(config["init_args"].values())))
+        for config in self.configs["items"]:
+            if config["init_args"]["id"] in item_ids:
+                raise ValueError("Robots and items must each have a unique integer 'id'")
+            else:
+                item_ids.append(config["init_args"]["id"])
+            items["items"].append(self.classes[config["class"]](*tuple(config["init_args"].values())))
         return items
-
-
-class RobotFactory(object):
-    """
-    Factory class that builds robot items. These items are defined in the config.json file.
-    The class field in the configuration determines which AbstractItem robot class to use.
-
-    Attributes
-    ----------
-    configs : list
-            List of configuration dictionaries.
-    classes : dict
-        Dictionary with values as uninitialized class references i.e. SawyerRobot
-
-    Example
-    -------
-
-    Example entry in config.json:
-
-    .. code-block:: json
-
-        {
-            "class": "SawyerRobot",
-            "init_args":
-                {
-                    "id": 1,
-                    "upright_pose":
-                        {
-                            "position":
-                                [
-                                    0.604698787426,
-                                    -0.439894686226,
-                                    0.159350584992
-                                ],
-                            "orientation":
-                                [
-                                    0.712590112587,
-                                    -0.00994445446764,
-                                    0.701496927312,
-                                    -0.00430119065513
-                                ]
-                        }
-                }
-        }
-    """
-    def __init__(self, robot_configs):
-
-        """
-        Parameters
-        ----------
-        robot_configs : list
-            List of configuration dictionaries.
-        """
-        self.configs = robot_configs
-        self.classes = {
-            "SawyerRobot": SawyerRobot,
-        }
-
-    def generate_robots(self):
-        """
-        Build the robots defined in the configuration dictionaries of self.configs.
-
-        Returns
-        -------
-        robots : list
-            List of AbstractItem robot objects.
-        """
-        robots = []
-        for config in self.configs:
-            robots.append(self.classes[config["class"]](*tuple(config["init_args"].values())))
-        return robots
-
-
-class ConstraintFactory(object):
-    """
-    Factory class that builds LFD constraints. These items are defined in the config.json file.
-    The class field in the configuration determines which constraint class to use.
-
-    Attributes
-    ----------
-    configs : list
-            List of configuration dictionaries.
-    classes : dict
-        Dictionary with values as uninitialized class references to constraint classes i.e. HeightConstraint
-
-    Example
-    -------
-
-    Example entry in config.json:
-
-    .. code-block:: json
-
-        {
-            "class": "HeightConstraint",
-            "init_args" :
-                {
-                    "id": 1,
-                    "item": 1,
-                    "button": "right_button_square",
-                    "reference_height": 0.0,
-                    "threshold_distance": 0.25
-                }
-        }
-    """
-    def __init__(self, constraint_configs):
-        """
-        Parameters
-        ----------
-        constraint_configs : list
-            List of configuration dictionaries.
-        """
-        self.configs = constraint_configs
-        self.classes = {
-            "UprightConstraint": UprightConstraint,
-            "HeightConstraint": HeightConstraint
-        }
-
-    def generate_constraints(self):
-        """
-        Build the constraint objects defined in the configuration dictionaries of self.configs.
-
-        Returns
-        -------
-        robots : list
-            List of constraint objects.
-        """
-        constraints = []
-        for config in self.configs:
-            constraints.append(self.classes[config["class"]](*tuple(config["init_args"].values())))
-        return constraints

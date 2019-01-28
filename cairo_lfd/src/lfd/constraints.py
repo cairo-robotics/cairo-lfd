@@ -195,3 +195,62 @@ class UprightConstraint(object):
         current_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
         upright_pose = convert_data_to_pose(item_info["upright_pose"]["position"], item_info["upright_pose"]["orientation"])
         return upright(upright_pose, current_pose, self.threshold_angle, self.axis)
+
+
+class ConstraintFactory(object):
+    """
+    Factory class that builds LFD constraints. These items are defined in the config.json file.
+    The class field in the configuration determines which constraint class to use.
+
+    Attributes
+    ----------
+    configs : list
+            List of configuration dictionaries.
+    classes : dict
+        Dictionary with values as uninitialized class references to constraint classes i.e. HeightConstraint
+
+    Example
+    -------
+
+    Example entry in config.json:
+
+    .. code-block:: json
+
+        {
+            "class": "HeightConstraint",
+            "init_args" :
+                {
+                    "id": 1,
+                    "item": 1,
+                    "button": "right_button_square",
+                    "reference_height": 0.0,
+                    "threshold_distance": 0.25
+                }
+        }
+    """
+    def __init__(self, constraint_configs):
+        """
+        Parameters
+        ----------
+        constraint_configs : list
+            List of configuration dictionaries.
+        """
+        self.configs = constraint_configs
+        self.classes = {
+            "UprightConstraint": UprightConstraint,
+            "HeightConstraint": HeightConstraint
+        }
+
+    def generate_constraints(self):
+        """
+        Build the constraint objects defined in the configuration dictionaries of self.configs.
+
+        Returns
+        -------
+        robots : list
+            List of constraint objects.
+        """
+        constraints = []
+        for config in self.configs:
+            constraints.append(self.classes[config["class"]](*tuple(config["init_args"].values())))
+        return constraints

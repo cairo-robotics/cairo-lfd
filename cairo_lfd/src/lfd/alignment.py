@@ -12,12 +12,12 @@ def vectorize_demonstration(demonstration):
 
     """
     Vectorizes a demonstration's observations through the union of the
-    robot's postion and robot's joints.
+    robot's position and robot's joints.
 
     Parameters
     ----------
     demonstration : Demonstration
-      Demonstraions to vectorize.
+      Demonstrations to vectorize.
 
     Returns
     -------
@@ -37,12 +37,12 @@ class DemonstrationAligner(object):
 
     """
     Demonstration aligning class to align demonstrations, ensuring uniform constraint transitions across 
-    all demosntrations.
+    all demonstrations.
 
     Attributes
     ----------
     demonstrations : list
-       List of demonstraions to align.
+       List of demonstrations to align.
 
     vectorize_func : func
         A function used to vectorize the dictionary data of a demonstrations observations.
@@ -53,7 +53,7 @@ class DemonstrationAligner(object):
         Parameters
         ----------
         demonstrations : list
-           List of demonstraions to align.
+           List of demonstrations to align.
 
         vectorize_func : func
             A function used to vectorize the dictionary data of a demonstrations observations.
@@ -66,23 +66,23 @@ class DemonstrationAligner(object):
         """
         Alignment is performed using the FastDTW algorithm. It first separates trajectories that are constraint
         annotated, and aligns those first. Secondly, arbitrarily uses one of those trajectories as a reference
-        against which to align all the remainin trajectories captured during demonstrations. If there are no 
+        against which to align all the remaining trajectories captured during demonstrations. If there are no 
 
         Returns
         -------
         self.demonstrations : tuple
             Returns the demonstrations each having a new parameter called aligned_observations.
         """
-        rospy.loginfo("Aligning demosntrations...")
+        rospy.loginfo("Aligning demonstrations...")
         if not len(self.demonstrations) > 1:
             raise Exception("Error! You are attempting to align ONLY ONE OR ZERO demonstrations.")
 
         for demo in self.demonstrations:
             demo.aligned_observations = self._deep_copy_observations(demo.observations)
 
-        constrained_demonstrations = [demo for demo in self.demonstrations if any([len(ob.data["applied_constraints"]) != 0  for ob in demo.observations])]
+        constrained_demonstrations = [demo for demo in self.demonstrations if any([len(ob.data["applied_constraints"]) != 0 for ob in demo.observations])]
 
-        # Align constrained demosntrations first, else if there are none, align all the trajectories without considering
+        # Align constrained demonstrations first, else if there are none, align all the trajectories without considering
         # constraints.
         if len(constrained_demonstrations) > 0:
             constrained_demonstrations.sort(key = lambda d: len(d.observations))
@@ -96,7 +96,7 @@ class DemonstrationAligner(object):
                     curr_demo.aligned_observations = alignments["current"]
                     reference_demo.aligned_observations = alignments["reference"]
 
-            # Realign until uniform constraint transition mappings across all demostrations
+            # Realign until uniform constraint transition mappings across all demonstrations
             while self._check_for_equivalent_constraint_transitions(self.demonstrations) is False:
                 self.demonstrations.sort(key = lambda d: len(d.observations))
                 for curr_demo in self.demonstrations:
@@ -124,10 +124,10 @@ class DemonstrationAligner(object):
         Parameters
         ----------
         current_demo : Demonstration
-           The current demosntration being aligned.
+           The current demonstration being aligned.
 
         current_demo : Demonstration
-           The reference demosntration.
+           The reference demonstration.
 
         Returns
         -------
@@ -197,13 +197,13 @@ class DemonstrationAligner(object):
 
     def _check_for_equivalent_constraint_transitions(self, demonstrations):
         """
-        Checks for euivalent constraint transitions across all demonstrations. This should
+        Checks for equivalent constraint transitions across all demonstrations. This should
         occur after alignment.
 
         Parameters
         ----------
         demonstrations : list
-           Demosntrations with which to generate the universal constraint transition map.
+           Demonstrations with which to generate the universal constraint transition map.
 
         Returns
         -------
@@ -220,18 +220,18 @@ class DemonstrationAligner(object):
     def _get_universal_constraint_transitions(self, demonstrations):
         """
         Generates the universal constraint transition mapping for all ALIGNED demonstrations.
-        Raises an exception if any of the demosntrations has a difference mapping than
+        Raises an exception if any of the demonstrations has a difference mapping than
         the others or if observations do not have aligned_observations instance variable populated.
 
         Parameters
         ----------
         demonstrations : list
-           Demosntrations with which to generate the universal constraint transition map.
+           Demonstrations with which to generate the universal constraint transition map.
 
         Returns
         -------
         mapping: list
-            The universal mapping of constraint transitions for all the demonstraionts.
+            The universal mapping of constraint transitions for all the demonstrations.
         """
         try:
             mappings = [self._get_applied_constraint_order(demo.aligned_observations) for demo in demonstrations]
@@ -241,7 +241,7 @@ class DemonstrationAligner(object):
         if mappings[1:] == mappings[:-1]:
             return mappings[0]
         else:
-            raise Exception("Unequivalent constraint transition mappings!")
+            raise Exception("Unequal constraint transition mappings!")
 
 
 class AlignmentException(Exception):

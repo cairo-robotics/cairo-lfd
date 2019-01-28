@@ -12,13 +12,13 @@ from collections import OrderedDict
 class DataExporter:
 
     """
-    Data exporint class with a variety of methods to support importing trajectory/observation data from 
+    Data export class with a variety of methods to support importing trajectory/observation data from 
     csv, json etc.
     """
 
     def export_to_json(self, path, data):
         """
-        Exports dictioanry data to a .json file.
+        Exports dictionary data to a .json file.
 
         Parameters
         ----------
@@ -44,7 +44,7 @@ class DataImporter:
         Import trajectories stored as .csv files into a list of trajectories. In this case, each file represents
         a single trajectory/demonstration.
 
-        This method expects a directory path and will automatically import all files with an approporaite .csv
+        This method expects a directory path and will automatically import all files with an appropriate .csv
         file signature.
 
         Parameters
@@ -81,7 +81,7 @@ class DataImporter:
         Import trajectories stored as .csv files into a Ordered Dictionary. In this case, each file represents
         a single trajectory/demonstration.
 
-        This method expects a directory path and will automatically import all files with an approporaite .csv
+        This method expects a directory path and will automatically import all files with an appropriate .csv
         file signature.
 
         Parameters
@@ -120,7 +120,7 @@ class DataImporter:
         Import trajectories stored as .json files into a Ordered Dictionary. In this case, each file represents
         a single trajectory/demonstration.
 
-        This method expects a directory path and will automatically import all files with an approporaite .json
+        This method expects a directory path and will automatically import all files with an appropriate .json
         file signature.
 
         Parameters

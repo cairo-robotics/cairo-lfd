@@ -1,6 +1,6 @@
 """
-The enviornment.py module contains core data container classes and retrieval methods. The core classes
-are the Environment, Demonstration, and Obsevation used throughout Cairo LfD's codebase.
+The environment.py module contains core data container classes and retrieval methods. The core classes
+are the Environment, Demonstration, and Observation used throughout Cairo LfD's code base.
 """
 import json
 import numpy as np
@@ -24,7 +24,7 @@ class Environment(object):
     Attributes
     ----------
     items : list
-        List of environment items/objects i.e. blocks, spatulasm, cups etc,.. of the AbstractItem class.
+        List of environment items/objects i.e. blocks, spatulas, cups etc,.. of the AbstractItem class.
     robot : SawyerRobot
         AbstractItem extended class object representing the robot.
     constraints : list
@@ -35,7 +35,7 @@ class Environment(object):
         Parameters
         ----------
         items : list
-            List of environment items/objects i.e. blocks, spatulasm, cups etc,.. of the AbstractItem class.
+            List of environment items/objects i.e. blocks, spatulasm cups etc,.. of the AbstractItem class.
         robot : SawyerRobot
             AbstractItem extended class object representing the robot.
         constraints : list
@@ -74,7 +74,7 @@ class Environment(object):
         Returns
         -------
         entries : list
-            List of dictionaries for each of the Environment's items (exluding the robot item)
+            List of dictionaries for each of the Environment's items (excluding the robot item)
         """
         item_states = []
         if self.items is not None:
@@ -131,8 +131,7 @@ class Environment(object):
 
     def check_constraint_triggers(self):
         """
-        Checks all constraints for their trigger. A triggered constraint might be a button press on Sawyer's
-        cuff or a natural language dicated constraint.
+        Checks all constraints for their trigger. A triggered constraint might be a button press on Sawyer's cuff or a natural language dictated constraint.
 
         Returns
         -------
@@ -149,12 +148,12 @@ class Environment(object):
 
 class Demonstration(object):
     """
-    Demonstration object to contain list of osbervations and various methods to perform on those observations.
+    Demonstration object to contain list of observations and various methods to perform on those observations.
 
     Attributes
     ----------
     observations : list
-        List of Observation objects representing raw observations from demonstration. (Requried)
+        List of Observation objects representing raw observations from demonstration. (Required)
     aligned_observation : SawyerRobot
         List of Observation objects representing DTW aligned observations.
     labeled_observations : list
@@ -165,7 +164,7 @@ class Demonstration(object):
         Parameters
         ----------
         observations : list
-            List of Observation objects representing raw observations from demonstration. (Requried)
+            List of Observation objects representing raw observations from demonstration. (Required)
         aligned_observation : SawyerRobot
             List of Observation objects representing DTW aligned observations.
         labeled_observations : list
@@ -222,7 +221,7 @@ class Observation(object):
             "applied_constraints": [],
             "items": [
                 {
-                    "id": 1,
+                    "id": 2,
                     "orientation": [
                         0.6874194527002508,
                         -0.06937214001305077,
@@ -236,7 +235,7 @@ class Observation(object):
 
                 },
                 {
-                    "id": 2,
+                    "id": 3,
                     "orientation": [
                         0.7874194527002508,
                         -0.16937214001305077,
@@ -311,7 +310,7 @@ class Observation(object):
 
     def get_timestamp(self):
         """
-        Get's osbervations timestamp
+        Gets observations timestamp
 
         Returns
         -------
@@ -404,8 +403,9 @@ class Observation(object):
         : float
             Integer timestamp in milliseconds representing time from epoch.
         """
-        for item in self.data["items"]:
-            # return first occurance, should only be one
+        items = self.data["items"] + self.data["robot"]
+        for item in items:
+            # return first occurrence, should only be one
             if item["id"] == item_id:
                 return item
 

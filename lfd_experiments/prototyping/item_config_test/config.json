@@ -29,7 +29,7 @@
             "class": "StaticObject",
             "init_args":
                 {
-                    "id": 1,
+                    "id": 2,
                     "name": "block",
                     "upright_pose": 
                         {
@@ -44,7 +44,7 @@
             "class": "StaticObject",
             "init_args":
                 {
-                    "id": 2,
+                    "id": 3,
                     "name": "megablock",
                     "upright_pose": 
                         {

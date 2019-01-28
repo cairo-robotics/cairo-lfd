@@ -99,7 +99,7 @@ class Environment(object):
 
     def get_item_ids(self):
         """
-        Retrieves the all AbstractItem id's in the environment.
+        Retrieves the all AbstractItem id's in the environment exluding Robots.
 
         Returns
         -------
@@ -109,9 +109,20 @@ class Environment(object):
         ids = []
         for item in self.items:
             ids.append(item.id)
-        ids.append(self.robot.id)
         ids.sort(reverse=False)
         return ids
+
+    def get_robot_id(self):
+        """
+        Retrieves environment's robot id.
+
+        Returns
+        -------
+        id : int
+            Id of the environment's robot.
+        """
+        if self.robot is not None:
+            return self.robot.id
 
     def get_constraint_by_id(self, constraint_id):
         """
@@ -403,11 +414,12 @@ class Observation(object):
         : float
             Integer timestamp in milliseconds representing time from epoch.
         """
-        items = self.data["items"] + self.data["robot"]
+        items = self.data["items"]
         for item in items:
             # return first occurrence, should only be one
             if item["id"] == item_id:
                 return item
+        return None
 
     def get_triggered_constraint_data(self):
         """

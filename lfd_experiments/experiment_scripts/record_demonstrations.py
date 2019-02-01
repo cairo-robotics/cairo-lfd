@@ -4,6 +4,9 @@ import rospy
 import argparse
 import intera_interface
 from intera_interface import CHECK_VERSION
+from intera_core_msgs.msg import InteractionControlCommand
+from geometry_msgs.msg import Pose
+from intera_motion_interface import (InteractionOptions, InteractionPublisher)
 from lfd.record import SawyerRecorder
 from lfd.environment import Environment, import_configuration
 from lfd.items import ItemFactory
@@ -41,12 +44,29 @@ def main():
     print("Initializing node... ")
     rospy.init_node("sdk_joint_recorder")
     print("Getting robot state... ")
-    rs = intera_interface.RobotEnable(CHECK_VERSION)
+    robot_state = intera_interface.RobotEnable(CHECK_VERSION)
     print("Enabling robot... ")
-    rs.enable()
+    robot_state.enable()
 
-    recorder = SawyerRecorder(args.record_rate)
+    interaction_pub = InteractionPublisher()
+    interaction_options = InteractionOptions()
+    interaction_options.set_max_impedance([False])
+    interaction_options.set_rotations_for_constrained_zeroG(True)
+    interaction_frame = Pose()
+    interaction_frame.position.x = 0
+    interaction_frame.position.y = 0
+    interaction_frame.position.z = 0
+    interaction_frame.orientation.x = 0
+    interaction_frame.orientation.y = 0
+    interaction_frame.orientation.z = 0
+    interaction_frame.orientation.w = 1
+    interaction_options.set_K_impedance([0, 0, 0, 0, 0, 0])
+    interaction_options.set_K_nullspace([5, 5, 5, 5, 5, 5, 5])
+    interaction_options.set_interaction_frame(interaction_frame)
+    rospy.loginfo(interaction_options.to_msg())
+    recorder = SawyerRecorder(args.record_rate, interaction_pub, interaction_options)
     rospy.on_shutdown(recorder.stop)
+    rospy.on_shutdown(interaction_pub.send_position_mode_cmd)
 
     config_filepath = args.config
     configs = import_configuration(config_filepath)
@@ -59,7 +79,7 @@ def main():
     exp = DataExporter()
 
     print("Recording. Press Ctrl-C to stop.")
-    demos = recorder.record_demonstrations(environment)
+    demos = recorder.record_demonstrations(environment, auto_zeroG=True)
 
     constraint_analyzer = ConstraintAnalyzer(environment)
     for demo in demos:

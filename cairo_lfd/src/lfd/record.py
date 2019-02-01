@@ -21,7 +21,7 @@ class SawyerRecorder(object):
     _done : bool
         Termination flag.
     """
-    def __init__(self, rate):
+    def __init__(self, rate, interaction_publisher=None, interaction_options=None):
         """
         Parameters
         ----------
@@ -32,6 +32,8 @@ class SawyerRecorder(object):
         self._rate = rospy.Rate(rate)
         self._start_time = rospy.get_time()
         self._done = False
+        self.interaction_publisher = interaction_publisher
+        self.interaction_options = interaction_options
 
     def _time_stamp(self):
         """
@@ -62,7 +64,7 @@ class SawyerRecorder(object):
             self.stop()
         return self._done
 
-    def record_demonstrations(self, environment):
+    def record_demonstrations(self, environment, auto_zeroG=False):
         """
         Records the current joint positions to a csv file if outputFilename was
         provided at construction this function will record the latest set of
@@ -91,6 +93,11 @@ class SawyerRecorder(object):
                     observations = []
                     rospy.loginfo("RECORDING.")
                     while True:
+                        if auto_zeroG and self.interaction_publisher is not None and self.interaction_options is not None:
+                            self.interaction_publisher.external_rate_send_command(self.interaction_options)
+                        elif auto_zeroG and self.interaction_publisher is None or self.interaction_options is None:
+                            rospy.logerr("Sawyer Recorder must possess a interaction publisher and/or interaction options.")
+                            raise ValueError("Sawyer Recorder must possess a interaction publisher and/or interaction options.")
                         if robot._gripper:
                             if robot._cuff.upper_button():
                                 robot._gripper.open()
@@ -105,11 +112,12 @@ class SawyerRecorder(object):
                         observation = Observation(data)
                         observations.append(observation)
                         self._rate.sleep()
-                        if environment.robot._navigator.get_button_state("right_button_ok") == 1:
+                        if environment.robot._navigator.get_button_state("right_button_ok") == 2:
                             demonstrations.append(Demonstration(observations))
                             rospy.loginfo("~~~CAPTURED~~~")
+                            self.interaction_publisher.send_position_mode_cmd()
                             break
-                user_input = raw_input("Demostration captured!\n Press 'r' to record again or 'q' to end the session.\n")
+                user_input = raw_input("Demonstration captured!\n Press 'r' to record again or 'q' to end the session.\n")
             if user_input == 'q':
                 self.stop()
 

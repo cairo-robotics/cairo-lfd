@@ -69,7 +69,6 @@ def main():
     rospy.loginfo("Exporting demonstrations.")
     for idx, demo in enumerate(demonstrations):
         ordp.generate_relative_data(demo.observations)
-        print(demo.observations[0].data)
         labeled_data = [obs.data for obs in demo.observations]
         exp.export_to_json(args.output_directory + "/labeled_demonstration{}.json".format(idx), labeled_data)
     print("\nDone.")

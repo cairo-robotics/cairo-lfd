@@ -564,7 +564,7 @@ class DemonstrationKeyframeLabeler():
     def _retrieve_data_window(self, sequence, central_idx, window_size=10):
         """
         Retrieves a window of elements from a sequence. The window is centered by central_idx.
-        The window size will shrink if the central index would make the window out of the sequence index.
+        The window size will shrink if the central index would make the window out of the sequence index bounds.
 
         Parameters
         ----------

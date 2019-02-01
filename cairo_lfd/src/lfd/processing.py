@@ -255,6 +255,9 @@ class ObjectRelativeDataProcessor():
             raise ValueError("Argument must be array-like (list or ndarray)")
 
     def _average_discrete_velocity(self, distances, timestamps):
+        # Takes in a list of distances and timestamps so that velocity is smoothed by using a small window
+        # of velocities between prior observations finding the velocity between consecutive observations
+        # then averaging across all.
         if len(distances) != len(timestamps):
             raise ValueError("Every distance entry must have a corresponding timestamp")
         velocity_sum = 0

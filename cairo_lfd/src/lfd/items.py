@@ -130,7 +130,7 @@ class SawyerRobot(AbstractItem):
         state['id'] = self.id
         state['position'] = [x for x in endpoint_pose["position"]]
         state['orientation'] = [x for x in endpoint_pose["orientation"]]
-        state['endpoint_velocity'] = self._limb.endpoint_pose()
+        state['endpoint_velocity'] = self._limb.endpoint_velocity()
         state['gripper_position'] = self._gripper.get_position()
         state['gripper_state'] = self._gripper.is_gripping()
         state['joint_angle'] = [self._limb.joint_angle(j) for j in self._limb.joint_names()]

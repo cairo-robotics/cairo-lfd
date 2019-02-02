@@ -5,8 +5,7 @@ import numpy as np
 from geometry_msgs.msg import Pose
 from environment import Observation
 from scipy.spatial.distance import euclidean
-from itertools import combinations
-from pudb import set_trace
+import pudb
 
 
 def convert_data_to_pose(position, orientation):
@@ -49,8 +48,13 @@ class SawyerSampleConverter(object):
     interface : object
         SawyerMoveitInterface to help run forward kinematics.
     """
-
     def __init__(self, interface):
+        """
+        Parameters
+        ----------
+        interface : object
+            SawyerMoveitInterface to help run forward kinematics.
+        """
         self.interface = interface
 
     def convert(self, sample, run_fk=False, normalize_quaternion=False):
@@ -136,18 +140,63 @@ class SawyerSampleConverter(object):
 
 
 class ObjectRelativeDataProcessor():
+    """
+    Calculates object to object relative distance, velocity and acceleration based on data
+    contained in lists of Observations.
 
+    Attributes
+    ----------
+    item_ids : list
+        List of environment 'item' ids.
+    """
     def __init__(self, item_ids, robot_id):
+        """
+        Parameters
+        ----------
+        item_ids : list
+            List of environment 'item' ids.
+        robot_id : int
+            Id of robot in environment.
+        """
         self.item_ids = item_ids
         self.robot_id = robot_id
 
     def generate_relative_data(self, observations):
+        """
+        Calculates relative distance, velocity and acceleration between item-item pairs 
+        and item-robot pair. This is performed in-place: the dictionary data within each
+        Observation acquires new key-value data.
+
+        A window is chosen to provide averaged smoothing around a given observation to 
+        avoid spiking velocities and accelerations due to noise. 
+
+        Parameters
+        ----------
+        observations : list
+            List of Observation objects.
+        """
         for idx, obsv in enumerate(observations):
             self.relative_distance(obsv)
-            prior_observations = self._retrieve_prior_observations(observations, idx, 4)
-            self.relative_velocity(obsv, prior_observations)
+        for idx, obsv in enumerate(observations):
+            window = self._retrieve_window(observations, idx, 'center', 4)
+            self.relative_velocity(obsv, window)
+        for idx, obsv in enumerate(observations):
+            window = self._retrieve_window(observations, idx, 'center', 4)
+            self.relative_acceleration(obsv, window)
 
     def relative_distance(self, observation):
+        """
+        Calculates relative distance, between item-item pairs and item-robot pair.
+
+        This is performed in-place: the dictionary data within each Observation acquires new
+        key-value relative distance.
+
+        Parameters
+        ----------
+        observation : Observation
+            observation object that acquires relative distance data
+        """
+
         # between items and items & robot
         for item_id in self.item_ids:
             relative_distances = {}
@@ -170,27 +219,44 @@ class ObjectRelativeDataProcessor():
             relative_distances[item_id] = self._euclidean(robot_position, item_position)
         robot_data["relative_distance"] = relative_distances
 
-    def relative_velocity(self, curr_observation, prior_observations):
+    def relative_velocity(self, curr_observation, observation_window):
+        """
+        Calculates relative velocity, between item-item pairs and item-robot pair.
+
+        This is performed in-place: the dictionary data within each Observation acquires new
+        key-value relative distance. This is performed by a simple discrete method that
+        calculates the change in distance over the change in time of consecutive Observations.
+
+        Parameters
+        ----------
+        curr_observation : Observation
+            Current observation for which to calculate relative velocity.
+
+        observation_window : list
+            List of Observations used to calculate relative velocity as an average for the 
+            current Observation.
+
+        Notes
+        -----
+        Since Observations are sampled at fairly high rates, there can be substantial noise
+        between any two observations that might spike a velocity calculation result. As a remedy,
+        the resulting relative velocity is an average of the surrounding velocities calculated between
+        consecutive Observations within a chosen window.
+        """
+
         # between items and items & robot
-        curr_time = curr_observation.get_timestamp()
         for item_id in self.item_ids:
             relative_velocities = {}
             item_data = curr_observation.get_item_data(item_id)
-            item_relative_distances = item_data["relative_distance"]
             # Loop through other items not the current item and calculate relative velocity:
             for target_id in self.item_ids + [self.robot_id]:
                 if item_id != target_id:
                     distances = []
                     timestamps = []
-                    curr_target_distance = item_relative_distances.get(target_id)
-                    for prior_ob in prior_observations:
-                        distances.append(prior_ob.get_item_data(item_id)["relative_distance"].get(target_id))
-                        timestamps.append(prior_ob.get_timestamp())
-                    distances.append(curr_target_distance)
-                    timestamps.append(curr_time)
-                    reversed(distances)
-                    reversed(timestamps)
-                    if len(prior_observations) == 0:
+                    for ob in observation_window:
+                        distances.append(ob.get_item_data(item_id)["relative_distance"].get(target_id))
+                        timestamps.append(ob.get_timestamp())
+                    if len(observation_window) == 0:
                         relative_velocities[target_id] = 0
                     else:
                         relative_velocities[target_id] = self._average_discrete_velocity(distances, timestamps)
@@ -199,65 +265,167 @@ class ObjectRelativeDataProcessor():
         # Now relative to robot, by accessing robot data separately.
         relative_velocities = {}
         robot_data = curr_observation.get_robot_data()
-        item_relative_distances = robot_data["relative_distance"]
         for item_id in self.item_ids:
             distances = []
             timestamps = []
-            curr_target_distance = item_relative_distances.get(item_id)
-            for prior_ob in prior_observations:
+            for prior_ob in observation_window:
                 distances.append(prior_ob.get_robot_data()["relative_distance"].get(item_id))
                 timestamps.append(prior_ob.get_timestamp())
-            distances.append(curr_target_distance)
-            timestamps.append(curr_time)
-            reversed(distances)
-            reversed(timestamps)
-            if len(prior_observations) == 0:
+            if len(observation_window) == 0:
                 relative_velocities[item_id] = 0
             else:
                 relative_velocities[item_id] = self._average_discrete_velocity(distances, timestamps)
         robot_data["relative_velocity"] = relative_velocities
 
-    def relative_acceleration(self, obj1_window, obj2_window):
-        pass
+    def relative_acceleration(self, curr_observation, observation_window):
+        """
+        Calculates relative velocity, between item-item pairs and item-robot pair.
 
-    def _retrieve_prior_observations(self, observations, idx, number=1):
+        This is performed in-place: the dictionary data within each Observation acquires new
+        key-value relative distance. This is performed by a simple discrete method that
+        calculates the change in distance over the change in time of consecutive Observations.
+
+        Parameters
+        ----------
+        curr_observation : Observation
+            Current observation for which to calculate relative velocity.
+
+        observation_window : list
+            List of Observations used to calculate relative velocity as an average for the 
+            current Observation.
+
+        Notes
+        -----
+        Since Observations are sampled at fairly high rates, there can be substantial noise
+        between any two observations that might spike a velocity calculation result. As a remedy,
+        the resulting relative velocity is an average of the surrounding velocities calculated between
+        consecutive Observations within a chosen window.
+        """
+
+        # between items and items & robot
+        for item_id in self.item_ids:
+            relative_accelerations = {}
+            item_data = curr_observation.get_item_data(item_id)
+            # Loop through other items not the current item and calculate relative velocity:
+            for target_id in self.item_ids + [self.robot_id]:
+                if item_id != target_id:
+                    distances = []
+                    timestamps = []
+                    for ob in observation_window:
+                        distances.append(ob.get_item_data(item_id)["relative_velocity"].get(target_id))
+                        timestamps.append(ob.get_timestamp())
+                    if len(observation_window) == 0:
+                        relative_accelerations[target_id] = 0
+                    else:
+                        relative_accelerations[target_id] = self._average_discrete_velocity(distances, timestamps)
+            item_data["relative_acceleration"] = relative_accelerations
+
+        # Now relative to robot, by accessing robot data separately.
+        relative_accelerations = {}
+        robot_data = curr_observation.get_robot_data()
+        for item_id in self.item_ids:
+            distances = []
+            timestamps = []
+            for ob in observation_window:
+                distances.append(ob.get_robot_data()["relative_velocity"].get(item_id))
+                timestamps.append(ob.get_timestamp())
+            if len(observation_window) == 0:
+                relative_accelerations[item_id] = 0
+            else:
+                relative_accelerations[item_id] = self._average_discrete_velocity(distances, timestamps)
+        robot_data["relative_acceleration"] = relative_accelerations
+
+    def _retrieve_window(self, observations, idx, centrality='left', window_size=4):
         """
         Retrieves a number of observations before given index. The number shrinks if the index would make number of elements reach out of the sequence index bounds.
 
         Parameters
         ----------
-
         observations : list
             List of Observation objects.
 
         idx : int
             The index of the current observation.
 
-        number : int
-            Number of prior observations.
+        centrality : str
+            Determines relative positioning of window relative to idx. One of three choices: 'left', 'right', 'center'.
+
+        window_size : int
+            Numeric size of window.
 
         Returns
         -------
         : list
-            List of prior Observation objects preceding the current observation.
+            List of prior Observation objects.
+
+        Note
+        ----
+        Along index boundary the window self adjusts to avoid index errors. This can result in fewer
+        Observations than the given window size.
         """
+        if centrality not in ['left', 'right', 'center']:
+            raise ValueError("Centrality must be either 'left', 'right', or 'center'.")
+
         if idx > len(observations) - 1:
             raise IndexError("Index not valid for given length of observations sequence.")
-        for spread in reversed(range(number + 1)):
-            if 0 <= idx - spread < len(observations):
-                return observations[idx - spread:idx]
+        for spread in reversed(range(window_size + 1)):
+            if centrality == 'left':
+                if 0 <= idx - spread < len(observations) and 0 <= idx + spread < len(observations):
+                    return observations[idx - spread:idx + 1]
+            elif centrality == 'right':
+                if 0 <= idx + spread < len(observations):
+                    return observations[idx:idx + spread + 1]
+            else:
+                obsvs = observations[idx:idx + 1]
+                if 0 <= idx - int(spread / 2) < len(observations):
+                    obsvs = observations[idx - int(spread / 2):idx] + obsvs
+                if 0 <= idx + int(spread / 2) < len(observations):
+                    obsvs = obsvs + observations[idx + 1:idx + int(spread / 2) + 1]
+                return obsvs
         return []
 
     def _euclidean(self, obj1_posistion, obj2_position):
+        """
+        Calculates the euclidean distance using SciPy's euclidean function
+
+        Parameters
+        ----------
+        obj1_posistion : array-like
+            List of x,y,z coordinates of object 1's position.
+
+        obj2_position : array-like
+            List of x,y,z coordinates of object 2's position.
+
+        Returns
+        -------
+        : float
+            The distance.
+        """
         if isinstance(obj1_posistion, (list, np.ndarray)) and isinstance(obj2_position, (list, np.ndarray)):
             return euclidean(obj1_posistion, obj2_position)
         else:
             raise ValueError("Argument must be array-like (list or ndarray)")
 
     def _average_discrete_velocity(self, distances, timestamps):
-        # Takes in a list of distances and timestamps so that velocity is smoothed by using a small window
-        # of velocities between prior observations finding the velocity between consecutive observations
-        # then averaging across all.
+        """
+        Calculates the discrete velocity between a number of points and returns the average
+        discrete velocity.
+
+        Each distance will have a corresponding timestamp.
+
+        Parameters
+        ----------
+        distances : list
+            List of distances.
+
+        timestamps : list
+            List of timestamps
+
+        Returns
+        -------
+        : float
+            Average discrete velocity..
+        """
         if len(distances) != len(timestamps):
             raise ValueError("Every distance entry must have a corresponding timestamp")
         velocity_sum = 0
@@ -268,5 +436,33 @@ class ObjectRelativeDataProcessor():
                     velocity_sum += update
         return velocity_sum / int(len(distances) / 2)
 
-    def _discrete_velocity(self, dist_before, dist_after, timestamp_before, timestamp_after):
-        return (dist_after - dist_before) / (timestamp_before - timestamp_after)
+    def _discrete_velocity(self, dist_before, dist_after, start_time, end_time):
+        """
+        Calculates the discrete velocity.
+
+        Uses standard formula: change in distance over change in time.
+
+        Parameters
+        ----------
+        dist_before : float
+            The distance before the time step.
+
+        dist_after : float
+            The distance after the time step.
+
+        start_time : float
+            The start time,
+
+        end_time : float
+            The end time.
+
+        Returns
+        -------
+        : float
+            Discrete velocity
+        """
+        return (dist_after - dist_before) / abs(start_time - end_time)
+
+
+class ObjectContactProcessor():
+    pass

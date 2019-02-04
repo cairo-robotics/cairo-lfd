@@ -43,7 +43,7 @@ def get_observation_joint_vector(observation):
 
 class KeyframeGraphAnalyzer():
     """
-    Class with methods to support the analysis of a KeyframeGraph.
+    Supports the analysis of a KeyframeGraph.
 
     Attributes
     ----------
@@ -387,8 +387,8 @@ class DemonstrationKeyframeLabeler():
         n is the number of keyframes. Each of these list of indices represent the observations available to constitute
         a keyframe.
 
-        Using the index splits, the center of each of those splits is calculated, and window of elements is taken
-        around that center. This window of indices will be the indices of the observation_group list's elements that
+        Using the index splits, the center of each of those splits is calculated, and a window of elements is taken
+        around that center. This window of indices will be the indices of the observation_group's elements that
         will be used for a keyframe.
 
         The observations are labeled with keyframe_ids by iterating over the index splits and labeling the data with an

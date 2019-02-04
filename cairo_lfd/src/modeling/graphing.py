@@ -78,11 +78,11 @@ class KeyframeGraph(MultiDiGraph):
 class ObservationClusterer():
     """
     Clusters together observations by keyframe ID and gathers pertinent information regarding each keyframe. This will
-    be used by a KeyframeGraph object.
+    be used by a KeyframeGraph object to build nodes, each of which represent a keyframe.
     """
     def generate_clusters(self, demonstrations):
         """
-        Generates the clustered Observations from a list of Demonstrations.
+        Generates clustered Observations from a list of Demonstrations.
 
         Parameters
         ----------
@@ -99,15 +99,15 @@ class ObservationClusterer():
         for demo in demonstrations:
             for obsv in demo.observations:
                 observations.append(obsv)
-        clusters = self.cluster_observations_by_id(observations)
+        clusters = self._cluster_observations_by_id(observations)
         for cluster in clusters.values():
-            self.assign_keyframe_type(cluster)
-            self.assign_applied_constraints(cluster)
+            self._assign_keyframe_type(cluster)
+            self._assign_applied_constraints(cluster)
         return clusters
 
-    def cluster_observations_by_id(self, observations):
+    def _cluster_observations_by_id(self, observations):
         """
-        Takes in a the entirety of observations from all Demosntrations and groups them together
+        Takes in a the entirety of observations from all Demonstrations and groups them together
         by keyframe ID.
 
         Parameters
@@ -119,7 +119,7 @@ class ObservationClusterer():
         -------
         clusters : dict
             Dictionary of clusters with top level keys the keyframe IDs and values another dictionary populated
-            with 'observations' key with list of Observations.
+            with an 'observations' key and a list of Observations as the value.
         """
         clusters = defaultdict(lambda: {"observations": []})
 
@@ -129,7 +129,7 @@ class ObservationClusterer():
                 clusters[keyframe_id]["observations"].append(obsv)
         return clusters
 
-    def assign_keyframe_type(self, cluster):
+    def _assign_keyframe_type(self, cluster):
         """
         Assigns the keyframe type for the given keyframe cluster.
 
@@ -141,7 +141,7 @@ class ObservationClusterer():
         keyframe_type = cluster['observations'][0].get_keyframe_info()[1]
         cluster["keyframe_type"] = keyframe_type
 
-    def assign_applied_constraints(self, cluster):
+    def _assign_applied_constraints(self, cluster):
         """
         Assigns the applied constraints for the given keyframe cluster.
 

@@ -75,7 +75,7 @@ class DemonstrationAligner(object):
         """
         rospy.loginfo("Aligning demonstrations...")
         if not len(self.demonstrations) > 1:
-            raise Exception("Error! You are attempting to align ONLY ONE OR ZERO demonstrations.")
+            raise AlignmentException("Error! You are attempting to align ONLY ONE OR ZERO demonstrations.")
 
         for demo in self.demonstrations:
             demo.aligned_observations = self._deep_copy_observations(demo.observations)
@@ -159,7 +159,7 @@ class DemonstrationAligner(object):
     def _deep_copy_observations(self, observations):
 
         """
-        Iterates of a list of observations and deep copies each.
+        Iterates over a list of observations and deep copies each.
 
         Parameters
         ----------

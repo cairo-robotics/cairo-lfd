@@ -7,7 +7,7 @@ import rospy
 
 class KeyframeSampler():
     """
-    Sampling class that uses model representing a keyframe to sample points.
+    Sampling class that uses a keyframe's model to sample points.
 
     Attributes
     ----------

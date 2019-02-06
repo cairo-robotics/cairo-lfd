@@ -68,13 +68,13 @@ class SawyerRobot(AbstractItem):
     _limb : object
         Intera SDK class object that provides controlling functionality of the Sawyer Robot.
     _cuff : object
-        Intera SDK class object that provides controlling interface of the cuff bottons of Sawyer robot.
+        Intera SDK class object that provides controlling interface of the cuff buttons of Sawyer robot.
     _navigator : object
         Intera SDK class object that provides controlling functionality of the button/wheel interface on the Sawer Robot.
     _gripper : object
-        Intera SDK class object that provides controlling functionalirty of the Sawyer Robot gripper.
+        Intera SDK class object that provides controlling functionality of the Sawyer Robot gripper.
     """
-    def __init__(self, robot_id, upright_pose):
+    def __init__(self, robot_id, upright_pose, world_frame="base", child_frame="right_gripper_tip", service_name="transform_lookup_service"):
         """
         Parameters
         ----------
@@ -101,8 +101,11 @@ class SawyerRobot(AbstractItem):
         except Exception as e:
             self._gripper = None
             rospy.loginfo("No electric gripper detected.")
+        self.world_frame = world_frame
+        self.child_frame = child_frame
+        self.tlc = TransformLookupClient(service_name)
 
-    def get_state(self, base_to_tip_transform={"translation": [.1025, -.080809, -.0368], "rotation": [0, 0, 0, 1]}):
+    def get_state(self, tip_frame="right_gripper_tip"):
         """
         Gets the current state of the robot.
 
@@ -118,15 +121,10 @@ class SawyerRobot(AbstractItem):
         """
 
         state = {}
-        if base_to_tip_transform is not None:
-            base_pose = self._limb.endpoint_pose()
-            transformed = self._apply_transform([x for x in base_pose["position"]], [x for x in base_pose["orientation"]], base_to_tip_transform["translation"], base_to_tip_transform["rotation"])
-            endpoint_pose = {"position": transformed[0], "orientation": transformed[1]}
-        else:
-            endpoint_pose = self._limb.endpoint_pose()
+        trans = self._get_transform()
         state['id'] = self.id
-        state['position'] = [x for x in endpoint_pose["position"]]
-        state['orientation'] = [x for x in endpoint_pose["orientation"]]
+        state['position'] = trans["position"]
+        state['orientation'] = trans["orientation"]
         state['endpoint_velocity'] = self._limb.endpoint_velocity()
         state['gripper_position'] = self._gripper.get_position()
         state['gripper_state'] = self._gripper.is_gripping()
@@ -136,7 +134,7 @@ class SawyerRobot(AbstractItem):
 
     def get_info(self):
         """
-        Get's the robot item's information.
+        Gets the robot item's information.
 
         Returns
         -------
@@ -161,23 +159,13 @@ class SawyerRobot(AbstractItem):
                 "upright_pose": self.upright_pose
                 }
 
-    def _apply_transform(self, ep_position, ep_orientation, translation, rotation):
-        ep_trans_mat, ep_rot_mat = self._get_pose_matrices(ep_position, ep_orientation)
-        t_trans_mat, t_rot_mat = self._get_pose_matrices(translation, rotation)
-        prod_trans_mat = np.dot(ep_trans_mat, t_trans_mat)
-        prod_rot_mat = np.dot(ep_rot_mat, t_rot_mat)
-        pose = self._get_pose_from_matrices(prod_trans_mat, prod_rot_mat)
-        return pose
-
-    def _get_pose_matrices(self, pos, quat):
-        trans_mat = tf.transformations.translation_matrix(pos)
-        rot_mat = tf.transformations.quaternion_matrix(quat)
-        return trans_mat, rot_mat
-
-    def _get_pose_from_matrices(self, trans_mat, rot_mat):
-        trans = tf.transformations.translation_from_matrix(trans_mat)
-        quat = tf.transformations.quaternion_from_matrix(rot_mat)
-        return [trans, quat]
+    def _get_transform(self):
+        trans = self.tlc.call(self.world_frame, self.child_frame).transform
+        transform = {
+            "position": [trans.translation.x, trans.translation.y, trans.translation.z],
+            "orientation": [trans.rotation.x, trans.rotation.y, trans.rotation.z, trans.rotation.w]
+        }
+        return transform
 
 
 class StaticObject(AbstractItem):

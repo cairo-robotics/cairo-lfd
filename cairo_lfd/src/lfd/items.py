@@ -7,6 +7,8 @@ import intera_interface
 from abc import ABCMeta, abstractmethod
 from lfd.constraints import UprightConstraint, HeightConstraint
 from robot_clients.transform_clients import TransformLookupClient
+import tf
+import numpy as np
 
 
 class AbstractItem(object):
@@ -100,24 +102,14 @@ class SawyerRobot(AbstractItem):
             self._gripper = None
             rospy.loginfo("No electric gripper detected.")
 
-    def get_state(self):
+    def get_state(self, base_to_tip_transform={"translation": [.1025, -.080809, -.0368], "rotation": [0, 0, 0, 1]}):
         """
-        Get's the current state of the robot.
+        Gets the current state of the robot.
 
-        Example
-        -------
-
-        State returned:
-
-        .. code-block:: json
-
-        {
-            id: robot_id
-            position: [x, y ,z],
-            orientation: [x, y, z, w]
-            joints: [j0, j1, j2, j3, j4, j5, j6],
-            gripper: .123123123123
-        }
+        Parameters
+        ----------
+        base_to_tip_transform : dict
+            Transformation to apply to endpoint_pose.
 
         Returns
         -------
@@ -126,7 +118,12 @@ class SawyerRobot(AbstractItem):
         """
 
         state = {}
-        endpoint_pose = self._limb.endpoint_pose()
+        if base_to_tip_transform is not None:
+            base_pose = self._limb.endpoint_pose()
+            transformed = self._apply_transform([x for x in base_pose["position"]], [x for x in base_pose["orientation"]], base_to_tip_transform["translation"], base_to_tip_transform["rotation"])
+            endpoint_pose = {"position": transformed[0], "orientation": transformed[1]}
+        else:
+            endpoint_pose = self._limb.endpoint_pose()
         state['id'] = self.id
         state['position'] = [x for x in endpoint_pose["position"]]
         state['orientation'] = [x for x in endpoint_pose["orientation"]]
@@ -163,6 +160,24 @@ class SawyerRobot(AbstractItem):
         return {"id": self.id,
                 "upright_pose": self.upright_pose
                 }
+
+    def _apply_transform(self, ep_position, ep_orientation, translation, rotation):
+        ep_trans_mat, ep_rot_mat = self._get_pose_matrices(ep_position, ep_orientation)
+        t_trans_mat, t_rot_mat = self._get_pose_matrices(translation, rotation)
+        prod_trans_mat = np.dot(ep_trans_mat, t_trans_mat)
+        prod_rot_mat = np.dot(ep_rot_mat, t_rot_mat)
+        pose = self._get_pose_from_matrices(prod_trans_mat, prod_rot_mat)
+        return pose
+
+    def _get_pose_matrices(self, pos, quat):
+        trans_mat = tf.transformations.translation_matrix(pos)
+        rot_mat = tf.transformations.quaternion_matrix(quat)
+        return trans_mat, rot_mat
+
+    def _get_pose_from_matrices(self, trans_mat, rot_mat):
+        trans = tf.transformations.translation_from_matrix(trans_mat)
+        quat = tf.transformations.quaternion_from_matrix(rot_mat)
+        return [trans, quat]
 
 
 class StaticObject(AbstractItem):

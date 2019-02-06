@@ -9,7 +9,7 @@ from lfd.items import ItemFactory
 from lfd.constraints import ConstraintFactory
 from lfd.data_io import DataImporter, DataExporter
 from lfd.environment import Observation, Demonstration
-from lfd.processing import ObjectRelativeDataProcessor
+from lfd.processing import ObjectRelativeDataProcessor, ObjectContactProcessor
 
 
 def main():
@@ -64,11 +64,12 @@ def main():
     args = parser.parse_args(rospy.myargv()[1:])
 
     ordp = ObjectRelativeDataProcessor(environment.get_item_ids(), environment.get_robot_id())
-
+    ocp = ObjectContactProcessor(environment.get_item_ids(), environment.get_robot_id(), .05, .8)
     exp = DataExporter()
     rospy.loginfo("Exporting demonstrations.")
     for idx, demo in enumerate(demonstrations):
         ordp.generate_relative_data(demo.observations)
+        ocp.generate_object_contact_data(demo.observations)
         labeled_data = [obs.data for obs in demo.observations]
         exp.export_to_json(args.output_directory + "/labeled_demonstration{}.json".format(idx), labeled_data)
     print("\nDone.")

@@ -139,7 +139,84 @@ class SawyerSampleConverter(object):
         return x, y, z, w
 
 
-class ObjectRelativeDataProcessor():
+class EuclideanDistanceMixin():
+
+    def _euclidean(self, obj1_posistion, obj2_position):
+        """
+        Calculates the euclidean distance using SciPy's euclidean function
+
+        Parameters
+        ----------
+        obj1_posistion : array-like
+            List of x,y,z coordinates of object 1's position.
+
+        obj2_position : array-like
+            List of x,y,z coordinates of object 2's position.
+
+        Returns
+        -------
+        : float
+            The distance.
+        """
+        if isinstance(obj1_posistion, (list, np.ndarray)) and isinstance(obj2_position, (list, np.ndarray)):
+            return euclidean(obj1_posistion, obj2_position)
+        else:
+            raise ValueError("Argument must be array-like (list or ndarray)")
+
+
+class ListWindowMixin():
+
+    def _retrieve_window(self, observations, idx, centrality='left', window_size=4):
+        """
+        Retrieves a number of observations before given index. The number shrinks if the index would make number of elements reach out of the sequence index bounds.
+
+        Parameters
+        ----------
+        observations : list
+            List of Observation objects.
+
+        idx : int
+            The index of the current observation.
+
+        centrality : str
+            Determines relative positioning of window relative to idx. One of three choices: 'left', 'right', 'center'.
+
+        window_size : int
+            Numeric size of window.
+
+        Returns
+        -------
+        : list
+            List of prior Observation objects.
+
+        Note
+        ----
+        Along index boundary the window self adjusts to avoid index errors. This can result in fewer
+        Observations than the given window size.
+        """
+        if centrality not in ['left', 'right', 'center']:
+            raise ValueError("Centrality must be either 'left', 'right', or 'center'.")
+
+        if idx > len(observations) - 1:
+            raise IndexError("Index not valid for given length of observations sequence.")
+        for spread in reversed(range(window_size + 1)):
+            if centrality == 'left':
+                if 0 <= idx - spread < len(observations) and 0 <= idx + spread < len(observations):
+                    return observations[idx - spread:idx + 1]
+            elif centrality == 'right':
+                if 0 <= idx + spread < len(observations):
+                    return observations[idx:idx + spread + 1]
+            else:
+                obsvs = observations[idx:idx + 1]
+                if 0 <= idx - int(spread / 2) < len(observations):
+                    obsvs = observations[idx - int(spread / 2):idx] + obsvs
+                if 0 <= idx + int(spread / 2) < len(observations):
+                    obsvs = obsvs + observations[idx + 1:idx + int(spread / 2) + 1]
+                return obsvs
+        return []
+
+
+class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
     """
     Calculates object to object relative distance, velocity and acceleration based on data
     contained in lists of Observations.
@@ -335,77 +412,6 @@ class ObjectRelativeDataProcessor():
                 relative_accelerations[item_id] = self._average_discrete_velocity(distances, timestamps)
         robot_data["relative_acceleration"] = relative_accelerations
 
-    def _retrieve_window(self, observations, idx, centrality='left', window_size=4):
-        """
-        Retrieves a number of observations before given index. The number shrinks if the index would make number of elements reach out of the sequence index bounds.
-
-        Parameters
-        ----------
-        observations : list
-            List of Observation objects.
-
-        idx : int
-            The index of the current observation.
-
-        centrality : str
-            Determines relative positioning of window relative to idx. One of three choices: 'left', 'right', 'center'.
-
-        window_size : int
-            Numeric size of window.
-
-        Returns
-        -------
-        : list
-            List of prior Observation objects.
-
-        Note
-        ----
-        Along index boundary the window self adjusts to avoid index errors. This can result in fewer
-        Observations than the given window size.
-        """
-        if centrality not in ['left', 'right', 'center']:
-            raise ValueError("Centrality must be either 'left', 'right', or 'center'.")
-
-        if idx > len(observations) - 1:
-            raise IndexError("Index not valid for given length of observations sequence.")
-        for spread in reversed(range(window_size + 1)):
-            if centrality == 'left':
-                if 0 <= idx - spread < len(observations) and 0 <= idx + spread < len(observations):
-                    return observations[idx - spread:idx + 1]
-            elif centrality == 'right':
-                if 0 <= idx + spread < len(observations):
-                    return observations[idx:idx + spread + 1]
-            else:
-                obsvs = observations[idx:idx + 1]
-                if 0 <= idx - int(spread / 2) < len(observations):
-                    obsvs = observations[idx - int(spread / 2):idx] + obsvs
-                if 0 <= idx + int(spread / 2) < len(observations):
-                    obsvs = obsvs + observations[idx + 1:idx + int(spread / 2) + 1]
-                return obsvs
-        return []
-
-    def _euclidean(self, obj1_posistion, obj2_position):
-        """
-        Calculates the euclidean distance using SciPy's euclidean function
-
-        Parameters
-        ----------
-        obj1_posistion : array-like
-            List of x,y,z coordinates of object 1's position.
-
-        obj2_position : array-like
-            List of x,y,z coordinates of object 2's position.
-
-        Returns
-        -------
-        : float
-            The distance.
-        """
-        if isinstance(obj1_posistion, (list, np.ndarray)) and isinstance(obj2_position, (list, np.ndarray)):
-            return euclidean(obj1_posistion, obj2_position)
-        else:
-            raise ValueError("Argument must be array-like (list or ndarray)")
-
     def _average_discrete_velocity(self, distances, timestamps):
         """
         Calculates the discrete velocity between a number of points and returns the average
@@ -464,5 +470,94 @@ class ObjectRelativeDataProcessor():
         return (dist_after - dist_before) / abs(start_time - end_time)
 
 
-class ObjectContactProcessor():
-    pass
+class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
+
+    def __init__(self, item_ids, robot_id, threshold_distance=.25, window_percentage=.6):
+        """
+        Parameters
+        ----------
+        item_ids : list
+            List of environment 'item' ids.
+        robot_id : int
+            Id of robot in environment.
+        threshold_distance : float
+            Distance within which two objects are considered in contact
+        window_percentage : float
+            Percentage of a window of observations that for which objects must be in contact for the current observation
+            to be considered in contact.
+        """
+        self.item_ids = item_ids
+        self.robot_id = robot_id
+        self.threshold_distance = threshold_distance
+        self.window_percentage = window_percentage
+
+    def generate_object_contact_data(self, observations):
+        """
+        Calculates relative distance, velocity and acceleration between item-item pairs 
+        and item-robot pair. This is performed in-place: the dictionary data within each
+        Observation acquires new key-value data.
+
+        A window is chosen to provide averaged smoothing around a given observation to 
+        avoid spiking velocities and accelerations due to noise. 
+
+        Parameters
+        ----------
+        observations : list
+           List of Observation objects.
+        """
+        for idx, obsv in enumerate(observations):
+            window = self._retrieve_window(observations, idx, 'center', 4)
+            self._evaluate_contact(obsv, window)
+
+    def _evaluate_contact(self, curr_observation, observation_window):    
+        for item_id in self.item_ids:
+            in_contact = {}
+            item_data = curr_observation.get_item_data(item_id)
+            for target_id in self.item_ids:
+                if item_id != target_id:
+                    within_threshold = []
+                    for observation in observation_window:
+                        item_position = observation.get_item_data(item_id)["position"]
+                        target_position = observation.get_item_data(target_id)["position"]
+                        distance = self._euclidean(item_position, target_position)
+                        if distance <= self.threshold_distance:
+                            within_threshold.append(True)
+                        else:
+                            within_threshold.append(False)
+                    if within_threshold.count(True) / len(observation_window) >= self.window_percentage:
+                        in_contact[target_id] = True
+                    else:
+                        in_contact[target_id] = False
+            within_threshold = []
+            for observation in observation_window:
+                item_position = observation.get_item_data(item_id)["position"]
+                robot_position = observation.get_robot_data()["position"]
+                distance = self._euclidean(item_position, robot_position)
+                if distance <= self.threshold_distance:
+                    within_threshold.append(True)
+                else:
+                    within_threshold.append(False)
+            if within_threshold.count(True) / len(observation_window) >= self.window_percentage:
+                in_contact[self.robot_id] = True
+            else:
+                in_contact[self.robot_id] = False
+            item_data["in_contact"] = in_contact
+
+        # relative to robots
+        in_contact = {}
+        robot_data = curr_observation.get_robot_data()
+        for target_id in self.item_ids:
+            within_threshold = []
+            for observation in observation_window:
+                robot_position = observation.get_robot_data()["position"]
+                target_position = observation.get_item_data(target_id)["position"]
+                distance = self._euclidean(robot_position, target_position)
+                if distance <= self.threshold_distance:
+                    within_threshold.append(True)
+                else:
+                    within_threshold.append(False)
+            if within_threshold.count(True) / len(observation_window) >= self.window_percentage:
+                in_contact[target_id] = True
+            else:
+                in_contact[target_id] = False
+        robot_data["in_contact"] = in_contact

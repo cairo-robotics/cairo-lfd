@@ -4,9 +4,6 @@ import rospy
 import argparse
 import intera_interface
 from intera_interface import CHECK_VERSION
-from intera_core_msgs.msg import InteractionControlCommand
-from geometry_msgs.msg import Pose
-from intera_motion_interface import (InteractionOptions, InteractionPublisher)
 from lfd.record import SawyerRecorder
 from lfd.environment import Environment, import_configuration
 from lfd.items import ItemFactory
@@ -21,6 +18,7 @@ def main():
 
     Record a series of demonstrations.
     """
+
     arg_fmt = argparse.RawDescriptionHelpFormatter
     parser = argparse.ArgumentParser(formatter_class=arg_fmt,
                                      description=main.__doc__)
@@ -44,29 +42,12 @@ def main():
     print("Initializing node... ")
     rospy.init_node("sdk_joint_recorder")
     print("Getting robot state... ")
-    robot_state = intera_interface.RobotEnable(CHECK_VERSION)
+    rs = intera_interface.RobotEnable(CHECK_VERSION)
     print("Enabling robot... ")
-    robot_state.enable()
+    rs.enable()
 
-    interaction_pub = InteractionPublisher()
-    interaction_options = InteractionOptions()
-    interaction_options.set_max_impedance([False])
-    interaction_options.set_rotations_for_constrained_zeroG(True)
-    interaction_frame = Pose()
-    interaction_frame.position.x = 0
-    interaction_frame.position.y = 0
-    interaction_frame.position.z = 0
-    interaction_frame.orientation.x = 0
-    interaction_frame.orientation.y = 0
-    interaction_frame.orientation.z = 0
-    interaction_frame.orientation.w = 1
-    interaction_options.set_K_impedance([0, 0, 0, 0, 0, 0])
-    interaction_options.set_K_nullspace([5, 5, 5, 5, 5, 5, 5])
-    interaction_options.set_interaction_frame(interaction_frame)
-    rospy.loginfo(interaction_options.to_msg())
-    recorder = SawyerRecorder(args.record_rate, interaction_pub, interaction_options)
+    recorder = SawyerRecorder(args.record_rate)
     rospy.on_shutdown(recorder.stop)
-    rospy.on_shutdown(interaction_pub.send_position_mode_cmd)
 
     config_filepath = args.config
     configs = import_configuration(config_filepath)
@@ -79,7 +60,7 @@ def main():
     exp = DataExporter()
 
     print("Recording. Press Ctrl-C to stop.")
-    demos = recorder.record_demonstrations(environment, auto_zeroG=True)
+    demos = recorder.record_demonstrations(environment)
 
     constraint_analyzer = ConstraintAnalyzer(environment)
     for demo in demos:
@@ -90,6 +71,7 @@ def main():
         raw_data = [obs.data for obs in demo.observations]
         print("'/raw_demonstration{}.json': {} observations".format(idx, len(raw_data)))
         exp.export_to_json(args.directory + "/raw_demonstration{}.json".format(idx), raw_data)
+
 
 if __name__ == '__main__':
     main()

@@ -38,17 +38,17 @@ def get_observation_joint_vector(observation):
     : list
        Returns list of joint configuration data. Formatting is dependent on robot DOF etc,.
     """
-    return observation.get_joint_list()
+    return observation.get_joint_angle()
 
 
 class KeyframeGraphAnalyzer():
     """
-    Class with methods to support the analysis of a KeyframeGraph.
+    Supports the analysis of a KeyframeGraph.
 
     Attributes
     ----------
     graph : KeyframeGraph
-       KeyframeGraph class obejct on which to perform analysis
+       KeyframeGraph class object on which to perform analysis
     interface : robot_interface.moveit_interface.SawyerMoveitInterface
        Sawyer Robot interface.
     vectorizer : function
@@ -59,7 +59,7 @@ class KeyframeGraphAnalyzer():
         Parameters
         ----------
         task_graph : KeyframeGraph
-           KeyframeGraph class obejct on which to perform analysis
+           KeyframeGraph class object on which to perform analysis
         sawyer_moveit_interface : robot_interface.moveit_interface.SawyerMoveitInterface
            Sawyer Robot interface.
         observation_vectorizor : function
@@ -82,12 +82,12 @@ class KeyframeGraphAnalyzer():
         Returns
         -------
         (free_observations, occluded_observations) : tuple
-            A tuple containing a list of free observations as the first element and a list of occlueded observations as the second element.
+            A tuple containing a list of free observations as the first element and a list of occluded observations as the second element.
         """
         occluded_observations = []
         free_observations = []
         for observation in keyframe_observations:
-            joints = observation.get_joint_list()
+            joints = observation.get_joint_angle()
             if joints is None:
                 observation.data["robot"]["joints"] = self.interface.get_pose_IK_joints(observation.get_pose_list())
             if type(joints) is not list:
@@ -100,7 +100,7 @@ class KeyframeGraphAnalyzer():
 
     def max_mean_ll(self, model, observation):
         """
-        Given a set of observations, generate the mean log likilhood and max log liklihood of the set scored by a given model.
+        Given a set of observations, generate the mean log likelihood and max log likelihood of the set scored by a given model.
 
         Parameters
         ----------
@@ -112,7 +112,7 @@ class KeyframeGraphAnalyzer():
         Returns
         -------
         (max_ll, mean_ll) : tuple
-            Returns the maximum log liklihood of scored samples as well as the average of all the sample scores.
+            Returns the maximum log likelihood of scored samples as well as the average of all the sample scores.
         """
         vectors = []
         for ob in observation:
@@ -133,13 +133,13 @@ class KeyframeGraphAnalyzer():
         Parameters
         ----------
         threshold : int
-            The threshold average log likilhood.
+            The threshold average log likelihood.
         """
         prev = self.graph.get_keyframe_sequence()[0]
         curr = self.graph.successors(prev).next()
         while([x for x in self.graph.successors(curr)] != []):
             rospy.loginfo("Prev: {}; Curr: {}".format(prev, curr))
-            max_ll, mean_ll = self.keyframe_liklihood_check(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["observations"])
+            max_ll, mean_ll = self.max_mean_ll(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["observations"])
             if mean_ll > threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
                 rospy.loginfo("Node {} average LL is above threshold".format(curr))
                 succ = self.graph.successors(curr).next()
@@ -156,7 +156,7 @@ class MotionPlanAnalyzer():
 
     Attributes
     ----------
-    enivornment : Environment
+    environment : Environment
         Environment object for the current LFD environment.
     """
     def __init__(self, environment):
@@ -164,7 +164,7 @@ class MotionPlanAnalyzer():
         """
         Parameters
         ----------
-        enivornment : Environment
+        environment : Environment
            Environment object for the current LFD environment.
         """
         self.environment = environment
@@ -178,9 +178,9 @@ class MotionPlanAnalyzer():
         Parameters
         ----------
         constraint_ids : list
-            List of constraint id's to evalaute.
+            List of constraint id's to evaluate.
 
-        plan_observations : lsit
+        plan_observations : list
             The observation to evaluate for the constraints.
 
         Returns
@@ -204,7 +204,7 @@ class MotionPlanAnalyzer():
         Parameters
         ----------
         constraint_ids : list
-            List of constraint id's to evalaute.
+            List of constraint id's to evaluate.
 
         observation : Observation
             The observation to evaluate for the constraints.
@@ -212,7 +212,7 @@ class MotionPlanAnalyzer():
         Returns
         -------
         valid_constraints : list
-            Returns the list of valid contraints evaluated for the observation.
+            Returns the list of valid constraints evaluated for the observation.
         """
         if constraint_ids != []:
             valid_constraints = []
@@ -232,14 +232,14 @@ class ConstraintAnalyzer():
 
     Attributes
     ----------
-    enivornment : Environment
+    environment : Environment
         Environment object for the current LFD environment.
     """
     def __init__(self, environment):
         """
         Parameters
         ----------
-        enivornment : Environment
+        environment : Environment
            Environment object for the current LFD environment.
         """
         self.environment = environment
@@ -247,8 +247,7 @@ class ConstraintAnalyzer():
     def applied_constraint_evaluator(self, observations):
         """
         This function evaluates observations for constraints that were triggered during the demonstration.
-        It will label a demonstration's entire list of observations with the constraints that were triggered
-        and wheter or not they are still applicable.
+        It will label a demonstration's entire list of observations with the constraints that were triggered and whether or not they are still applicable.
 
         New constraints are those where the triggered constraints are different from the previously applied constraints:
 
@@ -259,7 +258,7 @@ class ConstraintAnalyzer():
 
             evaluated = self.evaluate(constraint_ids=prev, observation=observation)
 
-        The current observation's applied constraints are the union of the evaluted constraints and new constraints.
+        The current observation's applied constraints are the union of the evaluated constraints and new constraints.
 
              applied = list(set(evaluated).union(set(new)))
 
@@ -287,7 +286,7 @@ class ConstraintAnalyzer():
         Parameters
         ----------
         constraint_ids : list
-            List of constraint id's to evalaute.
+            List of constraint id's to evaluate.
 
         observation : Observation
             The observation to evaluate for the constraints.
@@ -295,7 +294,7 @@ class ConstraintAnalyzer():
         Returns
         -------
         valid_constraints : list
-            Returns the list of valid contraints evaluated for the observation.
+            Returns the list of valid constraints evaluated for the observation.
         """
         if constraint_ids != []:
             valid_constraints = []
@@ -313,17 +312,17 @@ class DemonstrationKeyframeLabeler():
     """
     Keyframe labeling class.
 
-    This class depends on constraint aligned demosntrations. This means that all demosntrations should have the same
+    This class depends on constraint aligned demonstrations. This means that all demonstrations should have the same
     sequence of constraint transitions. Without such alignment, the class functions will fail ungracefully.
 
     Attributes
     ----------
     demonstrations : list
-       List of demonstraionts. These must be constraint aligned
+       List of demonstrations. These must be constraint aligned
 
     constraint_transitions : list
         A 2D list containing the set of constraint transitions that are applicable to all of the aligned
-        demosntrations.
+        demonstrations.
 
     """
     def __init__(self, aligned_demonstrations, constraint_transitions):
@@ -331,11 +330,11 @@ class DemonstrationKeyframeLabeler():
         Parameters
         ----------
         aligned_demonstrations : list
-           List of demonstraionts. These must be constraint aligned
+           List of demonstrations. These must be constraint aligned
 
         constraint_transitions : list
             A 2D list containing the set of constraint transitions that are applicable to all of the aligned
-            demosntrations.
+            demonstrations.
         """
         self.demonstrations = aligned_demonstrations
         self.constraint_transitions = constraint_transitions
@@ -343,9 +342,9 @@ class DemonstrationKeyframeLabeler():
     def label_demonstrations(self, divisor=20, keyframe_window_size=8):
         """
         This function serves to take each demonstration and create a list of observations labeled with keyframe_ids.
-        For each demonstation, the function gets the observation grouping and then iteratively calls
+        For each demonstration, the function gets the observation grouping and then iteratively calls
         _get_labeled_group() from which it extends a list using the function's returned labeled_group. This list becomes
-        the labeled_observations list of observation obejcts assigned to the demonstration object.
+        the labeled_observations list of observation objects assigned to the demonstration object.
 
         Parameters
         ----------
@@ -388,8 +387,8 @@ class DemonstrationKeyframeLabeler():
         n is the number of keyframes. Each of these list of indices represent the observations available to constitute
         a keyframe.
 
-        Using the index splits, the center of each of those splits is calculated, and window of elements is taken
-        around that center. This window of indices will be the indices of the observation_group list's elements that
+        Using the index splits, the center of each of those splits is calculated, and a window of elements is taken
+        around that center. This window of indices will be the indices of the observation_group's elements that
         will be used for a keyframe.
 
         The observations are labeled with keyframe_ids by iterating over the index splits and labeling the data with an
@@ -399,7 +398,7 @@ class DemonstrationKeyframeLabeler():
         Parameters
         ----------
         observation_group : int
-           A list of obervations to be separated into keyframes.
+           A list of observations to be separated into keyframes.
 
         keyframe_type: string
             Either 'regular' or 'constraint_transition'. Used to label observation's keyframe type.
@@ -469,7 +468,7 @@ class DemonstrationKeyframeLabeler():
         D1: r r r r       t t t t   r r r r r r r
         D2: r r r r r r   t t t t   r r r r r r
 
-        Group 1, in the above example, consists of all the regular data needed peform regular keyframing prior to a transition
+        Group 1, in the above example, consists of all the regular data needed perform regular keyframing prior to a transition
         region. The purpose of this function is to calculate how many keyframes each group ought to have.
 
         Parameters
@@ -544,7 +543,7 @@ class DemonstrationKeyframeLabeler():
 
         groups = [[], [], [], [], [], [], []]
 
-        All even indices represet regular groups and odd indices represent transition groups.
+        All even indices represent regular groups and odd indices represent transition groups.
 
         Parameters
         ----------
@@ -565,7 +564,7 @@ class DemonstrationKeyframeLabeler():
     def _retrieve_data_window(self, sequence, central_idx, window_size=10):
         """
         Retrieves a window of elements from a sequence. The window is centered by central_idx.
-        The window size will shrink if the central index would make the window out of the sequence index.
+        The window size will shrink if the central index would make the window out of the sequence index bounds.
 
         Parameters
         ----------
@@ -577,7 +576,7 @@ class DemonstrationKeyframeLabeler():
             The index to be the center of the window.
 
         window_size : int
-            Size of windown of elements to grab surrounding that center index from the sequence.
+            Size of window of elements to grab surrounding that center index from the sequence.
 
         Returns
         -------

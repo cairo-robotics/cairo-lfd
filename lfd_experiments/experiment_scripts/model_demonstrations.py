@@ -11,8 +11,9 @@ from modeling.sampling import KeyframeSampler
 from lfd.environment import Demonstration, Observation, Environment, import_configuration
 from lfd.data_io import DataImporter
 from lfd.items import RobotFactory, ConstraintFactory
-from lfd.analyzer import KeyframeGraphAnalyzer, ConstraintAnalyzer, get_observation_joint_vector
+from lfd.analysis import KeyframeGraphAnalyzer, ConstraintAnalyzer, get_observation_joint_vector
 from lfd.processing import SawyerSampleConverter
+
 
 def main():
     arg_fmt = argparse.RawDescriptionHelpFormatter
@@ -134,7 +135,7 @@ def main():
             graph.nodes[node]["free_samples"] = free_samples
 
     """ Cull/remove keyframes/nodes that via change point estimation using log-liklihood """
-    graph_analyzer.keyframe_culler(threshold=args.threshold)
+    graph_analyzer.cull_keyframes(threshold=args.threshold)
 
     # """ Order sampled points based on their intramodel log-liklihood """
     # for node in graph.get_keyframe_sequence():
@@ -146,7 +147,7 @@ def main():
     joint_config_array = []
     for node in graph.get_keyframe_sequence():
         sample = graph.nodes[node]["free_samples"][0]
-        joints = sample.get_joint_list()
+        joints = sample.get_joint_angle()
         joint_config_array.append(joints)
 
     moveit_interface.move_to_joint_targets(joint_config_array)

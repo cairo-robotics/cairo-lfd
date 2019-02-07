@@ -64,7 +64,7 @@ def main():
     args = parser.parse_args(rospy.myargv()[1:])
 
     ordp = ObjectRelativeDataProcessor(environment.get_item_ids(), environment.get_robot_id())
-    ocp = ObjectContactProcessor(environment.get_item_ids(), environment.get_robot_id(), .05, .8)
+    ocp = ObjectContactProcessor(environment.get_item_ids(), environment.get_robot_id(), .06, .5)
     exp = DataExporter()
     rospy.loginfo("Exporting demonstrations.")
     for idx, demo in enumerate(demonstrations):

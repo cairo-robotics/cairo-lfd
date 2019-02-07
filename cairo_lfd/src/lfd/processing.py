@@ -472,7 +472,7 @@ class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
 
 class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
 
-    def __init__(self, item_ids, robot_id, threshold_distance=.25, window_percentage=.6):
+    def __init__(self, item_ids, robot_id, threshold_distance=.06, window_percentage=.5):
         """
         Parameters
         ----------
@@ -491,7 +491,7 @@ class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
         self.threshold_distance = threshold_distance
         self.window_percentage = window_percentage
 
-    def generate_object_contact_data(self, observations):
+    def generate_object_contact_data(self, observations, window_size=8):
         """
         Calculates relative distance, velocity and acceleration between item-item pairs 
         and item-robot pair. This is performed in-place: the dictionary data within each
@@ -506,7 +506,7 @@ class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
            List of Observation objects.
         """
         for idx, obsv in enumerate(observations):
-            window = self._retrieve_window(observations, idx, 'center', 4)
+            window = self._retrieve_window(observations, idx, 'left', window_size)
             self._evaluate_contact(obsv, window)
 
     def _evaluate_contact(self, curr_observation, observation_window):    

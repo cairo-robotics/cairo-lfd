@@ -130,7 +130,6 @@ class SawyerRecorder(object):
                         "items": environment.get_item_state(),
                         "triggered_constraints": environment.check_constraint_triggers()
                     }
-                    print data["robot"]["position"]
                     observation = Observation(data)
                     observations.append(observation)
                     stdin, stdout, stderr = select.select([sys.stdin], [], [], .0001)

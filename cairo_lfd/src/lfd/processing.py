@@ -561,3 +561,7 @@ class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
             else:
                 in_contact[target_id] = False
         robot_data["in_contact"] = in_contact
+
+
+class ObjectContactFusionProcessor():
+    pass

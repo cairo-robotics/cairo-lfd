@@ -563,5 +563,34 @@ class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
         robot_data["in_contact"] = in_contact
 
 
-class ObjectContactFusionProcessor():
-    pass
+class SphereOfInfluenceProcessor(EuclideanDistanceMixin):
+
+    def __init__(self, item_ids, robot_id, threshold_distance=.1):
+        self.item_ids = item_ids
+        self.robot_id = robot_id
+        self.threshold_distance = threshold_distance
+
+    def generate_SOI_data(observations):
+        """
+        Determines whether the end effector of a robotic arm is within the "sphere of influence" of
+        items in the environment.  This is performed in-place: the dictionary data within each
+        Observation acquires new key-value data.
+
+        Parameters
+        ----------
+        observations : list
+           List of Observation objects.
+        """
+        for obsv in observations:
+            self._evaluate_SOI(obsv)
+
+    def _evaluate_SOI(self, curr_observation):
+        end_effector_position = curr_observation.get_robot_data().position
+        for item_id in self.item_ids:
+            in_SOI = []
+            item_position = curr_observation.get_item_data(item_id)[
+                "position"]
+            distance = self._euclidean(
+                end_effector_position, item_position)
+            if distance <= self.threshold_distance:
+                in_SOI.append(item_id)

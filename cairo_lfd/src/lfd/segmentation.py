@@ -283,5 +283,28 @@ class ConstraintKeyframeLabeler():
                 return sequence[central_idx - spread:central_idx + spread + 1]
         return []
 
-class ContactTransitionLabeler():
-    pass
+
+class ObjectContactSegmentation():
+
+    def __init__(self):
+        pass
+
+    def assign_segments(observations):
+        data[0]['segment'] = 1 
+        segchange = False # track whether segment increment is necessary
+
+        # Parse
+        prev_set = set()
+        for i in range(1, len(data)): # iterate through blocks
+            for j in range(len(data[i]['items'])): # iterate through items
+                for key in data[i]['items'][j]['in_contact']: # iterate through in_contact
+                    if data[i]['items'][j]['in_contact'][key] != data[i - 1]['items'][j]['in_contact'][key]:
+                        segchange = True
+            for key in data[i]['robot']['in_contact']: # iterate through in_contact for robot
+                if data[i]['robot']['in_contact'][key] != data[i - 1]['robot']['in_contact'][key]:
+                    segchange = True
+            if segchange is True:
+                data[i]['segment'] = data[i - 1]['segment'] + 1
+                segchange = False
+            else:
+                data[i]['segment'] = data[i - 1]['segment']

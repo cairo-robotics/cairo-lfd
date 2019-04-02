@@ -35,7 +35,7 @@ class HeightConstraint(object):
     def __init__(self, constraint_id, item_id, button, reference_height, threshold_distance):
 
         """
-        These arguemnts should be in the "init_args" field of the config.json file's entry representing
+        These arguments should be in the "init_args" field of the config.json file's entry representing
         this constraint.
 
         Parameters
@@ -169,7 +169,7 @@ class UprightConstraint(object):
     def evaluate(self, environment, observation):
         """
         This function evaluates an observation for the assigned constraint of the class. It differentiates
-        betweeen Sawyer (end-effector) and general items (blocks etc,.).
+        between Sawyer (end-effector) and general items (blocks etc,.).
 
         Parameters
         ----------

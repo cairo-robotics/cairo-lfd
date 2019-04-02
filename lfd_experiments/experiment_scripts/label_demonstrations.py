@@ -5,7 +5,7 @@ import argparse
 
 from lfd.data_io import DataImporter, DataExporter
 from lfd.alignment import DemonstrationAligner, vectorize_demonstration
-from lfd.analysis import DemonstrationKeyframeLabeler
+from lfd.segmentation import ConstrainedKeyframeLabeler
 from lfd.environment import Observation, Demonstration
 
 

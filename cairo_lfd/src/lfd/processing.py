@@ -48,6 +48,7 @@ class SawyerSampleConverter(object):
     interface : object
         SawyerMoveitInterface to help run forward kinematics.
     """
+
     def __init__(self, interface):
         """
         Parameters
@@ -82,11 +83,13 @@ class SawyerSampleConverter(object):
         if normalize_quaternion:
             # Normalize the quaternion values otherwise they will not be valid. This may be needed if FK is done
             # using MoveIt's FK server. However, generally this is not needed if using Intera.
-            sample[3], sample[4], sample[5], sample[6] = self._normalize_quaternion(sample[3], sample[4], sample[5], sample[6])
+            sample[3], sample[4], sample[5], sample[6] = self._normalize_quaternion(
+                sample[3], sample[4], sample[5], sample[6])
 
         if len(sample) > 7:
             # If length > 7, we know there must be joint data, so creat Obs w/ joints.
-            obsv = Observation.init_samples(sample[0:3], sample[3:7], sample[7:14])
+            obsv = Observation.init_samples(
+                sample[0:3], sample[3:7], sample[7:14])
         else:
             obsv = Observation.init_samples(sample[0:3], sample[3:7], None)
         return obsv
@@ -195,10 +198,12 @@ class ListWindowMixin():
         Observations than the given window size.
         """
         if centrality not in ['left', 'right', 'center']:
-            raise ValueError("Centrality must be either 'left', 'right', or 'center'.")
+            raise ValueError(
+                "Centrality must be either 'left', 'right', or 'center'.")
 
         if idx > len(observations) - 1:
-            raise IndexError("Index not valid for given length of observations sequence.")
+            raise IndexError(
+                "Index not valid for given length of observations sequence.")
         for spread in reversed(range(window_size + 1)):
             if centrality == 'left':
                 if 0 <= idx - spread < len(observations) and 0 <= idx + spread < len(observations):
@@ -211,7 +216,8 @@ class ListWindowMixin():
                 if 0 <= idx - int(spread / 2) < len(observations):
                     obsvs = observations[idx - int(spread / 2):idx] + obsvs
                 if 0 <= idx + int(spread / 2) < len(observations):
-                    obsvs = obsvs + observations[idx + 1:idx + int(spread / 2) + 1]
+                    obsvs = obsvs + \
+                        observations[idx + 1:idx + int(spread / 2) + 1]
                 return obsvs
         return []
 
@@ -226,6 +232,7 @@ class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
     item_ids : list
         List of environment 'item' ids.
     """
+
     def __init__(self, item_ids, robot_id):
         """
         Parameters
@@ -281,10 +288,13 @@ class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
             item_position = item_data["position"]
             for target_id in self.item_ids:
                 if item_id != target_id:
-                    target_position = observation.get_item_data(target_id)["position"]
-                    relative_distances[target_id] = self._euclidean(item_position, target_position)
+                    target_position = observation.get_item_data(target_id)[
+                        "position"]
+                    relative_distances[target_id] = self._euclidean(
+                        item_position, target_position)
             robot_position = observation.get_robot_data()["position"]
-            relative_distances[self.robot_id] = self._euclidean(item_position, robot_position)
+            relative_distances[self.robot_id] = self._euclidean(
+                item_position, robot_position)
             item_data["relative_distance"] = relative_distances
 
         # relative to robots
@@ -293,7 +303,8 @@ class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
         robot_position = robot_data["position"]
         for item_id in self.item_ids:
             item_position = observation.get_item_data(item_id)["position"]
-            relative_distances[item_id] = self._euclidean(robot_position, item_position)
+            relative_distances[item_id] = self._euclidean(
+                robot_position, item_position)
         robot_data["relative_distance"] = relative_distances
 
     def relative_velocity(self, curr_observation, observation_window):
@@ -331,12 +342,14 @@ class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
                     distances = []
                     timestamps = []
                     for ob in observation_window:
-                        distances.append(ob.get_item_data(item_id)["relative_distance"].get(target_id))
+                        distances.append(ob.get_item_data(item_id)[
+                                         "relative_distance"].get(target_id))
                         timestamps.append(ob.get_timestamp())
                     if len(observation_window) == 0:
                         relative_velocities[target_id] = 0
                     else:
-                        relative_velocities[target_id] = self._average_discrete_velocity(distances, timestamps)
+                        relative_velocities[target_id] = self._average_discrete_velocity(
+                            distances, timestamps)
             item_data["relative_velocity"] = relative_velocities
 
         # Now relative to robot, by accessing robot data separately.
@@ -346,12 +359,14 @@ class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
             distances = []
             timestamps = []
             for prior_ob in observation_window:
-                distances.append(prior_ob.get_robot_data()["relative_distance"].get(item_id))
+                distances.append(prior_ob.get_robot_data()[
+                                 "relative_distance"].get(item_id))
                 timestamps.append(prior_ob.get_timestamp())
             if len(observation_window) == 0:
                 relative_velocities[item_id] = 0
             else:
-                relative_velocities[item_id] = self._average_discrete_velocity(distances, timestamps)
+                relative_velocities[item_id] = self._average_discrete_velocity(
+                    distances, timestamps)
         robot_data["relative_velocity"] = relative_velocities
 
     def relative_acceleration(self, curr_observation, observation_window):
@@ -389,12 +404,14 @@ class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
                     distances = []
                     timestamps = []
                     for ob in observation_window:
-                        distances.append(ob.get_item_data(item_id)["relative_velocity"].get(target_id))
+                        distances.append(ob.get_item_data(item_id)[
+                                         "relative_velocity"].get(target_id))
                         timestamps.append(ob.get_timestamp())
                     if len(observation_window) == 0:
                         relative_accelerations[target_id] = 0
                     else:
-                        relative_accelerations[target_id] = self._average_discrete_velocity(distances, timestamps)
+                        relative_accelerations[target_id] = self._average_discrete_velocity(
+                            distances, timestamps)
             item_data["relative_acceleration"] = relative_accelerations
 
         # Now relative to robot, by accessing robot data separately.
@@ -404,12 +421,14 @@ class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
             distances = []
             timestamps = []
             for ob in observation_window:
-                distances.append(ob.get_robot_data()["relative_velocity"].get(item_id))
+                distances.append(ob.get_robot_data()[
+                                 "relative_velocity"].get(item_id))
                 timestamps.append(ob.get_timestamp())
             if len(observation_window) == 0:
                 relative_accelerations[item_id] = 0
             else:
-                relative_accelerations[item_id] = self._average_discrete_velocity(distances, timestamps)
+                relative_accelerations[item_id] = self._average_discrete_velocity(
+                    distances, timestamps)
         robot_data["relative_acceleration"] = relative_accelerations
 
     def _average_discrete_velocity(self, distances, timestamps):
@@ -433,11 +452,13 @@ class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
             Average discrete velocity..
         """
         if len(distances) != len(timestamps):
-            raise ValueError("Every distance entry must have a corresponding timestamp")
+            raise ValueError(
+                "Every distance entry must have a corresponding timestamp")
         velocity_sum = 0
         for idx in range(0, len(distances)):
             if idx != len(distances) - 1:
-                update = self._discrete_velocity(distances[idx], distances[idx + 1], timestamps[idx], timestamps[idx + 1])
+                update = self._discrete_velocity(
+                    distances[idx], distances[idx + 1], timestamps[idx], timestamps[idx + 1])
                 if abs(update) < 2.0:
                     velocity_sum += update
         return velocity_sum / int(len(distances) / 2)
@@ -470,7 +491,7 @@ class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
         return (dist_after - dist_before) / abs(start_time - end_time)
 
 
-class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
+class ObjectContactProcessor(EuclideanDistanceMixin):
 
     def __init__(self, item_ids, robot_id, threshold_distance=.06, window_percentage=.5):
         """
@@ -493,23 +514,27 @@ class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
 
     def generate_object_contact_data(self, observations, window_size=8):
         """
-        Calculates relative distance, velocity and acceleration between item-item pairs 
+        Calculates relative distance, velocity and acceleration between item-item pairs
         and item-robot pair. This is performed in-place: the dictionary data within each
         Observation acquires new key-value data.
 
-        A window is chosen to provide averaged smoothing around a given observation to 
-        avoid spiking velocities and accelerations due to noise. 
+        A window is chosen to provide averaged smoothing around a given observation to
+        avoid spiking velocities and accelerations due to noise.
 
         Parameters
         ----------
         observations : list
            List of Observation objects.
+
+        window_size : int
+            The surrounding preceding window of observations used for evaluating contact.
         """
         for idx, obsv in enumerate(observations):
-            window = self._retrieve_window(observations, idx, 'left', window_size)
+            window = self._retrieve_window(
+                observations, idx, 'left', window_size)
             self._evaluate_contact(obsv, window)
 
-    def _evaluate_contact(self, curr_observation, observation_window):    
+    def _evaluate_contact(self, curr_observation, observation_window):
         for item_id in self.item_ids:
             in_contact = {}
             item_data = curr_observation.get_item_data(item_id)
@@ -517,9 +542,12 @@ class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
                 if item_id != target_id:
                     within_threshold = []
                     for observation in observation_window:
-                        item_position = observation.get_item_data(item_id)["position"]
-                        target_position = observation.get_item_data(target_id)["position"]
-                        distance = self._euclidean(item_position, target_position)
+                        item_position = observation.get_item_data(item_id)[
+                            "position"]
+                        target_position = observation.get_item_data(target_id)[
+                            "position"]
+                        distance = self._euclidean(
+                            item_position, target_position)
                         if distance <= self.threshold_distance:
                             within_threshold.append(True)
                         else:
@@ -550,7 +578,8 @@ class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
             within_threshold = []
             for observation in observation_window:
                 robot_position = observation.get_robot_data()["position"]
-                target_position = observation.get_item_data(target_id)["position"]
+                target_position = observation.get_item_data(target_id)[
+                    "position"]
                 distance = self._euclidean(robot_position, target_position)
                 if distance <= self.threshold_distance:
                     within_threshold.append(True)
@@ -561,3 +590,36 @@ class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
             else:
                 in_contact[target_id] = False
         robot_data["in_contact"] = in_contact
+
+
+class SphereOfInfluenceProcessor(EuclideanDistanceMixin):
+
+    def __init__(self, item_ids, robot_id, threshold_distance=.1):
+        self.item_ids = item_ids
+        self.robot_id = robot_id
+        self.threshold_distance = threshold_distance
+
+    def generate_SOI_data(observations):
+        """
+        Determines whether the end effector of a robotic arm is within the "sphere of influence" of
+        items in the environment.  This is performed in-place: the dictionary data within each
+        Observation acquires new key-value data.
+
+        Parameters
+        ----------
+        observations : list
+           List of Observation objects.
+        """
+        for obsv in observations:
+            self._evaluate_SOI(obsv)
+
+    def _evaluate_SOI(self, curr_observation):
+        end_effector_position = curr_observation.get_robot_data().position
+        for item_id in self.item_ids:
+            in_SOI = []
+            item_position = curr_observation.get_item_data(item_id)[
+                "position"]
+            distance = self._euclidean(
+                end_effector_position, item_position)
+            if distance <= self.threshold_distance:
+                in_SOI.append(item_id)

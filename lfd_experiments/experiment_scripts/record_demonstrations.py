@@ -11,7 +11,7 @@ from lfd.record import SawyerRecorder
 from lfd.environment import Environment, import_configuration
 from lfd.items import ItemFactory
 from lfd.constraints import ConstraintFactory
-from lfd.analyzer import ConstraintAnalyzer
+from lfd.analysis import ConstraintAnalyzer
 from lfd.data_io import DataExporter
 
 

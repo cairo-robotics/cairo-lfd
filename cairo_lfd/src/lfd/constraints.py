@@ -3,7 +3,8 @@ The constraints.py module contains a classes that encapsulate predicate classifi
 evaluate binary value conceptual constraints.
 """
 import intera_interface
-from predicate_classification.predicate_classifiers import height, upright
+from predicate_classification.pose_classifiers import height, upright, over_under
+from predicate_classification.path_classifiers import perimeter
 from lfd.processing import convert_data_to_pose
 
 
@@ -78,7 +79,7 @@ class HeightConstraint(object):
     def evaluate(self, environment, observation):
         """
         This function evaluates an observation for the assigned constraint of the class. It differentiates
-        betweeen Sawyer (end-effector) and general items (blocks etc,.).
+        between Sawyer (end-effector) and general items (blocks etc,.).
 
         Parameters
         ----------
@@ -195,6 +196,109 @@ class UprightConstraint(object):
         current_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
         upright_pose = convert_data_to_pose(item_info["upright_pose"]["position"], item_info["upright_pose"]["orientation"])
         return upright(upright_pose, current_pose, self.threshold_angle, self.axis)
+
+
+class OverUnderConstraint(object):
+    """
+    OverUnderConstraint class to evaluate the over_under predicate classifier assigned to a given item.
+
+    over_under() returns true if one pose is above another pose and within the a threshold distance
+    in the plane orthogonal to the given axis.
+
+    Attributes
+    ----------
+    id : int
+        Id of the constraint as defined in the config.json file.
+    above_item_id : int
+            Id of the item that must be above the other for the constraint to hold true.
+    below_item_id : int
+        Id of the item that must be below the other for the constraint to hold true.
+    button : string
+        String of a button for the intera_interface.Navigator().get_button_state(self.button) function to
+        check the trigger.
+    threshold_distance : int
+        The distance from reference (positive: above; negative; below) to compare an object's distance
+        from reference.
+    axis : str
+        The axis from which angle of deviation is calculated.
+    """
+    def __init__(self, constraint_id, above_item_id, below_item_id, button, threshold_distance, axis):
+
+        """
+        These arguments should be in the "init_args" field of the config.json file's entry representing
+        this constraint.
+
+        Parameters
+        ----------
+        constraint_id : int
+            Id of the constraint as defined in the config.json file.
+        above_item_id : int
+            Id of the item that must be above the other for the constraint to hold true.
+        below_item_id : int
+            Id of the item that must be below the other for the constraint to hold true.
+        button : string
+            String of a button for the intera_interface.Navigator().get_button_state(self.button) function to
+            check the trigger.
+        threshold_distance : int
+            The distance from reference (positive: above; negative; below) to compare an object's distance
+            from reference.
+        axis : str
+            The axis from which angle of deviation is calculated.
+        """
+
+        self.id = constraint_id
+        self.above_item_id = above_item_id
+        self.below_item_id = below_item_id
+        self.threshold_distance = threshold_distance
+        self.button = button
+        self.axis = axis
+
+    def check_trigger(self):
+        """
+        This function evaluates whether the constrain has been triggered. In this case,
+        this class's trigger uses the cuff buttons of Sawyer.
+
+        Returns
+        -------
+        : int
+            Boolean value of trigger result.
+        """
+        if intera_interface.Navigator().get_button_state(self.button) != 0:
+            return 1
+        else:
+            return 0
+
+    def evaluate(self, environment, observation):
+        """
+        This function evaluates an observation for the assigned constraint of the class. It differentiates
+        between Sawyer (end-effector) and general items (blocks etc,.).
+
+        Parameters
+        ----------
+        environment : Environment
+            The Environment object containing the current demonstrations environment (SawyerRobot, Items, Constraints)
+            and helper methods.
+
+        observation : Observation
+            The observation to evaluate for the constraint.
+
+        Returns
+        -------
+         : int
+            Boolean value of constraint evaluation for the height constraint.
+        """
+        if self.above_item_id == environment.get_robot_info()["id"]:
+            above_data = observation.get_robot_data()
+            above_pose = convert_data_to_pose(above_data["position"], above_data["orientation"])
+        if self.below_item_id == environment.get_robot_info()["id"]:
+            below_data = observation.get_robot_data()
+            below_pose = convert_data_to_pose(below_data["position"], below_data["orientation"])
+        else:
+            above_data = observation.get_item_data(self.above_item_id)
+            above_pose = convert_data_to_pose(above_data["position"], above_data["orientation"])
+            below_data = observation.get_item_data(self.below_item_id)
+            below_pose = convert_data_to_pose(below_data["position"], below_data["orientation"])
+        return over_under(above_pose, below_pose, self.threshold_distance, axis=)
 
 
 class ConstraintFactory(object):

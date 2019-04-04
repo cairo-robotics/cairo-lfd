@@ -623,3 +623,4 @@ class SphereOfInfluenceProcessor(EuclideanDistanceMixin):
                 end_effector_position, item_position)
             if distance <= self.threshold_distance:
                 in_SOI.append(item_id)
+        curr_observation.data['robot']['in_SOI'] = in_SOI

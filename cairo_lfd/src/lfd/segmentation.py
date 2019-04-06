@@ -310,3 +310,4 @@ class ManualSegmentation():
                 segchange = False
             else:
                 observations.data[i]['segment'] = observations.data[i-1]['segment']
+

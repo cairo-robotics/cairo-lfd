@@ -5,7 +5,7 @@ evaluate binary value conceptual constraints.
 import intera_interface
 from predicate_classification.pose_classifiers import height, upright, over_under
 from predicate_classification.path_classifiers import perimeter
-from lfd.processing import convert_data_to_pose
+from lfd.conversion import convert_data_to_pose
 
 
 class HeightConstraint(object):
@@ -332,14 +332,14 @@ class ConstraintFactory(object):
                 }
         }
     """
-    def __init__(self, constraint_configs):
+    def __init__(self, configs):
         """
         Parameters
         ----------
-        constraint_configs : list
+        configs : list
             List of configuration dictionaries.
         """
-        self.configs = constraint_configs
+        self.configs = configs
         self.classes = {
             "UprightConstraint": UprightConstraint,
             "HeightConstraint": HeightConstraint
@@ -355,6 +355,6 @@ class ConstraintFactory(object):
             List of constraint objects.
         """
         constraints = []
-        for config in self.configs:
+        for config in self.configs["constraints"]:
             constraints.append(self.classes[config["class"]](*tuple(config["init_args"].values())))
         return constraints

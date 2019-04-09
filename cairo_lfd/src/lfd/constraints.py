@@ -298,7 +298,7 @@ class OverUnderConstraint(object):
             above_pose = convert_data_to_pose(above_data["position"], above_data["orientation"])
             below_data = observation.get_item_data(self.below_item_id)
             below_pose = convert_data_to_pose(below_data["position"], below_data["orientation"])
-        return over_under(above_pose, below_pose, self.threshold_distance, axis=)
+        return over_under(above_pose, below_pose, self.threshold_distance, axis=axis)
 
 
 class ConstraintFactory(object):

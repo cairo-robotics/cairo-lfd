@@ -6,7 +6,7 @@ import intera_interface
 from intera_interface import CHECK_VERSION
 from intera_core_msgs.msg import InteractionControlCommand
 from geometry_msgs.msg import Pose
-from intera_motion_interface import (InteractionOptions, InteractionPublisher)
+from intera_motion_interface import InteractionOptions, InteractionPublisher
 from lfd.record import SawyerRecorder
 from lfd.environment import Environment, import_configuration
 from lfd.items import ItemFactory
@@ -72,7 +72,7 @@ def main():
     configs = import_configuration(config_filepath)
 
     items = ItemFactory(configs).generate_items()
-    constraints = ConstraintFactory(configs["constraints"]).generate_constraints()
+    constraints = ConstraintFactory(configs).generate_constraints()
     # We only have just the one robot...for now.......
     environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints)
 

@@ -70,12 +70,10 @@ def main():
     """ Create the Cairo LfD environment """
     config_filepath = args.config
     configs = import_configuration(config_filepath)
-    robot_factory = RobotFactory(configs["robots"])
-    constraint_factory = ConstraintFactory(configs["constraints"])
-    robot = robot_factory.generate_robots()[0]
-    constraints = constraint_factory.generate_constraints()
-    environment = Environment(items=None, robot=robot,
-                              constraints=constraints)
+    items = ItemFactory(configs).generate_items()
+    constraints = ConstraintFactory(configs).generate_constraints()
+    # We only have just the one robot...for now.......
+    environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints)
 
     """ Create the moveit_interface """
     moveit_interface = SawyerMoveitInterface()

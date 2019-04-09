@@ -13,7 +13,14 @@ def import_configuration(filepath):
     Wrapper function around json.load() to import a config.json file used to inform the Environment object.
     """
     with open(filepath) as json_data:
-        return json.load(json_data, object_pairs_hook=OrderedDict)
+        configs = json.load(json_data, object_pairs_hook=OrderedDict)
+        if "constraints" not in configs:
+            raise ConfigurationError("config.json file must contain the 'constraints' key, even if its value is an empty list.")
+        if "items" not in configs:
+            raise ConfigurationError("config.json file must contain the 'items' key, even if its value is an empty list.")
+        if "robots" not in configs:
+            raise ConfigurationError("config.json file must contain the 'robots' key, even if its value is an empty list.")
+        return configs
 
 
 class Environment(object):
@@ -445,3 +452,12 @@ class Observation(object):
             return self.data["applied_constraints"]
         else:
             return None
+
+
+class ConfigurationError(Exception):
+
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self): 
+        return(repr(self.value))

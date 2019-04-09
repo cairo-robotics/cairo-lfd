@@ -52,3 +52,7 @@ coverage.xml
 *.pot
 
 # Sphinx documentation
+
+
+# Quick testing/prototyping
+testing/

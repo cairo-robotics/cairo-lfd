@@ -5,7 +5,6 @@ import rospy
 from lfd.environment import Observation, Demonstration
 import sys
 import select
-import pudb
 import os
 import intera_interface
 import cv2

@@ -177,7 +177,7 @@ class ModelDemonstrationsServer():
 
         moveit_interface.move_to_joint_targets(joint_config_array)
 
-        return 0
+        return True
 
 if __name__ == '__main__':
     try:

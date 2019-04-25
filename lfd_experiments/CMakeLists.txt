@@ -8,30 +8,18 @@ find_package(catkin REQUIRED COMPONENTS
 	message_generation
 )
 
+add_service_files(
+	FILES
+	PerformDemonstration.srv
+)
+
+generate_messages(
+	DEPENDENCIES
+	std_msgs
+)
+
 catkin_package(
 	CATKIN_DEPENDS 
 	rospy
 	cairo_lfd
 )
-
-## Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  ModelDemonstrations.srv
-)
-
-###########
-## Build ##
-###########
-
-#############
-## Install ##
-#############
-
-#############
-## Testing ##
-#############
-
-
-## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)

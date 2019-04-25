@@ -14,53 +14,28 @@ from lfd.items import ItemFactory
 from lfd.constraints import ConstraintFactory
 from lfd.analysis import KeyframeGraphAnalyzer, ConstraintAnalyzer
 from lfd.conversion import SawyerSampleConverter, get_observation_joint_vector
-from lfd_experiments.srv import ModelDemonstrations
+from lfd_experiments.srv import *
 
-class ModelDemonstrationsServer():
+class PerformDemonstrationServer():
 
     def __init__(self):
-        rospy.init_node('model_demonstrations_server')
+        rospy.init_node('perform_demonstration_server')
 
     def run(self):
-        service = rospy.Service("model_demonstrations", ModelDemonstrations, self.handle)
+        service = rospy.Service("perform_demonstration", PerformDemonstration, self.handle)
         rospy.spin()
 
     def handle(self, constraint_types):
-        arg_fmt = argparse.RawDescriptionHelpFormatter
-        parser = argparse.ArgumentParser(formatter_class=arg_fmt,
-                                        description=main.__doc__)
-        required = parser.add_argument_group('required arguments')
-
-        required.add_argument(
-            '-c', '--config', dest='config', required=True,
-            help='the file path of configuration config.json file '
-        )
-
-        required.add_argument(
-            '-d', '--directory', dest='directory', required=True,
-            help='the directory from which to input labeled demonstration .json files'
-        )
-
-        parser.add_argument(
-            '-b', '--bandwidth', type=float, default=.025, metavar='BANDWIDTH',
-            help='gaussian kernel density bandwidth'
-        )
-
-        parser.add_argument(
-            '-t', '--threshold', type=int, default=-1200, metavar='THRESHOLD',
-            help='log-liklihood threshold value'
-        )
-
-        parser.add_argument(
-            '-n', '--number_of_samples', type=int, default=50, metavar='NUMBEROFSAMPLES',
-            help='log-liklihood threshold value'
-        )
-
-        args = parser.parse_args(rospy.myargv()[1:])
+        # Get the params from ROS
+        config = rospy.get_param("CONFIG")
+        directory = rospy.get_param("DIRECTORY")
+        bandwidth = rospy.get_param("BANDWIDTH")
+        threshold = rospy.get_param("THRESHOLD")
+        number_of_samples = rospy.get_param("NUMBER_OF_SAMPLES")
 
         # Import the data
         importer = DataImporter()
-        labeled_demonstrations = importer.load_json_files(args.directory + "/*.json")
+        labeled_demonstrations = importer.load_json_files(directory + "/*.json")
 
         # Convert imported data into Demonstrations and Observations
         demonstrations = []
@@ -71,13 +46,13 @@ class ModelDemonstrationsServer():
             demonstrations.append(Demonstration(observations))
 
         if len(demonstrations) == 0:
-            rospy.logwarn("No demonstration data to model!!")
+            rospy.logwarn("CC-LfD: No demonstration data to model!!")
             return 0
 
         rospy.init_node("graph_traverse")
 
         """ Create the Cairo LfD environment """
-        config_filepath = args.config
+        config_filepath = config
         # NOTE: the config file can be used to parameterize any of the constraints we want to add to the learned skill
         configs = import_configuration(config_filepath)
         items = ItemFactory(configs).generate_items()
@@ -104,7 +79,7 @@ class ModelDemonstrationsServer():
             graph.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
             graph.nodes[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
             graph.nodes[cluster_id]["applied_constraints"] = clusters[cluster_id]["applied_constraints"]
-            graph.nodes[cluster_id]["model"] = KDEModel(kernel='gaussian', bandwidth=args.bandwidth)
+            graph.nodes[cluster_id]["model"] = KDEModel(kernel='gaussian', bandwidth=bandwidth)
         graph.add_path(graph.nodes())
         graph.fit_models(get_observation_joint_vector)
         rospy.loginfo(graph.get_keyframe_sequence())
@@ -134,7 +109,7 @@ class ModelDemonstrationsServer():
                     attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], matched_ids, n=n_samples)
 
             else:
-                n_samples = args.number_of_samples
+                n_samples = number_of_samples
                 attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["applied_constraints"], n=n_samples)
 
             rospy.loginfo("Keyframe %d: %s valid of %s attempts", node, len(samples), attempts)
@@ -160,7 +135,7 @@ class ModelDemonstrationsServer():
                 graph.nodes[node]["free_samples"] = free_samples
 
         """ Cull/remove keyframes/nodes that via change point estimation using log-liklihood """
-        graph_analyzer.cull_keyframes(threshold=args.threshold)
+        graph_analyzer.cull_keyframes(threshold=threshold)
 
         # """ Order sampled points based on their intramodel log-liklihood """
         # for node in graph.get_keyframe_sequence():
@@ -181,7 +156,7 @@ class ModelDemonstrationsServer():
 
 if __name__ == '__main__':
     try:
-        obj = ModelDemonstrationsServer()
+        obj = PerformDemonstrationServer()
         obj.run()
     except rospy.ROSInterruptException:
         pass

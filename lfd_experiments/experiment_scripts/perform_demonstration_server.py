@@ -14,7 +14,7 @@ from lfd.items import ItemFactory
 from lfd.constraints import ConstraintFactory
 from lfd.analysis import KeyframeGraphAnalyzer, ConstraintAnalyzer
 from lfd.conversion import SawyerSampleConverter, get_observation_joint_vector
-from lfd_experiments.srv import *
+from lfd_experiments.srv import PerformDemonstration
 
 class PerformDemonstrationServer():
 
@@ -26,13 +26,14 @@ class PerformDemonstrationServer():
         rospy.spin()
 
     def handle(self, constraint_types):
-        # Get the params from ROS
-        config = rospy.get_param("CONFIG")
-        directory = rospy.get_param("DIRECTORY")
-        bandwidth = rospy.get_param("BANDWIDTH")
-        threshold = rospy.get_param("THRESHOLD")
-        number_of_samples = rospy.get_param("NUMBER_OF_SAMPLES")
+        """ Get params from ROS """
+        config = rospy.get_param("CONFIG") # the file path of configuration config.json file
+        directory = rospy.get_param("DIRECTORY") # the directory from which to input labeled demonstration .json files
+        bandwidth = rospy.get_param("BANDWIDTH") # gaussian kernel density bandwidth
+        threshold = rospy.get_param("THRESHOLD") # log-liklihood threshold value
+        number_of_samples = rospy.get_param("NUMBER_OF_SAMPLES") # maximum allowed number of samples
 
+        """ Import and convert demonstrations """
         # Import the data
         importer = DataImporter()
         labeled_demonstrations = importer.load_json_files(directory + "/*.json")
@@ -47,7 +48,9 @@ class PerformDemonstrationServer():
 
         if len(demonstrations) == 0:
             rospy.logwarn("CC-LfD: No demonstration data to model!!")
-            return 0
+            return False
+        else:
+            rospy.logwarn("CC-LfD: Found demonstrations!!")
 
         rospy.init_node("graph_traverse")
 

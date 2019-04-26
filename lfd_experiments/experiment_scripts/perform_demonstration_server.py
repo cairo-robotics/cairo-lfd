@@ -52,8 +52,6 @@ class PerformDemonstrationServer():
         else:
             rospy.logwarn("CC-LfD: Found demonstrations!!")
 
-        rospy.init_node("graph_traverse")
-
         """ Create the Cairo LfD environment """
         config_filepath = config
         # NOTE: the config file can be used to parameterize any of the constraints we want to add to the learned skill

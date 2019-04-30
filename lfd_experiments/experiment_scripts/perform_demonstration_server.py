@@ -23,20 +23,31 @@ class PerformDemonstrationServer():
 
     def run(self):
         service = rospy.Service("perform_demonstration", PerformDemonstration, self.handle)
+        rospy.loginfo("CC-LfD: Service up!")
         rospy.spin()
 
     def handle(self, constraint_types):
         """ Get params from ROS """
-        config = rospy.get_param("CONFIG") # the file path of configuration config.json file
-        directory = rospy.get_param("DIRECTORY") # the directory from which to input labeled demonstration .json files
-        bandwidth = rospy.get_param("BANDWIDTH") # gaussian kernel density bandwidth
-        threshold = rospy.get_param("THRESHOLD") # log-liklihood threshold value
-        number_of_samples = rospy.get_param("NUMBER_OF_SAMPLES") # maximum allowed number of samples
+        get_params = False
+        if get_params:
+            config = rospy.get_param("CONFIG") # the file path of configuration config.json file
+            directory = rospy.get_param("DIRECTORY") # the directory from which to input labeled demonstration .json files
+            bandwidth = rospy.get_param("BANDWIDTH") # gaussian kernel density bandwidth
+            threshold = rospy.get_param("THRESHOLD") # log-liklihood threshold value
+            number_of_samples = rospy.get_param("NUMBER_OF_SAMPLES") # maximum allowed number of samples
+        else:
+            config = "/home/jgkawell/sawyer_ws/src/cairo-lfd/lfd_experiments/prototyping/feedback/config.json"
+            directory = "/home/jgkawell/sawyer_ws/src/cairo-lfd/lfd_experiments/prototyping/feedback/feedback"
+            bandwidth = 0.025
+            threshold = -1200
+            number_of_samples = 50
 
         """ Import and convert demonstrations """
+        rospy.loginfo("CC-LfD: Import and convert demonstrations")
         # Import the data
         importer = DataImporter()
         labeled_demonstrations = importer.load_json_files(directory + "/*.json")
+
 
         # Convert imported data into Demonstrations and Observations
         demonstrations = []
@@ -50,9 +61,10 @@ class PerformDemonstrationServer():
             rospy.logwarn("CC-LfD: No demonstration data to model!!")
             return False
         else:
-            rospy.logwarn("CC-LfD: Found demonstrations!!")
+            rospy.loginfo("CC-LfD: Found demonstrations!!")
 
         """ Create the Cairo LfD environment """
+        rospy.loginfo("CC-LfD: Create the Cairo LfD environment")
         config_filepath = config
         # NOTE: the config file can be used to parameterize any of the constraints we want to add to the learned skill
         configs = import_configuration(config_filepath)
@@ -61,12 +73,15 @@ class PerformDemonstrationServer():
         # We only have just the one robot...for now.......
         environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints)
 
+
         """ Create the moveit_interface """
+        rospy.loginfo("CC-LfD: Create the moveit interface")
         moveit_interface = SawyerMoveitInterface()
         moveit_interface.set_velocity_scaling(.35)
         moveit_interface.set_acceleration_scaling(.25)
 
         """ Create KeyframeGraph object. """
+        rospy.loginfo("CC-LfD: Create KeyframeGraph object")
         graph = KeyframeGraph()
         cluster_generator = ObservationClusterer()
 
@@ -74,6 +89,7 @@ class PerformDemonstrationServer():
         Generate clusters using labeled observations, build the models, graphs, and atributes for each
         cluster in the KeyFrameGraph
         """
+        rospy.loginfo("CC-LfD: Generate clusters using labeled observations, build the models, graphs, and atributes for each cluster in the KeyFrameGraph")
         clusters = cluster_generator.generate_clusters(demonstrations)
         for cluster_id in clusters.keys():
             graph.add_node(cluster_id)
@@ -88,9 +104,9 @@ class PerformDemonstrationServer():
             print(graph.nodes[node]["keyframe_type"])
 
         # NOTE: Graph has been made so we can simply edit applied_constraints field to add our new constraints for sampling
-        # NOTE: Need pkgs: cairo_lfd, cairo_robot_interface, constraint_classification
 
         """ Build a ConstraintAnalyzer and KeyframeGraphAnalyzer """
+        rospy.loginfo("CC-LfD: Build a ConstraintAnalyzer and KeyframeGraphAnalyzer")
         constraint_analyzer = ConstraintAnalyzer(environment)
         graph_analyzer = KeyframeGraphAnalyzer(graph, moveit_interface, get_observation_joint_vector)
 
@@ -98,6 +114,7 @@ class PerformDemonstrationServer():
         sampler = KeyframeSampler(constraint_analyzer, sample_to_obsv_converter)
 
         """ Generate raw_samples from graph for each keyframe """
+        rospy.loginfo("CC-LfD: Generate raw_samples from graph for each keyframe")
         for node in graph.get_keyframe_sequence():
             # Keep sampling 
             if graph.nodes[node]["keyframe_type"] == "constraint_transition":
@@ -106,7 +123,7 @@ class PerformDemonstrationServer():
                 if len(samples) == 0:
                     # Some constraints couldn't be sampled successfully, so using best available samples.
                     diff = list(set(graph.nodes[node]["applied_constraints"]).difference(set(matched_ids)))
-                    rospy.logwarn("Constraints {} couldn't be met so attempting to find valid samples with constraints {}.".format(diff, matched_ids))
+                    rospy.logwarn("CC-LfD: Constraints {} couldn't be met so attempting to find valid samples with constraints {}.".format(diff, matched_ids))
                     attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], matched_ids, n=n_samples)
 
             else:
@@ -126,6 +143,7 @@ class PerformDemonstrationServer():
             graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(sample, run_fk=True) for sample in ranked_samples]
 
         """ Clear occluded points (points in collision etc,.) """
+        rospy.loginfo("CC-LfD: Clear occluded points (points in collision etc.)")
         for node in graph.get_keyframe_sequence():
             samples = graph.nodes[node]["samples"]
             free_samples, trash = graph_analyzer.evaluate_keyframe_occlusion(samples)
@@ -136,6 +154,7 @@ class PerformDemonstrationServer():
                 graph.nodes[node]["free_samples"] = free_samples
 
         """ Cull/remove keyframes/nodes that via change point estimation using log-liklihood """
+        rospy.loginfo("CC-LfD: Cull/remove keyframes/nodes via change point estimation using log-liklihood")
         graph_analyzer.cull_keyframes(threshold=threshold)
 
         # """ Order sampled points based on their intramodel log-liklihood """
@@ -145,6 +164,7 @@ class PerformDemonstrationServer():
         rospy.loginfo(graph.get_keyframe_sequence())
 
         """ Create a seequence of keyframe waypoints and excute motion plans to reconstruct skill """
+        rospy.loginfo("CC-LfD: Create a sequence of keyframe waypoints and execute motion plans to reconstruct skill")
         joint_config_array = []
         for node in graph.get_keyframe_sequence():
             sample = graph.nodes[node]["free_samples"][0]

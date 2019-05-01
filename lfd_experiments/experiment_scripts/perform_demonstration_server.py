@@ -26,21 +26,30 @@ class PerformDemonstrationServer():
         rospy.loginfo("CC-LfD: Service up!")
         rospy.spin()
 
-    def handle(self, constraint_types):
+    def handle(self, constraint_type):
         """ Get params from ROS """
-        get_params = False
+        get_params = True
         if get_params:
             config = rospy.get_param("CONFIG") # the file path of configuration config.json file
-            directory = rospy.get_param("DIRECTORY") # the directory from which to input labeled demonstration .json files
+            pos_directory = rospy.get_param("POS_DIRECTORY") # the directory from which to input labeled demonstration .json files
+            neg_directory = rospy.get_param("NEG_DIRECTORY") # the directory from which to input labeled demonstration .json files
             bandwidth = rospy.get_param("BANDWIDTH") # gaussian kernel density bandwidth
             threshold = rospy.get_param("THRESHOLD") # log-liklihood threshold value
             number_of_samples = rospy.get_param("NUMBER_OF_SAMPLES") # maximum allowed number of samples
         else:
-            config = "/home/jgkawell/sawyer_ws/src/cairo-lfd/lfd_experiments/prototyping/feedback/config.json"
-            directory = "/home/jgkawell/sawyer_ws/src/cairo-lfd/lfd_experiments/prototyping/feedback/feedback"
+            config = "/home/jgkawell/sawyer_ws/src/cairo-lfd/lfd_experiments/experimental_data/feedback_demo/config.json"
+            directory = "/home/jgkawell/sawyer_ws/src/cairo-lfd/lfd_experiments/experimental_data/feedback_demo/negative/labeled"
             bandwidth = 0.025
             threshold = -1200
             number_of_samples = 50
+
+        rospy.logwarn(str(constraint_type.constraint))
+
+        if constraint_type.constraint == 0:
+            directory = neg_directory
+        else:
+            directory = pos_directory
+
 
         """ Import and convert demonstrations """
         rospy.loginfo("CC-LfD: Import and convert demonstrations")
@@ -101,7 +110,7 @@ class PerformDemonstrationServer():
         graph.fit_models(get_observation_joint_vector)
         rospy.loginfo(graph.get_keyframe_sequence())
         for node in graph.get_keyframe_sequence():
-            print(graph.nodes[node]["keyframe_type"])
+            rospy.loginfo("CC-LfD: Keyframe type " + (graph.nodes[node]["keyframe_type"]))
 
         # NOTE: Graph has been made so we can simply edit applied_constraints field to add our new constraints for sampling
 

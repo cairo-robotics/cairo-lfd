@@ -283,31 +283,39 @@ class ConstraintKeyframeLabeler():
                 return sequence[central_idx - spread:central_idx + spread + 1]
         return []
 
-class ManualSegmentation():
+class Segment():
+    def __init__(self, number, trigger_type):
+        self.number = number
+        self.trigger_type = trigger_type
 
+class ManualSegmentation():
     def __init__(self):
         pass
 
-    def segment(self,observations):
+    def perform_segmentation(self,observations):
 
         # Initialze
-        observations.data[0]['segment'] = 1 
-        segchange = False # track whether segment increment is necessary
+        seglist = [] # create list of segment objects
+        trigtype = []
+        segcount = 1
+        observations[0].data['segment'] = segcount 
 
         # Parse
         for i in range(1,len(observations)): # iterate through blocks
             for j in range(len(observations[i].data['items'])): # iterate through items
-                for key in observations.data[i]['items'][j]['in_contact']: # iterate through in_contact
-                        if observations.data[i]['items'][j]['in_contact'][key] != observations.data[i-1]['items'][j]['in_contact'][key]:
-                            segchange = True
-            for key in observations.data[i]['robot']['in_contact']: # iterate through in_contact for robot
-                if observations.data[i]['robot']['in_contact'][key] != observations.data[i-1]['robot']['in_contact'][key]:
-                    segchange = True
-            if observations.data[i]['robot']['in_SOI'] != observations.data[i-1]['robot']['in_SOI']:
-                    segchange = True
-            if segchange is True:
-                observations.data[i]['segment'] = observations.data[i-1]['segment'] + 1
-                segchange = False
-            else:
-                observations.data[i]['segment'] = observations.data[i-1]['segment']
+                for key in observations[i].data['items'][j]['in_contact']: # iterate through in_contact
+                        if observations[i].data['items'][j]['in_contact'][key] != observations[i-1].data['items'][j]['in_contact'][key]:
+                            trigtype.append("in_contact")
+            for key in observations[i].data['robot']['in_contact']: # iterate through in_contact for robot
+                if observations[i].data['robot']['in_contact'][key] != observations[i-1].data['robot']['in_contact'][key]:
+                    trigtype.append("in_contact")
+            if observations[i].data['robot']['in_SOI'] != observations[i-1].data['robot']['in_SOI']:
+                    trigtype.append("in_SOI")
+            if len(trigtype) != 0:
+                segcount += 1
+                seglist.append(Segment(segcount,trigtype))
+                trigtype = []
+            observations[i].data['segment'] = segcount
 
+        # Return list of segment objects
+        return seglist

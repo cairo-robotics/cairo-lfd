@@ -491,7 +491,7 @@ class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
         return (dist_after - dist_before) / abs(start_time - end_time)
 
 
-class ObjectContactProcessor(EuclideanDistanceMixin):
+class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
 
     def __init__(self, item_ids, robot_id, threshold_distance=.06, window_percentage=.5):
         """
@@ -599,7 +599,7 @@ class SphereOfInfluenceProcessor(EuclideanDistanceMixin):
         self.robot_id = robot_id
         self.threshold_distance = threshold_distance
 
-    def generate_SOI_data(observations):
+    def generate_SOI_data(self, observations):
         """
         Determines whether the end effector of a robotic arm is within the "sphere of influence" of
         items in the environment.  This is performed in-place: the dictionary data within each
@@ -614,7 +614,7 @@ class SphereOfInfluenceProcessor(EuclideanDistanceMixin):
             self._evaluate_SOI(obsv)
 
     def _evaluate_SOI(self, curr_observation):
-        end_effector_position = curr_observation.get_robot_data().position
+        end_effector_position = curr_observation.get_robot_data()["position"]
         for item_id in self.item_ids:
             in_SOI = []
             item_position = curr_observation.get_item_data(item_id)[

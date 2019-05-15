@@ -20,6 +20,7 @@ class ConstraintKeyframeLabeler():
         demonstrations.
 
     """
+
     def __init__(self, aligned_demonstrations, constraint_transitions):
         """
         Parameters
@@ -58,7 +59,8 @@ class ConstraintKeyframeLabeler():
         rospy.loginfo("Labeling keyframe groups...")
         keyframe_counts = self._get_keyframe_count_per_group(divisor)
         for demo in self.demonstrations:
-            groupings = self._get_observation_groups(demo.aligned_observations, self.constraint_transitions)
+            groupings = self._get_observation_groups(
+                demo.aligned_observations, self.constraint_transitions)
             labeled_observations = []
             current_id = 0
             for idx, group in enumerate(groupings):
@@ -71,7 +73,8 @@ class ConstraintKeyframeLabeler():
                     keyframe_type = "constraint_transition"
                     current_id, labeled_group = self._get_labeled_group(group, keyframe_type, current_id,
                                                                         keyframe_counts[idx], 4)
-                    labeled_group = self._set_applied_constraints_for_transition(labeled_group)
+                    labeled_group = self._set_applied_constraints_for_transition(
+                        labeled_group)
                 labeled_observations.extend(labeled_group)
             demo.labeled_observations = labeled_observations
         return self.demonstrations
@@ -115,12 +118,14 @@ class ConstraintKeyframeLabeler():
         """
         labeled_observations = []
         group = copy.deepcopy(observation_group)
-        group_index_splits = [list(n) for n in np.array_split(list(range(0, len(group))), num_keyframes)]
+        group_index_splits = [list(n) for n in np.array_split(
+            list(range(0, len(group))), num_keyframes)]
 
         for group_idxs in group_index_splits:
             current_id = current_id + 1
             middle = (len(group_idxs)) / 2
-            keyframe_idxs = self._retrieve_data_window(group_idxs, middle, window_size)
+            keyframe_idxs = self._retrieve_data_window(
+                group_idxs, middle, window_size)
             ignored_idxs = list(set(group_idxs) - set(keyframe_idxs))
             for i in keyframe_idxs:
                 group[i].data["keyframe_id"] = current_id
@@ -180,12 +185,15 @@ class ConstraintKeyframeLabeler():
         keyframe_counts = []
         groupings = []
         for demo in self.demonstrations:
-            groupings.append(self._get_observation_groups(demo.aligned_observations, self.constraint_transitions))
+            groupings.append(self._get_observation_groups(
+                demo.aligned_observations, self.constraint_transitions))
         combined_groups = list(zip(*groupings))
         for combination in combined_groups:
-            average_length = int(sum([len(group) for group in combination]) / len(combination))
+            average_length = int(
+                sum([len(group) for group in combination]) / len(combination))
             keyframe_count = int(average_length / divisor)
-            keyframe_counts.append(keyframe_count if keyframe_count != 0 else 1)
+            keyframe_counts.append(
+                keyframe_count if keyframe_count != 0 else 1)
         return keyframe_counts
 
     def _get_observation_groups(self, observations, constraint_transitions):
@@ -218,8 +226,10 @@ class ConstraintKeyframeLabeler():
             if ob.data["applied_constraints"] != curr_constraints:
                 counter += 1
                 curr_group = groups[counter]
-                curr_group.extend(self._retrieve_data_window(observations, idx, window_size=6))
-                curr_constraints = constraints.pop(0) if len(constraints) > 0 else []
+                curr_group.extend(self._retrieve_data_window(
+                    observations, idx, window_size=6))
+                curr_constraints = constraints.pop(
+                    0) if len(constraints) > 0 else []
                 counter += 1
                 curr_group = groups[counter]
             else:
@@ -292,30 +302,29 @@ class ManualSegmentation():
     def __init__(self):
         pass
 
-    def perform_segmentation(self,observations):
+    def segment(self, observations):
 
         # Initialze
-        seglist = [] # create list of segment objects
-        trigtype = []
-        segcount = 1
-        observations[0].data['segment'] = segcount 
+        observations.data[0]['segment'] = 1
+        segchange = False  # track whether segment increment is necessary
 
         # Parse
-        for i in range(1,len(observations)): # iterate through blocks
-            for j in range(len(observations[i].data['items'])): # iterate through items
-                for key in observations[i].data['items'][j]['in_contact']: # iterate through in_contact
-                        if observations[i].data['items'][j]['in_contact'][key] != observations[i-1].data['items'][j]['in_contact'][key]:
-                            trigtype.append("in_contact")
-            for key in observations[i].data['robot']['in_contact']: # iterate through in_contact for robot
-                if observations[i].data['robot']['in_contact'][key] != observations[i-1].data['robot']['in_contact'][key]:
-                    trigtype.append("in_contact")
-            if observations[i].data['robot']['in_SOI'] != observations[i-1].data['robot']['in_SOI']:
-                    trigtype.append("in_SOI")
-            if len(trigtype) != 0:
-                segcount += 1
-                seglist.append(Segment(segcount,trigtype))
-                trigtype = []
-            observations[i].data['segment'] = segcount
-
-        # Return list of segment objects
-        return seglist
+        for i in range(1, len(observations)):  # iterate through blocks
+            # iterate through items
+            for j in range(len(observations[i].data['items'])):
+                # iterate through in_contact
+                for key in observations.data[i]['items'][j]['in_contact']:
+                    if observations.data[i]['items'][j]['in_contact'][key] != observations.data[i - 1]['items'][j]['in_contact'][key]:
+                        segchange = True
+            # iterate through in_contact for robot
+            for key in observations.data[i]['robot']['in_contact']:
+                if observations.data[i]['robot']['in_contact'][key] != observations.data[i - 1]['robot']['in_contact'][key]:
+                    segchange = True
+            if observations.data[i]['robot']['in_SOI'] != observations.data[i - 1]['robot']['in_SOI']:
+                segchange = True
+            if segchange is True:
+                observations.data[i]['segment'] = observations.data[i -
+                                                                    1]['segment'] + 1
+                segchange = False
+            else:
+                observations.data[i]['segment'] = observations.data[i - 1]['segment']

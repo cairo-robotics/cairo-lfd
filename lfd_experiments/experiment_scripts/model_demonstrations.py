@@ -44,7 +44,7 @@ def main():
 
     parser.add_argument(
         '-n', '--number_of_samples', type=int, default=50, metavar='NUMBEROFSAMPLES',
-        help='log-liklihood threshold value'
+        help='the number of samples to validate for each keyframe'
     )
 
     args = parser.parse_args(rospy.myargv()[1:])

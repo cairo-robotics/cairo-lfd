@@ -168,14 +168,35 @@ class SawyerRobot(AbstractItem):
         return transform
 
 
-class StaticObject(AbstractItem):
+class StaticItem(AbstractItem):
+
+    def __init__(self, object_id, name, pose):
+        self.id = object_id
+        self.name = name
+        self.pose = upright_pose
+
+    def get_state(self):
+        state = {}
+        state['id'] = self.id
+        state['position'] = pose["position"]
+        state['orientation'] = pose["orientation"]
+        return state
+
+    def get_info(self):
+        info = {}
+        info["id"] = self.id
+        info["name"] = self.name
+        return info
+
+
+class DynamicItem(AbstractItem):
 
     def __init__(self, object_id, name, upright_pose, world_frame, child_frame, service_name="transform_lookup_service"):
         self.id = object_id
         self.name = name
         self.upright_pose = upright_pose
-        self.world_frame = world_frame
-        self.child_frame = child_frame
+        self.world_frame = world_frame if world_frame is not None else ""
+        self.child_frame = child_frame if world_frame is not None else ""
         self.tlc = TransformLookupClient(service_name)
 
     def get_state(self):
@@ -198,7 +219,7 @@ class StaticObject(AbstractItem):
             "position": [trans.translation.x, trans.translation.y, trans.translation.z],
             "orientation": [trans.rotation.x, trans.rotation.y, trans.rotation.z, trans.rotation.w]
         }
-        return transform
+        return transform    
 
 
 class ItemFactory(object):
@@ -256,7 +277,8 @@ class ItemFactory(object):
         """
         self.configs = configs
         self.classes = {
-            "StaticObject": StaticObject,
+            "StaticItem": StaticItem,
+            "DynamicItem": DynamicItem,
             "SawyerRobot": SawyerRobot
         }
 

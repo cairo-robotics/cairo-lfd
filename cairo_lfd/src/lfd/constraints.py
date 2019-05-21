@@ -5,6 +5,7 @@ evaluate binary value conceptual constraints.
 import intera_interface
 from predicate_classification.pose_classifiers import height, upright, over_under
 from predicate_classification.path_classifiers import perimeter
+from lfd.triggers import SawyerCuffButtonTrigger
 from lfd.conversion import convert_data_to_pose
 
 
@@ -29,9 +30,8 @@ class HeightConstraint(object):
     threshold_distance : int
         The distance from reference (positive: above; negative; below) to compare an object's distance
         from reference.
-    button : string
-        String of a button for the intera_interface.Navigator().get_button_state(self.button) function to
-        check the trigger.
+    trigger : string
+        The trigger object responsible for checking if the constraint has been trigger / set.
     """
     def __init__(self, constraint_id, item_id, button, reference_height, threshold_distance):
 
@@ -59,22 +59,18 @@ class HeightConstraint(object):
         self.item_id = item_id
         self.reference_height = reference_height
         self.threshold_distance = threshold_distance
-        self.button = button
+        self.trigger = SawyerCuffButtonTrigger(button)
 
     def check_trigger(self):
         """
-        This function evaluates whether the constrain has been triggered. In this case,
-        this class's trigger uses the cuff buttons of Sawyer.
+        This function evaluates whether the constrain has been triggered by means of the trigger object.
 
         Returns
         -------
         : int
-            Boolean value of trigger result.
+            Int value of trigger result.
         """
-        if intera_interface.Navigator().get_button_state(self.button) != 0:
-            return 1
-        else:
-            return 0
+        return self.trigger.check()
 
     def evaluate(self, environment, observation):
         """
@@ -93,7 +89,7 @@ class HeightConstraint(object):
         Returns
         -------
          : int
-            Boolean value of constraint evaluation for the height constraint.
+            Integer value of constraint evaluation for the height constraint.
         """
         if self.item_id == environment.get_robot_info()["id"]:
             item_data = observation.get_robot_data()
@@ -150,22 +146,18 @@ class UprightConstraint(object):
         self.item_id = item_id
         self.threshold_angle = threshold_angle
         self.axis = str(axis)
-        self.button = button
+        self.trigger = SawyerCuffButtonTrigger(button)
 
     def check_trigger(self):
         """
-        This function evaluates whether the constraint has been triggered. In this case,
-        this class's trigger uses the cuff buttons of Sawyer.
+        This function evaluates whether the constrain has been triggered by means of the trigger object.
 
         Returns
         -------
         : int
-            Boolean value of trigger result.
+            Integer value of trigger result.
         """
-        if intera_interface.Navigator().get_button_state(self.button) != 0:
-            return 1
-        else:
-            return 0
+        return self.trigger.check()
 
     def evaluate(self, environment, observation):
         """
@@ -184,7 +176,7 @@ class UprightConstraint(object):
         Returns
         -------
          : int
-            Boolean value of constraint evaluation for the associate constraint and item.
+            Integer value of constraint evaluation for the associate constraint and item.
         """
         if self.item_id == environment.get_robot_info()["id"]:
             item_data = observation.get_robot_data()
@@ -255,18 +247,14 @@ class OverUnderConstraint(object):
 
     def check_trigger(self):
         """
-        This function evaluates whether the constrain has been triggered. In this case,
-        this class's trigger uses the cuff buttons of Sawyer.
+        This function evaluates whether the constrain has been triggered by means of the trigger object.
 
         Returns
         -------
         : int
-            Boolean value of trigger result.
+            Integer value of trigger result.
         """
-        if intera_interface.Navigator().get_button_state(self.button) != 0:
-            return 1
-        else:
-            return 0
+        return self.trigger.check()
 
     def evaluate(self, environment, observation):
         """
@@ -285,7 +273,7 @@ class OverUnderConstraint(object):
         Returns
         -------
          : int
-            Boolean value of constraint evaluation for the height constraint.
+            Integer value of constraint evaluation for the height constraint.
         """
         if self.above_item_id == environment.get_robot_info()["id"]:
             above_data = observation.get_robot_data()

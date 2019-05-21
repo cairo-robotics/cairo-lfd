@@ -1,49 +1,51 @@
+from abc import ABCMeta, abstractmethod
 import intera_interface
 import rospy
 
 
-class AbstractSubscribableTrigger(object):
-    """
-    Abstract Base class for represent items in an Environment.
-    """
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
-    def callback(self):
-        """
-        Abstract method passed to a subscriber as the callback method. This method will be bound to an instance of his class.
-        """
-        pass
-
-    @abstractmethod
-    def trigger(self):
-        """
-        Abstract method to get the Item's state.
-        """
-        pass
-
-
 class AbstractTrigger(object):
     """
-    Abstract Base class for represent items in an Environment.
+    Abstract Base class that represents object that can trigger states for Constraints or other objects.
     """
     __metaclass__ = ABCMeta
 
 
     @abstractmethod
-    def trigger(self):
+    def check(self):
         """
         Abstract method to get the Item's state.
         """
         pass
 
 
-class SawyerCuffButtonTrigger(AbstractSubscribableTrigger):
+class SawyerCuffButtonTrigger(AbstractTrigger):
+    """
+    Trigger class based on the cuff button presses of a Sawyer.
+
+    Attributes
+    ----------
+    button : str
+        The cuff button name.
+    """
 
     def __init__(self, cuff_button):
+        """
+        Parameters
+        ----------
+        cuff_button : str
+            The cuff button name.
+        """
         self.button = cuff_button
 
-    def trigger(self):
+    def check(self):
+        """
+        Checks whether the button given by button name is currently pressed. State 0 indicates it is not pressed. =
+
+        Returns
+        -------
+        : int
+            Int value indicating if button is pressed.
+        """
         if intera_interface.Navigator().get_button_state(self.button) != 0:
             return 1
         else:
@@ -51,21 +53,49 @@ class SawyerCuffButtonTrigger(AbstractSubscribableTrigger):
 
 
 class SubscribedTrigger(AbstractTrigger):
+    """
+    Trigger class based a subscribed callback updating the triggered state. 
+    Currently, this class depends on ConstraintTrigger.msg of the cairo_lfd_msgs package.
+
+    Attributes
+    ----------
+    constraint_name : str
+        The name of the constraint to check the parsed data.
+    triggered : bool
+        The current state of whether the constraint is triggered.
+    """
 
     def __init__(self, constraint_name):
+        """
+        Parameters
+        ----------
+        constraint_name : str
+            The name of the constraint to check the parsed data.
+        """
         self.constraint_name = constraint_name
         self.triggered = False
 
     def callback(self, data):
+        """
+        The callback used for a subscriber to check triggered state for the chosen constraint.
+        """
         if data.name == constraint_name:
-            if data.on == True:
+            if data.on is True:
                 self.triggered = True
             else:
                 self.triggered = False
         else:
             self.triggered = False
 
-    def trigger(self):
+    def check(self):
+        """
+        Checks the state of the trigger.
+
+        Returns
+        -------
+        : int
+            Int value indicating if triggered state is true or false.
+        """
         if self.triggered:
             return 1
         else:

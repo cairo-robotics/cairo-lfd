@@ -1,6 +1,7 @@
 """
 The conversion.py module contains methods and classes that converts data to different types or state spaces.
 """
+import copy
 import numpy as np
 from geometry_msgs.msg import Pose
 from environment import Observation
@@ -115,7 +116,7 @@ class SawyerSampleConverter(object):
         """
         self.interface = interface
 
-    def convert(self, sample, run_fk=False, normalize_quaternion=False):
+    def convert(self, sample, primal_observation=None, run_fk=False, normalize_quaternion=False):
         """
         Converts raw samples generated from models into Observation objects.
 
@@ -145,10 +146,20 @@ class SawyerSampleConverter(object):
 
         if len(sample) > 7:
             # If length > 7, we know there must be joint data, so creat Obs w/ joints.
-            obsv = Observation.init_samples(
-                sample[0:3], sample[3:7], sample[7:14])
+            position = sample[0:3]
+            orientation = sample[3:7]
+            joints = sample[7:14]
         else:
-            obsv = Observation.init_samples(sample[0:3], sample[3:7], None)
+            position = sample[0:3]
+            orientation = sample[3:7]
+            joints = None
+        if primal_observation is not None:
+            obsv = copy.deepcopy(primal_observation)
+            obsv.data["robot"]["position"] = position
+            obsv.data["robot"]["orientation"] = orientation
+            obsv.data["robot"]["joint_angle"] = joints
+        else:
+            obsv = Observation.init_samples(position, orientation, joints)
         return obsv
 
     def _run_foward_kinematics(self, sample):

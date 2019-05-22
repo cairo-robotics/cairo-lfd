@@ -173,13 +173,13 @@ class StaticItem(AbstractItem):
     def __init__(self, object_id, name, pose):
         self.id = object_id
         self.name = name
-        self.pose = upright_pose
+        self.pose = pose
 
     def get_state(self):
         state = {}
         state['id'] = self.id
-        state['position'] = pose["position"]
-        state['orientation'] = pose["orientation"]
+        state['position'] = self.pose["position"]
+        state['orientation'] = self.pose["orientation"]
         return state
 
     def get_info(self):

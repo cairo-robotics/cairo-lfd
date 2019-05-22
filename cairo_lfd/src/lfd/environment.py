@@ -314,15 +314,15 @@ class Observation(object):
         self.data = observation_data
 
     @classmethod
-    def init_samples(cls, pose, orientation, joints):
+    def init_samples(cls, position, orientation, joints):
         """
         Parameters
         ----------
-        pose : array of pose data
+        position : array of position data
         orientation: array of orientation data
         """
         observation_data = {"robot": {"orientation": orientation,
-                                      "position": pose,
+                                      "position": position,
                                       "joint_angle": joints}}
         return cls(observation_data)
 

@@ -119,9 +119,8 @@ class UprightConstraint(object):
         defined upright position.
     axis : int
         The axis from which angle of deviation is calculated.
-    button : string
-        String of a button for the intera_interface.Navigator().get_button_state(self.button) function to
-        check the trigger.
+    trigger : string
+        The trigger object responsible for checking if the constraint has been trigger / set.
     """
     def __init__(self, constraint_id, item_id, button, threshold_angle, axis):
         """
@@ -205,9 +204,8 @@ class OverUnderConstraint(object):
             Id of the item that must be above the other for the constraint to hold true.
     below_item_id : int
         Id of the item that must be below the other for the constraint to hold true.
-    button : string
-        String of a button for the intera_interface.Navigator().get_button_state(self.button) function to
-        check the trigger.
+    trigger : string
+        The trigger object responsible for checking if the constraint has been trigger / set.
     threshold_distance : int
         The distance from reference (positive: above; negative; below) to compare an object's distance
         from reference.
@@ -239,11 +237,11 @@ class OverUnderConstraint(object):
         """
 
         self.id = constraint_id
-        self.above_item_id = above_item_id
-        self.below_item_id = below_item_id
+        self.above_item_id = int(above_item_id)
+        self.below_item_id = int(below_item_id)
         self.threshold_distance = threshold_distance
-        self.button = button
-        self.axis = axis
+        self.trigger = SawyerCuffButtonTrigger(button)
+        self.axis = str(axis)
 
     def check_trigger(self):
         """
@@ -275,10 +273,14 @@ class OverUnderConstraint(object):
          : int
             Integer value of constraint evaluation for the height constraint.
         """
-        if self.above_item_id == environment.get_robot_info()["id"]:
+        if self.above_item_id == int(environment.get_robot_info()["id"]):
             above_data = observation.get_robot_data()
             above_pose = convert_data_to_pose(above_data["position"], above_data["orientation"])
-        if self.below_item_id == environment.get_robot_info()["id"]:
+            below_data = observation.get_item_data(self.below_item_id)
+            below_pose = convert_data_to_pose(below_data["position"], below_data["orientation"])
+        elif self.below_item_id == int(environment.get_robot_info()["id"]):
+            above_data = observation.get_item_data(self.above_item_id)
+            above_pose = convert_data_to_pose(above_data["position"], above_data["orientation"])
             below_data = observation.get_robot_data()
             below_pose = convert_data_to_pose(below_data["position"], below_data["orientation"])
         else:
@@ -286,7 +288,7 @@ class OverUnderConstraint(object):
             above_pose = convert_data_to_pose(above_data["position"], above_data["orientation"])
             below_data = observation.get_item_data(self.below_item_id)
             below_pose = convert_data_to_pose(below_data["position"], below_data["orientation"])
-        return over_under(above_pose, below_pose, self.threshold_distance, axis=axis)
+        return over_under(above_pose, below_pose, self.threshold_distance, axis=self.axis)
 
 
 class ConstraintFactory(object):
@@ -330,7 +332,8 @@ class ConstraintFactory(object):
         self.configs = configs
         self.classes = {
             "UprightConstraint": UprightConstraint,
-            "HeightConstraint": HeightConstraint
+            "HeightConstraint": HeightConstraint,
+            "OverUnderConstraint": OverUnderConstraint
         }
 
     def generate_constraints(self):

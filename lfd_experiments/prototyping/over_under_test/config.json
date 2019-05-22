@@ -1,0 +1,81 @@
+{
+    "constraints": [
+        {
+            "class": "HeightConstraint",
+            "init_args" : 
+                {
+                    "id": 1,
+                    "item": 1,
+                    "button": "right_button_square",
+                    "reference_height": 0.0,
+                    "threshold_distance": 0.25
+                
+                }
+        },
+        {
+            "class": "UprightConstraint",
+            "init_args" : 
+                {
+                    "id": 2,
+                    "item": 1,
+                    "button": "right_button_circle",
+                    "threshold_angle": 20,
+                    "axis": "x"
+                }
+        },
+        {
+            "class": "OverUnderConstraint",
+            "init_args" : 
+                {
+                    "id": 3,
+                    "above_item_id": 1,
+                    "below_item_id": 2,
+                    "button": "right_button_triangle",
+                    "threshold_distance": 0.10,
+                    "axis": "z"
+                }
+        }
+    ],
+    "items": [
+        {
+            "class": "StaticItem",
+            "init_args":
+                {
+                    "id": 2,
+                    "name": "block",
+                    "pose": 
+                        {
+                            "position":[0.855865, -0.449053, -0.141544],
+                            "orientation": [0.015391, -0.0089937, 0.70554, 0.70845]
+                        }
+                }
+        }
+    ],
+    "robots": [
+        {
+            "class": "SawyerRobot",
+            "init_args":
+                {
+                    "id": 1,
+                    "upright_pose": 
+                        {
+                            "position": 
+                                [
+                                    0.604698787426,
+                                    -0.439894686226,
+                                    0.159350584992
+                                ],
+                            "orientation": [
+                                0.712590112587,
+                                -0.00994445446764,
+                                0.701496927312,
+                                -0.00430119065513
+                            ]
+                        }
+                }
+        }
+
+    ]
+        
+}
+

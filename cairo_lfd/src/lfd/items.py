@@ -73,7 +73,14 @@ class SawyerRobot(AbstractItem):
         Intera SDK class object that provides controlling functionality of the button/wheel interface on the Sawer Robot.
     _gripper : object
         Intera SDK class object that provides controlling functionality of the Sawyer Robot gripper.
+    world_frame : str
+        The base / world frame from which to calculate the transformation to the child frame.
+    child_frame : str
+        The ending TF frame used to generate the pose / orientation of the robot (usually the end effector tip).
+    tlc : TransformLookupClient
+        The client that makes calls to TransformLookupServer in order to get the transformation between world_frame and child_frame
     """
+
     def __init__(self, robot_id, upright_pose, world_frame="base", child_frame="right_gripper_tip", service_name="transform_lookup_service"):
         """
         Parameters
@@ -82,6 +89,12 @@ class SawyerRobot(AbstractItem):
             Id of robot assigned in the config.json configuration files.
         upright_pose : dict
            Dictionary with position and orientation fields
+        world_frame : str
+            The base / world frame from which to calculate the transformation to the child frame.
+        child_frame : str
+            The ending TF frame used to generate the pose / orientation of the robot (usually the end effector tip).
+        service_name : str
+            Name of transformation lookup service used by _get_transform() to calculate the transformation between world_frame and child_frame
         """
 
         self.id = robot_id
@@ -105,14 +118,9 @@ class SawyerRobot(AbstractItem):
         self.child_frame = child_frame
         self.tlc = TransformLookupClient(service_name)
 
-    def get_state(self, tip_frame="right_gripper_tip"):
+    def get_state(self):
         """
         Gets the current state of the robot.
-
-        Parameters
-        ----------
-        base_to_tip_transform : dict
-            Transformation to apply to endpoint_pose.
 
         Returns
         -------
@@ -128,8 +136,10 @@ class SawyerRobot(AbstractItem):
         state['endpoint_velocity'] = self._limb.endpoint_velocity()
         state['gripper_position'] = self._gripper.get_position()
         state['gripper_state'] = self._gripper.is_gripping()
-        state['joint_angle'] = [self._limb.joint_angle(j) for j in self._limb.joint_names()]
-        state['joint_velocity'] = [self._limb.joint_velocity(j) for j in self._limb.joint_names()]
+        state['joint_angle'] = [self._limb.joint_angle(
+            j) for j in self._limb.joint_names()]
+        state['joint_velocity'] = [self._limb.joint_velocity(
+            j) for j in self._limb.joint_names()]
         return state
 
     def get_info(self):
@@ -138,28 +148,22 @@ class SawyerRobot(AbstractItem):
 
         Returns
         -------
-        state : dict
+        : dict
             The info of the robot item
-
-        Example
-        -------
-
-        Info returned:
-
-        .. code-block:: json
-        {
-            id: robot_id
-            upright_pose: {
-                position: [x, y ,z],
-                orientation: [x, y, z, w]
-            }
-        }
         """
         return {"id": self.id,
                 "upright_pose": self.upright_pose
                 }
 
     def _get_transform(self):
+        """
+        Utilizes the tlc (TransformLookupClient) to obtain the transformation between self.world_frame and self.child_frame.
+
+        Returns
+        -------
+        transform : dict
+            Dictionary of representing transformation containing position and orientation keys.
+        """
         trans = self.tlc.call(self.world_frame, self.child_frame).transform
         transform = {
             "position": [trans.translation.x, trans.translation.y, trans.translation.z],
@@ -169,20 +173,67 @@ class SawyerRobot(AbstractItem):
 
 
 class StaticItem(AbstractItem):
+    """
+    Class representing the static items in the LFD Environment. These are items that will not move
+    throughout the life cycle of a given experiment / task.
 
-    def __init__(self, object_id, name, pose):
+    Attributes
+    ----------
+    id : int
+            Id of item.
+    name : str
+       Name of the item.
+    pose : dict
+       Dictionary containing 'position' and 'orientation' keys and corresponding list of coordinate or orientation values.
+    perimeter : dict
+        Dictionary containing 'inner' and 'outer' keys corresponding to lists of coordinates representing the inner perimeter band 
+        and outer perimeter band around the static item.
+    """
+
+    def __init__(self, object_id, name, pose, perimeter=None):
+        """
+        Parameters
+        ----------
+        id : int
+                Id of item.
+        name : str
+           Name of the item.
+        pose : dict
+           Dictionary containing 'position' and 'orientation' keys and corresponding values. The orientation should represent the objects upright pose.
+        perimeter : dict
+            Dictionary containing 'inner' and 'outer' keys corresponding to lists of coordinates representing the inner perimeter band 
+            and outer perimeter band around the static item.
+        """
         self.id = object_id
         self.name = name
         self.pose = pose
+        self.perimeter = perimeter
 
     def get_state(self):
+        """
+        Gets the static item's state.
+
+        Returns
+        -------
+        state : dict
+            The state of the static item
+        """
         state = {}
         state['id'] = self.id
         state['position'] = self.pose["position"]
         state['orientation'] = self.pose["orientation"]
+        state['perimeter'] = self.perimeter
         return state
 
     def get_info(self):
+        """
+        Gets the item's information.
+
+        Returns
+        -------
+        : dict
+            The info of the static item
+        """
         info = {}
         info["id"] = self.id
         info["name"] = self.name
@@ -190,16 +241,66 @@ class StaticItem(AbstractItem):
 
 
 class DynamicItem(AbstractItem):
+    """
+    Class representing the dynamic items in the LFD Environment. These are items that can be moved / altered
+    throughout the life cycle of a given experiment / task.
 
-    def __init__(self, object_id, name, upright_pose, world_frame, child_frame, service_name="transform_lookup_service"):
+    Attributes
+    ----------
+    id : int
+            Id of item.
+    name : str
+       Name of the item.
+    upright_pose : dict
+       Dictionary containing 'position' and 'orientation' keys and corresponding values. The orientation should represent the objects upright pose.
+    world_frame : str
+        The base / world frame from which to calculate the transformation to the child frame.
+    child_frame : str
+        The ending TF frame used to generate the pose / orientation of the robot (usually the end effector tip).
+    tlc : TransformLookupClient
+        The client that makes calls to TransformLookupServer in order to get the transformation between world_frame and child_frame
+    perimeter : dict
+        Dictionary containing 'inner' and 'outer' keys corresponding to lists of coordinates representing the inner perimeter band 
+        and outer perimeter band around the static item.
+    """
+
+    def __init__(self, object_id, name, upright_pose, world_frame, child_frame, service_name="transform_lookup_service", perimeter=None):
+        """
+        Parameters
+        ----------
+        id : int
+                Id of item.
+        name : str
+           Name of the item.
+        upright_pose : dict
+           Dictionary containing 'position' and 'orientation' keys and corresponding values. The orientation should represent the objects upright pose.
+        world_frame : str
+            The base / world frame from which to calculate the transformation to the child frame.
+        child_frame : str
+            The ending TF frame used to generate the pose / orientation of the robot (usually the end effector tip).
+       service_name : str
+            Name of transformation lookup service used by _get_transform() to calculate the transformation between world_frame and child_frame
+        perimeter : dict
+            Dictionary containing 'inner' and 'outer' keys corresponding to lists of coordinates representing the inner perimeter band 
+            and outer perimeter band around the static item.
+        """
         self.id = object_id
         self.name = name
         self.upright_pose = upright_pose
         self.world_frame = world_frame if world_frame is not None else ""
         self.child_frame = child_frame if world_frame is not None else ""
         self.tlc = TransformLookupClient(service_name)
+        self.perimeter = perimeter
 
     def get_state(self):
+        """
+        Gets the item's state.
+
+        Returns
+        -------
+        state : dict
+            The state of the dynamic item
+        """
         state = {}
         trans = self._get_transform()
         state['id'] = self.id
@@ -208,18 +309,34 @@ class DynamicItem(AbstractItem):
         return state
 
     def get_info(self):
+        """
+        Gets the item's information.
+
+        Returns
+        -------
+        : dict
+            The info of the dynamic item
+        """
         info = {}
         info["id"] = self.id
         info["name"] = self.name
         return info
 
     def _get_transform(self):
+        """
+        Utilizes the tlc (TransformLookupClient) to obtain the transformation between self.world_frame and self.child_frame.
+
+        Returns
+        -------
+        transform : dict
+            Dictionary of representing transformation containing position and orientation keys.
+        """
         trans = self.tlc.call(self.world_frame, self.child_frame).transform
         transform = {
             "position": [trans.translation.x, trans.translation.y, trans.translation.z],
             "orientation": [trans.rotation.x, trans.rotation.y, trans.rotation.z, trans.rotation.w]
         }
-        return transform    
+        return transform
 
 
 class ItemFactory(object):
@@ -267,8 +384,8 @@ class ItemFactory(object):
                 }
         }
     """
-    def __init__(self, configs):
 
+    def __init__(self, configs):
         """
         Parameters
         ----------
@@ -298,14 +415,18 @@ class ItemFactory(object):
         }
         for config in self.configs["robots"]:
             if config["init_args"]["id"] in item_ids:
-                raise ValueError("Robots and items must each have a unique integer 'id'")
+                raise ValueError(
+                    "Robots and items must each have a unique integer 'id'")
             else:
                 item_ids.append(config["init_args"]["id"])
-            items["robots"].append(self.classes[config["class"]](*tuple(config["init_args"].values())))
+            items["robots"].append(self.classes[config["class"]](
+                *tuple(config["init_args"].values())))
         for config in self.configs["items"]:
             if config["init_args"]["id"] in item_ids:
-                raise ValueError("Robots and items must each have a unique integer 'id'")
+                raise ValueError(
+                    "Robots and items must each have a unique integer 'id'")
             else:
                 item_ids.append(config["init_args"]["id"])
-            items["items"].append(self.classes[config["class"]](*tuple(config["init_args"].values())))
+            items["items"].append(self.classes[config["class"]](
+                *tuple(config["init_args"].values())))
         return items

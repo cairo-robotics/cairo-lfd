@@ -100,7 +100,10 @@ def main():
     graph._identify_primal_observations(get_observation_joint_vector)
     rospy.loginfo(graph.get_keyframe_sequence())
     for node in graph.get_keyframe_sequence():
+        print("KEYFRAME: {}".format(node))
         print(graph.nodes[node]["keyframe_type"])
+        print(graph.nodes[node]["applied_constraints"])
+        print 
 
     """ Build a ConstraintAnalyzer and KeyframeGraphAnalyzer """
     constraint_analyzer = ConstraintAnalyzer(environment)

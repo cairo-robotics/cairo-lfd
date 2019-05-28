@@ -31,7 +31,7 @@
                     "above_item_id": 1,
                     "below_item_id": 2,
                     "button": "right_button_triangle",
-                    "threshold_distance": 0.10,
+                    "threshold_distance": 0.12,
                     "axis": "z"
                 }
         }
@@ -45,7 +45,7 @@
                     "name": "block",
                     "pose": 
                         {
-                            "position":[0.855865, -0.449053, -0.141544],
+                            "position":[0.865601, -0.409869, -0.141544],
                             "orientation": [0.015391, -0.0089937, 0.70554, 0.70845]
                         }
                 }

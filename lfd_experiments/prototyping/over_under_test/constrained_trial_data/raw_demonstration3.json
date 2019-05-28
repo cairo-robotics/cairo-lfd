@@ -17,8 +17,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -86,8 +84,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -155,8 +151,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -224,8 +218,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -293,8 +285,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -362,8 +352,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -431,8 +419,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 1, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -500,8 +486,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 1, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -569,8 +553,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 1, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -638,8 +620,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 1, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -707,8 +687,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 1, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -776,8 +754,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 1, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -845,8 +821,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 1, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -914,8 +888,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 1, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -983,8 +955,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 1, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -1052,8 +1022,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 1, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -1121,8 +1089,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 1, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -1190,8 +1156,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -1259,8 +1223,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -1328,8 +1290,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -1397,8 +1357,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -1466,8 +1424,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -1535,8 +1491,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -1604,8 +1558,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -1673,8 +1625,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -1742,8 +1692,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -1811,8 +1759,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -1880,8 +1826,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -1949,8 +1893,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 2, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2018,8 +1960,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 2, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2087,8 +2027,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 2, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2156,8 +2094,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 2, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2225,8 +2161,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 2, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2294,8 +2228,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 2, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2363,8 +2295,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 2, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2432,8 +2362,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 2, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2501,8 +2429,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 2, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2570,8 +2496,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 2, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2639,8 +2563,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 2, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2708,8 +2630,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2777,8 +2697,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2846,8 +2764,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2915,8 +2831,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -2984,221 +2898,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    0.0044729589360947624, 
-                    0.060961616460737486, 
-                    0.0895274591530316
-                ], 
-                "linear": [
-                    0.0941905242168228, 
-                    0.029797102607580894, 
-                    -0.023549012478233718
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                0.30969921875, 
-                0.4761279296875, 
-                -2.7541044921875, 
-                1.3144912109375, 
-                -2.991248046875, 
-                0.8941259765625, 
-                -1.8232099609375
-            ], 
-            "joint_velocity": [
-                0.018, 
-                -0.12, 
-                0.092, 
-                -0.011, 
-                -0.001, 
-                0.038, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.7164506640225051, 
-                -0.09027402037411209, 
-                -0.6852709656487825, 
-                0.09461897751503953
-            ], 
-            "position": [
-                0.8565163383868472, 
-                0.604850081695253, 
-                0.504856056302221
-            ]
-        }, 
-        "time": 132.92631196975708, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    0.10997281000753184, 
-                    -0.2659351985483765, 
-                    0.3189004960705636
-                ], 
-                "linear": [
-                    0.1133400016135716, 
-                    0.08480751544643592, 
-                    -0.016723284847727178
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                0.3082587890625, 
-                0.50345703125, 
-                -2.7808134765625, 
-                1.3143466796875, 
-                -2.991248046875, 
-                0.8433984375, 
-                -1.835849609375
-            ], 
-            "joint_velocity": [
-                -0.024, 
-                -0.194, 
-                0.166, 
-                0.01, 
-                -0.001, 
-                0.512, 
-                0.169
-            ], 
-            "orientation": [
-                -0.7067006414668834, 
-                -0.09881092877653747, 
-                -0.6961946668376352, 
-                0.07825336779620765
-            ], 
-            "position": [
-                0.8573209563246206, 
-                0.6139981703772491, 
-                0.4915775541114535
-            ]
-        }, 
-        "time": 132.73722505569458, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            1, 
-            2
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": 3, 
-        "keyframe_type": "constraint_transition", 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    0.07735665579052456, 
-                    -0.14232506570379835, 
-                    0.204400171585547
-                ], 
-                "linear": [
-                    0.1056038091561992, 
-                    0.059067473807346, 
-                    -0.023392907329209112
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                0.308361328125, 
-                0.486232421875, 
-                -2.76348828125, 
-                1.3143466796875, 
-                -2.991248046875, 
-                0.8832802734375, 
-                -1.8232099609375
-            ], 
-            "joint_velocity": [
-                0.009, 
-                -0.164, 
-                0.16, 
-                -0.009, 
-                -0.001, 
-                0.316, 
-                0.036
-            ], 
-            "orientation": [
-                -0.714065146983384, 
-                -0.09299498248113378, 
-                -0.6881046312316691, 
-                0.08930238280393794
-            ], 
-            "position": [
-                0.8572780432243993, 
-                0.6088177393293441, 
-                0.49756800853341643
-            ]
-        }, 
-        "time": 132.83061408996582, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            1, 
-            2
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": 3, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -3269,8 +2968,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 3, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -3344,8 +3041,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 3, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -3419,8 +3114,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 3, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -3494,8 +3187,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -3569,233 +3260,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    -0.08603964870213768, 
-                    0.2515126159966605, 
-                    0.008102085681600913
-                ], 
-                "linear": [
-                    0.07103111526486575, 
-                    0.010494424905642478, 
-                    -0.015063325858198846
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                0.3115517578125, 
-                0.462203125, 
-                -2.7486181640625, 
-                1.314923828125, 
-                -2.990833984375, 
-                0.877767578125, 
-                -1.8234169921875
-            ], 
-            "joint_velocity": [
-                0.007, 
-                -0.052, 
-                0.01, 
-                -0.001, 
-                -0.001, 
-                -0.218, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.7081372865677716, 
-                -0.08431855044940374, 
-                -0.6943015642431627, 
-                0.0968364771769537
-            ], 
-            "position": [
-                0.8542341919528808, 
-                0.6001524578722354, 
-                0.5235653605085354
-            ]
-        }, 
-        "time": 133.08260202407837, 
-        "triggered_constraints": [
-            1, 
-            2
-        ]
-    }, 
-    {
-        "applied_constraints": [
-            1, 
-            2
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    -0.1104634833158483, 
-                    0.22099033158792816, 
-                    0.0027994114391907926
-                ], 
-                "linear": [
-                    0.02401555625938363, 
-                    0.015001570343977262, 
-                    0.00343780929379325
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                0.3119638671875, 
-                0.461482421875, 
-                -2.7486181640625, 
-                1.314779296875, 
-                -2.9906279296875, 
-                0.860169921875, 
-                -1.8234169921875
-            ], 
-            "joint_velocity": [
-                0.002, 
-                0.008, 
-                0.006, 
-                -0.01, 
-                -0.013, 
-                -0.255, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.7010293481750446, 
-                -0.08020650880332265, 
-                -0.7022263485766889, 
-                0.09488374100711747
-            ], 
-            "position": [
-                0.8543013148401062, 
-                0.5979753011056241, 
-                0.5304779740366832
-            ]
-        }, 
-        "time": 133.15253019332886, 
-        "triggered_constraints": [
-            1, 
-            2
-        ]
-    }, 
-    {
-        "applied_constraints": [
-            1, 
-            2
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    -0.09864150324397632, 
-                    0.17177381791527027, 
-                    -0.005290075013537085
-                ], 
-                "linear": [
-                    -0.002691291378211405, 
-                    0.013340664941646586, 
-                    0.008538403801809853
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                0.3119638671875, 
-                0.4638564453125, 
-                -2.7487626953125, 
-                1.314634765625, 
-                -2.9906279296875, 
-                0.8415654296875, 
-                -1.8234169921875
-            ], 
-            "joint_velocity": [
-                -0.001, 
-                0.04, 
-                -0.001, 
-                -0.001, 
-                -0.001, 
-                -0.238, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.6969173414207317, 
-                -0.07735891611063558, 
-                -0.7068925888754466, 
-                0.0928691828230224
-            ], 
-            "position": [
-                0.8551614397956678, 
-                0.596343544172908, 
-                0.5324913219576421
-            ]
-        }, 
-        "time": 133.2272870540619, 
-        "triggered_constraints": [
-            1, 
-            2
-        ]
-    }, 
-    {
-        "applied_constraints": [
-            1, 
-            2
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -3869,8 +3333,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -3944,8 +3406,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 4, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -4019,8 +3479,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 4, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -4094,8 +3552,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 4, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -4169,8 +3625,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 4, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -4244,8 +3698,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 4, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -4319,8 +3771,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 4, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -4394,8 +3844,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 4, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -4469,8 +3917,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 4, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -4544,8 +3990,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 4, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -4619,8 +4063,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 4, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -4694,8 +4136,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 4, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -4769,8 +4209,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -4844,8 +4282,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -4919,8 +4355,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -4994,8 +4428,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -5068,8 +4500,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -5140,8 +4570,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -5212,8 +4640,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -5284,8 +4710,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -5356,8 +4780,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -5428,8 +4850,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 5, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -5500,8 +4920,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 5, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -5572,8 +4990,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 5, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -5644,8 +5060,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 5, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -5716,8 +5130,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 5, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -5788,8 +5200,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 5, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -5860,8 +5270,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 5, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -5932,8 +5340,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 5, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -6004,8 +5410,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 5, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -6076,8 +5480,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 5, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -6148,8 +5550,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 5, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -6220,8 +5620,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -6292,8 +5690,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -6364,8 +5760,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -6436,8 +5830,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -6508,8 +5900,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -6580,8 +5970,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -6652,8 +6040,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -6724,8 +6110,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -6796,8 +6180,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -6868,8 +6250,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 6, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -6940,8 +6320,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 6, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -7012,8 +6390,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 6, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -7084,8 +6460,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 6, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -7156,8 +6530,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 6, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -7228,8 +6600,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 6, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -7300,8 +6670,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 6, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -7372,8 +6740,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 6, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -7444,8 +6810,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 6, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -7516,8 +6880,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 6, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -7588,8 +6950,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 6, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -7660,8 +7020,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -7732,8 +7090,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -7804,8 +7160,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -7876,8 +7230,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -7948,8 +7300,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -8020,8 +7370,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -8092,8 +7440,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -8164,8 +7510,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -8236,8 +7580,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -8308,8 +7650,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 7, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -8380,8 +7720,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 7, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -8452,8 +7790,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 7, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -8524,8 +7860,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 7, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -8596,8 +7930,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 7, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -8668,8 +8000,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 7, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -8740,8 +8070,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 7, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -8812,8 +8140,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 7, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -8884,8 +8210,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 7, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -8956,8 +8280,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 7, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -9028,8 +8350,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 7, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -9100,8 +8420,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -9172,8 +8490,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -9244,8 +8560,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -9316,8 +8630,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -9388,8 +8700,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -9460,8 +8770,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -9532,8 +8840,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -9604,8 +8910,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -9676,8 +8980,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -9748,8 +9050,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 8, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -9820,8 +9120,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 8, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -9892,8 +9190,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 8, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -9945,7 +9241,6 @@
     }, 
     {
         "applied_constraints": [
-            1, 
             2
         ], 
         "items": [
@@ -9964,8 +9259,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 8, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -10017,7 +9310,6 @@
     }, 
     {
         "applied_constraints": [
-            1, 
             2
         ], 
         "items": [
@@ -10036,8 +9328,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 8, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -10089,7 +9379,6 @@
     }, 
     {
         "applied_constraints": [
-            1, 
             2
         ], 
         "items": [
@@ -10108,8 +9397,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 8, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -10161,7 +9448,6 @@
     }, 
     {
         "applied_constraints": [
-            1, 
             2
         ], 
         "items": [
@@ -10180,8 +9466,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 8, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -10233,7 +9517,6 @@
     }, 
     {
         "applied_constraints": [
-            1, 
             2
         ], 
         "items": [
@@ -10252,8 +9535,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 8, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -10305,7 +9586,6 @@
     }, 
     {
         "applied_constraints": [
-            1, 
             2
         ], 
         "items": [
@@ -10324,8 +9604,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 8, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -10377,7 +9655,6 @@
     }, 
     {
         "applied_constraints": [
-            1, 
             2
         ], 
         "items": [
@@ -10396,8 +9673,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 8, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -10449,7 +9724,6 @@
     }, 
     {
         "applied_constraints": [
-            1, 
             2
         ], 
         "items": [
@@ -10468,8 +9742,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 8, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -10521,7 +9793,6 @@
     }, 
     {
         "applied_constraints": [
-            1, 
             2
         ], 
         "items": [
@@ -10540,8 +9811,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -10593,7 +9862,6 @@
     }, 
     {
         "applied_constraints": [
-            1, 
             2
         ], 
         "items": [
@@ -10612,224 +9880,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    -0.03431334029503104, 
-                    -0.032559070695975, 
-                    -0.03089549714633419
-                ], 
-                "linear": [
-                    -0.022411199416649104, 
-                    0.01575541184893771, 
-                    0.01875665296639144
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.5509560546875, 
-                0.9780322265625, 
-                -2.5849599609375, 
-                1.4027939453125, 
-                -2.9000703125, 
-                0.5603134765625, 
-                -2.00373046875
-            ], 
-            "joint_velocity": [
-                -0.033, 
-                0.015, 
-                -0.011, 
-                -0.016, 
-                -0.027, 
-                -0.003, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.7030130565568328, 
-                0.28285922298847976, 
-                -0.5838238543156359, 
-                -0.2913983689264727
-            ], 
-            "position": [
-                0.9312582527490628, 
-                -0.3831902793559021, 
-                0.19286089040880522
-            ]
-        }, 
-        "time": 141.47406601905823, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            1, 
-            2
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    -0.03907323746108949, 
-                    -0.05423027585932693, 
-                    -0.025006740338894093
-                ], 
-                "linear": [
-                    -0.02952930452758206, 
-                    0.024278041772255676, 
-                    0.027814455251211682
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.554146484375, 
-                0.9792734375, 
-                -2.5853935546875, 
-                1.40078125, 
-                -2.9025625, 
-                0.5601064453125, 
-                -2.00373046875
-            ], 
-            "joint_velocity": [
-                -0.042, 
-                0.016, 
-                -0.008, 
-                -0.034, 
-                -0.025, 
-                -0.001, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.7040538533313901, 
-                0.2836573406394179, 
-                -0.5815617819864007, 
-                -0.2926304468837736
-            ], 
-            "position": [
-                0.9304001473611393, 
-                -0.3861558294631936, 
-                0.18981670552499638
-            ]
-        }, 
-        "time": 141.5507550239563, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            1, 
-            2
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    -0.027702612004676618, 
-                    -0.09931428072897873, 
-                    -0.01735989717098936
-                ], 
-                "linear": [
-                    -0.05271461391856619, 
-                    0.022023336887195988, 
-                    0.039231781131587276
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.5575419921875, 
-                0.9808173828125, 
-                -2.58569140625, 
-                1.39603515625, 
-                -2.9050673828125, 
-                0.559693359375, 
-                -2.00373046875
-            ], 
-            "joint_velocity": [
-                -0.045, 
-                0.023, 
-                -0.002, 
-                -0.073, 
-                -0.032, 
-                -0.001, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.705316932801363, 
-                0.2846190122905239, 
-                -0.5792608053104353, 
-                -0.2932182831570214
-            ], 
-            "position": [
-                0.9298808302501894, 
-                -0.3889896477065368, 
-                0.1862532012502104
-            ]
-        }, 
-        "time": 141.6277871131897, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            1, 
-            2
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -10899,8 +9949,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 9, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -10970,8 +10018,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 9, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -11041,8 +10087,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 9, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -11112,8 +10156,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 9, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -11183,8 +10225,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 9, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -11254,8 +10294,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -11325,221 +10363,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    0.03266492192095743, 
-                    -0.15768494660520016, 
-                    -0.03041993527977316
-                ], 
-                "linear": [
-                    -0.09969664432922108, 
-                    -0.0206795528481244, 
-                    0.03128033344711205
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.562373046875, 
-                0.9892626953125, 
-                -2.58685546875, 
-                1.378638671875, 
-                -2.91005078125, 
-                0.5588798828125, 
-                -2.00373046875
-            ], 
-            "joint_velocity": [
-                -0.008, 
-                0.06, 
-                -0.011, 
-                -0.115, 
-                -0.023, 
-                -0.015, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.7137576315162034, 
-                0.2867315236401228, 
-                -0.569050261635757, 
-                -0.2907178641495388
-            ], 
-            "position": [
-                0.9308506720377261, 
-                -0.3932671722034903, 
-                0.1659823188725205
-            ]
-        }, 
-        "time": 141.79760718345642, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            2
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    0.025129650823509403, 
-                    -0.1372722776169429, 
-                    -0.053993335958023636
-                ], 
-                "linear": [
-                    -0.09778359293265869, 
-                    -0.027767826868442935, 
-                    0.01670372755300622
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.5617548828125, 
-                0.9955458984375, 
-                -2.5877216796875, 
-                1.370435546875, 
-                -2.9127490234375, 
-                0.5570341796875, 
-                -2.00373046875
-            ], 
-            "joint_velocity": [
-                0.011, 
-                0.082, 
-                -0.013, 
-                -0.067, 
-                -0.02, 
-                -0.03, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.7168831461851055, 
-                0.2866282009102084, 
-                -0.5658130097264722, 
-                -0.28944510219209674
-            ], 
-            "position": [
-                0.9318187186902669, 
-                -0.3925157581245752, 
-                0.15864280435266215
-            ]
-        }, 
-        "time": 141.87813305854797, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            2
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    -0.00762730011567748, 
-                    -0.05299263407217623, 
-                    -0.051741265203153135
-                ], 
-                "linear": [
-                    -0.08666774207631049, 
-                    -0.02097829213015473, 
-                    0.0034939188652042524
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.5611376953125, 
-                1.0032705078125, 
-                -2.5894541015625, 
-                1.3669892578125, 
-                -2.9135751953125, 
-                0.551908203125, 
-                -2.00373046875
-            ], 
-            "joint_velocity": [
-                -0.001, 
-                0.108, 
-                -0.035, 
-                -0.025, 
-                -0.001, 
-                -0.081, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.7202600038981563, 
-                0.28610295303434347, 
-                -0.5619276591752507, 
-                -0.2891503638307933
-            ], 
-            "position": [
-                0.9321482811097364, 
-                -0.3906249484067472, 
-                0.14809499074841617
-            ]
-        }, 
-        "time": 141.95954418182373, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            2
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": 10, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -11609,8 +10432,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 10, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -11680,8 +10501,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 10, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -11751,8 +10570,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 10, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -11822,8 +10639,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 10, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -11893,8 +10708,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 10, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -11964,8 +10777,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 10, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -12035,8 +10846,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 10, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -12106,8 +10915,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 10, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -12177,8 +10984,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 10, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -12248,8 +11053,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 10, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -12319,8 +11122,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -12390,223 +11191,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    -0.005965358247792221, 
-                    -0.0735125569614077, 
-                    0.21738718015046435
-                ], 
-                "linear": [
-                    -0.08634536049918926, 
-                    -0.016931345541775798, 
-                    0.023157791328404696
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.602275390625, 
-                1.1149267578125, 
-                -2.65834765625, 
-                1.2439814453125, 
-                -2.9160673828125, 
-                0.38648046875, 
-                -1.93037109375
-            ], 
-            "joint_velocity": [
-                -0.006, 
-                0.037, 
-                -0.01, 
-                -0.145, 
-                0.004, 
-                -0.111, 
-                0.219
-            ], 
-            "orientation": [
-                -0.7330405811509025, 
-                0.3105970283981479, 
-                -0.5326761512086351, 
-                -0.2871186344871105
-            ], 
-            "position": [
-                0.9284202832433691, 
-                -0.3895277270223445, 
-                0.007498890220612231
-            ]
-        }, 
-        "time": 143.073312997818, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            2
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    0.004841751725961331, 
-                    -0.08058824131067549, 
-                    0.1922568045267868
-                ], 
-                "linear": [
-                    -0.09483390279601718, 
-                    -0.01838568544756298, 
-                    0.008214840638052796
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.6011435546875, 
-                1.10761328125, 
-                -2.6557490234375, 
-                1.26038671875, 
-                -2.9160673828125, 
-                0.400423828125, 
-                -1.9628935546875
-            ], 
-            "joint_velocity": [
-                -0.017, 
-                0.087, 
-                -0.043, 
-                -0.067, 
-                -0.003, 
-                -0.069, 
-                0.237
-            ], 
-            "orientation": [
-                -0.7350638418802485, 
-                0.297102196946093, 
-                -0.5321383453320107, 
-                -0.2970525447751028
-            ], 
-            "position": [
-                0.9287166798535942, 
-                -0.391161978392755, 
-                0.022536347571356863
-            ]
-        }, 
-        "time": 142.9301450252533, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            2, 
-            3
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": 11, 
-        "keyframe_type": "constraint_transition", 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    -0.011287495169887737, 
-                    -0.05988458566228021, 
-                    0.22172347718768032
-                ], 
-                "linear": [
-                    -0.08567991727293386, 
-                    -0.015667158575790364, 
-                    0.016912578288898923
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.6018642578125, 
-                1.1119423828125, 
-                -2.6577705078125, 
-                1.2536279296875, 
-                -2.9160673828125, 
-                0.393865234375, 
-                -1.94653515625
-            ], 
-            "joint_velocity": [
-                -0.007, 
-                0.055, 
-                -0.018, 
-                -0.113, 
-                -0.001, 
-                -0.108, 
-                0.236
-            ], 
-            "orientation": [
-                -0.7340717769427575, 
-                0.3038399715430221, 
-                -0.5324657557752295, 
-                -0.29206183748574865
-            ], 
-            "position": [
-                0.9283992863146905, 
-                -0.3900112206921668, 
-                0.014626786075117623
-            ]
-        }, 
-        "time": 143.00727105140686, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            2, 
-            3
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": 11, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -12677,8 +11261,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 11, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -12751,8 +11333,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 11, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -12825,8 +11405,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 11, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -12899,8 +11477,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -12973,230 +11549,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    -0.05188115221670916, 
-                    -0.06627777174274142, 
-                    0.06763378496688373
-                ], 
-                "linear": [
-                    -0.09042995847341669, 
-                    0.0049380427689408, 
-                    0.05275935011209362
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.6052529296875, 
-                1.116470703125, 
-                -2.65878125, 
-                1.214908203125, 
-                -2.9162734375, 
-                0.3661708984375, 
-                -1.9127470703125
-            ], 
-            "joint_velocity": [
-                -0.035, 
-                0.006, 
-                -0.007, 
-                -0.227, 
-                -0.001, 
-                -0.189, 
-                0.04
-            ], 
-            "orientation": [
-                -0.732394565395511, 
-                0.3210662678990186, 
-                -0.5307906693080625, 
-                -0.280670478625764
-            ], 
-            "position": [
-                0.9289283749221776, 
-                -0.39147211020000644, 
-                -0.007836915939059746
-            ]
-        }, 
-        "time": 143.21173119544983, 
-        "triggered_constraints": [
-            3
-        ]
-    }, 
-    {
-        "applied_constraints": [
-            2, 
-            3
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    -0.07546022019193845, 
-                    -0.04847544799544597, 
-                    0.0028181480450277137
-                ], 
-                "linear": [
-                    -0.10709086409218957, 
-                    0.0008146998973928721, 
-                    0.05852682024877641
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.607826171875, 
-                1.117396484375, 
-                -2.6592138671875, 
-                1.1950390625, 
-                -2.9167001953125, 
-                0.3481220703125, 
-                -1.9129541015625
-            ], 
-            "joint_velocity": [
-                -0.029, 
-                0.007, 
-                -0.001, 
-                -0.275, 
-                -0.015, 
-                -0.254, 
-                -0.016
-            ], 
-            "orientation": [
-                -0.732487425503988, 
-                0.3235827296807394, 
-                -0.5287191205976831, 
-                -0.28144711767100006
-            ], 
-            "position": [
-                0.9288858875407858, 
-                -0.3938497269175654, 
-                -0.016965191186528755
-            ]
-        }, 
-        "time": 143.28763818740845, 
-        "triggered_constraints": [
-            3
-        ]
-    }, 
-    {
-        "applied_constraints": [
-            2, 
-            3
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    -0.0876249026852734, 
-                    0.011266828798026946, 
-                    -0.008372382553072856
-                ], 
-                "linear": [
-                    -0.09805409540077101, 
-                    -0.005905621375420227, 
-                    0.04238114070696303
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.6096787109375, 
-                1.1188369140625, 
-                -2.660080078125, 
-                1.175890625, 
-                -2.9183525390625, 
-                0.3259541015625, 
-                -1.91316015625
-            ], 
-            "joint_velocity": [
-                -0.022, 
-                0.02, 
-                -0.021, 
-                -0.234, 
-                -0.007, 
-                -0.298, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.7321815636390614, 
-                0.32513358139752746, 
-                -0.5270841983042823, 
-                -0.28351465572807383
-            ], 
-            "position": [
-                0.9286949659201172, 
-                -0.3956269283260812, 
-                -0.024994646011458857
-            ]
-        }, 
-        "time": 143.36754417419434, 
-        "triggered_constraints": [
-            3
-        ]
-    }, 
-    {
-        "applied_constraints": [
-            2, 
-            3
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -13269,8 +11621,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -13343,8 +11693,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -13417,8 +11765,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -13491,8 +11837,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -13565,8 +11909,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -13639,8 +11981,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 12, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -13713,8 +12053,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 12, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -13787,8 +12125,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 12, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -13861,8 +12197,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 12, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -13935,8 +12269,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 12, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -14009,8 +12341,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 12, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -14083,8 +12413,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 12, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -14157,8 +12485,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 12, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -14231,8 +12557,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 12, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -14305,8 +12629,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 12, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -14379,8 +12701,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 12, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -14453,8 +12773,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -14527,8 +12845,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -14599,8 +12915,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -14671,8 +12985,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -14743,8 +13055,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -14815,8 +13125,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -14887,8 +13195,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -14959,8 +13265,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -15031,8 +13335,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -15103,8 +13405,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -15175,8 +13475,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -15228,7 +13526,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -15247,8 +13544,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -15300,7 +13595,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -15319,8 +13613,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -15372,7 +13664,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -15391,8 +13682,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -15444,7 +13733,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -15463,8 +13751,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -15516,7 +13802,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -15535,8 +13820,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -15588,7 +13871,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -15607,8 +13889,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 13, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -15660,7 +13940,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -15679,8 +13958,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 13, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -15732,7 +14009,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -15751,8 +14027,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 13, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -15804,7 +14078,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -15823,8 +14096,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 13, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -15876,7 +14147,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -15895,8 +14165,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 13, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -15948,7 +14216,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -15967,8 +14234,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 13, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -16020,7 +14285,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -16039,8 +14303,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 13, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -16092,7 +14354,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -16111,8 +14372,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 13, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -16164,7 +14423,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -16183,8 +14441,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 13, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -16236,7 +14492,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -16255,8 +14510,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 13, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -16308,7 +14561,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -16327,8 +14579,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 13, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -16380,7 +14630,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -16399,8 +14648,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -16452,7 +14699,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -16471,8 +14717,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -16524,7 +14768,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -16543,8 +14786,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -16596,7 +14837,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -16615,8 +14855,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -16668,7 +14906,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -16687,8 +14924,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -16740,7 +14975,6 @@
     }, 
     {
         "applied_constraints": [
-            2, 
             3
         ], 
         "items": [
@@ -16759,224 +14993,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    0.012326004463386706, 
-                    0.006531481640494911, 
-                    -0.002185422767453865
-                ], 
-                "linear": [
-                    0.0007386999882312775, 
-                    -0.0016164604854560997, 
-                    0.0005769203065980293
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.813765625, 
-                1.1967900390625, 
-                -2.9674541015625, 
-                1.163078125, 
-                -2.991248046875, 
-                0.1470859375, 
-                -3.4648876953125
-            ], 
-            "joint_velocity": [
-                -0.001, 
-                0.001, 
-                -0.001, 
-                -0.001, 
-                -0.001, 
-                0.015, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.6900557482943288, 
-                -0.3395755933604244, 
-                -0.10891396327535376, 
-                -0.6298009441430882
-            ], 
-            "position": [
-                0.9280006213671459, 
-                -0.4098432065699533, 
-                -0.08339437811809855
-            ]
-        }, 
-        "time": 148.13932609558105, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            2, 
-            3
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    0.013120396639160476, 
-                    -0.0016736021460604907, 
-                    0.004498144450707922
-                ], 
-                "linear": [
-                    -0.00586674750137143, 
-                    0.0029065420365750392, 
-                    0.004943797962871295
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.813662109375, 
-                1.1965849609375, 
-                -2.9673095703125, 
-                1.1635107421875, 
-                -2.991248046875, 
-                0.149138671875, 
-                -3.464681640625
-            ], 
-            "joint_velocity": [
-                -0.001, 
-                -0.008, 
-                0.009, 
-                0.004, 
-                -0.001, 
-                0.017, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.6905107520004465, 
-                -0.339825523981201, 
-                -0.10904373320717049, 
-                -0.6291446406597807
-            ], 
-            "position": [
-                0.92805572283865, 
-                -0.409727880758488, 
-                -0.0836373809899345
-            ]
-        }, 
-        "time": 148.22150206565857, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            2, 
-            3
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    -0.01660253206167566, 
-                    -0.0044592248430396775, 
-                    0.0005195388567864755
-                ], 
-                "linear": [
-                    -0.0071178958980550435, 
-                    0.019779524816853675, 
-                    0.0023577231977579957
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.813765625, 
-                1.19576171875, 
-                -2.9673095703125, 
-                1.16508984375, 
-                -2.991248046875, 
-                0.1501708984375, 
-                -3.464474609375
-            ], 
-            "joint_velocity": [
-                -0.001, 
-                -0.014, 
-                -0.002, 
-                0.028, 
-                -0.001, 
-                0.022, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.6902085103948585, 
-                -0.3394760739185851, 
-                -0.10919807329374713, 
-                -0.629637981862806
-            ], 
-            "position": [
-                0.928164647302141, 
-                -0.4101427445226458, 
-                -0.08227090947568472
-            ]
-        }, 
-        "time": 148.308984041214, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            2, 
-            3
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -17046,8 +15062,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 14, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -17117,8 +15131,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 14, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -17188,8 +15200,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 14, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -17259,8 +15269,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 14, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -17330,8 +15338,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 14, 
-        "keyframe_type": "constraint_transition", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -17401,8 +15407,6 @@
                 ]
             }
         ], 
-        "keyframe_id": null, 
-        "keyframe_type": null, 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -17472,221 +15476,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 15, 
-        "keyframe_type": "regular", 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    -0.02300388627264478, 
-                    -0.010522857379181934, 
-                    -0.00532248972184389
-                ], 
-                "linear": [
-                    -0.004698900620638636, 
-                    0.007321115729621766, 
-                    -0.006947033528437156
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.8132509765625, 
-                1.1964814453125, 
-                -2.9674541015625, 
-                1.1730126953125, 
-                -2.991041015625, 
-                0.151810546875, 
-                -3.4642685546875
-            ], 
-            "joint_velocity": [
-                -0.004, 
-                0.021, 
-                -0.001, 
-                0.04, 
-                -0.001, 
-                -0.001, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.6887060743582992, 
-                -0.3390459699665046, 
-                -0.10983678504403707, 
-                -0.6314013414957587
-            ], 
-            "position": [
-                0.9284612134213269, 
-                -0.40962703961026653, 
-                -0.07828667526667094
-            ]
-        }, 
-        "time": 148.4795479774475, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            3
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": 15, 
-        "keyframe_type": "regular", 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    0.04894964376295693, 
-                    0.0015148271156128698, 
-                    -0.006835412413916031
-                ], 
-                "linear": [
-                    -0.0017262969662948224, 
-                    -0.035813480208267655, 
-                    -0.006465499026652671
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.8141767578125, 
-                1.200810546875, 
-                -2.9674541015625, 
-                1.1753134765625, 
-                -2.991248046875, 
-                0.152017578125, 
-                -3.464474609375
-            ], 
-            "joint_velocity": [
-                -0.012, 
-                0.051, 
-                -0.001, 
-                0.014, 
-                -0.001, 
-                0.002, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.6891509116048953, 
-                -0.33917112650375136, 
-                -0.10894344639292672, 
-                -0.6310034021052108
-            ], 
-            "position": [
-                0.9266835020036615, 
-                -0.4093873174217078, 
-                -0.08011011458523806
-            ]
-        }, 
-        "time": 148.56840109825134, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            3
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": 15, 
-        "keyframe_type": "regular", 
-        "robot": {
-            "endpoint_velocity": {
-                "angular": [
-                    0.02226647461591874, 
-                    0.012007722496035794, 
-                    -0.011554567107778756
-                ], 
-                "linear": [
-                    0.012075870540327585, 
-                    -0.02843111352766757, 
-                    -0.019400915357393984
-                ]
-            }, 
-            "gripper_position": 0.0250002, 
-            "gripper_state": true, 
-            "id": 1, 
-            "joint_angle": [
-                -0.81345703125, 
-                1.2059560546875, 
-                -2.9677431640625, 
-                1.1771904296875, 
-                -2.991248046875, 
-                0.151810546875, 
-                -3.464474609375
-            ], 
-            "joint_velocity": [
-                0.009, 
-                0.056, 
-                -0.001, 
-                0.025, 
-                -0.001, 
-                -0.001, 
-                -0.001
-            ], 
-            "orientation": [
-                -0.6896132264608671, 
-                -0.33991600700336083, 
-                -0.10874106758346193, 
-                -0.6301318007321437
-            ], 
-            "position": [
-                0.9258771110120305, 
-                -0.4076857980763511, 
-                -0.08253821896104749
-            ]
-        }, 
-        "time": 148.65913009643555, 
-        "triggered_constraints": []
-    }, 
-    {
-        "applied_constraints": [
-            3
-        ], 
-        "items": [
-            {
-                "id": 2, 
-                "orientation": [
-                    0.015391, 
-                    -0.0089937, 
-                    0.70554, 
-                    0.70845
-                ], 
-                "position": [
-                    0.855865, 
-                    -0.449053, 
-                    -0.141544
-                ]
-            }
-        ], 
-        "keyframe_id": 15, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -17756,8 +15545,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 15, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -17827,8 +15614,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 15, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [
@@ -17898,8 +15683,6 @@
                 ]
             }
         ], 
-        "keyframe_id": 15, 
-        "keyframe_type": "regular", 
         "robot": {
             "endpoint_velocity": {
                 "angular": [

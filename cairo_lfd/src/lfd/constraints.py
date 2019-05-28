@@ -4,7 +4,7 @@ evaluate binary value conceptual constraints.
 """
 import intera_interface
 from predicate_classification.pose_classifiers import height, upright, over_under
-from predicate_classification.path_classifiers import perimeter
+from predicate_classification.path_classifiers import perimeter_2D
 from lfd.triggers import SawyerCuffButtonTrigger
 from lfd.conversion import convert_data_to_pose
 
@@ -63,7 +63,7 @@ class HeightConstraint(object):
 
     def check_trigger(self):
         """
-        This function evaluates whether the constrain has been triggered by means of the trigger object.
+        This function evaluates whether the constraint has been triggered by means of the trigger object.
 
         Returns
         -------
@@ -149,7 +149,7 @@ class UprightConstraint(object):
 
     def check_trigger(self):
         """
-        This function evaluates whether the constrain has been triggered by means of the trigger object.
+        This function evaluates whether the constraint has been triggered by means of the trigger object.
 
         Returns
         -------
@@ -237,15 +237,15 @@ class OverUnderConstraint(object):
         """
 
         self.id = constraint_id
-        self.above_item_id = int(above_item_id)
-        self.below_item_id = int(below_item_id)
+        self.above_item_id = above_item_id
+        self.below_item_id = below_item_id
         self.threshold_distance = threshold_distance
         self.trigger = SawyerCuffButtonTrigger(button)
         self.axis = str(axis)
 
     def check_trigger(self):
         """
-        This function evaluates whether the constrain has been triggered by means of the trigger object.
+        This function evaluates whether the constraint has been triggered by means of the trigger object.
 
         Returns
         -------
@@ -425,7 +425,8 @@ class ConstraintFactory(object):
         self.classes = {
             "UprightConstraint": UprightConstraint,
             "HeightConstraint": HeightConstraint,
-            "OverUnderConstraint": OverUnderConstraint
+            "OverUnderConstraint": OverUnderConstraint,
+            "PerimeterConstraint": Perimeter2DConstraint
         }
 
     def generate_constraints(self):

@@ -291,6 +291,98 @@ class OverUnderConstraint(object):
         return over_under(above_pose, below_pose, self.threshold_distance, axis=self.axis)
 
 
+class Perimeter2DConstraint(object):
+    """
+    Perimeter class to evaluate the perimeter predicate classifier assigned to a given item.
+
+    over_under() returns true if one pose is above another pose and within the a threshold distance
+    in the plane orthogonal to the given axis.
+
+    Attributes
+    ----------
+    id : int
+        Id of the constraint as defined in the config.json file.
+    perimeter_item_id : int
+        Id of the item for which the perimeter constraint is evaluated.
+    traversing_item_id : int
+        Id of the item that must that traversing within the perimeter band of the perimeter_item.
+    trigger : string
+        The trigger object responsible for checking if the constraint has been trigger / set.
+    axis : str
+        The axis to which the plane of the 2D perimeter of the object is orthogonal.
+    """
+    def __init__(self, constraint_id, above_item_id, below_item_id, button, threshold_distance, axis):
+
+        """
+        These arguments should be in the "init_args" field of the config.json file's entry representing
+        this constraint.
+
+        Parameters
+        ----------
+         id : int
+        Id of the constraint as defined in the config.json file.
+        perimeter_item_id : int
+            Id of the item for which the perimeter constraint is evaluated.
+        traversing_item_id : int
+            Id of the item that must that traversing within the perimeter band of the perimeter_item.
+        trigger : string
+            The trigger object responsible for checking if the constraint has been trigger / set.
+        axis : str
+            The axis to which the plane of the 2D perimeter of the object is orthogonal.
+        """
+
+        self.id = constraint_id
+        self.perimeter_item_id = int(perimeter_item_id)
+        self.traversing_item_id = int(perimeter_item_id)
+        self.trigger = SawyerCuffButtonTrigger(button)
+        self.axis = str(axis)
+
+    def check_trigger(self):
+        """
+        This function evaluates whether the constraint has been triggered by means of the trigger object.
+
+        Returns
+        -------
+        : int
+            Integer value of trigger result.
+        """
+        return self.trigger.check()
+
+    def evaluate(self, environment, observation):
+        """
+        This function evaluates an observation for the assigned constraint of the class. It differentiates
+        between Sawyer (end-effector) and general items (blocks etc,.).
+
+        Parameters
+        ----------
+        environment : Environment
+            The Environment object containing the current demonstrations environment (SawyerRobot, Items, Constraints)
+            and helper methods.
+
+        observation : Observation
+            The observation to evaluate for the constraint.
+
+        Returns
+        -------
+         : int
+            Integer value of constraint evaluation for the perimeter_2D constraint.
+        """
+        if self.traversing_item_id == int(environment.get_robot_info()["id"]):
+            traversing_item_data = observation.get_robot_data()
+            traversing_item_pose = convert_data_to_pose(traversing_item_data["position"], traversing_item_data["orientation"])
+            perimeter_item_data = observation.get_item_data(self.perimeter_item_id)
+            inner_poly = perimeter_item_data['perimeter']['inner']
+            outer_poly = perimeter_item_data['perimeter']['outer']
+
+        else:
+            traversing_item_data = observation.get_item_data(self.traversing_item_id)
+            traversing_item_pose = convert_data_to_pose(traversing_item_data["position"], traversing_item_data["orientation"])
+            perimeter_item_data = observation.get_item_data(self.perimeter_item_id)
+            inner_poly = perimeter_item_data['perimeter']['inner']
+            outer_poly = perimeter_item_data['perimeter']['outer']
+        return perimeter_2D(traversing_item_pose, inner_poly, outer_poly, axis=self.axis)
+
+
 class ConstraintFactory(object):
     """
     Factory class that builds LFD constraints. These items are defined in the config.json file.

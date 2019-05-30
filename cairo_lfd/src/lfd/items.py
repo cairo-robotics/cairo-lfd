@@ -73,7 +73,7 @@ class SawyerRobot(AbstractItem):
         Intera SDK class object that provides controlling functionality of the button/wheel interface on the Sawer Robot.
     _gripper : object
         Intera SDK class object that provides controlling functionality of the Sawyer Robot gripper.
-    world_frame : str
+    base_frame : str
         The base / world frame from which to calculate the transformation to the child frame.
     child_frame : str
         The ending TF frame used to generate the pose / orientation of the robot (usually the end effector tip).
@@ -81,7 +81,7 @@ class SawyerRobot(AbstractItem):
         The client that makes calls to TransformLookupServer in order to get the transformation between world_frame and child_frame
     """
 
-    def __init__(self, robot_id, upright_pose, world_frame="base", child_frame="right_gripper_tip", service_name="transform_lookup_service"):
+    def __init__(self, robot_id, upright_pose, base_frame="world", child_frame="right_gripper_tip", service_name="transform_lookup_service"):
         """
         Parameters
         ----------
@@ -89,7 +89,7 @@ class SawyerRobot(AbstractItem):
             Id of robot assigned in the config.json configuration files.
         upright_pose : dict
            Dictionary with position and orientation fields
-        world_frame : str
+        base_frame : str
             The base / world frame from which to calculate the transformation to the child frame.
         child_frame : str
             The ending TF frame used to generate the pose / orientation of the robot (usually the end effector tip).
@@ -114,7 +114,7 @@ class SawyerRobot(AbstractItem):
         except Exception as e:
             self._gripper = None
             rospy.loginfo("No electric gripper detected.")
-        self.world_frame = world_frame
+        self.base_frame = base_frame
         self.child_frame = child_frame
         self.tlc = TransformLookupClient(service_name)
 
@@ -164,7 +164,7 @@ class SawyerRobot(AbstractItem):
         transform : dict
             Dictionary of representing transformation containing position and orientation keys.
         """
-        trans = self.tlc.call(self.world_frame, self.child_frame).transform
+        trans = self.tlc.call(self.base_frame, self.child_frame).transform
         transform = {
             "position": [trans.translation.x, trans.translation.y, trans.translation.z],
             "orientation": [trans.rotation.x, trans.rotation.y, trans.rotation.z, trans.rotation.w]
@@ -201,8 +201,7 @@ class StaticItem(AbstractItem):
         pose : dict
            Dictionary containing 'position' and 'orientation' keys and corresponding values. The orientation should represent the objects upright pose.
         perimeter : dict
-            Dictionary containing 'inner' and 'outer' keys corresponding to lists of coordinates representing the inner perimeter band 
-            and outer perimeter band around the static item.
+            Dictionary containing 'inner' and 'outer' keys corresponding to lists of coordinates representing the inner perimeter band and outer perimeter band around the static item.
         """
         self.id = object_id
         self.name = name

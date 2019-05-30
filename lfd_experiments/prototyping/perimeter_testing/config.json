@@ -7,31 +7,32 @@
                     "id": 1,
                     "item": 1,
                     "button": "right_button_square",
-                    "reference_height": 0.0,
-                    "threshold_distance": 0.25
+                    "reference_height": -0.15,
+                    "threshold_distance": 0.0001,
+                    "direction": "positive"
                 
                 }
         },
         {
-            "class": "UprightConstraint",
+            "class": "HeightConstraint",
             "init_args" : 
                 {
                     "id": 2,
                     "item": 1,
                     "button": "right_button_circle",
-                    "threshold_angle": 20,
-                    "axis": "x"
+                    "reference_height": -0.05,
+                    "threshold_distance": 0.0001,
+                    "direction": "negative"
                 }
         },
         {
-            "class": "OverUnderConstraint",
+            "class": "Perimeter2DConstraint",
             "init_args" : 
                 {
                     "id": 3,
-                    "above_item_id": 1,
-                    "below_item_id": 2,
+                    "perimeter_item_id": 2,
+                    "traversing_item_id": 1,
                     "button": "right_button_triangle",
-                    "threshold_distance": 0.12,
                     "axis": "z"
                 }
         }
@@ -45,8 +46,13 @@
                     "name": "block",
                     "pose": 
                         {
-                            "position":[0.865601, -0.409869, -0.141544],
+                            "position":[0.6952, -0.03986, -0.173911],
                             "orientation": [0.015391, -0.0089937, 0.70554, 0.70845]
+                        },
+                    "perimeter":
+                        {
+                            "inner": [[0.828470625, 0.06511343749999998], [0.828470625, -0.1448334375], [0.5619293750000001, -0.1448334375], [0.5619293750000001, 0.06511343749999998]],
+                            "outer": [[0.89220875, 0.115318125], [0.89220875, -0.195038125], [0.49819125000000003, -0.195038125], [0.49819125000000003, 0.115318125]]
                         }
                 }
         }

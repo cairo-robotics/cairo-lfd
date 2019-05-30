@@ -33,7 +33,7 @@ class HeightConstraint(object):
     trigger : string
         The trigger object responsible for checking if the constraint has been trigger / set.
     """
-    def __init__(self, constraint_id, item_id, button, reference_height, threshold_distance):
+    def __init__(self, constraint_id, item_id, button, reference_height, threshold_distance, direction="positive", axis="z"):
 
         """
         These arguments should be in the "init_args" field of the config.json file's entry representing
@@ -51,8 +51,11 @@ class HeightConstraint(object):
         reference_height : int
             The reference or starting height to compare an objects height distance against the threshold_distance.
         threshold_distance : int
-            The distance from reference (positive: above; negative; below) to compare an object's distance
-            from reference.
+            The distance from reference (positive: above; negative; below) to compare an object's distance from reference.
+        direction : str
+            The direction of relative to the axis to evaluate the constraint. 'positive' indicates positive direction along chosen axis or height above. 'negative' means negative direction along chosen axis.
+        axis : str
+            Axis to evaluate constraint (x, y, or z)
         """
 
         self.id = constraint_id
@@ -60,6 +63,8 @@ class HeightConstraint(object):
         self.reference_height = reference_height
         self.threshold_distance = threshold_distance
         self.trigger = SawyerCuffButtonTrigger(button)
+        self.direction = direction
+        self.axis = axis
 
     def check_trigger(self):
         """
@@ -98,7 +103,7 @@ class HeightConstraint(object):
             item_data = observation.get_item_data(self.item_id)
             item_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
 
-        return height(item_pose, self.reference_height, self.threshold_distance)
+        return height(item_pose, self.reference_height, self.threshold_distance, direction=self.direction, axis=self.axis)
 
 
 class UprightConstraint(object):
@@ -311,7 +316,7 @@ class Perimeter2DConstraint(object):
     axis : str
         The axis to which the plane of the 2D perimeter of the object is orthogonal.
     """
-    def __init__(self, constraint_id, above_item_id, below_item_id, button, threshold_distance, axis):
+    def __init__(self, constraint_id, perimeter_item_id, traversing_item_id, button, axis='z'):
 
         """
         These arguments should be in the "init_args" field of the config.json file's entry representing
@@ -333,7 +338,7 @@ class Perimeter2DConstraint(object):
 
         self.id = constraint_id
         self.perimeter_item_id = int(perimeter_item_id)
-        self.traversing_item_id = int(perimeter_item_id)
+        self.traversing_item_id = int(traversing_item_id)
         self.trigger = SawyerCuffButtonTrigger(button)
         self.axis = str(axis)
 
@@ -426,7 +431,7 @@ class ConstraintFactory(object):
             "UprightConstraint": UprightConstraint,
             "HeightConstraint": HeightConstraint,
             "OverUnderConstraint": OverUnderConstraint,
-            "PerimeterConstraint": Perimeter2DConstraint
+            "Perimeter2DConstraint": Perimeter2DConstraint
         }
 
     def generate_constraints(self):

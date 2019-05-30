@@ -6,6 +6,9 @@ import rospy
 import intera_interface
 from abc import ABCMeta, abstractmethod
 from lfd.constraints import UprightConstraint, HeightConstraint
+from robot_clients.transform_clients import TransformLookupClient
+import tf
+import numpy as np
 
 
 class AbstractItem(object):
@@ -65,13 +68,13 @@ class SawyerRobot(AbstractItem):
     _limb : object
         Intera SDK class object that provides controlling functionality of the Sawyer Robot.
     _cuff : object
-        Intera SDK class object that provides controlling interface of the cuff bottons of Sawyer robot.
+        Intera SDK class object that provides controlling interface of the cuff buttons of Sawyer robot.
     _navigator : object
         Intera SDK class object that provides controlling functionality of the button/wheel interface on the Sawer Robot.
     _gripper : object
-        Intera SDK class object that provides controlling functionalirty of the Sawyer Robot gripper.
+        Intera SDK class object that provides controlling functionality of the Sawyer Robot gripper.
     """
-    def __init__(self, robot_id, upright_pose):
+    def __init__(self, robot_id, upright_pose, world_frame="base", child_frame="right_gripper_tip", service_name="transform_lookup_service"):
         """
         Parameters
         ----------
@@ -80,6 +83,7 @@ class SawyerRobot(AbstractItem):
         upright_pose : dict
            Dictionary with position and orientation fields
         """
+
         self.id = robot_id
         self.upright_pose = upright_pose
         self._limb = intera_interface.Limb("right")
@@ -97,25 +101,18 @@ class SawyerRobot(AbstractItem):
         except Exception as e:
             self._gripper = None
             rospy.loginfo("No electric gripper detected.")
+        self.world_frame = world_frame
+        self.child_frame = child_frame
+        self.tlc = TransformLookupClient(service_name)
 
-    def get_state(self):
+    def get_state(self, tip_frame="right_gripper_tip"):
         """
-        Get's the current state of the robot.
+        Gets the current state of the robot.
 
-        Example
-        -------
-
-        State returned:
-
-        .. code-block:: json
-
-        {
-            id: robot_id
-            position: [x, y ,z],
-            orientation: [x, y, z, w]
-            joints: [j0, j1, j2, j3, j4, j5, j6],
-            gripper: .123123123123
-        }
+        Parameters
+        ----------
+        base_to_tip_transform : dict
+            Transformation to apply to endpoint_pose.
 
         Returns
         -------
@@ -124,18 +121,20 @@ class SawyerRobot(AbstractItem):
         """
 
         state = {}
-        joints = self._limb.joint_names()
-        pose = self._limb.endpoint_pose()
-        state["id"] = self.id
-        state['position'] = [x for x in pose["position"]]
-        state['orientation'] = [x for x in pose["orientation"]]
-        state['gripper'] = self._gripper.get_position()
-        state['joints'] = [self._limb.joint_angle(j) for j in joints]
+        trans = self._get_transform()
+        state['id'] = self.id
+        state['position'] = trans["position"]
+        state['orientation'] = trans["orientation"]
+        state['endpoint_velocity'] = self._limb.endpoint_velocity()
+        state['gripper_position'] = self._gripper.get_position()
+        state['gripper_state'] = self._gripper.is_gripping()
+        state['joint_angle'] = [self._limb.joint_angle(j) for j in self._limb.joint_names()]
+        state['joint_velocity'] = [self._limb.joint_velocity(j) for j in self._limb.joint_names()]
         return state
 
     def get_info(self):
         """
-        Get's the robot item's information.
+        Gets the robot item's information.
 
         Returns
         -------
@@ -156,23 +155,63 @@ class SawyerRobot(AbstractItem):
             }
         }
         """
-        return {
-                    "id": self.id,
-                    "upright_pose": self.upright_pose
-               }
+        return {"id": self.id,
+                "upright_pose": self.upright_pose
+                }
+
+    def _get_transform(self):
+        trans = self.tlc.call(self.world_frame, self.child_frame).transform
+        transform = {
+            "position": [trans.translation.x, trans.translation.y, trans.translation.z],
+            "orientation": [trans.rotation.x, trans.rotation.y, trans.rotation.z, trans.rotation.w]
+        }
+        return transform
 
 
-class RobotFactory(object):
+class StaticObject(AbstractItem):
+
+    def __init__(self, object_id, name, upright_pose, world_frame, child_frame, service_name="transform_lookup_service"):
+        self.id = object_id
+        self.name = name
+        self.upright_pose = upright_pose
+        self.world_frame = world_frame
+        self.child_frame = child_frame
+        self.tlc = TransformLookupClient(service_name)
+
+    def get_state(self):
+        state = {}
+        trans = self._get_transform()
+        state['id'] = self.id
+        state['position'] = trans["position"]
+        state['orientation'] = trans["orientation"]
+        return state
+
+    def get_info(self):
+        info = {}
+        info["id"] = self.id
+        info["name"] = self.name
+        return info
+
+    def _get_transform(self):
+        trans = self.tlc.call(self.world_frame, self.child_frame).transform
+        transform = {
+            "position": [trans.translation.x, trans.translation.y, trans.translation.z],
+            "orientation": [trans.rotation.x, trans.rotation.y, trans.rotation.z, trans.rotation.w]
+        }
+        return transform
+
+
+class ItemFactory(object):
     """
-    Factory class that builds robot items. These items are defined in the config.json file.
-    The class field in the configuration determines which AbstractItem robot class to use.
+    Factory class that builds environment items. These items are defined in the config.json file.
+    The class field in the configuration determines which AbstractItem object class to use.
 
     Attributes
     ----------
     configs : list
             List of configuration dictionaries.
     classes : dict
-        Dictionary with values as uninitialized class references i.e. SawyerRobot
+        Dictionary with values as uninitialized class references i.e. StaticObject, SawyerRobot
 
     Example
     -------
@@ -182,7 +221,8 @@ class RobotFactory(object):
     .. code-block:: json
 
         {
-            "class": "SawyerRobot",
+            "class": "StaticObject",
+            "name": "Block1",
             "init_args":
                 {
                     "id": 1,
@@ -194,18 +234,19 @@ class RobotFactory(object):
                                     -0.439894686226,
                                     0.159350584992
                                 ],
-                            "orientation":
-                                [
-                                    0.712590112587,
-                                    -0.00994445446764,
-                                    0.701496927312,
-                                    -0.00430119065513
-                                ]
-                        }
+                            "orientation": [
+                                0.712590112587,
+                                -0.00994445446764,
+                                0.701496927312,
+                                -0.00430119065513
+                            ]
+                        },
+                    "world_frame": "world",
+                    "child_frame": "block"
                 }
         }
     """
-    def __init__(self, robot_configs):
+    def __init__(self, configs):
 
         """
         Parameters
@@ -213,81 +254,36 @@ class RobotFactory(object):
         robot_configs : list
             List of configuration dictionaries.
         """
-        self.configs = robot_configs
+        self.configs = configs
         self.classes = {
-            "SawyerRobot": SawyerRobot,
+            "StaticObject": StaticObject,
+            "SawyerRobot": SawyerRobot
         }
 
-    def generate_robots(self):
+    def generate_items(self):
         """
-        Build the robots defined in the configuration dictionaries of self.configs.
+        Build the items defined in the configuration dictionaries of self.configs.
 
         Returns
         -------
-        robots : list
-            List of AbstractItem robot objects.
+        items : list
+            List of AbstractItem item objects.
         """
-        robots = []
-        for config in self.configs:
-            robots.append(self.classes[config["class"]](*tuple(config["init_args"].values())))
-        return robots
-
-
-class ConstraintFactory(object):
-    """
-    Factory class that builds LFD constraints. These items are defined in the config.json file.
-    The class field in the configuration determines which constraint class to use.
-
-    Attributes
-    ----------
-    configs : list
-            List of configuration dictionaries.
-    classes : dict
-        Dictionary with values as uninitialized class references to constraint classes i.e. HeightConstraint
-
-    Example
-    -------
-
-    Example entry in config.json:
-
-    .. code-block:: json
-
-        {
-            "class": "HeightConstraint",
-            "init_args" :
-                {
-                    "id": 1,
-                    "item": 1,
-                    "button": "right_button_square",
-                    "reference_height": 0.0,
-                    "threshold_distance": 0.25
-
-                }
+        item_ids = []
+        items = {
+            "robots": [],
+            "items": []
         }
-    """
-    def __init__(self, constraint_configs):
-        """
-        Parameters
-        ----------
-        constraint_configs : list
-            List of configuration dictionaries.
-        """
-        self.configs = constraint_configs
-        self.classes = {
-            "UprightConstraint": UprightConstraint,
-            "HeightConstraint": HeightConstraint
-        }
-
-    def generate_constraints(self):
-        """
-        Build the constraint objects defined in the configuration dictionaries of self.configs.
-
-        Returns
-        -------
-        robots : list
-            List of constraint objects.
-        """
-        constraints = []
-        for config in self.configs:
-            constraints.append(self.classes[config["class"]](*tuple(config["init_args"].values())))
-        return constraints
+        for config in self.configs["robots"]:
+            if config["init_args"]["id"] in item_ids:
+                raise ValueError("Robots and items must each have a unique integer 'id'")
+            else:
+                item_ids.append(config["init_args"]["id"])
+            items["robots"].append(self.classes[config["class"]](*tuple(config["init_args"].values())))
+        for config in self.configs["items"]:
+            if config["init_args"]["id"] in item_ids:
+                raise ValueError("Robots and items must each have a unique integer 'id'")
+            else:
+                item_ids.append(config["init_args"]["id"])
+            items["items"].append(self.classes[config["class"]](*tuple(config["init_args"].values())))
+        return items

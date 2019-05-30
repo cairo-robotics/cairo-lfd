@@ -1,6 +1,6 @@
 """
-The enviornment.py module contains core data container classes and retrieval methods. The core classes
-are the Environment, Demonstration, and Obsevation used throughout Cairo LfD's codebase.
+The environment.py module contains core data container classes and retrieval methods. The core classes
+are the Environment, Demonstration, and Observation used throughout Cairo LfD's code base.
 """
 import json
 import numpy as np
@@ -13,7 +13,14 @@ def import_configuration(filepath):
     Wrapper function around json.load() to import a config.json file used to inform the Environment object.
     """
     with open(filepath) as json_data:
-        return json.load(json_data, object_pairs_hook=OrderedDict)
+        configs = json.load(json_data, object_pairs_hook=OrderedDict)
+        if "constraints" not in configs:
+            raise ConfigurationError("config.json file must contain the 'constraints' key, even if its value is an empty list.")
+        if "items" not in configs:
+            raise ConfigurationError("config.json file must contain the 'items' key, even if its value is an empty list.")
+        if "robots" not in configs:
+            raise ConfigurationError("config.json file must contain the 'robots' key, even if its value is an empty list.")
+        return configs
 
 
 class Environment(object):
@@ -24,7 +31,7 @@ class Environment(object):
     Attributes
     ----------
     items : list
-        List of environment items/objects i.e. blocks, spatulasm, cups etc,.. of the AbstractItem class.
+        List of environment items/objects i.e. blocks, spatulas, cups etc,.. of the AbstractItem class.
     robot : SawyerRobot
         AbstractItem extended class object representing the robot.
     constraints : list
@@ -35,7 +42,7 @@ class Environment(object):
         Parameters
         ----------
         items : list
-            List of environment items/objects i.e. blocks, spatulasm, cups etc,.. of the AbstractItem class.
+            List of environment items/objects i.e. blocks, spatulasm cups etc,.. of the AbstractItem class.
         robot : SawyerRobot
             AbstractItem extended class object representing the robot.
         constraints : list
@@ -67,14 +74,14 @@ class Environment(object):
         """
         return self.robot.get_info()
 
-    def get_item_states(self):
+    def get_item_state(self):
         """
         Retrieves the Environment's items states.
 
         Returns
         -------
         entries : list
-            List of dictionaries for each of the Environment's items (exluding the robot item)
+            List of dictionaries for each of the Environment's items (excluding the robot item)
         """
         item_states = []
         if self.items is not None:
@@ -89,13 +96,40 @@ class Environment(object):
         Returns
         -------
         entries : list
-            List of dictionaries for each of the Environment's items (exluding the robot item)
+            List of dictionaries for each of the Environment's items (excluding the robot item)
         """
         item_info = []
         if self.items is not None:
             for item in self.items:
                 item_info.append(item.get_info())
         return item_info
+
+    def get_item_ids(self):
+        """
+        Retrieves the all AbstractItem id's in the environment exluding Robots.
+
+        Returns
+        -------
+        ids : list
+            List of ids of the Environment's items
+        """
+        ids = []
+        for item in self.items:
+            ids.append(item.id)
+        ids.sort(reverse=False)
+        return ids
+
+    def get_robot_id(self):
+        """
+        Retrieves environment's robot id.
+
+        Returns
+        -------
+        id : int
+            Id of the environment's robot.
+        """
+        if self.robot is not None:
+            return self.robot.id
 
     def get_constraint_by_id(self, constraint_id):
         """
@@ -115,8 +149,7 @@ class Environment(object):
 
     def check_constraint_triggers(self):
         """
-        Checks all constraints for their trigger. A triggered constraint might be a button press on Sawyer's
-        cuff or a natural language dicated constraint.
+        Checks all constraints for their trigger. A triggered constraint might be a button press on Sawyer's cuff or a natural language dictated constraint.
 
         Returns
         -------
@@ -133,12 +166,12 @@ class Environment(object):
 
 class Demonstration(object):
     """
-    Demonstration object to contain list of osbervations and various methods to perform on those observations.
+    Demonstration object to contain list of observations and various methods to perform on those observations.
 
     Attributes
     ----------
     observations : list
-        List of Observation objects representing raw observations from demonstration. (Requried)
+        List of Observation objects representing raw observations from demonstration. (Required)
     aligned_observation : SawyerRobot
         List of Observation objects representing DTW aligned observations.
     labeled_observations : list
@@ -149,7 +182,7 @@ class Demonstration(object):
         Parameters
         ----------
         observations : list
-            List of Observation objects representing raw observations from demonstration. (Requried)
+            List of Observation objects representing raw observations from demonstration. (Required)
         aligned_observation : SawyerRobot
             List of Observation objects representing DTW aligned observations.
         labeled_observations : list
@@ -206,7 +239,7 @@ class Observation(object):
             "applied_constraints": [],
             "items": [
                 {
-                    "id": 1,
+                    "id": 2,
                     "orientation": [
                         0.6874194527002508,
                         -0.06937214001305077,
@@ -220,7 +253,7 @@ class Observation(object):
 
                 },
                 {
-                    "id": 2,
+                    "id": 3,
                     "orientation": [
                         0.7874194527002508,
                         -0.16937214001305077,
@@ -239,7 +272,7 @@ class Observation(object):
             "robot": {
                 "gripper": 0.0,
                 "id": 1,
-                "joints": [
+                "joint_angle": [
                     -0.1242646484375,
                     0.1710810546875,
                     3.044984375,
@@ -290,12 +323,12 @@ class Observation(object):
         """
         observation_data = {"robot": {"orientation": orientation,
                                       "position": pose,
-                                      "joints": joints}}
+                                      "joint_angle": joints}}
         return cls(observation_data)
 
     def get_timestamp(self):
         """
-        Get's osbervations timestamp
+        Gets observations timestamp
 
         Returns
         -------
@@ -330,17 +363,17 @@ class Observation(object):
         else:
             return robot["position"] + robot["orientation"]
 
-    def get_joint_list(self):
+    def get_joint_angle(self):
         """
-        Get the joint data of the observation as a list of numerical values.
+        Get the joint angles of the observation as a list of numerical values.
 
         Returns
         -------
         : list
-            list of numerical joint values for the given robot.
+            list of numerical joint angle values for the given robot.
         """
         robot = self.get_robot_data()
-        return robot["joints"]
+        return robot["joint_angle"]
 
     def get_pose_msg(self):
         """
@@ -388,10 +421,12 @@ class Observation(object):
         : float
             Integer timestamp in milliseconds representing time from epoch.
         """
-        for item in self.data["items"]:
-            # return first occurance, should only be one
+        items = self.data["items"]
+        for item in items:
+            # return first occurrence, should only be one
             if item["id"] == item_id:
                 return item
+        return None
 
     def get_triggered_constraint_data(self):
         """
@@ -417,3 +452,12 @@ class Observation(object):
             return self.data["applied_constraints"]
         else:
             return None
+
+
+class ConfigurationError(Exception):
+
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self): 
+        return(repr(self.value))

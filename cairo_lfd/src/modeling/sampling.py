@@ -7,7 +7,7 @@ import rospy
 
 class KeyframeSampler():
     """
-    Sampling class that uses model representing a keyframe to sample points.
+    Sampling class that uses a keyframe's model to sample points.
 
     Attributes
     ----------
@@ -72,10 +72,9 @@ class KeyframeSampler():
                 sample = samples[0]
                 observation = self.converter.convert(sample, run_fk=True)
                 matched_ids = self.analyzer.evaluate(constraint_ids, observation)
-                # print(constraint_ids, matched_ids)
                 if constraint_ids == matched_ids:
                     valid_samples.append(sample)
-        return attempts, valid_samples
+        return attempts, valid_samples, matched_ids
 
     def rank_samples(self, model, samples):
         """

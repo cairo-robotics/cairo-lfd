@@ -99,7 +99,7 @@ class GaussianMixtureModel(object):
 
     def generate_samples(self, n_samples):
         """
-        Generates the random samples according to the fitted distrubution.
+        Generates the random samples according to the fitted distribution.
 
         Returns
         -------
@@ -111,7 +111,7 @@ class GaussianMixtureModel(object):
 
     def score_samples(self, X):
         """
-        Predicts the log liklihood score of the samples in X.
+        Predicts the log likelihood score of the samples in X.
 
         Parameters
         ----------
@@ -122,7 +122,7 @@ class GaussianMixtureModel(object):
 
 class KDEModel(object):
     """
-    Wrapper class for Scikit Learn's Kernel Density Estsimation model.
+    Wrapper class for Scikit Learn's Kernel Density Estimation model.
 
     Attributes
     ----------
@@ -144,7 +144,7 @@ class KDEModel(object):
 
     def generate_samples(self, n_samples):
         """
-        Generates the random samples according to the fitted distrubution.
+        Generates the random samples according to the fitted distribution.
 
         Returns
         -------
@@ -157,7 +157,7 @@ class KDEModel(object):
 
     def score_samples(self, X):
         """
-        Predicts the log liklihood score of the samples in X.
+        Predicts the log likelihood score of the samples in X.
 
         Parameters
         ----------

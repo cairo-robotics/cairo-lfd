@@ -45,7 +45,7 @@ class KeyframeSampler():
         raw_samples = model.generate_samples(num_of_samples)
         return raw_samples
 
-    def generate_n_valid_samples(self, model, constraint_ids, n=100):
+    def generate_n_valid_samples(self, model, primal_observation, constraint_ids, n=100):
         """
         Parameters
         ----------
@@ -70,7 +70,7 @@ class KeyframeSampler():
             samples = self.generate_raw_samples(model, 1)
             if len(samples) > 0:
                 sample = samples[0]
-                observation = self.converter.convert(sample, run_fk=True)
+                observation = self.converter.convert(sample, primal_observation, run_fk=True)
                 matched_ids = self.analyzer.evaluate(constraint_ids, observation)
                 if constraint_ids == matched_ids:
                     valid_samples.append(sample)

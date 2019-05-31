@@ -36,6 +36,7 @@ class SawyerCuffButtonTrigger(AbstractTrigger):
             The cuff button name.
         """
         self.button = cuff_button
+        self.nav = intera_interface.Navigator()
 
     def check(self):
         """
@@ -46,7 +47,8 @@ class SawyerCuffButtonTrigger(AbstractTrigger):
         : int
             Int value indicating if button is pressed.
         """
-        if intera_interface.Navigator().get_button_state(self.button) != 0:
+
+        if self.nav.get_button_state(self.button) != 0:
             return 1
         else:
             return 0

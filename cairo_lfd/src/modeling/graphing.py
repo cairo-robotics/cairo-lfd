@@ -42,18 +42,18 @@ class KeyframeGraph(MultiDiGraph):
         if next_nodes == []:
             prev_node = prev_nodes[0]
             self.remove_edge(prev_node, node)
-            rospy.loginfo("Node %s has been culled", node)
+            rospy.loginfo("Keyframe %s has been culled", node)
         elif prev_nodes == []:
             next_node = next_nodes[0]
             self.remove_edge(node, next_node)
-            rospy.loginfo("Node %s has been culled", node)
+            rospy.loginfo("Keyframe %s has been culled", node)
         else:
             prev_node = prev_nodes[0]
             next_node = next_nodes[0]
             self.add_edge(prev_node, next_node)
             self.remove_edge(prev_node, node)
             self.remove_edge(node, next_node)
-            rospy.loginfo("Node %s has been culled", node)
+            rospy.loginfo("Keyframe %s has been culled", node)
 
     def fit_models(self, observation_vectorizor):
         """
@@ -73,6 +73,20 @@ class KeyframeGraph(MultiDiGraph):
                 np_array.append(np.array(observation_vectorizor(obsv)))
             np_array = np.array(np_array)
             self.nodes[node]["model"].fit(np_array)
+
+    def _identify_primal_observations(self, observation_vectorizor):
+        for node in self.nodes():
+            np_array = []
+            best_obs = None
+            old_score = -np.inf
+            for obsv in self.nodes[node]["observations"]:
+                vector = np.array(observation_vectorizor(obsv))
+                sample = np.array(observation_vectorizor(obsv))
+                new_score = self.nodes[node]["model"].score_samples(np.array([sample]))[0]
+                if new_score > old_score:
+                    best_obs = obsv
+                    old_score = new_score
+            self.nodes[node]["primal_observation"] = best_obs
 
 
 class ObservationClusterer():

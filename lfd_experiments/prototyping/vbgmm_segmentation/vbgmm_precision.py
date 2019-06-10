@@ -222,7 +222,7 @@ class VariationalGMM():
                 self.n_components, -1)[:, ::self.n_features_ + 1]), 1))
 
         # Get the log probability of the gaussian
-        log_prob = np.empty((self.n_samples_, self.n_components))
+        log_prob = np.empty((X.shape[0], self.n_components))
         for k, (mu, prec_chol) in enumerate(zip(self.means_, self.precisions_cholesky_)):
             y = np.dot(X, prec_chol) - np.dot(mu, prec_chol)
             log_prob[:, k] = np.sum(np.square(y), axis=1)

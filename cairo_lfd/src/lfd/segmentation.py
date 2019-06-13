@@ -328,3 +328,52 @@ class ManualSegmentation():
                 segchange = False
             else:
                 observations.data[i]['segment'] = observations.data[i - 1]['segment']
+
+class DemonstrationSegmenter()
+
+    def __init__(self, segmenter):
+        self.segmenter = segmenter
+
+    def segment_demonstrations(demonstrations):
+    	segments = {}
+    	for demo in demonstrations:
+    		demo_id = demo.id
+    		demo_segments = segmenter.segment(demo)
+    		segments[demo_id] = demo_segments
+    		
+    	return segments
+
+
+#     def segment_demonstrations(demonstrations):
+#         segments = {}
+#         for demo in dmeonstrations:
+#             demo_id = demo.id
+#             demo_segments = segmenter.segment(demo)
+#             segments[demo_id] = demo_segments
+
+# {
+#     1: [segment1for1, segment2for1, segment3for1],
+#     2: [segment1for2, segment2for2, segment3for2]
+# }
+
+# SegmentationObject1.segments -> {
+#     1: segment1for1,
+#     2: segment1for2
+
+# }
+
+# SegmentationObject2.segments -> {
+#     1: segment2for1,
+#     2: segment2for2
+# }
+
+# SegmentationObject3.segments -> {
+#     1: segment3for1,
+#     2: segment3for2
+# }
+
+
+segments = [SegmentationObject1, SegmentationObject2, SegmentationObject3]
+
+demo_segmenter = DemonstrationSegmenter(ManualSegmentation())
+segments = demo_segmenter.segment_demonstrations(demonstrations)

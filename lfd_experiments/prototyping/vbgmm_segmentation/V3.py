@@ -214,8 +214,8 @@ class DemonstrationSegmenter():
         # {
         #   1: [segment1for1, segment2for1, segment3for1],
         #   2: [segment1for2, segment2for2, segment3for2]
-        # }    		
-    	return allsegments
+        # }         
+        return allsegments
 
     def segment_classification(self, allsegments):
         temp = {}

@@ -5,7 +5,6 @@ import rospy
 from lfd.environment import Observation, Demonstration
 import sys
 import select
-import pudb
 import os
 import intera_interface
 import cv2
@@ -141,7 +140,7 @@ class SawyerRecorder(object):
                         self.interaction_publisher.send_position_mode_cmd()
                         user_input = ''
                         recording = False
-                        print("Demonstration discarded!\n Press 'r' or hold center cuff wheel to record again or 'q' to end the session.\n")
+                        print("Demonstration discarded!\n Press 'r' or 'ii' cuff button record again or 'q' to end the session.\n")
                     if environment.robot._navigator.get_button_state("right_button_back") == 2 or user_input == "c":
                         demonstrations.append(Demonstration(observations))
                         rospy.loginfo("~~~CAPTURED~~~")

@@ -26,7 +26,7 @@ def vectorize_demonstration(demonstration):
     vectors = []
     for observation in demonstration.observations:
         position_data = observation.data["robot"]["position"]
-        vector = position_data 
+        vector = position_data
         vectors.append(vector)
     return vectors
 

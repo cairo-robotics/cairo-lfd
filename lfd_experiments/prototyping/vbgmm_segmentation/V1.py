@@ -243,6 +243,7 @@ class VGMMSegmentation():
         #plt.title('Bayesian Gaussian Mixture Model on Shelf Placement Demonstration')
         #plt.show()
 
+
 class ManualSegmentation():
     def __init__(self):
         pass
@@ -282,9 +283,11 @@ class ManualSegmentation():
 
         return segments
 
+
 class Segment():
-    def __init__(self,segments):
+    def __init__(self, segments):
         self.segments = segments
+
 
 class DemonstrationSegmenter():
     def __init__(self, segmenter):

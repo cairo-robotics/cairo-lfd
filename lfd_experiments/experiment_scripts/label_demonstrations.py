@@ -4,9 +4,8 @@ import rospy
 import argparse
 
 from lfd.data_io import DataImporter, DataExporter
-from lfd.alignment import DemonstrationAligner
-from lfd.conversion import vectorize_demonstration
-from lfd.segmentation import ConstraintKeyframeLabeler
+from lfd.alignment import DemonstrationAligner, vectorize_demonstration
+from lfd.data_processing import ConstrainedKeyframeLabeler
 from lfd.environment import Observation, Demonstration
 
 
@@ -63,7 +62,6 @@ def main():
     The second parameter is the window size i.e. how big each keyframe size should be (+/- one depending on if odd number of elements in the grouping list per demonstration) 
     """
     rospy.loginfo("Labeling demonstrations.")
-
     labeled_demonstrations = keyframe_labeler.label_demonstrations(args.divisor, args.window)
 
     # Export the dictionary data representation of the observations of the labeled demos.

@@ -1,0 +1,30 @@
+Calibrate Optitrack
+Clear all objects from environment
+Perform wanding calibration (view->Calibration asset)
+Set ground plane
+Hold x-axis pinting into sawyer pedastal base with z axis pointing to left (if facing sawyer). 
+See instecutions on ground plane object
+Once set, in Set Ground Plane view, rotate +90 degrees around x once.
+View data assets (view->assets)
+ADd remove assets as desired
+To add, highlight the markers of interest in the visualzation in Motive. Right click and add rigid body.
+To remove, right click on a marker of an existing bodyh in visualzation and remove.
+Use launch file in Repo: Cairo_lfd Folder lfd_experiments:launch:cairo_lfd.launch
+roslaunch lfd_experiments cairo_lfd.launch
+This will launch/run:
+joint_trajectory_action_server
+sawyer_moveit
+tf_visual_tools_publisher (requires tf_visual_tools_package)
+transform_lookup_service (requires package cairo-robot-interface package)
+vrpn.launch (requires both cairo-robot-interface AND vrpn_client_ros)
+Be sure to install all the required dependencies.
+Lookup tf_visual_tools_publisher online to see hwo to get it visible in RVIZ.
+If installed properly, it should just require you to to to Panels->New Panel->tfVisualTools in RVIZ
+Create your intial transform: FROM: world TO: optitrack_world
+Make the gripper cuff controllable
+rosrun intera_examples gripper_cuff_control.py=
+Create reference rigid body
+Make a rigid body of one of the 6 pronged calibration item and call is something similar to gripper tip.
+In RVIZ, in Dispalys, add TF and makes sure in the Frames that the right_gripper_tip is selected
+Tweak your initial transformation using the 'manipulate' tab of TFVisualTools panel to align as best you possibly can, the optitrack gripper object and the right_gripper_tip. 
+Save this calibration

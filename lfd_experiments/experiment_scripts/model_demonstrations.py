@@ -10,10 +10,9 @@ from modeling.models import KDEModel
 from modeling.sampling import KeyframeSampler
 from lfd.environment import Demonstration, Observation, Environment, import_configuration
 from lfd.data_io import DataImporter
-from lfd.items import ItemFactory
-from lfd.constraints import ConstraintFactory
-from lfd.analysis import KeyframeGraphAnalyzer, ConstraintAnalyzer
-from lfd.conversion import SawyerSampleConverter, get_observation_joint_vector
+from lfd.items import RobotFactory, ConstraintFactory
+from lfd.analysis import KeyframeGraphAnalyzer, ConstraintAnalyzer, get_observation_joint_vector
+from lfd.data_conversion import SawyerSampleConverter
 
 
 def main():

@@ -9,7 +9,6 @@ class AbstractTrigger(object):
     """
     __metaclass__ = ABCMeta
 
-
     @abstractmethod
     def check(self):
         """

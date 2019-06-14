@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import numpy as np
 from lfd.data_io import DataImporter, DataExporter
 

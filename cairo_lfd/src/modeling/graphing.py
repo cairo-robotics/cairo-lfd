@@ -8,6 +8,14 @@ import numpy as np
 from networkx import MultiDiGraph
 
 
+
+class SegmentationGraph(MultiDiGraph):
+    """
+    """
+
+    def __init__():
+        pass
+
 class KeyframeGraph(MultiDiGraph):
     """
     NetworkX MultiDiGraph extended graph class for containing keyframes and their corresponding models.
@@ -147,7 +155,7 @@ class ObservationClusterer():
         """
         Assigns the keyframe type for the given keyframe cluster.
 
-        Parameters
+        Parameter
         ----------
         cluster : dict
             Dictionary to assign the keyframe type.
@@ -166,3 +174,13 @@ class ObservationClusterer():
         """
         applied_constraints = cluster['observations'][0].get_applied_constraint_data()
         cluster["applied_constraints"] = applied_constraints
+
+
+class SegmentationGraphGenerator()
+
+    def __init__(self, demonstration_segmenter)
+        self.segmenter = demonstration_segmenter
+
+    def build_adjacency_list(self, demonstrations):
+        pass
+

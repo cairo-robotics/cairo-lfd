@@ -3,7 +3,7 @@ import numpy as np
 import copy
 from sklearn import mixture
 from lfd.data_conversion import vectorize_demonstration
-
+from itertools import groupby
 
 class Segment():
     def __init__(self, demo_id, observations):
@@ -11,7 +11,7 @@ class Segment():
         self.observations = observations
 
 
-class DemonstrationSegmentation():
+class DemonstrationSegmentGenerator():
     def __init__(self, segmenter):
         self.segmenter = segmenter
 
@@ -20,11 +20,14 @@ class DemonstrationSegmentation():
         for i in range(len(demonstrations)):
             demo_id = i
             demo_segments = self.segmenter.segment(demonstrations[i])
-            all_segments[demo_id] = demo_segments
-        segments = self._segment_classification(all_segments)
-        return segments
+            order = self.segmenter.get_order(demonstrations[i])
+            all_segments[demo_id] = {'chunks': demo_segments, 'order': order}
+        return all_segments
 
-    def _segment_classification(self, all_segments):
+    def segment_classification(self, all_segments):
+        """
+        WIP: THIS MAY NO LONGER BE NECESSARY.
+        """
         temp = {}
         for demo_num in range(len(all_segments)):
             for seg_num in range(len(all_segments[demo_num])):
@@ -38,9 +41,9 @@ class DemonstrationSegmentation():
         return [seg_objects]
 
 
-class GMMSegmenter():
+class VariationalGMMSegmenter():
 
-    def __init__(self, demonstrations, demonstration_vectorizor, n_components):
+    def __init__(self, demonstrations, demonstration_vectorizor, n_components=20):
         self.demos = demonstrations
         self.vectorizor = demonstration_vectorizor
         self.n_components = n_components
@@ -52,46 +55,43 @@ class GMMSegmenter():
         demos = [self.vectorizor(demo) for demo in self.demos]
         X = np.array([e for sl in demos for e in sl])
         if self.n_samples < self.n_components:
-            self.model = mixture.GaussianMixture(n_components=X.shape[0]).fit(X)
+            self.model = mixture.BayesianGaussianMixture(n_components=X.shape[0]).fit(X)
         else:
-            self.model = mixture.GaussianMixture(n_components=n_components).fit(X)
+            self.model = mixture.BayesianGaussianMixture(n_components=self.n_components).fit(X)
 
-    def segment(self, demonstration):
+    def get_order(self, demonstration):
         # Predict segmentation using trained model
         demo = np.array(self.vectorizor(demonstration))
         X = np.array(demo)
         prediction = self.model.predict(X)
+        return [x[0] for x in groupby(prediction)]
 
-        # Find start and end indices for each observation
-        startindices = []
-        endindices = []
-        for i in range(len(prediction)):
-            if i == 0:
-                currentnum = prediction[i]
-                startindices.append(i)
-            elif (prediction[i] != currentnum) & (i == len(prediction) - 1):
-                endindices.append(i - 1)
-                startindices.append(i)
-                endindices.append(i)
-                currentnum = prediction[i]
-            elif (prediction[i] != currentnum):
-                endindices.append(i - 1)
-                startindices.append(i)
-                currentnum = prediction[i]
-            elif i == len(prediction) - 1:
-                endindices.append(i)
+    def segment(self, demonstration):
+        # Predict segmentation using trained model
+        demo = vectorize_demonstration(demonstration)
+        X = np.array([e for sl in demo for e in sl])
+        print(X.shape)
+        n_samples = len(X)
+        prediction = self.model.predict(X)
 
-        # Use start and end indices to create/splice segments
-        segments = []
-        for index in range(len(startindices)):
-            if startindices[index] == endindices[index]:
-                segments.append(
-                    X[startindices[index]:endindices[index] + 1])
+        startindex = []
+        endindex = []
+        uniquepreds = np.array(list(set(prediction)))
+
+        for num in uniquepreds:
+            result = np.where(prediction == num)
+            startindex.append(result[0][0])
+            if len(result[0]) == 1:
+                endindex.append(result[0][0])
             else:
-                segments.append(X[startindices[index]:endindices[index]])
+                endindex.append(result[0][len(result[0]) - 1])
 
-        # Return
-        return segments
+        segments = []
+        for index in range(len(startindex)):
+            print(prediction[startindex[index]:endindex[index]])
+            segments.append(demonstration[startindex[index]:endindex[index]])
+
+        return segments  
 
 
 class LabelBasedSegmenter():
@@ -124,52 +124,3 @@ class LabelBasedSegmenter():
                 segchange = False
             else:
                 observations.data[i]['segment'] = observations.data[i - 1]['segment']
-
-class DemonstrationSegmenter()
-
-    def __init__(self, segmenter):
-        self.segmenter = segmenter
-
-    def segment_demonstrations(demonstrations):
-    	segments = {}
-    	for demo in demonstrations:
-    		demo_id = demo.id
-    		demo_segments = segmenter.segment(demo)
-    		segments[demo_id] = demo_segments
-    		
-    	return segments
-
-
-#     def segment_demonstrations(demonstrations):
-#         segments = {}
-#         for demo in dmeonstrations:
-#             demo_id = demo.id
-#             demo_segments = segmenter.segment(demo)
-#             segments[demo_id] = demo_segments
-
-# {
-#     1: [segment1for1, segment2for1, segment3for1],
-#     2: [segment1for2, segment2for2, segment3for2]
-# }
-
-# SegmentationObject1.segments -> {
-#     1: segment1for1,
-#     2: segment1for2
-
-# }
-
-# SegmentationObject2.segments -> {
-#     1: segment2for1,
-#     2: segment2for2
-# }
-
-# SegmentationObject3.segments -> {
-#     1: segment3for1,
-#     2: segment3for2
-# }
-
-
-segments = [SegmentationObject1, SegmentationObject2, SegmentationObject3]
-
-demo_segmenter = DemonstrationSegmenter(ManualSegmentation())
-segments = demo_segmenter.segment_demonstrations(demonstrations)

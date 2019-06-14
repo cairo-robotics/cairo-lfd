@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import numpy as np
 #from lfd.data_io import DataImporter, DataExporter
 
@@ -113,10 +114,10 @@ class VBGMMSegmentation():
         n_samples_tot = len(X)
         #print(n_samples_tot)
         if n_samples_tot < 10:
-            self.vbgmm = mixture.GaussianMixture(n_components=5).fit(X)
+            self.vbgmm = mixture.BayesianGaussianMixture(n_components=20).fit(X)
             #self.vbgmm = VariationalGMM(n_components=n_samples_tot).fit(X)
         else:
-            self.vbgmm = mixture.GaussianMixture(n_components=5).fit(X)
+            self.vbgmm = mixture.BayesianGaussianMixtureGaussianMixture(n_components=20).fit(X)
            #self.vbgmm = VariationalGMM(n_components=10).fit(X)
         #print(self.vbgmm.predict(X))
         #print(self.vbgmm.predict(X))

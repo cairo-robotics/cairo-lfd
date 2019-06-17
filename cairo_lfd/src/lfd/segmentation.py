@@ -15,7 +15,7 @@ class DemonstrationSegmentGenerator():
     def __init__(self, segmenter):
         self.segmenter = segmenter
 
-    def segment_demonstrations(self, demonstrations):
+    def segment(self, demonstrations):
         all_segments = {}
         for i in range(len(demonstrations)):
             demo_id = i
@@ -68,9 +68,8 @@ class VariationalGMMSegmenter():
 
     def segment(self, demonstration):
         # Predict segmentation using trained model
-        demo = vectorize_demonstration(demonstration)
-        X = np.array([e for sl in demo for e in sl])
-        print(X.shape)
+        X = np.array(vectorize_demonstration(demonstration))
+
         n_samples = len(X)
         prediction = self.model.predict(X)
 
@@ -88,10 +87,9 @@ class VariationalGMMSegmenter():
 
         segments = []
         for index in range(len(startindex)):
-            print(prediction[startindex[index]:endindex[index]])
-            segments.append(demonstration[startindex[index]:endindex[index]])
+            segments.append(demonstration.observations[startindex[index]:endindex[index]])
 
-        return segments  
+        return segments
 
 
 class LabelBasedSegmenter():

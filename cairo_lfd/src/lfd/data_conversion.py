@@ -29,7 +29,7 @@ def vectorize_demonstration(demonstration):
         position_data = observation.data["robot"]["position"]
         vector = position_data
         vectors.append(vector)
-    return vectors
+    return np.array(vectors)
 
 
 def get_observation_pose_vector(observation):
@@ -208,4 +208,3 @@ class SawyerSampleConverter(object):
         z = z / normalize
         w = w / normalize
         return x, y, z, w
-

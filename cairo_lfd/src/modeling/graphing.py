@@ -176,11 +176,18 @@ class ObservationClusterer():
         cluster["applied_constraints"] = applied_constraints
 
 
-class SegmentationGraphGenerator()
+class SegmentationGraphGenerator():
 
-    def __init__(self, demonstration_segmenter)
-        self.segmenter = demonstration_segmenter
+    def __init__(self, segment_generator):
+        self.seg_generator = segment_generator
 
     def build_adjacency_list(self, demonstrations):
-        pass
+        segments = self.seg_generator.segment(demonstrations)
+        adjacency = set()
+        for demo_id, segment in segments.iteritems():
+            adjacency = adjacency.union(set(list(self._group(segment['order']))))
+        return list(adjacency)
 
+    def _group(self, lst):
+        for first, second in zip(lst, lst[1:]):
+            yield (first, second)

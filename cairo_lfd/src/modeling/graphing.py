@@ -2,19 +2,17 @@
 The module graphing.py contains classes for building graphical structures of learned skills for Keyframe-based LfD.
 """
 import itertools
-from collections import defaultdict
+from collections import defaultdict, Counter
 import rospy
 import numpy as np
-from networkx import MultiDiGraph
+from networkx import MultiDiGraph, DiGraph
 
 
+class SegmentationGraph(DiGraph):
 
-class SegmentationGraph(MultiDiGraph):
-    """
-    """
+    def __init__(self):
+        DiGraph.__init__(self)
 
-    def __init__():
-        pass
 
 class KeyframeGraph(MultiDiGraph):
     """
@@ -83,6 +81,9 @@ class KeyframeGraph(MultiDiGraph):
             self.nodes[node]["model"].fit(np_array)
 
     def _identify_primal_observations(self, observation_vectorizor):
+        """
+        TODO: Document and identify need.
+        """
         for node in self.nodes():
             np_array = []
             best_obs = None
@@ -181,13 +182,14 @@ class SegmentationGraphGenerator():
     def __init__(self, segment_generator):
         self.seg_generator = segment_generator
 
-    def build_adjacency_list(self, demonstrations):
+    def build_weighted_adjacency_list(self, demonstrations):
         segments = self.seg_generator.segment(demonstrations)
-        adjacency = set()
+        adjacencies = []
         for demo_id, segment in segments.iteritems():
-            adjacency = adjacency.union(set(list(self._group(segment['order']))))
-        return list(adjacency)
+            adjacencies += self._group(segment['order'])
+        counter = Counter(adjacencies)
+        items = counter.items()
+        return [(pair[0], pair[1], weight) for pair, weight in items]
 
     def _group(self, lst):
-        for first, second in zip(lst, lst[1:]):
-            yield (first, second)
+        return list(zip(lst, lst[1:]))

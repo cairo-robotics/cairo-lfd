@@ -43,7 +43,7 @@ class DemonstrationSegmentGenerator():
 
 class VariationalGMMSegmenter():
 
-    def __init__(self, demonstrations, demonstration_vectorizor, n_components=20):
+    def __init__(self, demonstrations, demonstration_vectorizor, n_components=15):
         self.demos = demonstrations
         self.vectorizor = demonstration_vectorizor
         self.n_components = n_components
@@ -55,9 +55,9 @@ class VariationalGMMSegmenter():
         demos = [self.vectorizor(demo) for demo in self.demos]
         X = np.array([e for sl in demos for e in sl])
         if self.n_samples < self.n_components:
-            self.model = mixture.BayesianGaussianMixture(n_components=X.shape[0]).fit(X)
+            self.model = mixture.BayesianGaussianMixture(n_components=X.shape[0], max_iter=500, covariance_type='full', tol=1e-3).fit(X)
         else:
-            self.model = mixture.BayesianGaussianMixture(n_components=self.n_components).fit(X)
+            self.model = mixture.BayesianGaussianMixture(n_components=self.n_components, max_iter=500, covariance_type='full', tol=1e-3).fit(X)
 
     def get_order(self, demonstration):
         # Predict segmentation using trained model

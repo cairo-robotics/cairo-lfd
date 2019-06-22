@@ -1,0 +1,87 @@
+{
+    "constraints": [
+        {
+            "class": "HeightConstraint",
+            "init_args" : 
+                {
+                    "id": 1,
+                    "item": 1,
+                    "button": "right_button_square",
+                    "reference_height": -0.15,
+                    "threshold_distance": 0.0001,
+                    "direction": "positive"
+                
+                }
+        },
+        {
+            "class": "HeightConstraint",
+            "init_args" : 
+                {
+                    "id": 2,
+                    "item": 1,
+                    "button": "right_button_circle",
+                    "reference_height": -0.05,
+                    "threshold_distance": 0.0001,
+                    "direction": "negative"
+                }
+        },
+        {
+            "class": "Perimeter2DConstraint",
+            "init_args" : 
+                {
+                    "id": 3,
+                    "perimeter_item_id": 2,
+                    "traversing_item_id": 1,
+                    "button": "right_button_triangle",
+                    "axis": "z"
+                }
+        }
+    ],
+    "items": [
+        {
+            "class": "StaticItem",
+            "init_args":
+                {
+                    "id": 2,
+                    "name": "block",
+                    "pose": 
+                        {
+                            "position":[0.6952, -0.03986, -0.173911],
+                            "orientation": [0.015391, -0.0089937, 0.70554, 0.70845]
+                        },
+                    "perimeter":
+                        {
+                            "inner": [[0.828470625, 0.06511343749999998], [0.828470625, -0.1448334375], [0.5619293750000001, -0.1448334375], [0.5619293750000001, 0.06511343749999998]],
+                            "outer": [[0.89220875, 0.115318125], [0.89220875, -0.195038125], [0.49819125000000003, -0.195038125], [0.49819125000000003, 0.115318125]]
+                        }
+                }
+        }
+    ],
+    "robots": [
+        {
+            "class": "SawyerRobot",
+            "init_args":
+                {
+                    "id": 1,
+                    "upright_pose": 
+                        {
+                            "position": 
+                                [
+                                    0.604698787426,
+                                    -0.439894686226,
+                                    0.159350584992
+                                ],
+                            "orientation": [
+                                0.712590112587,
+                                -0.00994445446764,
+                                0.701496927312,
+                                -0.00430119065513
+                            ]
+                        }
+                }
+        }
+
+    ]
+        
+}
+

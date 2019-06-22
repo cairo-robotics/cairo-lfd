@@ -7,6 +7,17 @@ from environment import Observation
 from scipy.spatial.distance import euclidean
 
 
+class ProcessorPipeline():
+
+    def __init__(self, processor_list):
+        self.processors = processor_list
+
+    def process(self, demonstrations):
+        for idx, demo in enumerate(demonstrations):
+            for processor in self.processors:
+                processor.process(demo.observations)
+
+
 class EuclideanDistanceMixin():
 
     def _euclidean(self, obj1_posistion, obj2_position):

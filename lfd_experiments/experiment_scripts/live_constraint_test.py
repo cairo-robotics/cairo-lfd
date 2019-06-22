@@ -63,7 +63,7 @@ def main():
     interaction_options.set_K_nullspace([5, 5, 5, 5, 5, 5, 5])
     interaction_options.set_interaction_frame(interaction_frame)
     rospy.loginfo(interaction_options.to_msg())
-    args.record_rate, interaction_pub, interaction_options
+
     rospy.on_shutdown(interaction_pub.send_position_mode_cmd)
     interaction_pub.external_rate_send_command(interaction_options)
     config_filepath = args.config

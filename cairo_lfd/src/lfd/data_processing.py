@@ -181,7 +181,7 @@ class RelativeKinematicsProcessor(EuclideanDistanceMixin, ListWindowMixin):
         self.item_ids = item_ids
         self.robot_id = robot_id
 
-    def generate_relative_data(self, observations):
+    def process(self, observations):
         """
         Calculates relative distance, velocity and acceleration between item-item pairs 
         and item-robot pair. This is performed in-place: the dictionary data within each
@@ -427,7 +427,7 @@ class RelativeKinematicsProcessor(EuclideanDistanceMixin, ListWindowMixin):
         return (dist_after - dist_before) / abs(start_time - end_time)
 
 
-class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
+class InContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
 
     def __init__(self, item_ids, robot_id, threshold_distance=.06, window_percentage=.5):
         """
@@ -448,7 +448,7 @@ class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
         self.threshold_distance = threshold_distance
         self.window_percentage = window_percentage
 
-    def generate_object_contact_data(self, observations, window_size=8):
+    def process(self, observations, window_size=8):
         """
         Calculates relative distance, velocity and acceleration between item-item pairs
         and item-robot pair. This is performed in-place: the dictionary data within each
@@ -535,7 +535,7 @@ class SphereOfInfluenceProcessor(EuclideanDistanceMixin):
         self.robot_id = robot_id
         self.threshold_distance = threshold_distance
 
-    def generate_SOI_data(self, observations):
+    def process(self, observations):
         """
         Determines whether the end effector of a robotic arm is within the "sphere of influence" of
         items in the environment.  This is performed in-place: the dictionary data within each

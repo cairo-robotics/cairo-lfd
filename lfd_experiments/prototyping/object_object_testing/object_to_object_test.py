@@ -9,7 +9,7 @@ from lfd.items import ItemFactory
 from lfd.constraints import ConstraintFactory
 from lfd.data_io import DataImporter, DataExporter
 from lfd.environment import Observation, Demonstration
-from lfd.processing import ObjectRelativeDataProcessor, ObjectContactProcessor
+from lfd.processing import ProcessorPipeline, RelativeKinematicsProcessor, RelativePositionProcessor, InContactProcessor
 
 
 def main():
@@ -63,13 +63,17 @@ def main():
         demonstrations.append(Demonstration(observations))
     args = parser.parse_args(rospy.myargv()[1:])
 
-    ordp = ObjectRelativeDataProcessor(environment.get_item_ids(), environment.get_robot_id())
-    ocp = ObjectContactProcessor(environment.get_item_ids(), environment.get_robot_id(), .06, .5)
+    # Build processors and process demonstrations to generate derivative data e.g. relative position.
+    rk_processor = RelativeKinematicsProcessor(environment.get_item_ids(), environment.get_robot_id())
+    ic_processor = InContactProcessor(environment.get_item_ids(), environment.get_robot_id(), .06, .5)
+    soi_processor = SphereOfInfluenceProcessor(environment.get_item_ids(), environment.get_robot_id())
+    rp_processor = RelativePositionProcessor(environment.get_item_ids(), environment.get_robot_id())
+    pipeline = ProcessorPipeline([rk_processor, ic_processor, soi_processor, rp_processor])
+    pipeline.process(demonstrations)
+
     exp = DataExporter()
     rospy.loginfo("Exporting demonstrations.")
     for idx, demo in enumerate(demonstrations):
-        ordp.generate_relative_data(demo.observations)
-        ocp.generate_object_contact_data(demo.observations)
         labeled_data = [obs.data for obs in demo.observations]
         exp.export_to_json(args.output_directory + "/labeled_demonstration{}.json".format(idx), labeled_data)
     print("\nDone.")

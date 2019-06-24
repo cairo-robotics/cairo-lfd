@@ -63,34 +63,23 @@ class GMMSegmenter():
         prediction = self.model.predict(X)
 
         # Find start and end indices for each observation
-        startindices = []
-        endindices = []
-        for i in range(len(prediction)):
-            if i == 0:
-                currentnum = prediction[i]
-                startindices.append(i)
-            elif (prediction[i] != currentnum) & (i == len(prediction) - 1):
-                endindices.append(i - 1)
-                startindices.append(i)
-                endindices.append(i)
-                currentnum = prediction[i]
-            elif (prediction[i] != currentnum):
-                endindices.append(i - 1)
-                startindices.append(i)
-                currentnum = prediction[i]
-            elif i == len(prediction) - 1:
-                endindices.append(i)
+        startindex = []
+        endindex = []
+        uniquepreds = np.array(list(set(prediction)))
 
-        # Use start and end indices to create/splice segments
-        segments = []
-        for index in range(len(startindices)):
-            if startindices[index] == endindices[index]:
-                segments.append(
-                    X[startindices[index]:endindices[index] + 1])
+        for num in uniquepreds:
+            result = np.where(prediction == num)
+            startindex.append(result[0][0])
+            if len(result[0]) == 1:
+                endindex.append(result[0][0])
             else:
-                segments.append(X[startindices[index]:endindices[index]])
+                endindex.append(result[0][len(result[0])-1])
 
-        # Return
+        segments = []
+        for index in range(len(startindex)):
+            print(prediction[startindex[index]:endindex[index]])
+            segments.append(data[startindex[index]:endindex[index]])
+
         return segments
 
 
@@ -124,52 +113,3 @@ class LabelBasedSegmenter():
                 segchange = False
             else:
                 observations.data[i]['segment'] = observations.data[i - 1]['segment']
-
-class DemonstrationSegmenter()
-
-    def __init__(self, segmenter):
-        self.segmenter = segmenter
-
-    def segment_demonstrations(demonstrations):
-    	segments = {}
-    	for demo in demonstrations:
-    		demo_id = demo.id
-    		demo_segments = segmenter.segment(demo)
-    		segments[demo_id] = demo_segments
-    		
-    	return segments
-
-
-#     def segment_demonstrations(demonstrations):
-#         segments = {}
-#         for demo in dmeonstrations:
-#             demo_id = demo.id
-#             demo_segments = segmenter.segment(demo)
-#             segments[demo_id] = demo_segments
-
-# {
-#     1: [segment1for1, segment2for1, segment3for1],
-#     2: [segment1for2, segment2for2, segment3for2]
-# }
-
-# SegmentationObject1.segments -> {
-#     1: segment1for1,
-#     2: segment1for2
-
-# }
-
-# SegmentationObject2.segments -> {
-#     1: segment2for1,
-#     2: segment2for2
-# }
-
-# SegmentationObject3.segments -> {
-#     1: segment3for1,
-#     2: segment3for2
-# }
-
-
-segments = [SegmentationObject1, SegmentationObject2, SegmentationObject3]
-
-demo_segmenter = DemonstrationSegmenter(ManualSegmentation())
-segments = demo_segmenter.segment_demonstrations(demonstrations)

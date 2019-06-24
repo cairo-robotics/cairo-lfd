@@ -9,7 +9,7 @@ from lfd.items import ItemFactory
 from lfd.constraints import ConstraintFactory
 from lfd.data_io import DataImporter, DataExporter
 from lfd.environment import Observation, Demonstration
-from lfd.processing import ProcessorPipeline, RelativeKinematicsProcessor, RelativePositionProcessor, InContactProcessor
+from lfd.data_processing import ProcessorPipeline, RelativeKinematicsProcessor, RelativePositionProcessor, InContactProcessor, SphereOfInfluenceProcessor
 
 
 def main():
@@ -45,7 +45,8 @@ def main():
     configs = import_configuration(config_filepath)
 
     items = ItemFactory(configs).generate_items()
-    constraints = ConstraintFactory(configs["constraints"]).generate_constraints()
+
+    constraints = ConstraintFactory(configs).generate_constraints()
     # We only have just the one robot...for now.......
     environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints)
 

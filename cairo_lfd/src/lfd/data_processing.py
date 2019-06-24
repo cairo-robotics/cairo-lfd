@@ -7,6 +7,17 @@ from environment import Observation
 from scipy.spatial.distance import euclidean
 
 
+class ProcessorPipeline():
+
+    def __init__(self, processor_list):
+        self.processors = processor_list
+
+    def process(self, demonstrations):
+        for idx, demo in enumerate(demonstrations):
+            for processor in self.processors:
+                processor.process(demo.observations)
+
+
 class EuclideanDistanceMixin():
 
     def _euclidean(self, obj1_posistion, obj2_position):
@@ -87,7 +98,67 @@ class ListWindowMixin():
         return []
 
 
-class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
+class RelativePositionProcessor(object):
+
+    def __init__(self, item_ids, robot_id):
+        """
+        Parameters
+        ----------
+        item_ids : list
+            List of environment 'item' ids.
+        robot_id : int
+            Id of robot in environment.
+        """
+        self.item_ids = item_ids
+        self.robot_id = robot_id
+
+    def process(self, observations):
+        """
+
+        Parameters
+        ----------
+        observations : list
+            List of Observation objects.
+        """
+        for idx, obsv in enumerate(observations):
+            self.generate_robot_relative_pos(obsv)
+            self.generate_item_relative_pos(obsv)
+
+    def generate_robot_relative_pos(self, obsv):
+        # relative to robots
+        for item_id in self.item_ids:
+            relative_positions = {}
+            item_data = obsv.get_item_data(item_id)
+            item_position = item_data["position"]
+            for target_id in self.item_ids:
+                if item_id != target_id:
+                    target_position = obsv.get_item_data(target_id)[
+                        "position"]
+                    relative_positions[target_id] = self._calculate_relative_position(
+                        item_position, target_position)
+            robot_position = obsv.get_robot_data()["position"]
+            relative_positions[self.robot_id] = self._calculate_relative_position(
+                item_position, robot_position)
+            item_data["relative_positions"] = relative_positions
+
+    def generate_item_relative_pos(self, obsv):
+        # relative to robots
+        relative_positions = {}
+        robot_data = obsv.get_robot_data()
+        robot_position = robot_data["position"]
+        for item_id in self.item_ids:
+            item_position = obsv.get_item_data(item_id)["position"]
+            relative_positions[item_id] = self._calculate_relative_position(robot_position, item_position)
+        robot_data["relative_positions"] = relative_positions
+
+    def _calculate_relative_position(self, reference, target):
+        x = target[0] - reference[0]
+        y = target[1] - reference[1]
+        z = target[2] - reference[2]
+        return [x, y, z]
+
+
+class RelativeKinematicsProcessor(EuclideanDistanceMixin, ListWindowMixin):
     """
     Calculates object to object relative distance, velocity and acceleration based on data
     contained in lists of Observations.
@@ -110,7 +181,7 @@ class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
         self.item_ids = item_ids
         self.robot_id = robot_id
 
-    def generate_relative_data(self, observations):
+    def process(self, observations):
         """
         Calculates relative distance, velocity and acceleration between item-item pairs 
         and item-robot pair. This is performed in-place: the dictionary data within each
@@ -356,7 +427,7 @@ class ObjectRelativeDataProcessor(EuclideanDistanceMixin, ListWindowMixin):
         return (dist_after - dist_before) / abs(start_time - end_time)
 
 
-class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
+class InContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
 
     def __init__(self, item_ids, robot_id, threshold_distance=.06, window_percentage=.5):
         """
@@ -377,7 +448,7 @@ class ObjectContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
         self.threshold_distance = threshold_distance
         self.window_percentage = window_percentage
 
-    def generate_object_contact_data(self, observations, window_size=8):
+    def process(self, observations, window_size=8):
         """
         Calculates relative distance, velocity and acceleration between item-item pairs
         and item-robot pair. This is performed in-place: the dictionary data within each
@@ -464,7 +535,7 @@ class SphereOfInfluenceProcessor(EuclideanDistanceMixin):
         self.robot_id = robot_id
         self.threshold_distance = threshold_distance
 
-    def generate_SOI_data(self, observations):
+    def process(self, observations):
         """
         Determines whether the end effector of a robotic arm is within the "sphere of influence" of
         items in the environment.  This is performed in-place: the dictionary data within each

@@ -7,40 +7,6 @@ import numpy as np
 import copy
 
 
-def get_observation_pose_vector(observation):
-    """
-    Vectorizes a Observation object by obtaining pose data.
-
-    Parameters
-    ----------
-    observation : Observation
-       Observation object to vectorize.
-
-    Returns
-    -------
-    : list
-       Returns list of pose data as the following [x, y, z, q_x, q_y, q_z, q_w]
-    """
-    return observation.get_pose_list()
-
-
-def get_observation_joint_vector(observation):
-    """
-    Vectorizes a Observation object by obtaining joint configuration data.
-
-    Parameters
-    ----------
-    observation : Observation
-       Observation object to vectorize.
-
-    Returns
-    -------
-    : list
-       Returns list of joint configuration data. Formatting is dependent on robot DOF etc,.
-    """
-    return observation.get_joint_angle()
-
-
 class KeyframeGraphAnalyzer():
     """
     Supports the analysis of a KeyframeGraph.
@@ -152,6 +118,7 @@ class KeyframeGraphAnalyzer():
 
 class MotionPlanAnalyzer():
     """
+    WIP: THIS CLASS IS NOT USABLE NOR COMPLETE
     Class with methods to support the analysis of a motion plan.
 
     Attributes

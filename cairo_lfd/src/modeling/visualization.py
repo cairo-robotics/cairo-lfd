@@ -9,11 +9,11 @@ import randomcolor
 import numpy as np
 
 
-class SamplePointViewer:
+class Scatter3D:
     """
     Class for viewing samples points via Matplotlib's pyplot.
     """
-    def view_3D_scatter(self, sample_points, x_index, y_index, z_index):
+    def plot(self, sample_points, x_index, y_index, z_index):
         """
         Generates 3D graph according of the passed in sample points.
 
@@ -35,7 +35,67 @@ class SamplePointViewer:
         plt.show()
 
 
-class KMeansModelViewer:
+class GaussianMixture3D():
+    """
+    Class for viewing sample points, their assignment to components of a mixture model, and the 
+    corresponding Gaussian ellipsoids as 3D wire frames representing one standard deviations.
+
+    """
+    def plot(X, Y_, means, covariances):
+        """
+        Generates 3D graph of scatter plotted sample points, colored by label, overlayed with
+        the Gaussian Mixture component ellipsoids.
+
+        This should support any Gaussian Mixture model implemented in the guise of SciKit learn
+        BayesianGaussianMixxture or GaussianMixture where X is similar in shape to training data, 
+        Y_ is results provided by predict() function, and the means and covariances are attributes
+        of the class model.
+
+        Parameters
+        ----------
+        X : ndarray
+            Numpy array of shape (n_samples, 3) where number of dimensions is restricted to 3. May
+            require projecting higher level state space to 3D space.
+        Y_ : array-like
+            Array of the component labels for every sample.
+        means : array-like
+            Means of Gaussian components
+        z_index : int
+            Covariances of Gaussian components
+        """
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        for i, (mean, covar, color) in enumerate(zip(
+                means, covariances, color_iter)):
+
+            # as the DP will not use every component it has access to
+            # unless it needs it, we shouldn't plot the redundant
+            # components.
+            if not np.any(Y_ == i):
+                continue
+            ax.scatter(X[Y_ == i, 0], X[Y_ == i, 1], X[Y_ == i, 2], s=.8, color=color)
+
+            # find the rotation matrix and radii of the axes
+            U, s, rotation = linalg.svd(covar)
+            radii = np.sqrt(s)
+            print(radii)
+
+            # now carry on with EOL's answer
+            u = np.linspace(0.0, 2.0 * np.pi, 100)
+            v = np.linspace(0.0, np.pi, 100)
+            x = radii[0] * np.outer(np.cos(u), np.sin(v))
+            y = radii[1] * np.outer(np.sin(u), np.sin(v))
+            z = radii[2] * np.outer(np.ones_like(u), np.cos(v))
+            for i in range(len(x)):
+                for j in range(len(x)):
+                    [x[i, j], y[i, j], z[i, j]] = np.dot([x[i, j], y[i, j], z[i, j]], rotation) + mean
+
+            # plot
+            ax.plot_wireframe(x, y, z, rstride=4, cstride=4, color=color, alpha=0.2)
+        plt.show()
+
+
+class KMeans2D:
     """
     Class for viewing observation vector representation with KMeansModel.
 
@@ -58,7 +118,7 @@ class KMeansModelViewer:
         self.kmm = kmm
         self.observation_vectors = observation_vectors
 
-    def view_3D_clusters(self, x_index, y_index, z_index):
+    def plot(self, x_index, y_index, z_index):
         """
         Generates 3D graph of the clusters of KMeans model
 
@@ -91,7 +151,7 @@ class KMeansModelViewer:
         plt.show()
 
 
-class GaussianMixtureModelViewer:
+class GaussianMixtureModel2DViewer:
     """
     Class for viewing observation vector representaions within Gaussian Mixture Model.
 
@@ -114,7 +174,7 @@ class GaussianMixtureModelViewer:
         self.gmm = gmm
         self.observation_vectors = observation_vectors
 
-    def view_2D_gaussians(self, x_index, y_index):
+    def plot(self, x_index, y_index):
         """
         Generates 2D graph of distribution components of the of Gaussian Mixture model.
 

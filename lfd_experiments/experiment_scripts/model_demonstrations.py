@@ -12,7 +12,7 @@ from lfd.environment import Demonstration, Observation, Environment, import_conf
 from lfd.data_io import DataImporter
 from lfd.items import RobotFactory, ConstraintFactory
 from lfd.analysis import KeyframeGraphAnalyzer, ConstraintAnalyzer, get_observation_joint_vector
-from lfd.processing import SawyerSampleConverter
+from lfd.data_conversion import SawyerSampleConverter
 
 
 def main():
@@ -43,7 +43,7 @@ def main():
 
     parser.add_argument(
         '-n', '--number_of_samples', type=int, default=50, metavar='NUMBEROFSAMPLES',
-        help='log-liklihood threshold value'
+        help='the number of samples to validate for each keyframe'
     )
 
     args = parser.parse_args(rospy.myargv()[1:])
@@ -69,12 +69,10 @@ def main():
     """ Create the Cairo LfD environment """
     config_filepath = args.config
     configs = import_configuration(config_filepath)
-    robot_factory = RobotFactory(configs["robots"])
-    constraint_factory = ConstraintFactory(configs["constraints"])
-    robot = robot_factory.generate_robots()[0]
-    constraints = constraint_factory.generate_constraints()
-    environment = Environment(items=None, robot=robot,
-                              constraints=constraints)
+    items = ItemFactory(configs).generate_items()
+    constraints = ConstraintFactory(configs).generate_constraints()
+    # We only have just the one robot...for now.......
+    environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints)
 
     """ Create the moveit_interface """
     moveit_interface = SawyerMoveitInterface()
@@ -98,6 +96,9 @@ def main():
         graph.nodes[cluster_id]["model"] = KDEModel(kernel='gaussian', bandwidth=args.bandwidth)
     graph.add_path(graph.nodes())
     graph.fit_models(get_observation_joint_vector)
+    rospy.loginfo(graph.get_keyframe_sequence())
+    for node in graph.get_keyframe_sequence():
+        print(graph.nodes[node]["keyframe_type"])
 
     """ Build a ConstraintAnalyzer and KeyframeGraphAnalyzer """
     constraint_analyzer = ConstraintAnalyzer(environment)
@@ -108,9 +109,19 @@ def main():
 
     """ Generate raw_samples from graph for each keyframe """
     for node in graph.get_keyframe_sequence():
-        # Sample point according to constraints
-        n_samples = args.number_of_samples
-        attempts, samples = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["applied_constraints"], n=n_samples)
+        # Keep sampling 
+        if graph.nodes[node]["keyframe_type"] == "constraint_transition":
+            rospy.loginfo("Sampling from a constraint transition keyframe.")
+            attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["applied_constraints"], n=n_samples)
+            if len(samples) == 0:
+                # Some constraints couldn't be sampled successfully, so using best available samples.
+                diff = list(set(graph.nodes[node]["applied_constraints"]).difference(set(matched_ids)))
+                rospy.logwarn("Constraints {} couldn't be met so attempting to find valid samples with constraints {}.".format(diff, matched_ids))
+                attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], matched_ids, n=n_samples)
+
+        else:
+            n_samples = args.number_of_samples
+            attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["applied_constraints"], n=n_samples)
 
         rospy.loginfo("Keyframe %d: %s valid of %s attempts", node, len(samples), attempts)
         if len(samples) < n_samples:

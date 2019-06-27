@@ -8,31 +8,6 @@ from scipy.spatial.distance import euclidean
 import copy
 
 
-def vectorize_demonstration(demonstration):
-
-    """
-    Vectorizes a demonstration's observations through the union of the
-    robot's position and robot's joints.
-
-    Parameters
-    ----------
-    demonstration : Demonstration
-      Demonstrations to vectorize.
-
-    Returns
-    -------
-    vectors : list
-        List of observation vectors.
-    """
-
-    vectors = []
-    for observation in demonstration.observations:
-        position_data = observation.data["robot"]["position"]
-        vector = position_data 
-        vectors.append(vector)
-    return vectors
-
-
 class DemonstrationAligner(object):
 
     """

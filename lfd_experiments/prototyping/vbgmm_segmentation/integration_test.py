@@ -5,7 +5,7 @@ import os
 from lfd.environment import Demonstration, Observation
 from lfd.data_io import DataImporter
 from lfd.data_conversion import vectorize_demonstration
-from lfd.segmentation import DemonstrationSegmentation, GMMSegmenter
+from lfd.segmentation import DemonstrationSegmentation, BayesianGMMSegmenter
 # from modeling import GaussianMixtureComponent3D
 
 
@@ -23,7 +23,7 @@ def main():
             observations.append(Observation(entry))
         demonstrations.append(Demonstration(observations))
 
-    gmm_segmenter = GMMSegmenter(
+    gmm_segmenter = BayesianGMMSegmenter(
         demonstrations, vectorize_demonstration, n_components=5)
     model = gmm_segmenter.model
     # Deploy model to segment each demonstration

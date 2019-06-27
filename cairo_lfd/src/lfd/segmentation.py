@@ -38,7 +38,7 @@ class DemonstrationSegmentation():
         return [seg_objects]
 
 
-class GMMSegmenter():
+class BayesianGMMSegmenter():
 
     def __init__(self, demonstrations, demonstration_vectorizor, n_components):
         self.demos = demonstrations
@@ -52,9 +52,9 @@ class GMMSegmenter():
         demos = [self.vectorizor(demo) for demo in self.demos]
         X = np.array([e for sl in demos for e in sl])
         if self.n_samples < self.n_components:
-            self.model = mixture.GaussianMixture(n_components=X.shape[0]).fit(X)
+            self.model = mixture.BayesianGaussianMixture(n_components=X.shape[0]).fit(X)
         else:
-            self.model = mixture.GaussianMixture(n_components=n_components).fit(X)
+            self.model = mixture.BayesianGaussianMixture(n_components=n_components).fit(X)
 
     def segment(self, demonstration):
         # Predict segmentation using trained model
@@ -63,22 +63,21 @@ class GMMSegmenter():
         prediction = self.model.predict(X)
 
         # Find start and end indices for each observation
-        startindex = []
-        endindex = []
-        uniquepreds = np.array(list(set(prediction)))
+        start_indices = []
+        end_indices = []
+        unique_preds = np.array(list(set(prediction)))
 
-        for num in uniquepreds:
+        for num in unique_preds:
             result = np.where(prediction == num)
-            startindex.append(result[0][0])
+            start_indices.append(result[0][0])
             if len(result[0]) == 1:
-                endindex.append(result[0][0])
+                end_indices.append(result[0][0])
             else:
-                endindex.append(result[0][len(result[0])-1])
+                end_indices.append(result[0][len(result[0])-1])
 
         segments = []
-        for index in range(len(startindex)):
-            print(prediction[startindex[index]:endindex[index]])
-            segments.append(data[startindex[index]:endindex[index]])
+        for index in range(len(start_indices)):
+            segments.append(demonstration.observations[start_indices[index]:end_indices[index]])
 
         return segments
 

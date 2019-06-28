@@ -39,16 +39,18 @@
     ],
     "items": [
         {
-            "class": "StaticItem",
+            "class": "DynamicItem",
             "init_args":
                 {
                     "id": 2,
-                    "name": "block",
+                    "name": "wood_block",
                     "pose": 
                         {
                             "position":[0.6952, -0.03986, -0.173911],
                             "orientation": [0.015391, -0.0089937, 0.70554, 0.70845]
                         },
+                    "world_frame": "world",
+                    "child_frame": "wood_block",
                     "perimeter":
                         {
                             "inner": [[0.828470625, 0.06511343749999998], [0.828470625, -0.1448334375], [0.5619293750000001, -0.1448334375], [0.5619293750000001, 0.06511343749999998]],

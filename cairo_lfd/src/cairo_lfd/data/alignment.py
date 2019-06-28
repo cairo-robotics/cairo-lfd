@@ -2,10 +2,11 @@
 The alignment.py module contains a variety of methods and classes used to align
 Demonstrations captured during the LfD process.
 """
+import copy
+
 import rospy
 from fastdtw import fastdtw
 from scipy.spatial.distance import euclidean
-import copy
 
 
 class DemonstrationAligner(object):

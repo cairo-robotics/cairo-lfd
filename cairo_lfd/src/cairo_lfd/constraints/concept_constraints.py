@@ -3,10 +3,11 @@ The constraints.py module contains a classes that encapsulate predicate classifi
 evaluate binary value conceptual constraints.
 """
 import intera_interface
+
 from predicate_classification.pose_classifiers import height, upright, over_under
 from predicate_classification.path_classifiers import perimeter_2D
-from lfd.triggers import SawyerCuffButtonTrigger
-from lfd.conversion import convert_data_to_pose
+from cairo_lfd.constraints.triggers import SawyerCuffButtonTrigger
+from cairo_lfd.data.conversion import convert_data_to_pose
 
 
 class HeightConstraint(object):

@@ -3,10 +3,11 @@
 import rospy
 import argparse
 
-from lfd.data_io import DataImporter, DataExporter
-from lfd.alignment import DemonstrationAligner, vectorize_demonstration
-from lfd.data_processing import ConstrainedKeyframeLabeler
-from lfd.environment import Observation, Demonstration
+from cairo_lfd.data.io import DataImporter, DataExporter
+from cairo_lfd.data.conversion import vectorize_demonstration
+from cairo_lfd.data.alignment import DemonstrationAligner
+from cairo_lfd.data.labeling import ConstraintKeyframeLabeler
+from cairo_lfd.core.environment import Observation, Demonstration
 
 
 def main():

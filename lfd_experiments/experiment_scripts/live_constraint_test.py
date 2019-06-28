@@ -9,12 +9,12 @@ from intera_interface import CHECK_VERSION
 from intera_core_msgs.msg import InteractionControlCommand
 from geometry_msgs.msg import Pose
 from intera_motion_interface import InteractionOptions, InteractionPublisher
-from lfd.record import SawyerRecorder
-from lfd.environment import Environment, Observation, import_configuration
-from lfd.items import ItemFactory
-from lfd.constraints import ConstraintFactory
-from lfd.analysis import ConstraintAnalyzer
-from lfd.data_io import DataExporter
+from cairo_lfd.core.record import SawyerRecorder
+from cairo_lfd.core.environment import Environment, Observation, import_configuration
+from cairo_lfd.core.items import ItemFactory
+from cairo_lfd.constraints.concept_constraints import ConstraintFactory
+from cairo_lfd.modeling.analysis import ConstraintAnalyzer
+from cairo_lfd.data.io import DataExporter
 
 
 def main():

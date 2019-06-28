@@ -1,3 +1,7 @@
+"""
+The triggers.py module supports methods for identifying triggers for specific events. Generally this is for 
+triggering constraints.
+"""
 from abc import ABCMeta, abstractmethod
 import intera_interface
 import rospy
@@ -56,7 +60,7 @@ class SawyerCuffButtonTrigger(AbstractTrigger):
 
 class SubscribedTrigger(AbstractTrigger):
     """
-    Trigger class based a subscribed callback updating the triggered state. 
+    Trigger class based a subscribed callback updating the triggered state.
     Currently, this class depends on ConstraintTrigger.msg of the cairo_lfd_msgs package.
 
     Attributes

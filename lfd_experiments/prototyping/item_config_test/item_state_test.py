@@ -4,12 +4,14 @@ import rospy
 import argparse
 import intera_interface
 from intera_interface import CHECK_VERSION
-from lfd.record import SawyerRecorder
-from lfd.environment import Environment, import_configuration
-from lfd.items import ItemFactory
-from lfd.constraints import ConstraintFactory
-from lfd.analyzer import ConstraintAnalyzer
-from lfd.data_io import DataExporter
+from intera_motion_interface import InteractionOptions, InteractionPublisher
+from cairo_lfd.core.record import SawyerRecorder
+from cairo_lfd.core.environment import Environment, import_configuration
+from cairo_lfd.core.items import ItemFactory
+from cairo_lfd.constrain.concept_constraints import ConstraintFactory
+from cairo_lfd.modeling.analysis import ConstraintAnalyzer
+from cairo_lfd.data.io import DataExporter
+
 
 
 def main():
@@ -62,6 +64,15 @@ def main():
     print("Recording. Press Ctrl-C to stop.")
     demos = recorder.record_demonstrations(environment)
 
+    # Build processors and process demonstrations to generate derivative data e.g. relative position.
+    rk_processor = RelativeKinematicsProcessor(environment.get_item_ids(), environment.get_robot_id())
+    ic_processor = InContactProcessor(environment.get_item_ids(), environment.get_robot_id(), .06, .5)
+    soi_processor = SphereOfInfluenceProcessor(environment.get_item_ids(), environment.get_robot_id())
+    rp_processor = RelativePositionProcessor(environment.get_item_ids(), environment.get_robot_id())
+    pipeline = ProcessorPipeline([rk_processor, ic_processor, soi_processor, rp_processor])
+    pipeline.process(demonstrations)
+
+    # Analyze for applied constraints. This will apply a set of constraints for all observations that for which the constraint set holds true. i.e. true until its not.
     constraint_analyzer = ConstraintAnalyzer(environment)
     for demo in demos:
         constraint_analyzer.applied_constraint_evaluator(demo.observations)

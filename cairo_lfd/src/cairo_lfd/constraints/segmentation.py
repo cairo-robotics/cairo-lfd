@@ -1,8 +1,11 @@
+"""
+The segmentation.py module supports segmenting demonstration data for use in autonomous constraint assignment.
+"""
 import rospy
 import numpy as np
 import copy
 from sklearn import mixture
-from lfd.data_conversion import vectorize_demonstration
+from cairo_lfd.data.vectorization import vectorize_demonstration
 
 
 class Segment():

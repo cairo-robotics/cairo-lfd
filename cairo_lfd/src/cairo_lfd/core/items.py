@@ -2,13 +2,15 @@
 The items.py module contains container classes for items uses in the Cario LfD ecosystem.
 These could include robots, constraints, and environment objects such as a cup etc,.
 """
+from abc import ABCMeta, abstractmethod
+
+import numpy as np
+import tf
 import rospy
 import intera_interface
-from abc import ABCMeta, abstractmethod
-from lfd.constraints import UprightConstraint, HeightConstraint
+
+from cairo_lfd.constraints.concept_constraints import UprightConstraint, HeightConstraint
 from robot_clients.transform_clients import TransformLookupClient
-import tf
-import numpy as np
 
 
 class AbstractItem(object):

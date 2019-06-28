@@ -1,15 +1,17 @@
 """
 The record.py module contains classes and methods for recording data during live demonstrations.
 """
-import rospy
-from lfd.environment import Observation, Demonstration
 import sys
 import select
 import os
+
+import rospy
 import intera_interface
 import cv2
 import cv_bridge
 from sensor_msgs.msg import Image
+
+from cairo_lfd.core.environment import Observation, Demonstration
 
 
 class SawyerRecorder(object):

@@ -1,5 +1,5 @@
 """
-The data_io.py module contains a classes that contain methods for importing and exporting data.
+The io.py module contains a classes that contain methods for importing and exporting data.
 """
 import glob
 import errno
@@ -28,7 +28,7 @@ class DataExporter:
             Data to be serialized to json.
         """
         with open(path, 'w') as f:
-            json.dump(data, f,  indent=4, sort_keys=True)
+            json.dump(data, f, indent=4, sort_keys=True)
 
 
 class DataImporter:

@@ -7,7 +7,32 @@ from geometry_msgs.msg import Pose
 from environment import Observation
 
 
-def vectorize_demonstration(demonstration):
+def vectorize_robot_position(demonstration):
+
+    """
+    Vectorizes a demonstration's observations through the union of the
+    robot's position.
+
+    Parameters
+    ----------
+    demonstration : Demonstration
+      Demonstrations to vectorize.
+
+    Returns
+    -------
+    vectors : list
+        List of observation vectors.
+    """
+
+    vectors = []
+    for observation in demonstration.observations:
+        position_data = observation.data["robot"]["position"]
+        vector = position_data
+        vectors.append(vector)
+    return vectors
+
+
+def vectorize_relative_end_effector_position(demonstration):
 
     """
     Vectorizes a demonstration's observations through the union of the

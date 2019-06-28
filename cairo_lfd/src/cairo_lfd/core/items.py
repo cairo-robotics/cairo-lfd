@@ -61,7 +61,7 @@ class SawyerRobot(AbstractItem):
 
     Attributes
     ----------
-    id : int
+    robot_id : int
             Id of robot assigned in the config.json configuration files.
     upright_pose : dict
        Dictionary with position and orientation fields indicating the upright orientation of the Sawyer end-effector.
@@ -194,7 +194,7 @@ class StaticItem(AbstractItem):
         """
         Parameters
         ----------
-        id : int
+        object_id : int
                 Id of item.
         name : str
            Name of the item.
@@ -263,11 +263,11 @@ class DynamicItem(AbstractItem):
         and outer perimeter band around the static item.
     """
 
-    def __init__(self, object_id, name, upright_pose, world_frame, child_frame, service_name="transform_lookup_service", perimeter=None):
+    def __init__(self, object_id, name, upright_pose, world_frame, child_frame, perimeter=None, service_name="transform_lookup_service"):
         """
         Parameters
         ----------
-        id : int
+        object_id : int
                 Id of item.
         name : str
            Name of the item.
@@ -362,7 +362,7 @@ class ItemFactory(object):
             "name": "Block1",
             "init_args":
                 {
-                    "id": 1,
+                    "object_id": 1,
                     "upright_pose":
                         {
                             "position":

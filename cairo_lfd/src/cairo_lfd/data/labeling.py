@@ -3,6 +3,7 @@ The labeling.py module contains a classes that are used to label demonstration d
 manipulating or processing any existing data, but rather assigns metadata to the observations within a demonstration.
 """
 import copy
+import numpy as np
 import rospy
 
 

@@ -44,8 +44,8 @@ class SawyerRecorder(object):
         self.interaction_publisher = interaction_publisher
         self.interaction_options = interaction_options
         self.head_display_pub = rospy.Publisher('/robot/head_display', Image, latch=True, queue_size=10)
-        self.recording_image_path = os.path.join(os.path.dirname(__file__), '../../../lfd_experiments/images/Recording.jpg')
-        self.ready_to_record_image_path = os.path.join(os.path.dirname(__file__), '../../../lfd_experiments/images/ReadyToRecord.jpg')
+        self.recording_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/Recording.jpg')
+        self.ready_to_record_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/ReadyToRecord.jpg')
 
     def _time_stamp(self):
         """

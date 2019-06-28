@@ -10,10 +10,11 @@ from intera_motion_interface import InteractionOptions, InteractionPublisher
 from cairo_lfd.core.record import SawyerRecorder
 from cairo_lfd.core.environment import Environment, import_configuration
 from cairo_lfd.core.items import ItemFactory
-from cairo_lfd.constrain.concept_constraints import ConstraintFactory
+from cairo_lfd.constraints.concept_constraints import ConstraintFactory
 from cairo_lfd.modeling.analysis import ConstraintAnalyzer
 from cairo_lfd.data.io import DataExporter
 from cairo_lfd.data.processing import ProcessorPipeline, RelativeKinematicsProcessor, RelativePositionProcessor, InContactProcessor, SphereOfInfluenceProcessor
+
 
 def main():
     """
@@ -81,6 +82,15 @@ def main():
     print("Recording. Press Ctrl-C to stop.")
     demos = recorder.record_demonstrations(environment, auto_zeroG=True)
 
+    # Build processors and process demonstrations to generate derivative data e.g. relative position.
+    rk_processor = RelativeKinematicsProcessor(environment.get_item_ids(), environment.get_robot_id())
+    ic_processor = InContactProcessor(environment.get_item_ids(), environment.get_robot_id(), .06, .5)
+    soi_processor = SphereOfInfluenceProcessor(environment.get_item_ids(), environment.get_robot_id())
+    rp_processor = RelativePositionProcessor(environment.get_item_ids(), environment.get_robot_id())
+    pipeline = ProcessorPipeline([rk_processor, ic_processor, soi_processor, rp_processor])
+    pipeline.process(demos)
+
+    # Analyze observations for constraints. 
     constraint_analyzer = ConstraintAnalyzer(environment)
     for demo in demos:
         constraint_analyzer.applied_constraint_evaluator(demo.observations)
@@ -90,6 +100,7 @@ def main():
         raw_data = [obs.data for obs in demo.observations]
         print("'/raw_demonstration{}.json': {} observations".format(idx, len(raw_data)))
         exp.export_to_json(args.directory + "/raw_demonstration{}.json".format(idx), raw_data)
+
 
 if __name__ == '__main__':
     main()

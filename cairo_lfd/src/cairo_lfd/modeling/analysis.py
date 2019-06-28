@@ -88,7 +88,6 @@ class KeyframeGraphAnalyzer():
         curr_ll = model.score_samples(vectors)
         max_ll = np.amax(curr_ll)
         mean_ll = np.mean(curr_ll)
-        rospy.loginfo("Mean log liklihood:{}, Max log liklihood:{}".format(mean_ll, max_ll))
         return (max_ll, mean_ll)
 
     def cull_keyframes(self, threshold=-10000):
@@ -107,7 +106,7 @@ class KeyframeGraphAnalyzer():
             rospy.loginfo("Prev: {}; Curr: {}".format(prev, curr))
             max_ll, mean_ll = self.max_mean_ll(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["observations"])
             if mean_ll > threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
-                rospy.loginfo("Node {} average LL is above threshold".format(curr))
+                rospy.loginfo("Node {} average log-likelihood of {} is above threshold of {}".format(curr, mean_ll, threshold))
                 succ = self.graph.successors(curr).next()
                 self.graph.cull_node(curr)
                 curr = succ

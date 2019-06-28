@@ -5,14 +5,16 @@ import rospy
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
 
-from modeling.graphing import ObservationClusterer, KeyframeGraph
-from modeling.models import KDEModel
-from modeling.sampling import KeyframeSampler
-from lfd.environment import Demonstration, Observation, Environment, import_configuration
-from lfd.data_io import DataImporter
-from lfd.items import RobotFactory, ConstraintFactory
-from lfd.analysis import KeyframeGraphAnalyzer, ConstraintAnalyzer, get_observation_joint_vector
-from lfd.data_conversion import SawyerSampleConverter
+from cairo_lfd.modeling.graphing import ObservationClusterer, KeyframeGraph
+from cairo_lfd.modeling.models import KDEModel
+from cairo_lfd.modeling.sampling import KeyframeSampler
+from cairo_lfd.modeling.analysis import KeyframeGraphAnalyzer, ConstraintAnalyzer
+from cairo_lfd.core.environment import Demonstration, Observation, Environment, import_configuration
+from cairo_lfd.core.items import ItemFactory
+from cairo_lfd.constraints.concept_constraints import ConstraintFactory
+from cairo_lfd.data.io import DataImporter
+from cairo_lfd.data.conversion import SawyerSampleConverter
+from cairo_lfd.data.vectorization import get_observation_joint_vector
 
 
 def main():

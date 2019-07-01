@@ -87,7 +87,15 @@ class Environment(object):
         if self.items is not None:
             for item in self.items:
                 item_states.append(item.get_state())
-        return item_states
+            return item_states
+        else:
+            raise EnvironmentError("There are no items configured into the environment!")
+
+    def get_item_state_by_id(self, item_id):
+        if self.items is not None:
+            return [item for item in self.items if item.id == item_id][0]
+        else:
+            raise EnvironmentError("There are no items configured into the environment!")
 
     def get_item_info(self):
         """

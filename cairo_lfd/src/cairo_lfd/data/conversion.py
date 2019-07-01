@@ -6,7 +6,7 @@ import copy
 import numpy as np
 from geometry_msgs.msg import Pose
 
-from cairo_lfd.core.environment import Observation
+from cairo_lfd.core.environment import Environment, Observation
 
 
 def convert_data_to_pose(position, orientation):
@@ -40,6 +40,20 @@ def convert_data_to_pose(position, orientation):
     return pose
 
 
+class StaticRelativePositionAdapter(object):
+
+    def __init__(self, environment, static_item_id):
+        self.environment = environment
+        self.item_id = static_item_id
+
+    def transform(sample):
+        static_object_pos = self.enviroment.get_item_state_by_id(self.item_id)
+        x = static_object_pos[0] + sample[0]
+        y = static_object_pos[1] + sample[1]
+        z = static_object_pos[2] + sample[2]
+        return [x, y, z]
+
+
 class SawyerSampleConverter(object):
     """
     Converts raw samples generated from models into Observation objects.
@@ -50,7 +64,7 @@ class SawyerSampleConverter(object):
         SawyerMoveitInterface to help run forward kinematics.
     """
 
-    def __init__(self, interface):
+    def __init__(self, interface, adapter=None):
         """
         Parameters
         ----------
@@ -58,6 +72,7 @@ class SawyerSampleConverter(object):
             SawyerMoveitInterface to help run forward kinematics.
         """
         self.interface = interface
+        self.adapter = adapter
 
     def convert(self, sample, primal_observation=None, run_fk=False, normalize_quaternion=False):
         """
@@ -79,6 +94,8 @@ class SawyerSampleConverter(object):
         obsv : lfd.environment.Observation
             Observation object constructed from the converted sample.
         """
+        if adapter is not None:
+            sample = adapter.transform(sample)
         if run_fk is True:
             sample = self._run_foward_kinematics(sample)
         if normalize_quaternion:

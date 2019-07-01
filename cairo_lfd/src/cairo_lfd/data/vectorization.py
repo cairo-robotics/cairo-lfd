@@ -4,77 +4,85 @@ The vectorization.py module contains methods to vectorize demonstrations/observa
 import numpy as np
 
 
-def vectorize_robot_position(demonstration):
-
+def vectorize_demonstration(demonstration, vectorizors=[vectorize_robot_position]):
     """
-    Vectorizes a demonstration's observations through the union of the
-    robot's position.
+    Vectorizes a list of observations by iteratively apply each of the vectorizor function
+    to generate a concatenated numpy array.
+
+    The list of vectorizors must take in as their arguments Observation objects.
 
     Parameters
     ----------
     demonstration : Demonstration
-      Demonstrations to vectorize.
+        Demonstration object who's Observations will be vectorized.
 
     Returns
     -------
     vectors : list
-        List of observation vectors.
+        List of numpy arrays representing Observation vectors of Demonstration
     """
-
     vectors = []
     for observation in demonstration.observations:
-        position_data = observation.data["robot"]["position"]
-        vectors.append(np.array(position_data))
+        vector = []
+        for vectorizor in vectorizors:
+            vector = np.concatenate((vector, vectorizor(observaiton)))
+        vectors.append(vector)
     return vectors
 
 
-def vectorize_robot_orientation(demonstration):
-
+def vectorize_robot_position(observation):
     """
-    Vectorizes a demonstration's observations through the union of the
-    robot's orientation.
+    Vectorizes an observation using robot position data.
 
     Parameters
     ----------
-    demonstration : Demonstration
-      Demonstrations to vectorize.
+    observation : Observation
+      Observation to vectorize.
 
     Returns
     -------
-    vectors : list
-        List of observation vectors.
+     : ndarray
+        Numpy vector
     """
-
-    vectors = []
-    for observation in demonstration.observations:
-        orientation_data = observation.data["robot"]["orientation"]
-        vectors.append(np.array(orientation_data))
-    return vectors
+    return np.array(observation.data["robot"]["position"])
 
 
-def vectorize_relative_end_effector_position(demonstration, item_id):
+def vectorize_robot_orientation(observation):
+    """
+    Vectorizes an observation using robot orientation data.
+
+    Parameters
+    ----------
+    observation : Observation
+      Observation to vectorize.
+
+    Returns
+    -------
+     : ndarray
+        Numpy vector
+    """
+    return np.array(observation.data["robot"]["orientation"])
+
+
+def vectorize_relative_end_effector_position(observaiton, item_id):
 
     """
-    Vectorizes a demonstration's observations through the union of the
+    Vectorizes an observation through the union of the
     robot's position and robot's joints.
 
     Parameters
     ----------
-    demonstration : Demonstration
-      Demonstrations to vectorize.
+    observation : Observation
+      Observation to vectorize.
+    item_id : int
+        The id of the item to use as the reference position for relative distance.
 
     Returns
     -------
-    vectors : list
-        List of observation vectors.
+     : ndarray
+        Numpy vector
     """
-
-    vectors = []
-    for observation in demonstration.observations:
-        position_data = observation.data["robot"]["position"]
-        vector = position_data
-        vectors.append(vector)
-    return vectors
+    return np.array(observation.data["robot"]["relative_positions"][item_id])
 
 
 def get_observation_pose_vector(observation):
@@ -88,8 +96,8 @@ def get_observation_pose_vector(observation):
 
     Returns
     -------
-    : list
-       Returns list of pose data as the following [x, y, z, q_x, q_y, q_z, q_w]
+    : ndarray
+       Returns numpy array of pose data as the following [x, y, z, q_x, q_y, q_z, q_w]
     """
     return np.array(observation.get_pose_list())
 
@@ -105,7 +113,7 @@ def get_observation_joint_vector(observation):
 
     Returns
     -------
-    : list
-       Returns list of joint configuration data. Formatting is dependent on robot DOF etc,.
+    : ndarray
+       Returns numpy array of joint configuration data. Formatting is dependent on robot DOF etc,.
     """
     return np.array(observation.get_joint_angle())

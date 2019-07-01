@@ -82,7 +82,7 @@ def vectorize_relative_end_effector_position(observaiton, item_id):
      : ndarray
         Numpy vector
     """
-    return np.array(observation.data["robot"]["realtive_positions"][item_id])
+    return np.array(observation.data["robot"]["relative_positions"][item_id])
 
 
 def get_observation_pose_vector(observation):

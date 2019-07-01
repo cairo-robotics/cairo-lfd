@@ -5,15 +5,16 @@ import rospy
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
 
-from modeling.graphing import ObservationClusterer, KeyframeGraph
-from modeling.models import KDEModel
-from modeling.sampling import KeyframeSampler
-from lfd.environment import Demonstration, Observation, Environment, import_configuration
-from lfd.data_io import DataImporter
-from lfd.items import ItemFactory
-from lfd.constraints import ConstraintFactory
-from lfd.analysis import KeyframeGraphAnalyzer, ConstraintAnalyzer
-from lfd.conversion import SawyerSampleConverter, get_observation_joint_vector
+from cairo_lfd.modeling.graphing import ObservationClusterer, KeyframeGraph
+from cairo_lfd.modeling.models import KDEModel
+from cairo_lfd.modeling.sampling import KeyframeSampler
+from cairo_lfd.modeling.analysis import KeyframeGraphAnalyzer, ConstraintAnalyzer
+from cairo_lfd.core.environment import Demonstration, Observation, Environment, import_configuration
+from cairo_lfd.core.items import ItemFactory
+from cairo_lfd.constraints.concept_constraints import ConstraintFactory
+from cairo_lfd.data.io import DataImporter
+from cairo_lfd.data.conversion import SawyerSampleConverter
+from cairo_lfd.data.vectorization import get_observation_joint_vector
 
 
 def main():
@@ -97,9 +98,13 @@ def main():
         graph.nodes[cluster_id]["model"] = KDEModel(kernel='gaussian', bandwidth=args.bandwidth)
     graph.add_path(graph.nodes())
     graph.fit_models(get_observation_joint_vector)
+    graph._identify_primal_observations(get_observation_joint_vector)
     rospy.loginfo(graph.get_keyframe_sequence())
     for node in graph.get_keyframe_sequence():
+        print("KEYFRAME: {}".format(node))
         print(graph.nodes[node]["keyframe_type"])
+        print(graph.nodes[node]["applied_constraints"])
+        print 
 
     """ Build a ConstraintAnalyzer and KeyframeGraphAnalyzer """
     constraint_analyzer = ConstraintAnalyzer(environment)
@@ -110,19 +115,22 @@ def main():
 
     """ Generate raw_samples from graph for each keyframe """
     for node in graph.get_keyframe_sequence():
+        print "Keyframe {}".format(node)
         # Keep sampling 
         if graph.nodes[node]["keyframe_type"] == "constraint_transition":
             rospy.loginfo("Sampling from a constraint transition keyframe.")
-            attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["applied_constraints"], n=n_samples)
+            attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], graph.nodes[node]["applied_constraints"], n=n_samples)
             if len(samples) == 0:
                 # Some constraints couldn't be sampled successfully, so using best available samples.
                 diff = list(set(graph.nodes[node]["applied_constraints"]).difference(set(matched_ids)))
-                rospy.logwarn("Constraints {} couldn't be met so attempting to find valid samples with constraints {}.".format(diff, matched_ids))
-                attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], matched_ids, n=n_samples)
-
+                if len(matched_ids) > 0:
+                    rospy.logwarn("Constraints {} couldn't be met so attempting to find valid samples with constraints {}.".format(diff, matched_ids))
+                    attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], matched_ids, n=n_samples)
+                else:
+                    rospy.logwarn("Constraints {} couldn't be met so. Cannot meet any constraints.".format(diff))
         else:
             n_samples = args.number_of_samples
-            attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["applied_constraints"], n=n_samples)
+            attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], graph.nodes[node]["applied_constraints"], n=n_samples)
 
         rospy.loginfo("Keyframe %d: %s valid of %s attempts", node, len(samples), attempts)
         if len(samples) < n_samples:
@@ -130,11 +138,12 @@ def main():
         if len(samples) == 0:
             rospy.loginfo("Keyframe %d has no valid sample observations", node)
             graph.cull_node(node)
-        # Order sampled points based on their intramodel log-liklihood
-        ranked_samples = sampler.rank_samples(graph.nodes[node]["model"], samples)
+        else:
+            # Order sampled points based on their intra-model log-likelihood
+            ranked_samples = sampler.rank_samples(graph.nodes[node]["model"], samples)
 
-        # User converter object to conver raw sample vectors into LfD observations
-        graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(sample, run_fk=True) for sample in ranked_samples]
+            # User converter object to convert raw sample vectors into LfD observations
+            graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(sample, run_fk=True) for sample in ranked_samples]
 
     """ Clear occluded points (points in collision etc,.) """
     for node in graph.get_keyframe_sequence():
@@ -146,21 +155,23 @@ def main():
         else:
             graph.nodes[node]["free_samples"] = free_samples
 
-    """ Cull/remove keyframes/nodes that via change point estimation using log-liklihood """
+    """ Cull/remove keyframes/nodes that via change point estimation using log-likelihood """
     graph_analyzer.cull_keyframes(threshold=args.threshold)
 
-    # """ Order sampled points based on their intramodel log-liklihood """
+    # """ Order sampled points based on their intra-model log-likelihood """
     # for node in graph.get_keyframe_sequence():
     #     graph.rank_waypoint_samples(node)
 
-    rospy.loginfo(graph.get_keyframe_sequence())
-
-    """ Create a seequence of keyframe waypoints and excute motion plans to reconstruct skill """
+    output = []
+    """ Create a sequence of keyframe way points and execute motion plans to reconstruct skill """
     joint_config_array = []
     for node in graph.get_keyframe_sequence():
+        output.append((node, graph.nodes[node]["applied_constraints"]))
         sample = graph.nodes[node]["free_samples"][0]
         joints = sample.get_joint_angle()
         joint_config_array.append(joints)
+
+    print output
 
     moveit_interface.move_to_joint_targets(joint_config_array)
 

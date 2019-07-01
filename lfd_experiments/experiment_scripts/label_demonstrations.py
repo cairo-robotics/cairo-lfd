@@ -3,11 +3,11 @@
 import rospy
 import argparse
 
-from lfd.data_io import DataImporter, DataExporter
-from lfd.alignment import DemonstrationAligner
-from lfd.conversion import vectorize_demonstration
-from lfd.segmentation import ConstraintKeyframeLabeler
-from lfd.environment import Observation, Demonstration
+from cairo_lfd.data.io import DataImporter, DataExporter
+from cairo_lfd.data.vectorization import vectorize_robot_position
+from cairo_lfd.data.alignment import DemonstrationAligner
+from cairo_lfd.data.labeling import ConstraintKeyframeLabeler
+from cairo_lfd.core.environment import Observation, Demonstration
 
 
 def main():
@@ -52,7 +52,7 @@ def main():
 
     # For more details about alignment, see the alignment_example.
     rospy.loginfo("Aligning demonstrations...this can take some time.")
-    aligner = DemonstrationAligner(demonstrations, vectorize_demonstration)
+    aligner = DemonstrationAligner(demonstrations, vectorize_robot_position)
     aligned_demos, constraint_transitions = aligner.align()
 
     # Create DemosntrationkeyframeLabeler passing in the aligned demonstrations and the constraint transition
@@ -63,7 +63,6 @@ def main():
     The second parameter is the window size i.e. how big each keyframe size should be (+/- one depending on if odd number of elements in the grouping list per demonstration) 
     """
     rospy.loginfo("Labeling demonstrations.")
-
     labeled_demonstrations = keyframe_labeler.label_demonstrations(args.divisor, args.window)
 
     # Export the dictionary data representation of the observations of the labeled demos.

@@ -61,7 +61,10 @@ class Environment(object):
         entries : dict
             Dictionary representing robot's state. See SawyerRobot class.
         """
-        return self.robot.get_state()
+        if self.robot is not None:
+            return self.robot.get_state()
+        else:
+            raise EnvironmentError("There is no robot configured into the environment!")
 
     def get_robot_info(self):
         """
@@ -72,7 +75,10 @@ class Environment(object):
         entries : dict
             Dictionary representing robot's information. See SawyerRobot class.
         """
-        return self.robot.get_info()
+        if self.robot is not None:
+            return self.robot.get_info()
+        else:
+            raise EnvironmentError("There is no robot configured into the environment!")
 
     def get_item_state(self):
         """
@@ -110,7 +116,9 @@ class Environment(object):
         if self.items is not None:
             for item in self.items:
                 item_info.append(item.get_info())
-        return item_info
+            return item_info
+        else:
+            raise EnvironmentError("There are no items configured into the environment!")
 
     def get_item_ids(self):
         """
@@ -138,6 +146,8 @@ class Environment(object):
         """
         if self.robot is not None:
             return self.robot.id
+        else:
+            raise EnvironmentError("There is no robot configured into the environment!")
 
     def get_constraint_by_id(self, constraint_id):
         """
@@ -153,7 +163,10 @@ class Environment(object):
         : Constraint class
             Constraint class for the given id.
         """
-        return [constraint for constraint in self.constraints if constraint.id == constraint_id][0]
+        if self.constraints is not None:
+            return [constraint for constraint in self.constraints if constraint.id == constraint_id][0]
+        else:
+            raise EnvironmentError("There are no items configured into the environment!")
 
     def check_constraint_triggers(self):
         """
@@ -463,6 +476,15 @@ class Observation(object):
 
 
 class ConfigurationError(Exception):
+
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self): 
+        return(repr(self.value))
+
+
+class EnvironmentError(Exception):
 
     def __init__(self, value):
         self.value = value

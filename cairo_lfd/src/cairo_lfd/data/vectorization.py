@@ -4,7 +4,7 @@ The vectorization.py module contains methods to vectorize demonstrations/observa
 import numpy as np
 
 
-def vectorize_demonstration(demonstration, vectorizors=[vectorize_robot_position]):
+def vectorize_demonstration(demonstration, vectorizors=[]):
     """
     Vectorizes a list of observations by iteratively apply each of the vectorizor function
     to generate a concatenated numpy array.
@@ -25,9 +25,9 @@ def vectorize_demonstration(demonstration, vectorizors=[vectorize_robot_position
     for observation in demonstration.observations:
         vector = []
         for vectorizor in vectorizors:
-            vector = np.concatenate((vector, vectorizor(observaiton)))
+            vector = np.concatenate((vector, vectorizor(observation)))
         vectors.append(vector)
-    return vectors
+    return np.array(vectors)
 
 
 def vectorize_robot_position(observation):

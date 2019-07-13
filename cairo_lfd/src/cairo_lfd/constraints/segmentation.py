@@ -21,13 +21,20 @@ class BayesianGMMSegmentModel():
         else:
             self.model = mixture.BayesianGaussianMixture(n_components=self.n_components, max_iter=500).fit(X)
 
-    def _get_active_components(self):
-        print(self.model.weights_)
-        return np.where(self.model.weights_ > .001)
+    def get_component_parameter_map(self):
+        component_map = {}
+        for i in range(0, n_components):
+            component_map[i]= {
+                "means": self._get_means(i),
+                "covar": self._get_covar(i)
+            }
 
-    def _generate_signature_mapping(self):
-        self._get_active_components()
-        self._create_signature_map()
+    def _get_means(self, component_id):
+        pass
+
+    def _get_covariances(self, component_id):
+        
+
 
     def predict(self, vector):
         # Predict segmentation using trained model

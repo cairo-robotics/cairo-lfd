@@ -94,8 +94,8 @@ class SawyerSampleConverter(object):
         obsv : lfd.environment.Observation
             Observation object constructed from the converted sample.
         """
-        if adapter is not None:
-            sample = adapter.transform(sample)
+        if self.adapter is not None:
+            sample = self.adapter.transform(sample)
         if run_fk is True:
             sample = self._run_foward_kinematics(sample)
         if normalize_quaternion:

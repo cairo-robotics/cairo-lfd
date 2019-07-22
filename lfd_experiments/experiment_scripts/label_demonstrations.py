@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
+from functools import partial
+
 import rospy
 import argparse
 
 from cairo_lfd.data.io import DataImporter, DataExporter
-from cairo_lfd.data.vectorization import vectorize_robot_position
+from cairo_lfd.data.vectorization import vectorize_demonstration, vectorize_robot_position
 from cairo_lfd.data.alignment import DemonstrationAligner
 from cairo_lfd.data.labeling import ConstraintKeyframeLabeler
 from cairo_lfd.core.environment import Observation, Demonstration
@@ -52,7 +54,7 @@ def main():
 
     # For more details about alignment, see the alignment_example.
     rospy.loginfo("Aligning demonstrations...this can take some time.")
-    aligner = DemonstrationAligner(demonstrations, vectorize_robot_position)
+    aligner = DemonstrationAligner(demonstrations, partial(vectorize_demonstration, vectorizors=[vectorize_robot_position]))
     aligned_demos, constraint_transitions = aligner.align()
 
     # Create DemosntrationkeyframeLabeler passing in the aligned demonstrations and the constraint transition

@@ -28,17 +28,22 @@ class SawyerCuffButtonTrigger(AbstractTrigger):
 
     Attributes
     ----------
+    constraint_id : int
+        The id of the constraint for the trigger.
     button : str
         The cuff button name.
     """
 
-    def __init__(self, cuff_button):
+    def __init__(self, constraint_id, cuff_button):
         """
         Parameters
         ----------
+        constraint_id : int
+            The id of the constraint for the trigger.
         cuff_button : str
             The cuff button name.
         """
+        self.constraint_id = constraint_id
         self.button = cuff_button
         self.nav = intera_interface.Navigator()
 
@@ -106,3 +111,59 @@ class SubscribedTrigger(AbstractTrigger):
             return 1
         else:
             return 0
+
+
+class TriggerFactory(object):
+    """
+    Factory class that builds Trigger objects. These items are defined in the config.json file.
+    The class field in the configuration determines which constraint class to use.
+
+    Attributes
+    ----------
+    configs : list
+            List of configuration dictionaries.
+    classes : dict
+        Dictionary with values as uninitialized class references to Trigger class.
+
+    Example
+    -------
+
+    Example entry in config.json:
+
+    .. code-block:: json
+
+        {
+            "class": "SawyerCuffButtonTrigger",
+            "init_args" :
+                {
+                    "constraint_id": 1,
+                    "button": "right_button_square"
+                }
+        }
+    """
+    def __init__(self, configs):
+        """
+        Parameters
+        ----------
+        configs : list
+            List of configuration dictionaries.
+        """
+        self.configs = configs
+        self.classes = {
+            "SawyerCuffButtonTrigger": SawyerCuffButtonTrigger,
+            "SubscribedTrigger": SubscribedTrigger
+        }
+
+    def generate_triggers(self):
+        """
+        Build the trigger objects defined in the configuration dictionaries of self.configs.
+
+        Returns
+        -------
+        robots : list
+            List of trigger objects.
+        """
+        triggers = []
+        for config in self.configs["triggers"]:
+            triggers.append(self.classes[config["class"]](**config["init_args"]))
+        return triggers

@@ -1,0 +1,92 @@
+{
+    "constraints": [
+        {
+            "class": "HeightConstraint",
+            "init_args" : 
+                {
+                    "id": 1,
+                    "item": 1,
+                    "reference_height": 0.0,
+                    "threshold_distance": 0.25
+                
+                }
+        },
+        {
+            "class": "UprightConstraint",
+            "init_args" : 
+                {
+                    "id": 2,
+                    "item": 1,
+                    "threshold_angle": 20,
+                    "axis": "x"
+                }
+        }
+    ],
+    "triggers":[
+        {
+            "class": "SawyerCuffButtonTrigger",
+            "init_args":
+                {
+                    "constraint_id": 1,
+                    "cuff_button": "right_button_square"
+                }
+        },
+        {
+            "class": "SawyerCuffButtonTrigger",
+            "init_args":
+                {
+                    "constraint_id": 2,
+                    "cuff_button": "right_button_circle"
+                }
+        }
+    ],
+    "items": [
+        {
+            "class": "StaticObject",
+            "init_args":
+                {
+                    "id": 2,
+                    "name": "block",
+                    "upright_pose": 
+                        {
+                            "position":[0.604698787426, -0.439894686226, 0.159350584992],
+                            "orientation": [0.015391, -0.0089937, 0.70554, 0.70845]
+                        },
+                    "world_frame": "world",
+                    "child_frame": "optitrack_block"
+                }
+        },
+        {
+            "class": "StaticObject",
+            "init_args":
+                {
+                    "id": 3,
+                    "name": "megablock",
+                    "upright_pose": 
+                        {
+                            "position":[0.604698787426, -0.439894686226, 0.159350584992],
+                            "orientation": [0.015391, -0.0089937, 0.70554, 0.70845]
+                        },
+                    "world_frame": "world",
+                    "child_frame": "optitrack_megablock"
+                }
+        }
+    ],
+    "robots": [
+        {
+            "class": "SawyerRobot",
+            "init_args":
+                {
+                    "id": 1,
+                    "upright_pose": 
+                        {
+                            "position": [0.604698787426, -0.439894686226, 0.159350584992],
+                            "orientation": [0.033863, 0.99878, 0.016377, -0.03184]
+                        }
+                }
+        }
+
+    ]
+        
+}
+

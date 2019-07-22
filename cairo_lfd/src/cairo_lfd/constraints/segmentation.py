@@ -22,19 +22,16 @@ class BayesianGMMSegmentModel():
             self.model = mixture.BayesianGaussianMixture(n_components=self.n_components, max_iter=500).fit(X)
 
     def get_component_parameter_map(self):
-        component_map = {}
-        for i in range(0, n_components):
-            component_map[i]= {
+        return {
                 "means": self._get_means(i),
                 "covar": self._get_covar(i)
-            }
+                }
 
     def _get_means(self, component_id):
-        pass
+        return self.model.means_[component_id]
 
     def _get_covariances(self, component_id):
-        
-
+        return self.model.covariances_[component_id]
 
     def predict(self, vector):
         # Predict segmentation using trained model

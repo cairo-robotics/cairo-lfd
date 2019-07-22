@@ -11,6 +11,7 @@ from cairo_lfd.core.record import SawyerRecorder
 from cairo_lfd.core.environment import Environment, import_configuration
 from cairo_lfd.core.items import ItemFactory
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory
+from cairo_lfd.constraints.triggers import TriggerFactory
 from cairo_lfd.modeling.analysis import ConstraintAnalyzer
 from cairo_lfd.data.io import DataExporter
 from cairo_lfd.data.processing import ProcessorPipeline, RelativeKinematicsProcessor, RelativePositionProcessor, InContactProcessor, SphereOfInfluenceProcessor
@@ -73,9 +74,10 @@ def main():
     configs = import_configuration(config_filepath)
 
     items = ItemFactory(configs).generate_items()
+    triggers = TriggerFactory(configs).generate_triggers()
     constraints = ConstraintFactory(configs).generate_constraints()
     # We only have just the one robot...for now.......
-    environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints)
+    environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints, triggers=triggers)
 
     exp = DataExporter()
 

@@ -2,6 +2,8 @@
 The constraints.py module contains a classes that encapsulate predicate classifiers used to
 evaluate binary value conceptual constraints.
 """
+import rospy
+
 import intera_interface
 
 from predicate_classification.pose_classifiers import height, upright, over_under
@@ -375,7 +377,16 @@ class ConstraintFactory(object):
         robots : list
             List of constraint objects.
         """
+        constraint_ids = []
         constraints = []
         for config in self.configs["constraints"]:
-            constraints.append(self.classes[config["class"]](**tuple(config["init_args"].values())))
+            if config["init_args"]["constraint_id"] in constraint_ids:
+                raise ValueError(
+                    "Robots and items must each have a unique integer 'constraint_id'")
+            else:
+                constraint_ids.append(config["init_args"]["constraint_id"])
+            try:
+                constraints.append(self.constraint_classes[config["class"]](**config["init_args"]))
+            except TypeError as e:
+                rospy.logerr("Error constructing {}: {}".format(self.constraint_classes[config["class"]], e))
         return constraints

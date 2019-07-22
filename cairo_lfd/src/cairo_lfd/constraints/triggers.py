@@ -76,7 +76,7 @@ class SubscribedTrigger(AbstractTrigger):
         The current state of whether the constraint is triggered.
     """
 
-    def __init__(self, constraint_name):
+    def __init__(self, constraint_id, constraint_name):
         """
         Parameters
         ----------
@@ -84,6 +84,7 @@ class SubscribedTrigger(AbstractTrigger):
             The name of the constraint to check the parsed data.
         """
         self.constraint_name = constraint_name
+        self.constraint_id = constraint_id
         self.triggered = False
 
     def callback(self, data):
@@ -163,7 +164,11 @@ class TriggerFactory(object):
         robots : list
             List of trigger objects.
         """
+        target_constraint_ids = []
         triggers = []
         for config in self.configs["triggers"]:
+            if config["init_args"]["constraint_id"] in target_constraint_ids:
+                rospy.logwarn("More than one trigger targets the same constraint. Is this intended?")
+            target_constraint_ids.append(config["init_args"]["constraint_id"])
             triggers.append(self.classes[config["class"]](**config["init_args"]))
         return triggers

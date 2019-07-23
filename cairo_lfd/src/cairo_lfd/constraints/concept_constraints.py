@@ -90,6 +90,9 @@ class HeightConstraint(object):
 
         return height(item_pose, self.reference_height, self.threshold_distance, direction=self.direction, axis=self.axis)
 
+    def __repr__():
+        return "HeightConstraint({}, {}, {}, {}, {}, {})".format(self.id, self.item_id, self.reference_height, self.threshold_distance, self.direction, self.axis)
+
 
 class UprightConstraint(object):
     """
@@ -160,6 +163,9 @@ class UprightConstraint(object):
         current_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
         upright_pose = convert_data_to_pose(item_info["upright_pose"]["position"], item_info["upright_pose"]["orientation"])
         return upright(upright_pose, current_pose, self.threshold_angle, self.axis)
+
+    def __repr__():
+        return "UprightConstraint({}, {}, {}, {})".format(self.id, self.item_id, self.threshold_angle, self.axis)
 
 
 class OverUnderConstraint(object):
@@ -245,6 +251,9 @@ class OverUnderConstraint(object):
             below_pose = convert_data_to_pose(below_data["position"], below_data["orientation"])
         return over_under(above_pose, below_pose, self.threshold_distance, axis=self.axis)
 
+    def __repr__():
+        return "UprightConstraint({}, {}, {}, {}, {})".format(self.id, self.above_item_id, self.below_item_id, self.threshold_distance, self.axis)
+
 
 class Perimeter2DConstraint(object):
     """
@@ -320,6 +329,9 @@ class Perimeter2DConstraint(object):
             inner_poly = perimeter_item_data['perimeter']['inner']
             outer_poly = perimeter_item_data['perimeter']['outer']
         return perimeter_2D(traversing_item_pose, inner_poly, outer_poly, axis=self.axis)
+
+    def __repr__():
+        return "Perimeter2DConstraint({}, {}, {}, {}, {})".format(self.id, self.perimeter_item_id, self.traversing_item_id, self.axis)
 
 
 class ConstraintFactory(object):

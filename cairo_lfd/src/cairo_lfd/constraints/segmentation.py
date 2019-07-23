@@ -17,15 +17,17 @@ class BayesianGMMSegmentModel():
         # Build model using every observation available
         X = self.training_data
         if self.n_samples < self.n_components:
-            self.model = mixture.BayesianGaussianMixture(n_components=X.shape[0], max_iter=500).fit(X)
+            self.model = mixture.BayesianGaussianMixture(
+                n_components=X.shape[0], max_iter=500).fit(X)
         else:
-            self.model = mixture.BayesianGaussianMixture(n_components=self.n_components, max_iter=500).fit(X)
+            self.model = mixture.BayesianGaussianMixture(
+                n_components=self.n_components, max_iter=500).fit(X)
 
-    def get_component_parameter_map(self):
+    def get_component_parameter_map(self, component_id):
         return {
-                "means": self._get_means(i),
-                "covar": self._get_covar(i)
-                }
+            "means": self._get_means(component_id),
+            "covar": self._get_covariances(component_id)
+        }
 
     def _get_means(self, component_id):
         return self.model.means_[component_id]

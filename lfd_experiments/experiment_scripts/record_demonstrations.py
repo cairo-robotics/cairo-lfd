@@ -14,7 +14,7 @@ from cairo_lfd.constraints.concept_constraints import ConstraintFactory
 from cairo_lfd.constraints.triggers import TriggerFactory
 from cairo_lfd.modeling.analysis import ConstraintAnalyzer
 from cairo_lfd.data.io import DataExporter
-from cairo_lfd.data.processing import ProcessorPipeline, RelativeKinematicsProcessor, RelativePositionProcessor, InContactProcessor, SphereOfInfluenceProcessor
+from cairo_lfd.data.processing import ProcessorPipeline, RelativeKinematicsProcessor, RelativePositionProcessor, InContactProcessor, SphereOfInfluenceProcessor, WithinPerimeterProcessor
 
 
 def main():
@@ -89,6 +89,7 @@ def main():
     ic_processor = InContactProcessor(environment.get_item_ids(), environment.get_robot_id(), .06, .5)
     soi_processor = SphereOfInfluenceProcessor(environment.get_item_ids(), environment.get_robot_id())
     rp_processor = RelativePositionProcessor(environment.get_item_ids(), environment.get_robot_id())
+    wp_processor = WithinPerimeterProcessor(environment.get_item_ids(), environment.get_robot_id())
     pipeline = ProcessorPipeline([rk_processor, ic_processor, soi_processor, rp_processor])
     pipeline.process(demos)
 

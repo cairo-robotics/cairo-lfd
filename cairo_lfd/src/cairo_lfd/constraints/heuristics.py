@@ -1,11 +1,17 @@
 import numpy as np
+from scipy import linalg
+
+
+#######################
+# Heuristic Functions #
+#######################
 
 
 def perimeter_heuristic():
     pass
 
 
-def over_under_heuristic():
+def over_under_heuristic(radial_distances):
     pass
 
 

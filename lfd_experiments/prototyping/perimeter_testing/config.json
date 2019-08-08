@@ -14,26 +14,32 @@
                 }
         },
         {
-            "class": "HeightConstraint",
-            "init_args" : 
-                {
-                    "id": 2,
-                    "item": 1,
-                    "button": "right_button_circle",
-                    "reference_height": -0.05,
-                    "threshold_distance": 0.0001,
-                    "direction": "negative"
-                }
-        },
-        {
             "class": "Perimeter2DConstraint",
             "init_args" : 
                 {
-                    "id": 3,
+                    "id": 2,
                     "perimeter_item_id": 2,
                     "traversing_item_id": 1,
                     "button": "right_button_triangle",
                     "axis": "z"
+                }
+        }
+    ],
+     "triggers":[
+        {
+            "class": "SawyerCuffButtonTrigger",
+            "init_args":
+                {
+                    "constraint_id": 1,
+                    "cuff_button": "right_button_square"
+                }
+        },
+        {
+            "class": "SawyerCuffButtonTrigger",
+            "init_args":
+                {
+                    "constraint_id": 2,
+                    "cuff_button": "right_button_circle"
                 }
         }
     ],

@@ -8,7 +8,10 @@ import rospy
 import numpy as np
 from scipy.spatial.distance import euclidean
 
+from predicate_classification.path_classifiers import perimeter_2D
+
 from cairo_lfd.core.environment import Observation
+from cairo_lfd.data.coversion import convert_data_to_pose
 
 
 class ProcessorPipeline():
@@ -564,3 +567,37 @@ class SphereOfInfluenceProcessor(EuclideanDistanceMixin):
             if distance <= self.threshold_distance:
                 in_SOI.append(item_id)
         curr_observation.data['robot']['in_SOI'] = in_SOI
+
+
+class WithinPerimeterProcessor():
+
+    def __init__(self, item_ids, robot_id):
+        self.item_ids = item_ids
+        self.robot_id = robot_id
+
+    def process(self, observations):
+        """
+        Parameters
+        ----------
+        observations : list
+           List of Observation objects.
+        """
+        for obsv in observations:
+            self._evaluate_within_perimeter(obsv)
+
+    def _evaluate_within_perimeter(self, curr_obs):
+        for target_item_id in self.item_ids:
+            within_perimeter = []
+            perimeter = curr_observation.get_item_data(target_item_id).get(
+                "perimeter", None)
+            if perimeter is not None:
+                # robot first 
+                robot_pose = convert_data_to_pose(curr_obs.get_robot_data()["position"], curr_obs.get_robot_data()["orientation"])
+                if perimeter_2D(robot_pose, perimeter["inner"], perimeter["outer"]):
+                    within_perimeter.append(self.robot_id)
+                # now all items
+                for item_id in self.item_ids:
+                    if target_item_id != item_id:
+                        item_pose = convert_data_to_pose(curr_obs.get_item_data(item_id)["position"], curr_obs.get_item_data(item_id)["orientation"])
+                        if perimeter_2D(item_pose, perimeter["inner"], perimeter["outer"]):
+                            within_perimeter.append(target_id)

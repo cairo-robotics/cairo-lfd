@@ -601,3 +601,4 @@ class WithinPerimeterProcessor():
                         item_pose = convert_data_to_pose(curr_obs.get_item_data(item_id)["position"], curr_obs.get_item_data(item_id)["orientation"])
                         if perimeter_2D(item_pose, perimeter["inner"], perimeter["outer"]):
                             within_perimeter.append(target_id)
+                curr_observation.get_item_data(target_item_id)['in_perimeter'] = within_perimeter

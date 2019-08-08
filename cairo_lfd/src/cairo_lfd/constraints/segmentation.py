@@ -1,6 +1,8 @@
 """
 The segmentation.py module supports segmenting demonstration data for use in autonomous constraint assignment.
 """
+from collections import Counter
+
 import numpy as np
 from sklearn import mixture
 

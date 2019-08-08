@@ -1,7 +1,7 @@
 from collections import Counter
 from cairo_lfd.constraints.metaconstraints import HeightMetaconstraint, UprightMetaconstraint, OverUnderMetaconstraint, Perimeter2DMetaconstraint
-from cairo_lef.constraints.heuristics import get_segmentation_parameters
-
+from cairo_lfd.constraints.heuristics import get_segmentation_parameters
+from cairo_lfd.data.vectorization import boolean_SOI
 
 ############################################
 # Metaconstraint Assignment and Generation #
@@ -59,7 +59,7 @@ class UprightMetaconstraintGenerator():
         metaconstraint.parameterize_constraints(heuristic_parameters)
         return metaconstraint
 
-    def _get_heuristic_parameters(self, keyframe_node, environment=None):
+    def _get_heuristic_parameters(self, keyframe_node):
         vectors = np.array([self.vectorizor(obs) for obs in keyframe_node['observations']])
         component_id = self.segment_model.predict(vectors)
         return get_segmentation_parameters(self.segment_model, component_id)
@@ -67,22 +67,28 @@ class UprightMetaconstraintGenerator():
 
 class OverUnderMetaconstraintGenerator():
 
-    def __init__(self, static_parameters, vectorizor, metadata_validator):
+    def __init__(self, static_parameters):
         self.metaconstraint_class = OverUnderMetaconstraint(static_parameters)
         self.static_parameters = static_parameters
-        self.metadata_validator = metadata_validator
 
-    def generate_metaconstraint(self, keyframe_node, environment):
-        metaconstraint = self.meta_constraint_class(self.static_parameters)
-        heuristic_constraints = self._get_heuristic_parameters(keyframe_node, environment)
-        metaconstraint.parameterize_constraints(heuristic_parameters)
-        return metaconstraint
+    def generate_metaconstraint(self, keyframe_node):
+        if self._validate_keyframe(keyframe_node):
+            metaconstraint = self.meta_constraint_class(self.static_parameters)
+            heuristic_constraints = self._get_heuristic_parameters(keyframe_node)
+            metaconstraint.parameterize_constraints(heuristic_parameters)
+            return metaconstraint
+        return []
 
-    def _get_heuristic_parameters(self, keyframe_node, environment):
+    def _validate_keyframe(self, keyframe_node):
+        above_item_id = self.static_parameters["above_item_id"]
+        below_item_id = self.static_parameters["below_item_id"]
+        boolean_vectors = [boolean_SOI(obs, above_item_id, below_item_id) for obs in keyframe_node['observations']]
+        predictions_counter = Counter(predictions)
+        return predictions_counter.most_common(1)[0][0]
 
-        if self.metadata_validator(keyframe_node, self.static_parameters):
+    def _get_heuristic_parameters(self, keyframe_node):
+        boolean_vectors = np.array([boolean_SOI(obs) for obs in keyframe_node['observations']])
 
-            return self.segment_model.get_heuristic_parameters(component_id)
 
 class Perimeter2DMetaconstraintGenerator():
 
@@ -91,13 +97,13 @@ class Perimeter2DMetaconstraintGenerator():
         self.static_parameters = static_parameters
         self.metadata_validator = metadata_validator
 
-    def generate_metaconstraint(self, keyframe_node, environment):
+    def generate_metaconstraint(self, keyframe_node):
         metaconstraint = self.meta_constraint_class(self.static_parameters)
-        heuristic_constraints = self._get_heuristic_parameters(keyframe_node, environment)
+        heuristic_constraints = self._get_heuristic_parameters(keyframe_node)
         metaconstraint.parameterize_constraints(heuristic_parameters)
         return metaconstraint
 
-    def _get_heuristic_parameters(self, keyframe_node, environment):
+    def _get_heuristic_parameters(self, keyframe_node):
 
         if self.metadata_validator(keyframe_node, self.static_parameters):
 

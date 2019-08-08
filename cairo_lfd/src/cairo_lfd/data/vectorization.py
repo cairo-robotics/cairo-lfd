@@ -83,9 +83,10 @@ def xy_radial_distance(observation, above_item_id, above_item_id):
     xy_below = observation.get_item_data(above_item_id)['position'][0:1]
     return np.array([euclidean(xy_above, xy_below)])
 
-def boolean_SOI(observation, item1_id, item2_id):
+
+def boolean_within_SOI(observation, item1_id, item2_id):
     """
-    Vectorizes an observation to a boolean if two objects are within eachothers sphere of influence (SOI)
+    Vectorizes an observation to a boolean if two objects are within eachothers' sphere of influence (SOI)
 
     Parameters
     ----------
@@ -102,6 +103,25 @@ def boolean_SOI(observation, item1_id, item2_id):
     else:
         return False
 
+
+def boolean_within_perimeter(observation, perimeter_item_id, traversing_item_id):
+    """
+    Vectorizes an observation to a boolean if two objects are within eachothers' sphere of influence (SOI)
+
+    Parameters
+    ----------
+    observation : Observation
+      Observation to vectorize.
+
+    Returns
+    -------
+     : bool
+        Numpy vector of shape (1,)
+    """
+    if traversing_item_id in observation.get_item_data(item1_id).get('in_perimeter', []):
+        return True
+    else:
+        return False
 
 
 def vectorize_relative_end_effector_position(observation, item_id):

@@ -340,16 +340,17 @@ class Observation(object):
         self.data = observation_data
 
     @classmethod
-    def init_samples(cls, position, orientation, joints):
+    def init_samples(cls, position, orientation, joints_angles):
         """
         Parameters
         ----------
         position : array of position data
         orientation: array of orientation data
+        joints_angles: array of joint angles (configuration)
         """
         observation_data = {"robot": {"orientation": orientation,
                                       "position": position,
-                                      "joint_angle": joints}}
+                                      "joint_angle": joints_angles}}
         return cls(observation_data)
 
     def get_timestamp(self):

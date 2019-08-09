@@ -58,6 +58,9 @@ class SawyerSampleConverter(object):
     """
     Converts raw samples generated from models into Observation objects.
 
+    The main goal of this class is to take samples generated from a model and ground them into a usable
+    state space for the robot. This could be converting an end-effector relative to object translation sample into the configuration space of the robot, or the pose space of the end-effector. The class is capable of running forward kinematics if needed.
+
     Attributes
     ----------
     interface : object
@@ -70,6 +73,8 @@ class SawyerSampleConverter(object):
         ----------
         interface : object
             SawyerMoveitInterface to help run forward kinematics.
+        adapter : object
+            An adapter class designed to take raw sample from a model and convert it to either configuration space of EE space (pose).
         """
         self.interface = interface
         self.adapter = adapter
@@ -81,7 +86,10 @@ class SawyerSampleConverter(object):
         Parameters
         ----------
         sample : list
-            Raw sample to convert. Either joint configuration or pose [x,y,z,x,y,z,w] as a list.
+            Raw sample to convert.
+
+        primal_observation : Observation
+            The most representative observation of the keyframe. This is used to pull into necessary state information (other object positions etc,.) about the environment at the time of the demonstrations. 
 
         run_fk : bool
             Flag indicating whether to run forward kinematics or not.

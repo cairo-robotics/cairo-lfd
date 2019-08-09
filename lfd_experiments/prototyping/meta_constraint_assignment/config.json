@@ -1,9 +1,17 @@
 {
-    "meta_constraints": [
+    "segmentation": [
         {
-            "class": "HeightMetaConstraint",
-            "segment_model": "BayesianGMMSegmentModel",
-            "vectorizor": "vectorize_robot_position",
+        "id": 1,
+        "segmentation_class": "BayesianGMMSegmentModel",
+        "init_args" : 
+            {
+                "n_components": 10
+            }
+        }
+    ],
+    "metaconstraint_builders": [
+        {
+            "class": "HeightMetaconstraintBuilder",
             "static_parameters":
             {
                 "item_id": 1,

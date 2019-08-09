@@ -188,8 +188,7 @@ class StaticItem(AbstractItem):
     pose : dict
        Dictionary containing 'position' and 'orientation' keys and corresponding list of coordinate or orientation values.
     perimeter : dict
-        Dictionary containing 'inner' and 'outer' keys corresponding to lists of coordinates representing the inner perimeter and 
-        and outer perimeter band around the static item.
+        Dictionary containing 'inner' and 'outer' keys corresponding to lists of coordinates representing the inner perimeter and outer perimeter band around the static item.
     """
 
     def __init__(self, item_id, name, pose, perimeter=None):
@@ -420,18 +419,22 @@ class ItemFactory(object):
                     "Robots and items must each have a unique integer 'item_id'")
             else:
                 item_ids.append(config["init_args"]["item_id"])
-            try:    
-                items["robots"].append(self.classes[config["class"]](**config["init_args"]))
+            try:
+                items["robots"].append(
+                    self.classes[config["class"]](**config["init_args"]))
             except TypeError as e:
-                rospy.logerr("Error constructing {}: {}".format(self.classes[config["class"]], e))
+                rospy.logerr("Error constructing {}: {}".format(
+                    self.classes[config["class"]], e))
         for config in self.configs["items"]:
             if config["init_args"]["item_id"] in item_ids:
                 raise ValueError(
                     "Robots and items must each have a unique integer 'item_id'")
             else:
                 item_ids.append(config["init_args"]["item_id"])
-            try:    
-                items["items"].append(self.classes[config["class"]](**config["init_args"]))
+            try:
+                items["items"].append(
+                    self.classes[config["class"]](**config["init_args"]))
             except TypeError as e:
-                rospy.logerr("Error constructing {}: {}".format(self.classes[config["class"]], e))
+                rospy.logerr("Error constructing {}: {}".format(
+                    self.classes[config["class"]], e))
         return items

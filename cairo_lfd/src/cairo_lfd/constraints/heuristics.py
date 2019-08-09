@@ -15,7 +15,7 @@ def over_under_heuristic(radial_distances):
     pass
 
 
-def orientation_heuristic():
+def orientation_heuristic(angle_of_deviations):
     pass
 
 

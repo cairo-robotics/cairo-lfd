@@ -86,7 +86,9 @@ def xy_radial_distance(observation, above_item_id, above_item_id):
 
 def boolean_within_SOI(observation, item1_id, item2_id):
     """
-    Vectorizes an observation to a boolean if two objects are within eachothers' sphere of influence (SOI)
+    Vectorizes an observation to a boolean if two objects are within eachothers' sphere of influence (SOI).
+
+    Depends on the SphereOfInfluenceProcessor object having processed the observation and will simply evaluate to False if this is not the case.
 
     Parameters
     ----------
@@ -106,7 +108,10 @@ def boolean_within_SOI(observation, item1_id, item2_id):
 
 def boolean_within_perimeter(observation, perimeter_item_id, traversing_item_id):
     """
-    Vectorizes an observation to a boolean if two objects are within eachothers' sphere of influence (SOI)
+    Vectorizes an observation to a boolean if traversiding_item is within the perimeter of the
+    perimeter item.
+
+    Depends on the SphereOfInfluenceProcessor object having processed the observation and will simply evaluate to False if this is not the case.
 
     Parameters
     ----------
@@ -125,7 +130,6 @@ def boolean_within_perimeter(observation, perimeter_item_id, traversing_item_id)
 
 
 def vectorize_relative_end_effector_position(observation, item_id):
-
     """
     Vectorizes an observation through the union of the
     robot's position and robot's joints.

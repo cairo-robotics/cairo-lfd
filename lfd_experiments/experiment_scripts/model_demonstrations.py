@@ -74,7 +74,7 @@ def main():
     items = ItemFactory(configs).generate_items()
     constraints = ConstraintFactory(configs).generate_constraints()
     # We only have just the one robot...for now.......
-    environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints)
+    environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints, triggers=None)
 
     """ Create the moveit_interface """
     moveit_interface = SawyerMoveitInterface()
@@ -119,18 +119,21 @@ def main():
         # Keep sampling 
         if graph.nodes[node]["keyframe_type"] == "constraint_transition":
             rospy.loginfo("Sampling from a constraint transition keyframe.")
-            attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], graph.nodes[node]["applied_constraints"], n=n_samples)
+            constraints = [environment.get_constraint_by_id(constraint_id) for constraint_id in graph.nodes[node]["applied_constraints"]]
+            attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], constraints, n=n_samples)
             if len(samples) == 0:
                 # Some constraints couldn't be sampled successfully, so using best available samples.
                 diff = list(set(graph.nodes[node]["applied_constraints"]).difference(set(matched_ids)))
                 if len(matched_ids) > 0:
                     rospy.logwarn("Constraints {} couldn't be met so attempting to find valid samples with constraints {}.".format(diff, matched_ids))
-                    attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], matched_ids, n=n_samples)
+                    constraints = [environment.get_constraint_by_id(constraint_id) for constraint_id in graph.nodes[node]["applied_constraints"]]
+                    attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], constraints, n=n_samples)
                 else:
                     rospy.logwarn("Constraints {} couldn't be met so. Cannot meet any constraints.".format(diff))
         else:
             n_samples = args.number_of_samples
-            attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], graph.nodes[node]["applied_constraints"], n=n_samples)
+            constraints = [environment.get_constraint_by_id(constraint_id) for constraint_id in graph.nodes[node]["applied_constraints"]]
+            attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], constraints, n=n_samples)
 
         rospy.loginfo("Keyframe %d: %s valid of %s attempts", node, len(samples), attempts)
         if len(samples) < n_samples:

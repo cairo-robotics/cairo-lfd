@@ -20,6 +20,8 @@ def import_configuration(filepath):
             raise ConfigurationError("config.json file must contain the 'items' key, even if its value is an empty list.")
         if "robots" not in configs:
             raise ConfigurationError("config.json file must contain the 'robots' key, even if its value is an empty list.")
+        if "triggers" not in configs:
+            raise ConfigurationError("config.json file must contain the 'triggers' key, even if its value is an empty list.")
         return configs
 
 
@@ -36,8 +38,10 @@ class Environment(object):
         AbstractItem extended class object representing the robot.
     constraints : list
         List of constrain class objects representing the available constraints for the Demonstration.
+    triggers : list
+        List of trigger class objects that represent when a user has triggered a constraint.
     """
-    def __init__(self, items, robot, constraints):
+    def __init__(self, items, robot, constraints, triggers):
         """
         Parameters
         ----------
@@ -51,6 +55,7 @@ class Environment(object):
         self.items = items
         self.robot = robot
         self.constraints = constraints
+        self.triggers = triggers
 
     def get_robot_state(self):
         """
@@ -170,7 +175,7 @@ class Environment(object):
 
     def check_constraint_triggers(self):
         """
-        Checks all constraints for their trigger. A triggered constraint might be a button press on Sawyer's cuff or a natural language dictated constraint.
+        Checks all constraints for their trigger. A triggered constraint might be a button press on Sawyer's cuff, a subscribed topic listening for web interface initiated triggers etc,.
 
         Returns
         -------
@@ -178,10 +183,10 @@ class Environment(object):
           List of the id's of all the constraints currently triggered
         """
         triggered_constraints = []
-        for constraint in self.constraints:
-            result = constraint.check_trigger()
+        for trigger in self.triggers:
+            result = trigger.check()
             if result != 0:
-                triggered_constraints.append(constraint.id)
+                triggered_constraints.append(trigger.constraint_id)
         return triggered_constraints
 
 
@@ -335,16 +340,17 @@ class Observation(object):
         self.data = observation_data
 
     @classmethod
-    def init_samples(cls, position, orientation, joints):
+    def init_samples(cls, position, orientation, joints_angles):
         """
         Parameters
         ----------
         position : array of position data
         orientation: array of orientation data
+        joints_angles: array of joint angles (configuration)
         """
         observation_data = {"robot": {"orientation": orientation,
                                       "position": position,
-                                      "joint_angle": joints}}
+                                      "joint_angle": joints_angles}}
         return cls(observation_data)
 
     def get_timestamp(self):

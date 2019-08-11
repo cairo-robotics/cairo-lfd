@@ -243,10 +243,9 @@ class ConstraintAnalyzer():
             prev = applied
             observation.data["applied_constraints"] = applied
 
-    def evaluate(self, constraint_ids, observation):
+    def evaluate(self, constraints, observation):
         """
-        This function evaluates an observation for all the constraints in the list constraint_ids. It depends on
-        being able to access the constraint objects from the self.environment object. Every constraint object
+        This function evaluates an observation for a set of constraints. Every constraint object
         should have an 'evaluate()'' function that takes in the environment and the observation.
 
         Parameters
@@ -262,13 +261,6 @@ class ConstraintAnalyzer():
         valid_constraints : list
             Returns the list of valid constraints evaluated for the observation.
         """
-        if constraint_ids != []:
-            valid_constraints = []
-            for constraint_id in constraint_ids:
-                constraint = self.environment.get_constraint_by_id(constraint_id)
-                result = constraint.evaluate(self.environment, observation)
-                if result == 1:
-                    valid_constraints.append(constraint_id)
-            return valid_constraints
-        else:
-            return []
+        valid_ids = [constraint.id for constraint in constraints if constraint.evaluate(self.environment, observation)]
+        valid_set = True if len(valid_ids) == len(constraints) else False
+        return valid_set, valid_ids

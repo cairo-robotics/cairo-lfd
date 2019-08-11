@@ -45,7 +45,7 @@ class KeyframeSampler():
         raw_samples = model.generate_samples(num_of_samples)
         return raw_samples
 
-    def generate_n_valid_samples(self, model, primal_observation, constraint_ids, n=100):
+    def generate_n_valid_samples(self, model, primal_observation, constraints, n=100):
         """
         Parameters
         ----------
@@ -71,8 +71,8 @@ class KeyframeSampler():
             if len(samples) > 0:
                 sample = samples[0]
                 observation = self.converter.convert(sample, primal_observation, run_fk=True)
-                matched_ids = self.analyzer.evaluate(constraint_ids, observation)
-                if constraint_ids == matched_ids:
+                valid, matched_ids = self.analyzer.evaluate(constraints, observation)
+                if valid:
                     valid_samples.append(sample)
         return attempts, valid_samples, matched_ids
 
@@ -103,3 +103,11 @@ class KeyframeSampler():
         scores = scores[order]
         rank_sorted_sampled = np.asarray(samples)
         return rank_sorted_sampled
+
+
+# class MetaConstraintSampler():
+
+#     def __init__():
+#         pass
+
+#     def sample_

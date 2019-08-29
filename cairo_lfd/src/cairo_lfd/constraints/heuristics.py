@@ -115,7 +115,43 @@ class OrientationHeuristicModel():
         return predictions_counter.most_common(1)[0][0]
 
     def orientation_heuristic(self, orientations):
-        pass
+        Q = np.matrix(orientations).T
+        w, v = np.linalg.eig(Q * Q.T)
+        avg_q = np.asarray(v[np.argmax(w)])[0]
+        angle_of_deviations = self._get_angle_of_deviations(avg_q, orientations)
+
+    def _get_angle_of_deviations(self, avg_q, quaternions):
+        ref_vec = np.array([1., 0., 0.])  # Unit vector in the +x direction
+        average_q = Quaternion(avg_q[3], avg_q[0], avg_q[1], avg_q[2])
+        angles = []
+        for q in quaternions:
+            current_q = Quaternion(avg_q[3], avg_q[0], avg_q[1], avg_q[2])
+            upright_vec = upright_q.rotate(ref_vec)
+            current_vec = current_q.rotate(ref_vec)
+            angles.append(np.rad2deg(self._angle_between(average_q, current_q)))
+        std = np.std(angles)
+        avg = np.average(angles)
+        return np.linspace(avg - std, avg + std, 5)
+
+    def _angle_between(self, v1, v2):
+        """
+        Calculates the angle in radians between vectors.
+
+        Parameters
+        ----------
+        v1 : array-like
+            First vector.
+        v2 : array-like
+            Second vector.
+
+        Returns
+        -------
+        : float
+            Angle between v1 and v1 in radians.
+        """
+        v1_u = unit_vector(v1)
+        v2_u = unit_vector(v2)
+        return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
 
 
 class OverUnderHeuristicModel():
@@ -133,7 +169,9 @@ class OverUnderHeuristicModel():
             raise UnfittedHeuristicModel("The heuristic model needs to be fitted to the data in order to retrieve heuristic parameters for a set of vectorized observations.")
 
     def over_under_heuristic(self, radial_distances):
-        pass
+        std = np.std(radial_distances)
+        avg = np.average(radial_distancesd)
+        return np.linspace(avg - std, avg + std, 5)
 
 
 class PerimeterHeuristicModel():
@@ -151,4 +189,4 @@ class PerimeterHeuristicModel():
             raise UnfittedHeuristicModel("The heuristic model needs to be fitted to the data in order to retrieve heuristic parameters for a set of vectorized observations.")
 
     def perimeter_heuristic(self, current_item_state):
-        current_item_state
+        pass

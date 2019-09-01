@@ -65,7 +65,7 @@ def vectorize_robot_orientation(observation):
     return np.array(observation.data["robot"]["orientation"])
 
 
-def xy_radial_distance(observation, above_item_id, above_item_id):
+def xy_radial_distance(observation, above_item_id, below_item_id):
     """
     Vectorizes an observation by comparing xy radial/planer distance between two objects.
 
@@ -80,7 +80,7 @@ def xy_radial_distance(observation, above_item_id, above_item_id):
         Numpy vector of shape (1,)
     """
     xy_above = observation.get_item_data(above_item_id)['position'][0:1]
-    xy_below = observation.get_item_data(above_item_id)['position'][0:1]
+    xy_below = observation.get_item_data(below_item_id)['position'][0:1]
     return np.array([euclidean(xy_above, xy_below)])
 
 

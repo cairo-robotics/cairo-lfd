@@ -8,6 +8,7 @@ class HeightMetaconstraint():
     def __init__(self, static_parameters):
         self.static_params = static_parameters
         self.constraint_class = HeightConstraint
+        self.valid_constraints = []
 
     def parameterize_constraints(self, discrete_heights):
         constraints = []
@@ -20,9 +21,8 @@ class HeightMetaconstraint():
 class UprightMetaconstraint():
 
     def __init__(self, static_parameters):
-        self.heuristic_params = heuristic_parameters
         self.static_params = static_parameters
-        self.constraint_class = HeightConstraint
+        self.constraint_class = UprightConstraint
 
     def generate_constraints(self, heuristic_parameters):
         pass

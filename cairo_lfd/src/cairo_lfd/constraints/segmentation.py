@@ -1,7 +1,7 @@
 """
 The segmentation.py module supports segmenting demonstration data for use in autonomous constraint assignment.
 """
-from collections import Counter
+
 
 import numpy as np
 from sklearn import mixture
@@ -25,26 +25,14 @@ class BayesianGMMSegmentModel():
             self.model = mixture.BayesianGaussianMixture(
                 n_components=self.n_components, max_iter=500).fit(X)
 
-    def get_component_parameters(self, component_id):
-        return {
-            "mean": self._get_means(component_id),
-            "covar": self._get_covariances(component_id)
-        }
-
-    def _get_means(self, component_id):
+    def get_means(self, component_id):
         return self.model.means_[component_id]
 
-    def _get_covariances(self, component_id):
+    def get_covariances(self, component_id):
         return self.model.covariances_[component_id]
 
-    def _predict(self, vector):
+    def predict(self, vector):
         # Predict segmentation using trained model
         X = np.array(vector)
         prediction = self.model.predict(X)
         return prediction
-
-    def predict(self, vectors):
-        # using raw observations of a keyframe, assign the keyframe to the most common component id.
-        predictions = self._predict(vectors)
-        predictions_counter = Counter(predictions)
-        return predictions_counter.most_common(1)[0][0]

@@ -188,7 +188,7 @@ class StaticItem(AbstractItem):
     pose : dict
        Dictionary containing 'position' and 'orientation' keys and corresponding list of coordinate or orientation values.
     perimeter : dict
-        Dictionary containing 'inner' and 'outer' keys corresponding to lists of coordinates representing the inner perimeter and outer perimeter band around the static item.
+        Dictionary containing 'inner' and 'outer' keys corresponding to lists of coordinates representing the inner perimeter and outer perimeter band around the static item relative to it's pose. This assumes the pose is the 'center' of the item.
     """
 
     def __init__(self, item_id, name, pose, perimeter=None):

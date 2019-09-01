@@ -47,10 +47,9 @@
             "class": "OverUnderConstraint",
             "init_args" : 
                 {
-                    "id": 3,
+                    "constraint_id": 3,
                     "above_item_id": 1,
                     "below_item_id": 2,
-                    "button": "right_button_triangle",
                     "threshold_distance": 0.12,
                     "axis": "z"
                 }

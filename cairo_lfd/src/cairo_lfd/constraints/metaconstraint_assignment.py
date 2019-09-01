@@ -1,74 +1,70 @@
 from collections import Counter
-from cairo_lfd.constraints.metaconstraints import HeightMetaconstraint, UprightMetaconstraint, OverUnderMetaconstraint, Perimeter2DMetaconstraint
-from cairo_lfd.constraints.heuristics import get_segmentation_parameters
-from cairo_lfd.data.vectorization import boolean_within_SOI, boolean_within_perimeter, xy_radial_distance, vectorize_robot_position
-from cairo_lfd.constraints.heuristics import height_heuristic, orientation_heuristic, perimeter_heuristic, over_under_heuristic
 
-"""
-There are lot of injected functions (but not classical DI) that couple these classes to external functions. TODO: Utilize DI and generalize 
-"""
+import numpy as np
+
+from cairo_lfd.constraints.metaconstraints import HeightMetaconstraint, UprightMetaconstraint, OverUnderMetaconstraint, Perimeter2DMetaconstraint
+from cairo_lfd.data.vectorization import boolean_within_SOI, boolean_within_perimeter, xy_radial_distance, vectorize_robot_position, vectorize_robot_orientation
 
 
 class MetaconstraintAssigner():
 
-    def __init__(self, graph, metaconstraint_builders):
+    def __init__(self, environment, graph, metaconstraint_builders):
+        self.env = environment
         self.graph = graph
         self.builders = metaconstraint_builders
 
-    def assign_metaconstraints():
+    def assign_metaconstraints(self,):
         for node in self.graph.get_keyframe_sequence():
             metaconstraints = [meta for meta in [
-                builder.build_metaconstraint(keyframe_node) for builder in self.builders] if meta is not None]
-            keyframe_node['metaconstraints'] = metaconstraints
+                builder.build_metaconstraint(self.graph.nodes[node], self.env) for builder in self.builders] if meta is not None]
+            self.graph.nodes[node]['metaconstraints'] = metaconstraints
 
 
 class HeightMetaconstraintBuilder():
 
-    def __init__(self, segment_model, static_parameters):
-        self.segment_model = segment_model
-        self.metaconstraint = HeightMetaconstraint(static_parameters)
-        self.heuristic_func = height_heuristic
+    def __init__(self, heuristic_model, static_parameters):
+        self.heuristic_model = heuristic_model
         self.static_parameters = static_parameters
 
-    def build_metaconstraint(self, keyframe_node):
-        heuristic_parameters = self._get_heuristic_parameters(keyframe_node)
-        self.metaconstraint.parameterize_constraints(heuristic_parameters)
-        return metaconstraint
-
-    def _get_heuristic_parameters(self, keyframe_node, environment=None):
-        vectors = np.array([vectorize_robot_position(obs) for obs in keyframe_node['observations']])
-        component_id = self.segment_model.predict(vectors)
-        return self.height_heuristic(self.segment_model.get_component_parameters(component_id))
-
-
-class UprightMetaconstraintBuilder():
-
-    def __init__(self, segment_model, static_parameters, vectorizor):
-        self.segment_model = segment_model
-        self.metaconstraint = UprightMetaconstraint(static_parameters)
-        self.static_parameters = static_parameters
-
-    def build_metaconstraint(self, keyframe_node):
+    def build_metaconstraint(self, keyframe_node, environment=None):
+        metaconstraint = HeightMetaconstraint(self.static_parameters)
         heuristic_parameters = self._get_heuristic_parameters(keyframe_node)
         metaconstraint.parameterize_constraints(heuristic_parameters)
         return metaconstraint
 
     def _get_heuristic_parameters(self, keyframe_node):
-        vectors = np.array([self.vectorizor(obs) for obs in keyframe_node['observations']])
-        component_id = self.segment_model.predict(vectors)
-        return self.orientation_heuristic(self.segment_model.get_component_parameters(component_id))
+        vectors = np.array([vectorize_robot_position(obs) for obs in keyframe_node['observations']])
+        return self.heuristic_model.get_parameters(vectors)
+
+
+class UprightMetaconstraintBuilder():
+
+    def __init__(self, heuristic_model, static_parameters):
+        self.heuristic_model = heuristic_model
+        self.static_parameters = static_parameters
+
+    def build_metaconstraint(self, keyframe_node, environment=None):
+        metaconstraint = UprightMetaconstraint(static_parameters)
+        heuristic_parameters = self._get_heuristic_parameters(keyframe_node)
+        metaconstraint.parameterize_constraints(heuristic_parameters)
+        return metaconstraint
+
+    def _get_heuristic_parameters(self, keyframe_node):
+        vectors = np.array([vectorize_robot_orientation(obs) for obs in keyframe_node['observations']])
+        return self.heuristic_model.get_parameters(vectors)
 
 
 class OverUnderMetaconstraintBuilder():
 
-    def __init__(self, static_parameters):
-        self.metaconstraint = OverUnderMetaconstraint(static_parameters)
+    def __init__(self, heuristic_model, static_parameters):
+        self.heuristic_model = heuristic_model
         self.static_parameters = static_parameters
 
-    def build_metaconstraint(self, keyframe_node):
+    def build_metaconstraint(self, keyframe_node, environment=None):
         if self._validate_keyframe(keyframe_node):
+            metaconstraint = OverUnderMetaconstraint(static_parameters)
             heuristic_parameters = self._get_heuristic_parameters(keyframe_node)
-            self.metaconstraint.parameterize_constraints(heuristic_parameters)
+            metaconstraint.parameterize_constraints(heuristic_parameters)
             return metaconstraint
         return None
 
@@ -80,20 +76,21 @@ class OverUnderMetaconstraintBuilder():
         return predictions_counter.most_common(1)[0][0]
 
     def _get_heuristic_parameters(self, keyframe_node):
-        return np.array([xy_radial_distance(obs) for obs in keyframe_node['observations']])
+        return self.heuristic_model.get_parameters(np.array([xy_radial_distance(obs) for obs in keyframe_node['observations']]))
 
 
 class Perimeter2DMetaconstraintBuilder():
 
-    def __init__(self, static_parameters):
+    def __init__(self, heuristic_model, static_parameters):
+        self.heuristic_model = heuristic_model
         self.metaconstraint_class = Perimeter2DMetaconstraint(static_parameters)
         self.static_parameters = static_parameters
 
-    def build_metaconstraint(self, keyframe_node):
+    def build_metaconstraint(self, keyframe_node, environment=None):
         if self._validate_keyframe(keyframe_node):
             heuristic_parameters = self._get_heuristic_parameters(keyframe_node)
             self.metaconstraint.parameterize_constraints(heuristic_parameters)
-            return metaconstraint
+            return self.metaconstraint
         return None
 
     def _validate_keyframe(self, keyframe_node):
@@ -103,7 +100,7 @@ class Perimeter2DMetaconstraintBuilder():
         predictions_counter = Counter(predictions)
         return predictions_counter.most_common(1)[0][0]
 
-    def _get_heuristic_parameters(self, keyframe_node):
-
-        def _get_heuristic_parameters(self, keyframe_node):
-            return np.array([xy_radial_distance(obs) for obs in keyframe_node['observations']])
+    def _get_heuristic_parameters(self, keyframe_node, environment):
+        curr_item_state = self.environment.get_item_state_by_id(static_parameters["perimeter_item_id"])
+        return self.heuristic_model.get_parameters(curr_item_state)
+ 

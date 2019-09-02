@@ -113,7 +113,7 @@ class UprightConstraint(object):
     axis : int
         The axis from which angle of deviation is calculated.
     """
-    def __init__(self, constraint_id, item_id, threshold_angle, axis):
+    def __init__(self, constraint_id, item_id, threshold_angle, axis='z', reference_orientation=None):
         """
         These arguments should be in the "init_args" field of the config.json file's entry representing this constraint.
 
@@ -126,13 +126,16 @@ class UprightConstraint(object):
         threshold_angle : int
             The angle within which the assigned item's (from item_id) current orientation must be compared with its
             defined upright position.
-        axis : int
+        axis : str
             The axis from which angle of deviation is calculated.
+        reference_orientation : list
+            The x, y, z, w values of the orientation that should be used as the upright orientation rather than grabbing orientation assigned to the item.
         """
         self.id = constraint_id
         self.item_id = item_id
         self.threshold_angle = threshold_angle
-        self.axis = str(axis)
+        self.axis = axis
+        self.reference_orientation = reference_orientation
 
     def evaluate(self, environment, observation):
         """
@@ -161,7 +164,10 @@ class UprightConstraint(object):
             item_info = environment.get_item_info(self.item_id)
 
         current_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
-        upright_pose = convert_data_to_pose(item_info["upright_pose"]["position"], item_info["upright_pose"]["orientation"])
+        if self.reference_orientation is None:
+            upright_pose = convert_data_to_pose(item_info["upright_pose"]["position"], item_info["upright_pose"]["orientation"])
+        else:
+            upright_pose = convert_data_to_pose([0, 0, 0], self.reference_orientation)
         return upright(upright_pose, current_pose, self.threshold_angle, self.axis)
 
     def __repr__(self):

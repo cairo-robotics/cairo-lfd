@@ -1,5 +1,6 @@
 from collections import Counter
 
+from pyquaternion import Quaternion
 import numpy as np
 from scipy import linalg
 
@@ -24,7 +25,6 @@ class HeightHeuristicModel():
     def get_parameters(self, vectors):
         if self.fitted:
             component = self.assign_to_component(vectors)
-            print component
             return self.parameters[component]
         else:
             raise UnfittedModelError("The heuristic model needs to be fitted to the data in order to retrieve heuristic parameters from by segmentation component.")
@@ -94,8 +94,8 @@ class OrientationHeuristicModel():
     def fit(self):
         parameters_by_component = {}
         # we run the predictions on all the data first so that we don't repeatedly predict in the for loop.
-        predictions = [(self.model.predict(vector), vector) for vector in self.model.training_data]
-        for id_ in range(0, segmentation_mode.n_components):
+        predictions = [(self.model.predict([vector]), vector) for vector in self.model.training_data]
+        for id_ in range(0, self.model.n_components):
             component_vectors = [vector for pred, vector in predictions if pred == id_]
             parameters_by_component[id_] = self.orientation_heuristic(component_vectors)
         self.parameters = parameters_by_component
@@ -103,7 +103,7 @@ class OrientationHeuristicModel():
 
     def get_parameters(self, vectors):
         if self.fitted:
-            component = self.assign_to_component(vectors)
+            component_id = self.assign_to_component(vectors)
             return self.parameters[component_id]
         else:
             raise UnfittedHeuristicModel("The heuristic model needs to be fitted to the data in order to retrieve heuristic parameters for a set of vectorized observations.")
@@ -115,23 +115,52 @@ class OrientationHeuristicModel():
         return predictions_counter.most_common(1)[0][0]
 
     def orientation_heuristic(self, orientations):
-        Q = np.matrix(orientations).T
-        w, v = np.linalg.eig(Q * Q.T)
-        avg_q = np.asarray(v[np.argmax(w)])[0]
-        angle_of_deviations = self._get_angle_of_deviations(avg_q, orientations)
+        if len(orientations) != 0:
+            avg_q = self._get_average_quaternion(orientations)
+            angle_of_deviations = self._get_angle_of_deviations(avg_q, orientations)
+            return avg_q, angle_of_deviations
+        return None, None
+
+    def _get_average_quaternion(self, orientations):
+        # Based on:
+        #
+        # Markley, F. Landis, Yang Cheng, John Lucas Crassidis, and Yaakov Oshman.
+        # "Averaging quaternions." Journal of Guidance, Control, and Dynamics 30,
+        # no. 4 (2007): 1193-1197.
+        # Link: https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20070017872.pdf
+        #
+        # Code based on:
+        #
+        # Tolga Birdal. "averaging_quaternions" Matlab code.
+        # http://jp.mathworks.com/matlabcentral/fileexchange/40098-tolgabirdal-averaging-quaternions
+        Q = np.matrix(orientations)
+        M = Q.shape[0]
+        A = np.zeros(shape=(4, 4))
+
+        for i in range(0, M):
+            q = Q[i, :]
+            if np.asarray(q)[0][3] < 0:
+                q = -1 * q
+            A = np.outer(q, q) + A
+
+        # scale
+        A = (1.0 / M) * A
+
+        evals, evecs = np.linalg.eig(A)
+        evecs = evecs[:, evals.argsort()[::-1]]
+        return np.real(evecs[:, 0])
 
     def _get_angle_of_deviations(self, avg_q, quaternions):
         ref_vec = np.array([1., 0., 0.])  # Unit vector in the +x direction
         average_q = Quaternion(avg_q[3], avg_q[0], avg_q[1], avg_q[2])
         angles = []
         for q in quaternions:
-            current_q = Quaternion(avg_q[3], avg_q[0], avg_q[1], avg_q[2])
-            upright_vec = upright_q.rotate(ref_vec)
+            current_q = Quaternion(q[3], q[0], q[1], q[2])
+            average_vec = average_q.rotate(ref_vec)
             current_vec = current_q.rotate(ref_vec)
-            angles.append(np.rad2deg(self._angle_between(average_q, current_q)))
-        std = np.std(angles)
+            angles.append(np.rad2deg(self._angle_between(average_vec, current_vec)))
         avg = np.average(angles)
-        return np.linspace(avg - std, avg + std, 5)
+        return np.linspace(avg, 2 * avg, 5)
 
     def _angle_between(self, v1, v2):
         """
@@ -149,8 +178,8 @@ class OrientationHeuristicModel():
         : float
             Angle between v1 and v1 in radians.
         """
-        v1_u = unit_vector(v1)
-        v2_u = unit_vector(v2)
+        v1_u = v1 / np.linalg.norm(v1)
+        v2_u = v2 / np.linalg.norm(v2)
         return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
 
 

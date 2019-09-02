@@ -15,9 +15,8 @@ class MetaconstraintAssigner():
 
     def assign_metaconstraints(self,):
         for node in self.graph.get_keyframe_sequence():
-            metaconstraints = [meta for meta in [
-                builder.build_metaconstraint(self.graph.nodes[node], self.env) for builder in self.builders] if meta is not None]
-            self.graph.nodes[node]['metaconstraints'] = metaconstraints
+            for builder in self.builders:
+                self.graph.nodes[node]['metaconstraints'].append(builder.build_metaconstraint(self.graph.nodes[node], self.env))
 
 
 class HeightMetaconstraintBuilder():
@@ -37,16 +36,16 @@ class HeightMetaconstraintBuilder():
         return self.heuristic_model.get_parameters(vectors)
 
 
-class UprightMetaconstraintBuilder():
+class OrientationMetaconstraintBuilder():
 
     def __init__(self, heuristic_model, static_parameters):
         self.heuristic_model = heuristic_model
         self.static_parameters = static_parameters
 
     def build_metaconstraint(self, keyframe_node, environment=None):
-        metaconstraint = UprightMetaconstraint(static_parameters)
+        metaconstraint = UprightMetaconstraint(self.static_parameters)
         heuristic_parameters = self._get_heuristic_parameters(keyframe_node)
-        metaconstraint.parameterize_constraints(heuristic_parameters)
+        metaconstraint.parameterize_constraints(*heuristic_parameters)
         return metaconstraint
 
     def _get_heuristic_parameters(self, keyframe_node):

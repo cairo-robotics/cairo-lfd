@@ -159,8 +159,9 @@ class OrientationHeuristicModel():
             average_vec = average_q.rotate(ref_vec)
             current_vec = current_q.rotate(ref_vec)
             angles.append(np.rad2deg(self._angle_between(average_vec, current_vec)))
+        std = np.std(angles)
         avg = np.average(angles)
-        return np.linspace(avg, 2 * avg, 5)
+        return np.linspace(avg, avg + 2 * std, 5)
 
     def _angle_between(self, v1, v2):
         """

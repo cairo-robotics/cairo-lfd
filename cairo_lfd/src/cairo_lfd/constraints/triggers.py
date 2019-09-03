@@ -6,6 +6,8 @@ from abc import ABCMeta, abstractmethod
 import intera_interface
 import rospy
 
+from cairo_lfd.web_bridge.trigger_service import ConstraintWebTriggerClient
+
 
 class AbstractTrigger(object):
     """
@@ -63,7 +65,7 @@ class SawyerCuffButtonTrigger(AbstractTrigger):
             return 0
 
 
-class SubscribedTrigger(AbstractTrigger):
+class WebBridgeTrigger(AbstractTrigger):
     """
     Trigger class based a subscribed callback updating the triggered state.
     Currently, this class depends on ConstraintTrigger.msg of the cairo_lfd_msgs package.
@@ -85,19 +87,7 @@ class SubscribedTrigger(AbstractTrigger):
         """
         self.constraint_name = constraint_name
         self.constraint_id = constraint_id
-        self.triggered = False
-
-    def callback(self, data):
-        """
-        The callback used for a subscriber to check triggered state for the chosen constraint.
-        """
-        if data.name == constraint_name:
-            if data.on is True:
-                self.triggered = True
-            else:
-                self.triggered = False
-        else:
-            self.triggered = False
+        self.service = ConstraintTriggerClient()
 
     def check(self):
         """
@@ -108,7 +98,7 @@ class SubscribedTrigger(AbstractTrigger):
         : int
             Int value indicating if triggered state is true or false.
         """
-        if self.triggered:
+        if self.service.call(self.constraint_name):
             return 1
         else:
             return 0

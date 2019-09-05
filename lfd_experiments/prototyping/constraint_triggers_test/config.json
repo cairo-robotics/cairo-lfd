@@ -1,4 +1,7 @@
 {
+    "settings":{
+        "constraint_trigger_mechanism": "web_trigger"
+    },
     "constraints": [
         {
             "class": "HeightConstraint",
@@ -24,19 +27,19 @@
     ],
     "triggers":[
         {
-            "class": "SawyerCuffButtonTrigger",
+            "class": "WebTrigger",
             "init_args":
                 {
                     "constraint_id": 1,
-                    "cuff_button": "right_button_square"
+                    "constraint_name": "height_constraint"
                 }
         },
         {
-            "class": "SawyerCuffButtonTrigger",
+            "class": "WebTrigger",
             "init_args":
                 {
                     "constraint_id": 2,
-                    "cuff_button": "right_button_circle"
+                    "constraint_name": "upright_constraint"
                 }
         }
     ],

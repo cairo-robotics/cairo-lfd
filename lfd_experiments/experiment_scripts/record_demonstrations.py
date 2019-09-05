@@ -93,10 +93,17 @@ def main():
     pipeline = ProcessorPipeline([rk_processor, ic_processor, soi_processor, rp_processor])
     pipeline.process(demos)
 
-    # Analyze observations for constraints. 
+    # Analyze observations for constraints. If using web triggered constraints, we don't evaluate and
+    # instead the applied constraints are those explicitly set by the user.
     constraint_analyzer = ConstraintAnalyzer(environment)
     for demo in demos:
-        constraint_analyzer.applied_constraint_evaluator(demo.observations)
+        if configs['settings']['trigger_mechanism'] == 'cuff_trigger':
+            constraint_analyzer.applied_constraint_evaluator(demo.observations)
+        elif configs['settings']['trigger_mechanism'] == 'web_trigger':
+            for observation in demo.observations:
+                observation.data["applied_constraints"] = observation.get_triggered_constraint_data()
+        else:
+            rospy.logerr("No valid constraint trigger mechanism passed.")
 
     exp = DataExporter()
     for idx, demo in enumerate(demos):

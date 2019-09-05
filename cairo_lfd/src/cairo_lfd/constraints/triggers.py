@@ -15,7 +15,6 @@ class AbstractTrigger(object):
     """
     __metaclass__ = ABCMeta
 
-
     @abstractmethod
     def check(self):
         """
@@ -65,7 +64,7 @@ class SawyerCuffButtonTrigger(AbstractTrigger):
             return 0
 
 
-class WebBridgeTrigger(AbstractTrigger):
+class WebTrigger(AbstractTrigger):
     """
     Trigger class based a subscribed callback updating the triggered state.
     Currently, this class depends on ConstraintTrigger.msg of the cairo_lfd_msgs package.
@@ -87,7 +86,7 @@ class WebBridgeTrigger(AbstractTrigger):
         """
         self.constraint_name = constraint_name
         self.constraint_id = constraint_id
-        self.service = ConstraintTriggerClient()
+        self.service = ConstraintWebTriggerClient("constraint_trigger_service")
 
     def check(self):
         """
@@ -142,7 +141,7 @@ class TriggerFactory(object):
         self.configs = configs
         self.classes = {
             "SawyerCuffButtonTrigger": SawyerCuffButtonTrigger,
-            "SubscribedTrigger": SubscribedTrigger
+            "WebTrigger": WebTrigger
         }
 
     def generate_triggers(self):

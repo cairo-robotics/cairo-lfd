@@ -11,7 +11,7 @@ from scipy.spatial.distance import euclidean
 from predicate_classification.path_classifiers import perimeter_2D
 
 from cairo_lfd.core.environment import Observation
-from cairo_lfd.data.coversion import convert_data_to_pose
+from cairo_lfd.data.conversion import convert_data_to_pose
 
 
 class ProcessorPipeline():

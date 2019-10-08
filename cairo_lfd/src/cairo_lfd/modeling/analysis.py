@@ -250,8 +250,8 @@ class ConstraintAnalyzer():
 
         Parameters
         ----------
-        constraint_ids : list
-            List of constraint id's to evaluate.
+        constraints : list
+            List of constraint objects to evaluate.
 
         observation : Observation
             The observation to evaluate for the constraints.

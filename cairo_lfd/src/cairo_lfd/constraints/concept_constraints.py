@@ -6,7 +6,7 @@ import rospy
 
 import intera_interface
 
-from predicate_classification.pose_classifiers import height, upright, over_under
+from predicate_classification.pose_classifiers import height, orientation, over_under
 from predicate_classification.path_classifiers import perimeter_2D
 from cairo_lfd.data.conversion import convert_data_to_pose
 
@@ -94,11 +94,11 @@ class HeightConstraint(object):
         return "HeightConstraint({})".format(self.__dict__)
 
 
-class UprightConstraint(object):
+class OrientationConstraint(object):
     """
-    Upright Constraint class to evaluate the upright predicate classifier assigned to a given item.
+    Orientation Constraint class to evaluate the orientation predicate classifier assigned to a given item.
 
-    upright() returns true if object distance is within a threshold angle from its defined upright orientation,
+    orientation() returns true if object distance is within a threshold angle from its defined orientation,
     pivoting around a given axis.
 
     Attributes
@@ -168,10 +168,10 @@ class UprightConstraint(object):
             upright_pose = convert_data_to_pose(item_info["upright_pose"]["position"], item_info["upright_pose"]["orientation"])
         else:
             upright_pose = convert_data_to_pose([0, 0, 0], self.reference_orientation)
-        return upright(upright_pose, current_pose, self.threshold_angle, self.axis)
+        return orientation(upright_pose, current_pose, self.threshold_angle, self.axis)
 
     def __repr__(self):
-        return "UprightConstraint({}, {}, {}, {})".format(self.id, self.item_id, self.threshold_angle, self.axis)
+        return "OrientationConstraint({}, {}, {}, {})".format(self.id, self.item_id, self.threshold_angle, self.axis)
 
 
 class OverUnderConstraint(object):
@@ -380,7 +380,7 @@ class ConstraintFactory(object):
         """
         self.configs = configs
         self.constraint_classes = {
-            "UprightConstraint": UprightConstraint,
+            "OrientationConstraint": OrientationConstraint,
             "HeightConstraint": HeightConstraint,
             "OverUnderConstraint": OverUnderConstraint,
             "Perimeter2DConstraint": Perimeter2DConstraint
@@ -400,7 +400,7 @@ class ConstraintFactory(object):
         for config in self.configs["constraints"]:
             if config["init_args"]["constraint_id"] in constraint_ids:
                 raise ValueError(
-                    "Robots and items must each have a unique integer 'constraint_id'")
+                    "Constraints must each have a unique integer 'constraint_id'")
             else:
                 constraint_ids.append(config["init_args"]["constraint_id"])
             try:

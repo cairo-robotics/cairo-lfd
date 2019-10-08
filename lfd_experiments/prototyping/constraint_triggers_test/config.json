@@ -15,7 +15,7 @@
                 }
         },
         {
-            "class": "UprightConstraint",
+            "class": "OrientationConstraint",
             "init_args" : 
                 {
                     "constraint_id": 2,
@@ -23,7 +23,29 @@
                     "threshold_angle": 10,
                     "axis": "x"
                 }
+        },
+        {
+            "class": "OverUnderConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 3,
+                    "above_item_id": 1,
+                    "below_item_id": 2,
+                    "threshold_distance": 0.25,
+                    "axis": "z"
+                }
+        },
+        {
+            "class": "Perimeter2DConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 4,
+                    "perimeter_item_id": 2,
+                    "traversing_item_id": 1,
+                    "axis": "z"
+                }
         }
+
     ],
     "triggers":[
         {
@@ -39,7 +61,23 @@
             "init_args":
                 {
                     "constraint_id": 2,
-                    "constraint_name": "upright_constraint"
+                    "constraint_name": "orientation_constraint"
+                }
+        },
+         {
+            "class": "WebTrigger",
+            "init_args":
+                {
+                    "constraint_id": 3,
+                    "constraint_name": "over_under_constraint"
+                }
+        },
+         {
+            "class": "WebTrigger",
+            "init_args":
+                {
+                    "constraint_id": 4,
+                    "constraint_name": "perimeter_constraint"
                 }
         }
     ],
@@ -52,7 +90,7 @@
                     "name": "block",
                     "pose": 
                         {
-                            "position":[0.6952, -0.03986, -0.173911],
+                            "position":[0.7452, -0.08986, -0.173911],
                             "orientation": [0.015391, -0.0089937, 0.70554, 0.70845]
                         },
                     "perimeter":

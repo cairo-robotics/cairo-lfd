@@ -9,7 +9,6 @@ import tf
 import rospy
 import intera_interface
 
-from cairo_lfd.constraints.concept_constraints import UprightConstraint, HeightConstraint
 from robot_clients.transform_clients import TransformLookupClient
 
 

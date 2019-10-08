@@ -56,7 +56,7 @@ class ConstraintWebTriggerService():
             The ROS Service proxy object
         """
         self.constraint_states = constraint_states if constraint_states is not None else {
-            "upright_constraint": False,
+            "orientation_constraint": False,
             "height_constraint": False,
             "over_under_constraint": False,
             "perimeter_constraint": False

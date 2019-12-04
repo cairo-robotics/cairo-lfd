@@ -35,35 +35,6 @@ class KeyframeGraphAnalyzer():
         self.interface = sawyer_moveit_interface
         self.vectorizor = observation_vectorizor
 
-    def evaluate_keyframe_occlusion(self, keyframe_observations):
-        """
-        Evaluates a given list of keyframe observations for occlusion using the interface's check_point_validity()
-        function.
-
-        Parameters
-        ----------
-        keyframe_observations : list
-           List of keyframe observations to evaluate. Expects Observation objects.
-
-        Returns
-        -------
-        (free_observations, occluded_observations) : tuple
-            A tuple containing a list of free observations as the first element and a list of occluded observations as the second element.
-        """
-        occluded_observations = []
-        free_observations = []
-        for observation in keyframe_observations:
-            joints = observation.get_joint_angle()
-            if joints is None:
-                observation.data["robot"]["joints"] = self.interface.get_pose_IK_joints(observation.get_pose_list())
-            if type(joints) is not list:
-                joints = joints.tolist()
-            if not self.interface.check_point_validity(self.interface.create_robot_state(joints)):
-                occluded_observations.append(observation)
-            else:
-                free_observations.append(observation)
-        return (free_observations, occluded_observations)
-
     def max_mean_ll(self, model, observation):
         """
         Given a set of observations, generate the mean log likelihood and max log likelihood of the set scored by a given model.
@@ -93,26 +64,37 @@ class KeyframeGraphAnalyzer():
     def cull_keyframes(self, threshold=-10000):
         """
         Culls consecutive keyframes sequentially until the one such keyframe's observations has an average LL is below
-        a threshold as scored by the current keyframes model.
+        the average LL between all keyframes, as scored by the current keyframes model.
 
         Parameters
         ----------
         threshold : int
             The threshold average log likelihood.
         """
+        mean, median, std = self._get_variational_distance_stats()
         prev = self.graph.get_keyframe_sequence()[0]
         curr = self.graph.successors(prev).next()
         while([x for x in self.graph.successors(curr)] != []):
-            rospy.loginfo("Prev: {}; Curr: {}".format(prev, curr))
             max_ll, mean_ll = self.max_mean_ll(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["observations"])
-            if mean_ll > threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
-                rospy.loginfo("Node {} average log-likelihood of {} is above threshold of {}".format(curr, mean_ll, threshold))
+            if mean_ll > mean and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
+                rospy.logwarn("Node {} average log-likelihood of {} is above the sequence mean variational distance log likelihood of {}".format(curr, mean_ll, mean))
                 succ = self.graph.successors(curr).next()
                 self.graph.cull_node(curr)
                 curr = succ
                 continue
             prev = curr
             curr = self.graph.successors(curr).next()
+
+    def _get_variational_distance_stats(self):
+        prev = self.graph.get_keyframe_sequence()[0]
+        curr = self.graph.successors(prev).next()
+        log_likelihoods = []
+        while([x for x in self.graph.successors(curr)] != []):
+            max_ll, mean_ll = self.max_mean_ll(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["observations"])
+            log_likelihoods.append(mean_ll)
+            prev = curr
+            curr = self.graph.successors(curr).next()
+        return np.average(log_likelihoods), np.median(log_likelihoods), np.std(log_likelihoods)
 
 
 class MotionPlanAnalyzer():

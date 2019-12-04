@@ -86,7 +86,7 @@ def xy_radial_distance(observation, above_item_id, below_item_id):
 
 def boolean_within_SOI(observation, item1_id, item2_id):
     """
-    Vectorizes an observation to a boolean if two objects are within eachothers' sphere of influence (SOI).
+    Vectorizes an observation to a boolean if two objects are within each others' sphere of influence (SOI).
 
     Depends on the SphereOfInfluenceProcessor object having processed the observation and will simply evaluate to False if this is not the case.
 
@@ -123,7 +123,7 @@ def boolean_within_perimeter(observation, perimeter_item_id, traversing_item_id)
      : bool
         Numpy vector of shape (1,)
     """
-    if traversing_item_id in observation.get_item_data(item1_id).get('in_perimeter', []):
+    if traversing_item_id in observation.get_item_data(perimeter_item_id).get('in_perimeter', []):
         return True
     else:
         return False

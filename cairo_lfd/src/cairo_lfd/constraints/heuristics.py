@@ -200,8 +200,8 @@ class OverUnderHeuristicModel():
 
     def over_under_heuristic(self, radial_distances):
         std = np.std(radial_distances)
-        avg = np.average(radial_distancesd)
-        return np.linspace(avg - std, avg + std, 5)
+        avg = np.average(radial_distances)
+        return np.linspace(avg - std / 2, avg + std / 2, 5)
 
 
 class PerimeterHeuristicModel():
@@ -212,11 +212,10 @@ class PerimeterHeuristicModel():
     def fit(self):
         pass
 
-    def get_parameters(self, current_item_state):
+    def get_parameters(self, ):
         if self.fitted:
-            return self.perimeter_heuristic(current_item_state)
+            return None
         else:
             raise UnfittedHeuristicModel("The heuristic model needs to be fitted to the data in order to retrieve heuristic parameters for a set of vectorized observations.")
 
-    def perimeter_heuristic(self, current_item_state):
-        pass
+

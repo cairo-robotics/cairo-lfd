@@ -8,7 +8,8 @@ from cairo_lfd.srv import ConstraintWebTrigger, ConstraintWebTriggerRequest, Con
 class ConstraintWebTriggerClient():
     def __init__(self, service_name):
         self.ns = service_name
-        self.service = rospy.ServiceProxy(self.ns, ConstraintWebTrigger)
+        # TODO reconnect logic since we're using persistent connection
+        self.service = rospy.ServiceProxy(self.ns, ConstraintWebTrigger, persistent=True)
         rospy.loginfo("Connecting to Constraint Trigger service.")
         try:
             rospy.wait_for_service(self.ns, 20)
@@ -30,11 +31,11 @@ class ConstraintWebTriggerClient():
             resp = self.service(req)
             return resp.status
         except (rospy.ServiceException, rospy.ROSException), e:
-            rospy.logerr("Service call failed: %s" % (e,))
+            rospy.logerr("Web trigger service call failed: %s" % (e,))
             return None
 
         if resp.error.error_string is not None:
-            rospy.logwarn("Transform lookup failed: %s" % (e,))
+            rospy.logwarn("Web trigger service call failed: %s" % (e,))
             return None
 
 

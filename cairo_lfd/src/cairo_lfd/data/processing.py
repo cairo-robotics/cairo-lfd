@@ -27,25 +27,25 @@ class ProcessorPipeline():
 
 class EuclideanDistanceMixin():
 
-    def _euclidean(self, obj1_posistion, obj2_position):
+    def _euclidean(self, vector_1, vector_2):
         """
         Calculates the euclidean distance using SciPy's euclidean function
 
         Parameters
         ----------
-        obj1_posistion : array-like
-            List of x,y,z coordinates of object 1's position.
+        vector_1 : array-like
+            A vector of values, such as a List of x,y,z coordinates.
 
-        obj2_position : array-like
-            List of x,y,z coordinates of object 2's position.
+        vector_2 : array-like
+            A vector of values, such as a List of x,y,z coordinates.
 
         Returns
         -------
         : float
             The distance.
         """
-        if isinstance(obj1_posistion, (list, np.ndarray)) and isinstance(obj2_position, (list, np.ndarray)):
-            return euclidean(obj1_posistion, obj2_position)
+        if isinstance(vector_1, (list, np.ndarray)) and isinstance(vector_2, (list, np.ndarray)):
+            return euclidean(vector_1, vector_2)
         else:
             raise ValueError("Argument must be array-like (list or ndarray)")
 
@@ -585,20 +585,20 @@ class WithinPerimeterProcessor():
         for obsv in observations:
             self._evaluate_within_perimeter(obsv)
 
-    def _evaluate_within_perimeter(self, curr_obs):
+    def _evaluate_within_perimeter(self, curr_observation):
         for target_item_id in self.item_ids:
             within_perimeter = []
             perimeter = curr_observation.get_item_data(target_item_id).get(
                 "perimeter", None)
             if perimeter is not None:
                 # robot first 
-                robot_pose = convert_data_to_pose(curr_obs.get_robot_data()["position"], curr_obs.get_robot_data()["orientation"])
+                robot_pose = convert_data_to_pose(curr_observation.get_robot_data()["position"], curr_observation.get_robot_data()["orientation"])
                 if perimeter_2D(robot_pose, perimeter["inner"], perimeter["outer"]):
                     within_perimeter.append(self.robot_id)
                 # now all items
                 for item_id in self.item_ids:
                     if target_item_id != item_id:
-                        item_pose = convert_data_to_pose(curr_obs.get_item_data(item_id)["position"], curr_obs.get_item_data(item_id)["orientation"])
+                        item_pose = convert_data_to_pose(curr_observation.get_item_data(item_id)["position"], curr_observation.get_item_data(item_id)["orientation"])
                         if perimeter_2D(item_pose, perimeter["inner"], perimeter["outer"]):
                             within_perimeter.append(target_id)
                 curr_observation.get_item_data(target_item_id)['in_perimeter'] = within_perimeter

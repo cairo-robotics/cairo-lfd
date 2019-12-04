@@ -41,8 +41,9 @@ class HeightConstraint(object):
 
         Parameters
         ----------
-        constraint_id : int
-            Id of the constraint as defined in the config.json file.
+        constraint_id : int/tuple
+            Id of the constraint as defined in the config.json file. Can be a tuple when used within the context
+            of a metaconstraint ('height', 0) for sampling purposes.
         item_id : int
             Id of the item on which the constraint can be applied.
         reference_height : int
@@ -85,7 +86,9 @@ class HeightConstraint(object):
             item_data = observation.get_robot_data()
             item_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
         else:
+            print(self.item_id)
             item_data = observation.get_item_data(self.item_id)
+            print(item_data)
             item_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
 
         return height(item_pose, self.reference_height, self.threshold_distance, direction=self.direction, axis=self.axis)
@@ -119,8 +122,9 @@ class OrientationConstraint(object):
 
         Parameters
         ----------
-        constraint_id : int
-            Id of the constraint as defined in the config.json file.
+        constraint_id : int/tuple
+            Id of the constraint as defined in the config.json file. Can be a tuple when used within the context
+            of a metaconstraint ('orientation', 0) for sampling purposes.
         item_id : int
             Id of the item on which the constraint can be applied.
         threshold_angle : int
@@ -171,7 +175,7 @@ class OrientationConstraint(object):
         return orientation(upright_pose, current_pose, self.threshold_angle, self.axis)
 
     def __repr__(self):
-        return "OrientationConstraint({}, {}, {}, {})".format(self.id, self.item_id, self.threshold_angle, self.axis)
+        return "OrientationConstraint({}, {}, {}, {}, {})".format(self.id, self.item_id, self.threshold_angle, self.axis, self.reference_orientation)
 
 
 class OverUnderConstraint(object):
@@ -203,8 +207,9 @@ class OverUnderConstraint(object):
 
         Parameters
         ----------
-        constraint_id : int
-            Id of the constraint as defined in the config.json file.
+        constraint_id : int/tuple
+            Id of the constraint as defined in the config.json file. Can be a tuple when used within the context
+            of a metaconstraint ('overunder', 0) for sampling purposes.
         above_item_id : int
             Id of the item that must be above the other for the constraint to hold true.
         below_item_id : int
@@ -270,8 +275,9 @@ class Perimeter2DConstraint(object):
 
     Attributes
     ----------
-    id : int
-        Id of the constraint as defined in the config.json file.
+    id : int / tuple
+        Id of the constraint as defined in the config.json file. Can be a tuple when used within the context
+            of a metaconstraint ('perimeter', 0) for sampling purposes.
     perimeter_item_id : int
         Id of the item for which the perimeter constraint is evaluated.
     traversing_item_id : int
@@ -337,7 +343,7 @@ class Perimeter2DConstraint(object):
         return perimeter_2D(traversing_item_pose, inner_poly, outer_poly, axis=self.axis)
 
     def __repr__(self):
-        return "Perimeter2DConstraint({}, {}, {}, {}, {})".format(self.id, self.perimeter_item_id, self.traversing_item_id, self.axis)
+        return "Perimeter2DConstraint({}, {}, {}, {})".format(self.id, self.perimeter_item_id, self.traversing_item_id, self.axis)
 
 
 class ConstraintFactory(object):

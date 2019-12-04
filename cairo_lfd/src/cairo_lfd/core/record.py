@@ -10,6 +10,7 @@ import intera_interface
 import cv2
 import cv_bridge
 from sensor_msgs.msg import Image
+from std_msgs.msg import Int16MultiArray
 
 from cairo_lfd.core.environment import Observation, Demonstration
 
@@ -38,7 +39,7 @@ class SawyerRecorder(object):
             The rate at which to capture state data.
         """
         self._raw_rate = rate
-        self._rate = rospy.Rate(rate)
+        self._rate = rospy.Rate(self._raw_rate)
         self._start_time = rospy.get_time()
         self._done = False
         self.interaction_publisher = interaction_publisher
@@ -76,7 +77,7 @@ class SawyerRecorder(object):
             self.stop()
         return self._done
 
-    def record_demonstrations(self, environment, auto_zeroG=False):
+    def record_demonstrations(self, environment, constraint_analyzer=None, auto_zeroG=False):
         """
         Records the current joint positions to a csv file if outputFilename was
         provided at construction this function will record the latest set of
@@ -112,14 +113,15 @@ class SawyerRecorder(object):
                 if environment.robot._navigator.get_button_state("right_button_show") == 2 or user_input == "r":
                     print("Recording!")
                     recording = True
-                observations = []
-                while recording:
                     self.head_display_pub.publish(self._setup_image(self.recording_image_path))
                     if auto_zeroG and self.interaction_publisher is not None and self.interaction_options is not None:
                         self.interaction_publisher.external_rate_send_command(self.interaction_options)
                     elif auto_zeroG and self.interaction_publisher is None or self.interaction_options is None:
                         rospy.logerr("Sawyer Recorder must possess an interaction publisher and/or interaction options for zeroG")
                         raise ValueError("Sawyer Recorder must possess an interaction publisher and/or interaction options zeroG")
+                observations = []
+                counter = 0
+                while recording:
                     if robot._gripper:
                         if robot._cuff.upper_button():
                             robot._gripper.open()
@@ -132,8 +134,13 @@ class SawyerRecorder(object):
                         "triggered_constraints": environment.check_constraint_triggers()
                     }
                     observation = Observation(data)
+                    if constraint_analyzer is not None:
+                        valid_constraints = constraint_analyzer.evaluate(environment.constraints, observation)[1]
+                        pub = rospy.Publisher('/cairo_lfd/valid_constraints', Int16MultiArray, queue_size=10)
+                        msg = Int16MultiArray(data=valid_constraints)
+                        pub.publish(msg)
                     observations.append(observation)
-                    stdin, stdout, stderr = select.select([sys.stdin], [], [], .0001)
+                    stdin, stdout, stderr = select.select([sys.stdin], [], [], .00000000001)
                     for s in stdin:
                         if s == sys.stdin:
                             user_input = sys.stdin.readline().strip()

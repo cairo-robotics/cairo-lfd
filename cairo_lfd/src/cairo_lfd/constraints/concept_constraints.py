@@ -2,11 +2,12 @@
 The constraints.py module contains a classes that encapsulate predicate classifiers used to
 evaluate binary value conceptual constraints.
 """
+import rospy
+
 import intera_interface
 
-from predicate_classification.pose_classifiers import height, upright, over_under
+from predicate_classification.pose_classifiers import height, orientation, over_under
 from predicate_classification.path_classifiers import perimeter_2D
-from cairo_lfd.constraints.triggers import SawyerCuffButtonTrigger
 from cairo_lfd.data.conversion import convert_data_to_pose
 
 
@@ -31,10 +32,8 @@ class HeightConstraint(object):
     threshold_distance : int
         The distance from reference (positive: above; negative; below) to compare an object's distance
         from reference.
-    trigger : string
-        The trigger object responsible for checking if the constraint has been trigger / set.
     """
-    def __init__(self, constraint_id, item_id, button, reference_height, threshold_distance, direction="positive", axis="z"):
+    def __init__(self, constraint_id, item_id, reference_height, threshold_distance, direction="positive", axis="z"):
 
         """
         These arguments should be in the "init_args" field of the config.json file's entry representing
@@ -42,13 +41,11 @@ class HeightConstraint(object):
 
         Parameters
         ----------
-        constraint_id : int
-            Id of the constraint as defined in the config.json file.
+        constraint_id : int/tuple
+            Id of the constraint as defined in the config.json file. Can be a tuple when used within the context
+            of a metaconstraint ('height', 0) for sampling purposes.
         item_id : int
             Id of the item on which the constraint can be applied.
-        button : string
-            String of a button for the intera_interface.Navigator().get_button_state(self.button) function to
-            check the trigger.
         reference_height : int
             The reference or starting height to compare an objects height distance against the threshold_distance.
         threshold_distance : int
@@ -63,20 +60,8 @@ class HeightConstraint(object):
         self.item_id = item_id
         self.reference_height = reference_height
         self.threshold_distance = threshold_distance
-        self.trigger = SawyerCuffButtonTrigger(button)
         self.direction = direction
         self.axis = axis
-
-    def check_trigger(self):
-        """
-        This function evaluates whether the constraint has been triggered by means of the trigger object.
-
-        Returns
-        -------
-        : int
-            Int value of trigger result.
-        """
-        return self.trigger.check()
 
     def evaluate(self, environment, observation):
         """
@@ -101,17 +86,22 @@ class HeightConstraint(object):
             item_data = observation.get_robot_data()
             item_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
         else:
+            print(self.item_id)
             item_data = observation.get_item_data(self.item_id)
+            print(item_data)
             item_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
 
         return height(item_pose, self.reference_height, self.threshold_distance, direction=self.direction, axis=self.axis)
 
+    def __repr__(self):
+        return "HeightConstraint({})".format(self.__dict__)
 
-class UprightConstraint(object):
+
+class OrientationConstraint(object):
     """
-    Upright Constraint class to evaluate the upright predicate classifier assigned to a given item.
+    Orientation Constraint class to evaluate the orientation predicate classifier assigned to a given item.
 
-    upright() returns true if object distance is within a threshold angle from its defined upright orientation,
+    orientation() returns true if object distance is within a threshold angle from its defined orientation,
     pivoting around a given axis.
 
     Attributes
@@ -125,44 +115,31 @@ class UprightConstraint(object):
         defined upright position.
     axis : int
         The axis from which angle of deviation is calculated.
-    trigger : string
-        The trigger object responsible for checking if the constraint has been trigger / set.
     """
-    def __init__(self, constraint_id, item_id, button, threshold_angle, axis):
+    def __init__(self, constraint_id, item_id, threshold_angle, axis='z', reference_orientation=None):
         """
         These arguments should be in the "init_args" field of the config.json file's entry representing this constraint.
 
         Parameters
         ----------
-        constraint_id : int
-            Id of the constraint as defined in the config.json file.
+        constraint_id : int/tuple
+            Id of the constraint as defined in the config.json file. Can be a tuple when used within the context
+            of a metaconstraint ('orientation', 0) for sampling purposes.
         item_id : int
             Id of the item on which the constraint can be applied.
-        button : string
-            String of a button for the intera_interface.Navigator().get_button_state(self.button) function to
-            check trigger.
         threshold_angle : int
             The angle within which the assigned item's (from item_id) current orientation must be compared with its
             defined upright position.
-        axis : int
+        axis : str
             The axis from which angle of deviation is calculated.
+        reference_orientation : list
+            The x, y, z, w values of the orientation that should be used as the upright orientation rather than grabbing orientation assigned to the item.
         """
         self.id = constraint_id
         self.item_id = item_id
         self.threshold_angle = threshold_angle
-        self.axis = str(axis)
-        self.trigger = SawyerCuffButtonTrigger(button)
-
-    def check_trigger(self):
-        """
-        This function evaluates whether the constraint has been triggered by means of the trigger object.
-
-        Returns
-        -------
-        : int
-            Integer value of trigger result.
-        """
-        return self.trigger.check()
+        self.axis = axis
+        self.reference_orientation = reference_orientation
 
     def evaluate(self, environment, observation):
         """
@@ -191,8 +168,14 @@ class UprightConstraint(object):
             item_info = environment.get_item_info(self.item_id)
 
         current_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
-        upright_pose = convert_data_to_pose(item_info["upright_pose"]["position"], item_info["upright_pose"]["orientation"])
-        return upright(upright_pose, current_pose, self.threshold_angle, self.axis)
+        if self.reference_orientation is None:
+            upright_pose = convert_data_to_pose(item_info["upright_pose"]["position"], item_info["upright_pose"]["orientation"])
+        else:
+            upright_pose = convert_data_to_pose([0, 0, 0], self.reference_orientation)
+        return orientation(upright_pose, current_pose, self.threshold_angle, self.axis)
+
+    def __repr__(self):
+        return "OrientationConstraint({}, {}, {}, {}, {})".format(self.id, self.item_id, self.threshold_angle, self.axis, self.reference_orientation)
 
 
 class OverUnderConstraint(object):
@@ -210,15 +193,13 @@ class OverUnderConstraint(object):
             Id of the item that must be above the other for the constraint to hold true.
     below_item_id : int
         Id of the item that must be below the other for the constraint to hold true.
-    trigger : string
-        The trigger object responsible for checking if the constraint has been trigger / set.
     threshold_distance : int
         The distance from reference (positive: above; negative; below) to compare an object's distance
         from reference.
     axis : str
         The axis from which angle of deviation is calculated.
     """
-    def __init__(self, constraint_id, above_item_id, below_item_id, button, threshold_distance, axis):
+    def __init__(self, constraint_id, above_item_id, below_item_id, threshold_distance, axis):
 
         """
         These arguments should be in the "init_args" field of the config.json file's entry representing
@@ -226,39 +207,24 @@ class OverUnderConstraint(object):
 
         Parameters
         ----------
-        constraint_id : int
-            Id of the constraint as defined in the config.json file.
+        constraint_id : int/tuple
+            Id of the constraint as defined in the config.json file. Can be a tuple when used within the context
+            of a metaconstraint ('overunder', 0) for sampling purposes.
         above_item_id : int
             Id of the item that must be above the other for the constraint to hold true.
         below_item_id : int
             Id of the item that must be below the other for the constraint to hold true.
-        button : string
-            String of a button for the intera_interface.Navigator().get_button_state(self.button) function to
-            check the trigger.
         threshold_distance : int
             The distance from reference (positive: above; negative; below) to compare an object's distance
             from reference.
         axis : str
             The axis from which angle of deviation is calculated.
         """
-
         self.id = constraint_id
         self.above_item_id = above_item_id
         self.below_item_id = below_item_id
         self.threshold_distance = threshold_distance
-        self.trigger = SawyerCuffButtonTrigger(button)
         self.axis = str(axis)
-
-    def check_trigger(self):
-        """
-        This function evaluates whether the constraint has been triggered by means of the trigger object.
-
-        Returns
-        -------
-        : int
-            Integer value of trigger result.
-        """
-        return self.trigger.check()
 
     def evaluate(self, environment, observation):
         """
@@ -296,6 +262,9 @@ class OverUnderConstraint(object):
             below_pose = convert_data_to_pose(below_data["position"], below_data["orientation"])
         return over_under(above_pose, below_pose, self.threshold_distance, axis=self.axis)
 
+    def __repr__(self):
+        return "OverUnderConstraint({}, {}, {}, {}, {})".format(self.id, self.above_item_id, self.below_item_id, self.threshold_distance, self.axis)
+
 
 class Perimeter2DConstraint(object):
     """
@@ -306,18 +275,17 @@ class Perimeter2DConstraint(object):
 
     Attributes
     ----------
-    id : int
-        Id of the constraint as defined in the config.json file.
+    id : int / tuple
+        Id of the constraint as defined in the config.json file. Can be a tuple when used within the context
+            of a metaconstraint ('perimeter', 0) for sampling purposes.
     perimeter_item_id : int
         Id of the item for which the perimeter constraint is evaluated.
     traversing_item_id : int
         Id of the item that must that traversing within the perimeter band of the perimeter_item.
-    trigger : string
-        The trigger object responsible for checking if the constraint has been trigger / set.
     axis : str
         The axis to which the plane of the 2D perimeter of the object is orthogonal.
     """
-    def __init__(self, constraint_id, perimeter_item_id, traversing_item_id, button, axis='z'):
+    def __init__(self, constraint_id, perimeter_item_id, traversing_item_id, axis='z'):
 
         """
         These arguments should be in the "init_args" field of the config.json file's entry representing
@@ -331,8 +299,6 @@ class Perimeter2DConstraint(object):
             Id of the item for which the perimeter constraint is evaluated.
         traversing_item_id : int
             Id of the item that must that traversing within the perimeter band of the perimeter_item.
-        trigger : string
-            The trigger object responsible for checking if the constraint has been trigger / set.
         axis : str
             The axis to which the plane of the 2D perimeter of the object is orthogonal.
         """
@@ -340,19 +306,7 @@ class Perimeter2DConstraint(object):
         self.id = constraint_id
         self.perimeter_item_id = int(perimeter_item_id)
         self.traversing_item_id = int(traversing_item_id)
-        self.trigger = SawyerCuffButtonTrigger(button)
         self.axis = str(axis)
-
-    def check_trigger(self):
-        """
-        This function evaluates whether the constraint has been triggered by means of the trigger object.
-
-        Returns
-        -------
-        : int
-            Integer value of trigger result.
-        """
-        return self.trigger.check()
 
     def evaluate(self, environment, observation):
         """
@@ -387,6 +341,9 @@ class Perimeter2DConstraint(object):
             inner_poly = perimeter_item_data['perimeter']['inner']
             outer_poly = perimeter_item_data['perimeter']['outer']
         return perimeter_2D(traversing_item_pose, inner_poly, outer_poly, axis=self.axis)
+
+    def __repr__(self):
+        return "Perimeter2DConstraint({}, {}, {}, {})".format(self.id, self.perimeter_item_id, self.traversing_item_id, self.axis)
 
 
 class ConstraintFactory(object):
@@ -428,8 +385,8 @@ class ConstraintFactory(object):
             List of configuration dictionaries.
         """
         self.configs = configs
-        self.classes = {
-            "UprightConstraint": UprightConstraint,
+        self.constraint_classes = {
+            "OrientationConstraint": OrientationConstraint,
             "HeightConstraint": HeightConstraint,
             "OverUnderConstraint": OverUnderConstraint,
             "Perimeter2DConstraint": Perimeter2DConstraint
@@ -444,7 +401,16 @@ class ConstraintFactory(object):
         robots : list
             List of constraint objects.
         """
+        constraint_ids = []
         constraints = []
         for config in self.configs["constraints"]:
-            constraints.append(self.classes[config["class"]](*tuple(config["init_args"].values())))
+            if config["init_args"]["constraint_id"] in constraint_ids:
+                raise ValueError(
+                    "Constraints must each have a unique integer 'constraint_id'")
+            else:
+                constraint_ids.append(config["init_args"]["constraint_id"])
+            try:
+                constraints.append(self.constraint_classes[config["class"]](**config["init_args"]))
+            except TypeError as e:
+                rospy.logerr("Error constructing {}: {}".format(self.constraint_classes[config["class"]], e))
         return constraints

@@ -7,7 +7,7 @@ from robot_interface.moveit_interface import SawyerMoveitInterface
 
 from cairo_lfd.modeling.graphing import ObservationClusterer, KeyframeGraph
 from cairo_lfd.modeling.models import KDEModel
-from cairo_lfd.modeling.sampling import KeyframeSampler
+from cairo_lfd.modeling.sampling import KeyframeSampler, ModelScoreSampleRanker, ConfigurationSpaceSampleRanker
 from cairo_lfd.modeling.analysis import KeyframeGraphAnalyzer, ConstraintAnalyzer
 from cairo_lfd.core.environment import Demonstration, Observation, Environment, import_configuration
 from cairo_lfd.core.items import ItemFactory
@@ -74,7 +74,7 @@ def main():
     items = ItemFactory(configs).generate_items()
     constraints = ConstraintFactory(configs).generate_constraints()
     # We only have just the one robot...for now.......
-    environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints)
+    environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints, triggers=None)
 
     """ Create the moveit_interface """
     moveit_interface = SawyerMoveitInterface()
@@ -112,25 +112,31 @@ def main():
 
     sample_to_obsv_converter = SawyerSampleConverter(moveit_interface)
     sampler = KeyframeSampler(constraint_analyzer, sample_to_obsv_converter)
+    model_score_ranker = ModelScoreSampleRanker()
+    configraution_ranker = ConfigurationSpaceSampleRanker()
 
     """ Generate raw_samples from graph for each keyframe """
+    prior_sample = None
     for node in graph.get_keyframe_sequence():
         print "Keyframe {}".format(node)
         # Keep sampling 
         if graph.nodes[node]["keyframe_type"] == "constraint_transition":
             rospy.loginfo("Sampling from a constraint transition keyframe.")
-            attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], graph.nodes[node]["applied_constraints"], n=n_samples)
+            constraints = [environment.get_constraint_by_id(constraint_id) for constraint_id in graph.nodes[node]["applied_constraints"]]
+            attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], constraints, n=n_samples)
             if len(samples) == 0:
                 # Some constraints couldn't be sampled successfully, so using best available samples.
                 diff = list(set(graph.nodes[node]["applied_constraints"]).difference(set(matched_ids)))
                 if len(matched_ids) > 0:
                     rospy.logwarn("Constraints {} couldn't be met so attempting to find valid samples with constraints {}.".format(diff, matched_ids))
-                    attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], matched_ids, n=n_samples)
+                    constraints = [environment.get_constraint_by_id(constraint_id) for constraint_id in graph.nodes[node]["applied_constraints"]]
+                    attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], constraints, n=n_samples)
                 else:
                     rospy.logwarn("Constraints {} couldn't be met so. Cannot meet any constraints.".format(diff))
         else:
             n_samples = args.number_of_samples
-            attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], graph.nodes[node]["applied_constraints"], n=n_samples)
+            constraints = [environment.get_constraint_by_id(constraint_id) for constraint_id in graph.nodes[node]["applied_constraints"]]
+            attempts, samples, matched_ids = sampler.generate_n_valid_samples(graph.nodes[node]["model"], graph.nodes[node]["primal_observation"], constraints, n=n_samples)
 
         rospy.loginfo("Keyframe %d: %s valid of %s attempts", node, len(samples), attempts)
         if len(samples) < n_samples:
@@ -140,7 +146,11 @@ def main():
             graph.cull_node(node)
         else:
             # Order sampled points based on their intra-model log-likelihood
-            ranked_samples = sampler.rank_samples(graph.nodes[node]["model"], samples)
+            if prior_sample is None:
+                ranked_samples = model_score_ranker.rank(graph.nodes[node]["model"], samples)
+            else:
+                ranked_samples = configraution_ranker.rank(graph.nodes[node]["model"], samples, prior_sample)
+                prior_sample = ranked_samples[0]
 
             # User converter object to convert raw sample vectors into LfD observations
             graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(sample, run_fk=True) for sample in ranked_samples]

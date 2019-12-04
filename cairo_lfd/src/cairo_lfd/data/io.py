@@ -9,6 +9,23 @@ import codecs
 from collections import OrderedDict
 
 
+def import_configuration(filepath):
+    """
+    Wrapper function around json.load() to import a config.json file used to inform the Environment object.
+    """
+    with open(filepath) as json_data:
+        configs = json.load(json_data, object_pairs_hook=OrderedDict)
+        if "constraints" not in configs:
+            raise ConfigurationError("config.json file must contain the 'constraints' key, even if its value is an empty list.")
+        if "items" not in configs:
+            raise ConfigurationError("config.json file must contain the 'items' key, even if its value is an empty list.")
+        if "robots" not in configs:
+            raise ConfigurationError("config.json file must contain the 'robots' key, even if its value is an empty list.")
+        if "triggers" not in configs:
+            raise ConfigurationError("config.json file must contain the 'triggers' key, even if its value is an empty list.")
+        return configs
+
+
 class DataExporter:
 
     """

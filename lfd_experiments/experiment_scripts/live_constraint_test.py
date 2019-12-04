@@ -10,12 +10,12 @@ from intera_core_msgs.msg import InteractionControlCommand
 from geometry_msgs.msg import Pose
 from intera_motion_interface import InteractionOptions, InteractionPublisher
 from cairo_lfd.core.record import SawyerRecorder
-from cairo_lfd.core.environment import Environment, Observation, import_configuration
+from cairo_lfd.core.environment import Environment, Observation
 from cairo_lfd.core.items import ItemFactory
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory
 from cairo_lfd.constraints.triggers import TriggerFactory
 from cairo_lfd.modeling.analysis import ConstraintAnalyzer
-from cairo_lfd.data.io import DataExporter
+from cairo_lfd.data.io import DataExporter, import_configuration
 
 
 def main():

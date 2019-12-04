@@ -7,7 +7,7 @@ from robot_interface.moveit_interface import SawyerMoveitInterface
 
 from cairo_lfd.modeling.graphing import ObservationClusterer, KeyframeGraph
 from cairo_lfd.modeling.models import KDEModel
-from cairo_lfd.modeling.sampling import KeyframeSampler
+from cairo_lfd.modeling.sampling import KeyframeSampler, ModelScoreSampleRanker, ConfigurationSpaceSampleRanker
 from cairo_lfd.modeling.analysis import KeyframeGraphAnalyzer, ConstraintAnalyzer
 from cairo_lfd.core.environment import Demonstration, Observation, Environment, import_configuration
 from cairo_lfd.core.items import ItemFactory
@@ -112,8 +112,11 @@ def main():
 
     sample_to_obsv_converter = SawyerSampleConverter(moveit_interface)
     sampler = KeyframeSampler(constraint_analyzer, sample_to_obsv_converter)
+    model_score_ranker = ModelScoreSampleRanker()
+    configraution_ranker = ConfigurationSpaceSampleRanker()
 
     """ Generate raw_samples from graph for each keyframe """
+    prior_sample = None
     for node in graph.get_keyframe_sequence():
         print "Keyframe {}".format(node)
         # Keep sampling 
@@ -143,7 +146,11 @@ def main():
             graph.cull_node(node)
         else:
             # Order sampled points based on their intra-model log-likelihood
-            ranked_samples = sampler.rank_samples(graph.nodes[node]["model"], samples)
+            if prior_sample is None:
+                ranked_samples = model_score_ranker.rank(graph.nodes[node]["model"], samples)
+            else:
+                ranked_samples = configraution_ranker.rank(graph.nodes[node]["model"], samples, prior_sample)
+                prior_sample = ranked_samples[0]
 
             # User converter object to convert raw sample vectors into LfD observations
             graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(sample, run_fk=True) for sample in ranked_samples]

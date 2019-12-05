@@ -86,9 +86,7 @@ class HeightConstraint(object):
             item_data = observation.get_robot_data()
             item_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
         else:
-            print(self.item_id)
             item_data = observation.get_item_data(self.item_id)
-            print(item_data)
             item_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
 
         return height(item_pose, self.reference_height, self.threshold_distance, direction=self.direction, axis=self.axis)

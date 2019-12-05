@@ -31,7 +31,6 @@ class BayesianGMMSegmentModel():
                 weight_concentration_prior_type='dirichlet_process',
                 mean_precision_prior=1e-2, covariance_prior=1e0 * np.eye(self.dimensionality),
                 init_params="random", max_iter=100, random_state=2).fit(X)
-        print(self.model.weight_concentration_)
 
     def get_means(self, component_id):
         return self.model.means_[component_id]

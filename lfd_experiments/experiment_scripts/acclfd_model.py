@@ -8,7 +8,6 @@ import colored_traceback
 import pudb
 import numpy as np
 import rospy
-import deez_nutz
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
 from cairo_lfd.core.lfd import ACC_LFD

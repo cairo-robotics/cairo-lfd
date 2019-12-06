@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
+from functools import partial
+
 import rospy
 import argparse
 
 from cairo_lfd.data.io import DataImporter, DataExporter
-from cairo_lfd.data.vectorization import vectorize_robot_position
+from cairo_lfd.data.vectorization import vectorize_demonstration, vectorize_robot_position
 from cairo_lfd.data.alignment import DemonstrationAligner
 from cairo_lfd.data.labeling import ConstraintKeyframeLabeler
 from cairo_lfd.core.environment import Observation, Demonstration
@@ -52,10 +54,10 @@ def main():
 
     # For more details about alignment, see the alignment_example.
     rospy.loginfo("Aligning demonstrations...this can take some time.")
-    aligner = DemonstrationAligner(demonstrations, vectorize_robot_position)
+    aligner = DemonstrationAligner(demonstrations, partial(vectorize_demonstration, vectorizors=[vectorize_robot_position]))
     aligned_demos, constraint_transitions = aligner.align()
 
-    # Create DemosntrationkeyframeLabeler passing in the aligned demonstrations and the constraint transition
+    # Create ConstraintKeyframeLabeler passing in the aligned demonstrations and the constraint transition
     # ordering, both of which are returned from the DemonstratinAligner object.
     keyframe_labeler = ConstraintKeyframeLabeler(aligned_demos, constraint_transitions)
     """Call label_demontrations. The first parameter is the average group length divisor which determines the number of keyframes for that group. So if the first grouping of data before the first constraint transition has an average length of 100, then that first grouping will generate 5 keyframes (100/20 = 5). 

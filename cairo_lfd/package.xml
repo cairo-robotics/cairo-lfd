@@ -11,9 +11,12 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <depend>rospy</depend>
+  <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>predicate_classification</depend>
   <depend>predicate_classification_msgs</depend> 
+  <depend>message_generation</depend>
+  <depend>message_runtime</depend>
 
 
 

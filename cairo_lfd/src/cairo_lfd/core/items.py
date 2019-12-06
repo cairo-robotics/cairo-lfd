@@ -9,7 +9,6 @@ import tf
 import rospy
 import intera_interface
 
-from cairo_lfd.constraints.concept_constraints import UprightConstraint, HeightConstraint
 from robot_clients.transform_clients import TransformLookupClient
 
 
@@ -83,7 +82,7 @@ class SawyerRobot(AbstractItem):
         The client that makes calls to TransformLookupServer in order to get the transformation between world_frame and child_frame
     """
 
-    def __init__(self, robot_id, upright_pose, base_frame="world", child_frame="right_gripper_tip", service_name="transform_lookup_service"):
+    def __init__(self, item_id, upright_pose, base_frame="world", child_frame="right_gripper_tip", service_name="transform_lookup_service"):
         """
         Parameters
         ----------
@@ -99,7 +98,7 @@ class SawyerRobot(AbstractItem):
             Name of transformation lookup service used by _get_transform() to calculate the transformation between world_frame and child_frame
         """
 
-        self.id = robot_id
+        self.id = item_id
         self.upright_pose = upright_pose
         self._limb = intera_interface.Limb("right")
         self._cuff = intera_interface.Cuff("right")
@@ -188,11 +187,10 @@ class StaticItem(AbstractItem):
     pose : dict
        Dictionary containing 'position' and 'orientation' keys and corresponding list of coordinate or orientation values.
     perimeter : dict
-        Dictionary containing 'inner' and 'outer' keys corresponding to lists of coordinates representing the inner perimeter band 
-        and outer perimeter band around the static item.
+        Dictionary containing 'inner' and 'outer' keys corresponding to lists of coordinates representing the inner perimeter and outer perimeter band around the static item relative to it's pose. This assumes the pose is the 'center' of the item.
     """
 
-    def __init__(self, object_id, name, pose, perimeter=None):
+    def __init__(self, item_id, name, pose, perimeter=None):
         """
         Parameters
         ----------
@@ -205,7 +203,7 @@ class StaticItem(AbstractItem):
         perimeter : dict
             Dictionary containing 'inner' and 'outer' keys corresponding to lists of coordinates representing the inner perimeter band and outer perimeter band around the static item.
         """
-        self.id = object_id
+        self.id = item_id
         self.name = name
         self.pose = pose
         self.perimeter = perimeter
@@ -350,7 +348,7 @@ class ItemFactory(object):
     configs : list
             List of configuration dictionaries.
     classes : dict
-        Dictionary with values as uninitialized class references i.e. StaticObject, SawyerRobot
+        Dictionary with values as uninitialized class references i.e. StaticItem, DynamicItem, SawyerRobot
 
     Example
     -------
@@ -360,7 +358,7 @@ class ItemFactory(object):
     .. code-block:: json
 
         {
-            "class": "StaticObject",
+            "class": "StaticItem",
             "name": "Block1",
             "init_args":
                 {
@@ -415,19 +413,27 @@ class ItemFactory(object):
             "items": []
         }
         for config in self.configs["robots"]:
-            if config["init_args"]["id"] in item_ids:
+            if config["init_args"]["item_id"] in item_ids:
                 raise ValueError(
-                    "Robots and items must each have a unique integer 'id'")
+                    "Robots and items must each have a unique integer 'item_id'")
             else:
-                item_ids.append(config["init_args"]["id"])
-            items["robots"].append(self.classes[config["class"]](
-                *tuple(config["init_args"].values())))
+                item_ids.append(config["init_args"]["item_id"])
+            try:
+                items["robots"].append(
+                    self.classes[config["class"]](**config["init_args"]))
+            except TypeError as e:
+                rospy.logerr("Error constructing {}: {}".format(
+                    self.classes[config["class"]], e))
         for config in self.configs["items"]:
-            if config["init_args"]["id"] in item_ids:
+            if config["init_args"]["item_id"] in item_ids:
                 raise ValueError(
-                    "Robots and items must each have a unique integer 'id'")
+                    "Robots and items must each have a unique integer 'item_id'")
             else:
-                item_ids.append(config["init_args"]["id"])
-            items["items"].append(self.classes[config["class"]](
-                *tuple(config["init_args"].values())))
+                item_ids.append(config["init_args"]["item_id"])
+            try:
+                items["items"].append(
+                    self.classes[config["class"]](**config["init_args"]))
+            except TypeError as e:
+                rospy.logerr("Error constructing {}: {}".format(
+                    self.classes[config["class"]], e))
         return items

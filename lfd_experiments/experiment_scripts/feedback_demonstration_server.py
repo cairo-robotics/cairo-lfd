@@ -31,9 +31,9 @@ class PerformDemonstrationServer():
 
     def handle(self, constraint_type):
         curr_file = os.path.dirname(os.path.abspath(__file__))
-        config_filepath = curr_file + "/../experiment_data/cc_lfd/feedback_demo/config.json"
-        pos_directory = curr_file + "/../experiment_data/cc_lfd/feedback_demo/positive/labeled"
-        neg_directory = curr_file + "/../experiment_data/cc_lfd/feedback_demo/negative/labeled"
+        config_filepath = curr_file + "/../experiment_data/cc_lfd/feedback_demo/new_data/config.json"
+        pos_directory = curr_file + "/../experiment_data/cc_lfd/feedback_demo/new_data/labeled"
+        neg_directory = curr_file + "/../experiment_data/cc_lfd/feedback_demo/new_data/labeled"
         bandwidth = 0.025
         number_of_samples = 50
 
@@ -60,9 +60,9 @@ class PerformDemonstrationServer():
 
         if len(demonstrations) == 0:
             rospy.logwarn("No demonstration data to model!!")
-            return 0
+            return False
 
-            """ Create the moveit_interface """
+        """ Create the moveit_interface """
         moveit_interface = SawyerMoveitInterface()
         moveit_interface.set_velocity_scaling(.35)
         moveit_interface.set_acceleration_scaling(.25)

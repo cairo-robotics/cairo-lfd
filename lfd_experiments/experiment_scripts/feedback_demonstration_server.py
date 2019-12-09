@@ -33,7 +33,14 @@ class PerformDemonstrationServer():
         # Get filepath to demo data
         main_filepath = rospy.get_param("MAIN_FILEPATH")
         config_filepath = main_filepath + "/config.json"
-        directory = main_filepath + "/labeled"
+        pos_directory = main_filepath + "/positive/labeled"
+        neg_directory = main_filepath + "/negative/labeled"
+
+        # Set data directory by constraint value
+        if constraint_type.constraint == 0:
+            directory = neg_directory
+        else:
+            directory = pos_directory
 
         # Setup LfD parameters
         bandwidth = 0.025

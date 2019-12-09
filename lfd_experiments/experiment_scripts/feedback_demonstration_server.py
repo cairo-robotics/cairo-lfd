@@ -22,27 +22,24 @@ colored_traceback.add_hook()
 class PerformDemonstrationServer():
 
     def __init__(self):
-        rospy.init_node('perform_demonstration_server')
+        rospy.init_node('feedback_demonstration_server')
 
-    def run(self):
-        service = rospy.Service("perform_demonstration", PerformDemonstration, self.handle)
+    def main(self):
+        rospy.Service("feedback_demonstration", PerformDemonstration, self.handle)
         rospy.loginfo("CC-LfD: Service up!")
         rospy.spin()
 
     def handle(self, constraint_type):
-        curr_file = os.path.dirname(os.path.abspath(__file__))
-        config_filepath = curr_file + "/../experiment_data/cc_lfd/feedback_demo/new_data/config.json"
-        pos_directory = curr_file + "/../experiment_data/cc_lfd/feedback_demo/new_data/labeled"
-        neg_directory = curr_file + "/../experiment_data/cc_lfd/feedback_demo/new_data/labeled"
+        # Get filepath to demo data
+        main_filepath = rospy.get_param("MAIN_FILEPATH")
+        config_filepath = main_filepath + "/config.json"
+        directory = main_filepath + "/labeled"
+
+        # Setup LfD parameters
         bandwidth = 0.025
         number_of_samples = 50
 
-        rospy.logwarn(str(constraint_type.constraint))
-
-        if constraint_type.constraint == 0:
-            directory = neg_directory
-        else:
-            directory = pos_directory
+        rospy.loginfo("CC-LfD: %s" % str(constraint_type.constraint))
 
         # Import the data
         importer = DataImporter()
@@ -76,20 +73,9 @@ class PerformDemonstrationServer():
         return True
 
 
-def main():
-    # arg_fmt = argparse.RawDescriptionHelpFormatter
-    # parser = argparse.ArgumentParser(formatter_class=arg_fmt,
-    #                                  description=main.__doc__)
-    # required = parser.add_argument_group('required arguments')
-
-    # args = parser.parse_args(rospy.myargv()[1:])
-
+if __name__ == '__main__':
     try:
         obj = PerformDemonstrationServer()
-        obj.run()
+        obj.main()
     except rospy.ROSInterruptException:
         pass
-
-
-if __name__ == '__main__':
-    main()

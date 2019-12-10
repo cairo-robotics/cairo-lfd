@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from cairo_lfd.web_bridge.trigger_service import ConstraintWebTriggerService
+from cairo_lfd.services.trigger_service import ConstraintWebTriggerService
 import rospy
 
 if __name__ == "__main__":

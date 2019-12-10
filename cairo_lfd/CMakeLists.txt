@@ -10,23 +10,23 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   geometry_msgs
-  message_generation
   predicate_classification
   predicate_classification_msgs
+  cairo_lfd_msgs
 )
 
 catkin_python_setup()
 
 ## Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  ConstraintWebTrigger.srv
-)
+# add_service_files(
+#   FILES
+#   ConstraintWebTrigger.srv
+# )
 
-generate_messages(
-  DEPENDENCIES
-  std_msgs  # Or other packages containing msgs
-)
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs  # Or other packages containing msgs
+# )
 
 catkin_package(
     CATKIN_DEPENDS 
@@ -35,6 +35,7 @@ catkin_package(
     geometry_msgs
     predicate_classification
     predicate_classification_msgs
+    cairo_lfd_msgs
 )
 
 

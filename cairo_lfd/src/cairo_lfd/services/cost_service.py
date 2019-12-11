@@ -4,7 +4,7 @@ import rospy
 from cairo_lfd.modeling.analysis import ConstraintAnalyzer
 from cairo_lfd.data.conversion import SawyerSampleConverter
 
-from cairo_lfd_msgs.msg import KeyframeConstraints
+from cairo_lfd_msgs.msg import AppliedConstraints
 
 from cairo_robot_interface.moveit_interface import SawyerMoveitInterface
 
@@ -51,5 +51,5 @@ class CustomCostService():
         rospy.Service(self.service_name, CustomCost, self.cost_callback)
         rospy.loginfo("{} service running...".format(self.service_name))
 
-        rospy.Subscriber(self.constraints_topic, KeyframeConstraints, self.set_constraints_callback)
+        rospy.Subscriber(self.constraints_topic, AppliedConstraints, self.set_constraints_callback)
         rospy.spin()

@@ -1,41 +1,40 @@
 #!/usr/bin/env python
-from cairo_lfd.modeling.analysis import ConstraintAnalyzer
-from moveit_msgs.srv import CustomCost, CustomCostResponse
+import argparse
 import rospy
 
+from cairo_lfd.services.cost_server import CustomCostService
+from cairo_lfd.data.io import import_configuration
+from cairo_lfd.constraints.concept_constraints import ConstraintFactory
+from cairo_lfd.core.environment import Environment
+from cairo_lfd.core.items import ItemFactory
 
-class CustomCostService():
-    """
-    Class that creates a ROS service to handle incoming calls to calculate
-    OMPL costs.
 
-    Attributes
-    ----------
-    service_name : str
-        The ROS Service proxy object
-    """
-    def __init__(self, service_name):
-        """
-        Parameters
-        ----------
-        service_name : str
-            The ROS Service proxy object
-        """
-        self.environment = environment
-        self.service_name = service_name
-        self.constraints = constraints
+def main():
+    arg_fmt = argparse.RawDescriptionHelpFormatter
+    parser = argparse.ArgumentParser(formatter_class=arg_fmt,
+                                     description=main.__doc__)
+    required = parser.add_argument_group('required arguments')
 
-    def callback(self, robot_state):
-        rospy.logerr(self.constraint_states)
+    required.add_argument(
+        '-c', '--config', dest='config', required=True,
+        help='the file path of configuration config.json file '
+    )
 
-    def start_server(self):
-        """
-        Initiates/starts the Constraint Web Trigger service
-        """
-        rospy.init_node('custom_cost_server')
-        rospy.Service('custom_cost', CustomCost, self.callback)
-        s = rospy.Service(self.service_name, ConstraintWebTrigger, self.get_state)
-        rospy.loginfo("{} service running...".format(self.service_name))
-        rospy.spin()
+    args = parser.parse_args(rospy.myargv()[1:])
 
-    def 
+    config_filepath = args.config
+    configs = import_configuration(config_filepath)
+
+    items = ItemFactory(configs).generate_items()
+    constraints = ConstraintFactory(configs).generate_constraints()
+    # We only have just the one robot...for now.......
+    environment = Environment(items=items['items'], robot=items['robots']
+                              [0], constraints=constraints, triggers=None)
+
+    rospy.init_node("constraint_trigger_server")
+    ccs = CustomCostService(environment, constraints_topic='/lfd/applied_constraints', cost_service_name='custom_cost')
+    ccs.start_server()
+
+
+if __name__ == '__main__':
+    main()

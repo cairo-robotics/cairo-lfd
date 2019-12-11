@@ -1,12 +1,7 @@
 #!/usr/bin/python
 
-import os
 import argparse
-from functools import partial
-import random
 import colored_traceback
-import pudb
-import numpy as np
 import rospy
 
 from robot_interface.moveit_interface import SawyerMoveitInterface

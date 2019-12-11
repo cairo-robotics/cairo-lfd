@@ -1,10 +1,4 @@
-import os
-import argparse
-from functools import partial
-import random
-import colored_traceback
-import pudb
-import numpy as np
+
 import rospy
 
 from cairo_lfd.core.environment import Environment
@@ -31,7 +25,8 @@ class ACC_LFD():
         items = ItemFactory(self.configs).generate_items()
         constraints = ConstraintFactory(self.configs).generate_constraints()
         # We only have just the one robot...for now.......
-        self.environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints, triggers=None)
+        self.environment = Environment(items=items['items'], robot=items['robots']
+                                       [0], constraints=constraints, triggers=None)
 
     def build_keyframe_graph(self, demonstrations, bandwidth):
         self.graph = KeyframeGraph()
@@ -60,7 +55,8 @@ class ACC_LFD():
 
     def generate_metaconstraints(self, demonstrations):
         # Encapsulates all segmentation, heuristic modeling:
-        metaconstraint_builders = MetaconstraintBuilderFactory(self.configs).generate_metaconstraint_builders(demonstrations)
+        metaconstraint_builders = MetaconstraintBuilderFactory(
+            self.configs).generate_metaconstraint_builders(demonstrations)
         # Assigns built metasconstraints to keyframes nodes.
         metaconstraint_assigner = MetaconstraintAssigner(self.graph, metaconstraint_builders)
         metaconstraint_assigner.assign_metaconstraints()
@@ -77,7 +73,8 @@ class ACC_LFD():
         for node in self.graph.get_keyframe_sequence():
             rospy.loginfo("")
             rospy.loginfo("KEYFRAME: {}".format(node))
-            attempts, samples, validated_set, metaconstraint_attempts, constraints = self._generate_samples(node, keyframe_sampler, number_of_samples)
+            attempts, samples, validated_set, metaconstraint_attempts, constraints = self._generate_samples(
+                node, keyframe_sampler, number_of_samples)
             if metaconstraint_attempts == 5:
                 rospy.logwarn("Not able to sample enough points for metaconstrained keyframe {}.".format(node))
                 self.graph.cull_node(node)
@@ -89,8 +86,10 @@ class ACC_LFD():
             if len(samples) == 0:
                 self.graph.cull_node(node)
                 continue
-            self.graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(sample, run_fk=True) for sample in samples]
-            attempts, samples, matched_ids = self._refit_node_model(node, keyframe_sampler, constraints, number_of_samples)
+            self.graph.nodes[node]["samples"] = [
+                sample_to_obsv_converter.convert(sample, run_fk=True) for sample in samples]
+            attempts, samples, matched_ids = self._refit_node_model(
+                node, keyframe_sampler, constraints, number_of_samples)
             rospy.loginfo("Refitted keyframe %d: %s valid of %s attempts", node, len(samples), attempts)
             if len(samples) < number_of_samples:
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(samples), number_of_samples)
@@ -98,7 +97,8 @@ class ACC_LFD():
                 self.graph.cull_node(node)
                 continue
             ranked_samples = self._rank_node_valid_samples(node, samples, prior_sample)
-            self.graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(sample, run_fk=True) for sample in ranked_samples]
+            self.graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(
+                sample, run_fk=True) for sample in ranked_samples]
             prior_sample = ranked_samples[0]
         self._cull_consecutive_keyframes()
 
@@ -115,13 +115,15 @@ class ACC_LFD():
                 break
             metaconstraint_attempts += 1
             constraints = meta_sampler.sample(validated_set)
-            attempted_count, samples, validated_set = sampler.generate_n_valid_samples(self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+            attempted_count, samples, validated_set = sampler.generate_n_valid_samples(
+                self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
         return attempted_count, samples, validated_set, metaconstraint_attempts, constraints
 
     def _refit_node_model(self, node, sampler, constraints, number_of_samples):
         # refit models
         self.graph.fit_models_on_valid_samples(node, get_observation_joint_vector)
-        attempted_count, samples, matched_ids = sampler.generate_n_valid_samples(self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+        attempted_count, samples, matched_ids = sampler.generate_n_valid_samples(
+            self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
         return attempted_count, samples, matched_ids
 
     def _rank_node_valid_samples(self, node, samples, prior_sample=None):
@@ -170,7 +172,8 @@ class CC_LFD():
         items = ItemFactory(self.configs).generate_items()
         constraints = ConstraintFactory(self.configs).generate_constraints()
         # We only have just the one robot...for now.......
-        self.environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints, triggers=None)
+        self.environment = Environment(items=items['items'], robot=items['robots']
+                                       [0], constraints=constraints, triggers=None)
 
     def build_keyframe_graph(self, demonstrations, bandwidth):
         self.graph = KeyframeGraph()
@@ -203,14 +206,17 @@ class CC_LFD():
         for node in self.graph.get_keyframe_sequence():
             rospy.loginfo("")
             rospy.loginfo("KEYFRAME: {}".format(node))
-            attempts, samples, matched_ids, constraints = self._generate_samples(node, keyframe_sampler, number_of_samples)
+            attempts, samples, matched_ids, constraints = self._generate_samples(
+                node, keyframe_sampler, number_of_samples)
             if len(samples) < number_of_samples:
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(samples), number_of_samples)
             if len(samples) == 0:
                 self.graph.cull_node(node)
                 continue
-            self.graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(sample, run_fk=True) for sample in samples]
-            attempts, samples, matched_ids = self._refit_node_model(node, keyframe_sampler, constraints, number_of_samples)
+            self.graph.nodes[node]["samples"] = [
+                sample_to_obsv_converter.convert(sample, run_fk=True) for sample in samples]
+            attempts, samples, matched_ids = self._refit_node_model(
+                node, keyframe_sampler, constraints, number_of_samples)
             rospy.loginfo("Refitted keyframe %d: %s valid of %s attempts", node, len(samples), attempts)
             if len(samples) < number_of_samples:
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(samples), number_of_samples)
@@ -218,7 +224,8 @@ class CC_LFD():
                 self.graph.cull_node(node)
                 continue
             ranked_samples = self._rank_node_valid_samples(node, samples, prior_sample)
-            self.graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(sample, run_fk=True) for sample in ranked_samples]
+            self.graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(
+                sample, run_fk=True) for sample in ranked_samples]
             prior_sample = ranked_samples[0]
         self._cull_consecutive_keyframes()
 
@@ -226,26 +233,34 @@ class CC_LFD():
 
         if self.graph.nodes[node]["keyframe_type"] == "constraint_transition":
             rospy.loginfo("Sampling from a constraint transition keyframe.")
-            constraints = [self.environment.get_constraint_by_id(constraint_id) for constraint_id in self.graph.nodes[node]["applied_constraints"]]
-            attempts, samples, matched_ids = sampler.generate_n_valid_samples(self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+            constraints = [self.environment.get_constraint_by_id(
+                constraint_id) for constraint_id in self.graph.nodes[node]["applied_constraints"]]
+            attempts, samples, matched_ids = sampler.generate_n_valid_samples(
+                self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
             if len(samples) == 0:
                 # Some constraints couldn't be sampled successfully, so using best available samples.
                 diff = list(set(self.graph.nodes[node]["applied_constraints"]).difference(set(matched_ids)))
                 if len(matched_ids) > 0:
-                    rospy.logwarn("Constraints {} couldn't be met so attempting to find valid samples with constraints {}.".format(diff, matched_ids))
-                    constraints = [self.environment.get_constraint_by_id(constraint_id) for constraint_id in self.graph.nodes[node]["applied_constraints"]]
-                    attempts, samples, matched_ids = sampler.generate_n_valid_samples(self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+                    rospy.logwarn(
+                        "Constraints {} couldn't be met so attempting to find valid samples with constraints {}.".format(diff, matched_ids))
+                    constraints = [self.environment.get_constraint_by_id(
+                        constraint_id) for constraint_id in self.graph.nodes[node]["applied_constraints"]]
+                    attempts, samples, matched_ids = sampler.generate_n_valid_samples(
+                        self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
                 else:
                     rospy.logwarn("Constraints {} couldn't be met so. Cannot meet any constraints.".format(diff))
         else:
-            constraints = [self.environment.get_constraint_by_id(constraint_id) for constraint_id in self.graph.nodes[node]["applied_constraints"]]
-            attempts, samples, matched_ids = sampler.generate_n_valid_samples(self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+            constraints = [self.environment.get_constraint_by_id(
+                constraint_id) for constraint_id in self.graph.nodes[node]["applied_constraints"]]
+            attempts, samples, matched_ids = sampler.generate_n_valid_samples(
+                self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
         return attempts, samples, matched_ids, constraints
 
     def _refit_node_model(self, node, sampler, constraints, number_of_samples):
         # refit models
         self.graph.fit_models_on_valid_samples(node, get_observation_joint_vector)
-        attempted_count, samples, matched_ids = sampler.generate_n_valid_samples(self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+        attempted_count, samples, matched_ids = sampler.generate_n_valid_samples(
+            self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
         return attempted_count, samples, matched_ids
 
     def _rank_node_valid_samples(self, node, samples, prior_sample=None):

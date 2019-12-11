@@ -7,15 +7,6 @@
         <arg name="paused" default="true"/>
         <arg name="electric_gripper" value="$(arg electric_gripper)"/>
           <!-- This argument sets the initial joint states -->
-        <arg name="initial_joint_states"
-          default=" -J sawyer::right_j0 0.708203617145915
-                    -J sawyer::right_j1 0.2910596616835728
-                    -J sawyer::right_j2 0.32527093626301207
-                    -J sawyer::right_j3 -1.0752139692746234
-                    -J sawyer::right_j4 2.730844378091602
-                    -J sawyer::right_j5 -2.3397736237353106
-                    -J sawyer::right_j6 0.41586991040045
-                    -J sawyer::head_pan 0.00"/>
     </include>
 
   <node name="joint_trajectory_action_server" pkg="intera_interface" type="joint_trajectory_action_server.py" respawn="true" />

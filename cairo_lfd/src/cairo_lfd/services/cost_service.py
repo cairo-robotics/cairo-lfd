@@ -8,11 +8,9 @@ from cairo_lfd_msgs.msg import AppliedConstraints
 
 from cairo_robot_interface.moveit_interface import SawyerMoveitInterface
 
-try:
-    from moveit_msgs.srv import CustomCost
-except ImportError as e:
-    rospy.logerr(e)
-    return 0
+
+from moveit_msgs.srv import CustomCost
+
 
 
 class CustomCostService():

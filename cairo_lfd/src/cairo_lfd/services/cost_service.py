@@ -6,7 +6,7 @@ from cairo_lfd.data.conversion import SawyerSampleConverter
 
 from cairo_lfd_msgs.msg import AppliedConstraints
 
-from cairo_robot_interface.moveit_interface import SawyerMoveitInterface
+from robot_interface.moveit_interface import SawyerMoveitInterface
 
 
 from moveit_msgs.srv import CustomCost

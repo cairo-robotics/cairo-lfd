@@ -240,9 +240,11 @@ class ConstraintAnalyzer():
 
         Returns
         -------
-        valid_constraints : list
-            Returns the list of valid constraints evaluated for the observation.
+        valid_ids : list
+            List of valid constraints ids evaluated for the observation.
+        valid_set : bool
+            Indicator of whether or not all constraints are valid.
         """
-        valid_ids = [constraint.id for constraint in constraints if constraint.evaluate(self.environment, observation)]
+        valid_ids = [constraint.id for constraint in constraints if constraint.evaluate(self.           environment, observation)]
         valid_set = True if len(valid_ids) == len(constraints) else False
         return valid_set, valid_ids

@@ -2,7 +2,7 @@
 import argparse
 import rospy
 
-from cairo_lfd.services.cost_server import CustomCostService
+from cairo_lfd.services.cost_service import CustomCostService
 from cairo_lfd.data.io import import_configuration
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory
 from cairo_lfd.core.environment import Environment

@@ -1,1 +1,1 @@
-int[] constraints
+int8[] constraints

@@ -4,6 +4,7 @@
   <arg name="vrpn_server" default="desktop-ckithm9.local"/>
 
   <include file="$(find sawyer_gazebo)/launch/sawyer_world.launch">
+        <arg name="paused" default="true"/>
         <arg name="electric_gripper" value="$(arg electric_gripper)"/>
           <!-- This argument sets the initial joint states -->
         <arg name="initial_joint_states"

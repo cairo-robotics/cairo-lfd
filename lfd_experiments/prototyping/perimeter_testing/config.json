@@ -1,4 +1,12 @@
 {
+    "settings":{
+        "planner": "RRTstartkConfigDefault",
+        "constraint_trigger_mechanism": "web_trigger",
+        "start_pose": {
+            "position":[0.635632, 0.28119, -0.14459],
+            "orientation": [0.674753, 0.737688, -0.0180208, -0.0141477]
+        }
+    },
     "constraints": [
         {
             "class": "HeightConstraint",

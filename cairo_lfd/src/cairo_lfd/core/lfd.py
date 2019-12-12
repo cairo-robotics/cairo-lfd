@@ -12,7 +12,7 @@ from cairo_lfd.modeling.models import KDEModel
 from cairo_lfd.modeling.sampling import KeyframeSampler, ModelScoreSampleRanker, ConfigurationSpaceSampleRanker, MetaconstraintSampler
 from cairo_lfd.modeling.analysis import KeyframeGraphAnalyzer, ConstraintAnalyzer
 
-from cairo_lfd_msgs.msg import KeyframeConstraints
+from cairo_lfd_msgs.msg import AppliedConstraints
 
 
 class ACC_LFD():

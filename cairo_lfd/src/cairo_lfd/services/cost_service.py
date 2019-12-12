@@ -43,7 +43,7 @@ class CustomCostService():
         """
         Initiates/starts the Custom Cost function service and the current applied constraints subscriber
         """
-        rospy.Service('custom_cost', CustomCost, self.callback)
+        rospy.Service('custom_cost', CustomCost, self.cost_callback)
         rospy.Service(self.service_name, CustomCost, self.cost_callback)
         rospy.loginfo("{} service running...".format(self.service_name))
 

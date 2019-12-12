@@ -6,13 +6,10 @@ from cairo_lfd.data.conversion import SawyerSampleConverter
 
 from cairo_lfd_msgs.msg import AppliedConstraints
 
-from cairo_robot_interface.moveit_interface import SawyerMoveitInterface
+from robot_interface.moveit_interface import SawyerMoveitInterface
 
-try:
-    from moveit_msgs.srv import CustomCost
-except ImportError as e:
-    rospy.logerr(e)
-    return 0
+
+from moveit_msgs.srv import CustomCost
 
 
 class CustomCostService():
@@ -46,7 +43,6 @@ class CustomCostService():
         """
         Initiates/starts the Custom Cost function service and the current applied constraints subscriber
         """
-        rospy.init_node('custom_cost_server')
         rospy.Service('custom_cost', CustomCost, self.callback)
         rospy.Service(self.service_name, CustomCost, self.cost_callback)
         rospy.loginfo("{} service running...".format(self.service_name))

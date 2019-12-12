@@ -48,7 +48,7 @@
             "class": "StaticItem",
             "init_args":
                 {
-                    "id": 2,
+                    "item_id": 2,
                     "name": "block",
                     "pose": 
                         {

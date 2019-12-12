@@ -293,7 +293,7 @@ class CC_LFD():
 
         # Create publisher for node information
         # time_pub = rospy.Publisher('/lfd/node_time', NodeTime, queue_size=10)
-        constraint_pub = rospy.Publisher('/lfd/applied_constraints', KeyframeConstraints)
+        constraint_pub = rospy.Publisher('/lfd/applied_constraints', AppliedConstraints)
 
         for i in range(len(self.graph.get_keyframe_sequence()) - 1):
             rospy.loginfo("LFD: Moving to a new point...")

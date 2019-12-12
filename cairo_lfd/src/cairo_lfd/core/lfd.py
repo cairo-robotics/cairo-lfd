@@ -314,7 +314,7 @@ class CC_LFD():
             # time_pub.publish(time_msg)
 
             constraints = self.graph.nodes[cur_node]["applied_constraints"]
-            constraints_msg = KeyframeConstraints()
+            constraints_msg = AppliedConstraints()
             constraints_msg.constraints = constraints
             constraint_pub.publish(constraints_msg)
 

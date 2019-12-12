@@ -11,7 +11,7 @@ from cairo_lfd.core.items import ItemFactory
 
 def main():    
 
-    rospy.init_node("constraint_trigger_server")
+    rospy.init_node("custom_cost_service")
 
     arg_fmt = argparse.RawDescriptionHelpFormatter
     parser = argparse.ArgumentParser(formatter_class=arg_fmt,

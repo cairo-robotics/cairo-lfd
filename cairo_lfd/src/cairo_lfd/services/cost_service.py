@@ -12,7 +12,6 @@ from robot_interface.moveit_interface import SawyerMoveitInterface
 from moveit_msgs.srv import CustomCost
 
 
-
 class CustomCostService():
     """
     Class that creates a ROS service to handle incoming calls to calculate
@@ -44,7 +43,6 @@ class CustomCostService():
         """
         Initiates/starts the Custom Cost function service and the current applied constraints subscriber
         """
-        rospy.init_node('custom_cost_server')
         rospy.Service('custom_cost', CustomCost, self.callback)
         rospy.Service(self.service_name, CustomCost, self.cost_callback)
         rospy.loginfo("{} service running...".format(self.service_name))

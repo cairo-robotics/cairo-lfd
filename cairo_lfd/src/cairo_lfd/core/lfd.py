@@ -292,7 +292,7 @@ class CC_LFD():
         """ Create a sequence of keyframe way points and execute motion plans to reconstruct skill """
 
         # Create publisher for node information
-        time_pub = rospy.Publisher('/lfd/node_time', NodeTime, queue_size=10)
+        # time_pub = rospy.Publisher('/lfd/node_time', NodeTime, queue_size=10)
         constraint_pub = rospy.Publisher('/lfd/applied_constraints', KeyframeConstraints)
 
         for i in range(len(self.graph.get_keyframe_sequence()) - 1):
@@ -307,11 +307,11 @@ class CC_LFD():
             next_joints = next_sample.get_joint_angle()
 
             # Build and publish node data
-            time_msg = NodeTime()
-            time_msg.cur_node = int(cur_node)
-            time_msg.next_node = int(next_node)
-            time_msg.timestamp = rospy.Time.now()
-            time_pub.publish(time_msg)
+            # time_msg = NodeTime()
+            # time_msg.cur_node = int(cur_node)
+            # time_msg.next_node = int(next_node)
+            # time_msg.timestamp = rospy.Time.now()
+            # time_pub.publish(time_msg)
 
             constraints = self.graph.nodes[cur_node]["applied_constraints"]
             constraints_msg = KeyframeConstraints()

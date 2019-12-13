@@ -22,14 +22,19 @@ class CustomCostService():
         self.constraints_topic = constraints_topic
         self.environment = environment
         self.applied_constraints = []
+	self.interface = SawyerMoveitInterface()
         self.analyzer = ConstraintAnalyzer(environment)
-        self.converter = SawyerSampleConverter(SawyerMoveitInterface())
+        self.converter = SawyerSampleConverter(self.interface)
 
     def cost_callback(self, custom_cost_request):
-        rospy.loginfo(custom_cost_request)
-        joints = custom_cost_request.state
-        observation = self.converter.convert(joints, run_fk=True, normalize_quaternion=True)
+
+        joints = list(custom_cost_request.state)
+        observation = self.converter.convert(joints, run_fk=True)
+
         valid_set, valid_ids = self.analyzer.evaluate(self.applied_constraints, observation)
+	print(self.applied_constraints)
+	print(valid_set)
+	print(valid_ids)
         if valid_set:
             return 0
         else:
@@ -37,6 +42,7 @@ class CustomCostService():
             return 100000000
 
     def set_constraints_callback(self, data):
+	rospy.loginfo("Applied constraint set: {}".format(self.applied_constraints))
         self.applied_constraints = data.constraints
 
     def start_server(self):

@@ -1,6 +1,6 @@
 {
     "settings":{
-        "planner": "RRTstartkConfigDefault",
+        "planner": "RRTstarkConfigDefault",
         "constraint_trigger_mechanism": "web_trigger",
         "start_pose": {
             "position":[0.635632, 0.28119, -0.14459],
@@ -12,9 +12,8 @@
             "class": "HeightConstraint",
             "init_args" : 
                 {
-                    "id": 1,
-                    "item": 1,
-                    "button": "right_button_square",
+                    "constraint_id": 1,
+                    "item_id": 1,
                     "reference_height": -0.15,
                     "threshold_distance": 0.0001,
                     "direction": "positive"
@@ -25,11 +24,20 @@
             "class": "Perimeter2DConstraint",
             "init_args" : 
                 {
-                    "id": 2,
+                    "constraint_id": 2,
                     "perimeter_item_id": 2,
                     "traversing_item_id": 1,
-                    "button": "right_button_triangle",
                     "axis": "z"
+                }
+        },
+        {
+            "class": "OrientationConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 3,
+                    "item_id": 1,
+                    "threshold_angle": 10,
+                    "axis": "x"
                 }
         }
     ],
@@ -76,7 +84,7 @@
             "class": "SawyerRobot",
             "init_args":
                 {
-                    "id": 1,
+                    "item_id": 1,
                     "upright_pose": 
                         {
                             "position": 

@@ -44,7 +44,7 @@ class PerformDemonstrationServer():
 
         # Setup LfD parameters
         bandwidth = 0.025
-        number_of_samples = 50
+        number_of_samples = 5
 
         rospy.loginfo("CC-LfD: %s" % str(constraint_type.constraint))
 

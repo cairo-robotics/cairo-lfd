@@ -63,7 +63,7 @@ def main():
     moveit_interface = SawyerMoveitInterface()
     moveit_interface.set_velocity_scaling(.35)
     moveit_interface.set_acceleration_scaling(.25)
-    moveit_interface.set_planner(configs["settings"]["planner"])
+    moveit_interface.set_planner(str(configs["settings"]["planner"]))
 
     cclfd = CC_LFD(configs, moveit_interface)
     cclfd.build_environment()

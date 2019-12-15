@@ -31,6 +31,16 @@
                     "button": "right_button_triangle",
                     "axis": "z"
                 }
+        },
+        {
+            "class": "OrientationConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 1,
+                    "item_id": 1,
+                    "threshold_angle": 10,
+                    "axis": "x"
+                }
         }
     ],
      "triggers":[

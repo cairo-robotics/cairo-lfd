@@ -15,7 +15,8 @@
                     "constraint_id": 1,
                     "item_id": 1,
                     "reference_height": 0.0,
-                    "threshold_distance": 0.25
+                    "threshold_distance": 0.25,
+                    "direction": "negative"
                 
                 }
         },

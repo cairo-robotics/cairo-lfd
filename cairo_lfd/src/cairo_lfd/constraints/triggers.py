@@ -6,7 +6,7 @@ from abc import ABCMeta, abstractmethod
 import intera_interface
 import rospy
 
-from cairo_lfd.web_bridge.trigger_service import ConstraintWebTriggerClient
+from cairo_lfd.services.trigger_service import ConstraintWebTriggerClient
 
 
 class AbstractTrigger(object):

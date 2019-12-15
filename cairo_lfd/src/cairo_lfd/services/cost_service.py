@@ -9,7 +9,7 @@ from cairo_lfd_msgs.msg import AppliedConstraints
 from robot_interface.moveit_interface import SawyerMoveitInterface
 
 
-from moveit_msgs.srv import CustomCost
+from moveit_msgs.srv import CustomCost, CustomCostResponse
 
 
 class CustomCostService():
@@ -30,11 +30,15 @@ class CustomCostService():
         joints = custom_cost_request.state
         observation = self.converter.convert(joints, run_fk=True, normalize_quaternion=True)
         valid_set, valid_ids = self.analyzer.evaluate(self.applied_constraints, observation)
+
+        response = CustomCostResponse()
         if valid_set:
-            return 0
+            # negative infinity
+            response.cost = 2
         else:
-            # inifinte cost
-            return 100000000
+            # infinity
+            response.cost = 1
+        return response
 
     def set_constraints_callback(self, data):
         self.applied_constraints = data.constraints

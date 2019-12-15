@@ -220,7 +220,8 @@ class ConstraintAnalyzer():
         for observation in observations:
             triggered = observation.get_triggered_constraint_data()
             new = list(set(triggered) - set(prev))
-            evaluated = self.evaluate(constraint_ids=prev, observation=observation)
+            prev_constraints = [c for c in self.environment.constraints if c.id in prev]
+            valid, evaluated = self.evaluate(constraints=prev_constraints, observation=observation)
             applied = list(set(evaluated).union(set(new)))
             prev = applied
             observation.data["applied_constraints"] = applied
@@ -245,6 +246,6 @@ class ConstraintAnalyzer():
         valid_set : bool
             Indicator of whether or not all constraints are valid.
         """
-        valid_ids = [constraint.id for constraint in constraints if constraint.evaluate(self.           environment, observation)]
+        valid_ids = [constraint.id for constraint in constraints if constraint.evaluate(self.environment, observation)]
         valid_set = True if len(valid_ids) == len(constraints) else False
         return valid_set, valid_ids

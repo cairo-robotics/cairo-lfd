@@ -145,6 +145,7 @@ class SawyerSampleConverter(object):
             Appended list of numerical values now containing pose information.
         """
         pose = self.interface.get_FK_pose(sample)
+
         if pose is not None:
             sample = np.insert(sample, 0, pose.orientation.w, axis=0)
             sample = np.insert(sample, 0, pose.orientation.z, axis=0)

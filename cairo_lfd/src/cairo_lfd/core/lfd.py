@@ -188,7 +188,8 @@ class CC_LFD():
             self.graph.add_node(cluster_id)
             self.graph.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
             self.graph.nodes[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
-            self.graph.nodes[cluster_id]["applied_constraints"] = []
+            self.graph.nodes[cluster_id]["applied_constraints"] = clusters[cluster_id]["applied_constraints"]
+            print(self.graph.nodes[cluster_id]["applied_constraints"])
             self.graph.nodes[cluster_id]["model"] = KDEModel(kernel='gaussian', bandwidth=bandwidth)
         self.graph.add_path(self.graph.nodes())
         self.graph.fit_models(get_observation_joint_vector)
@@ -293,7 +294,12 @@ class CC_LFD():
 
         # Create publisher for node information
         # time_pub = rospy.Publisher('/lfd/node_time', NodeTime, queue_size=10)
-        constraint_pub = rospy.Publisher('/lfd/applied_constraints', AppliedConstraints)
+        constraint_pub = rospy.Publisher('/lfd/applied_constraints', AppliedConstraints, queue_size=10)
+	for i in range(len(self.graph.get_keyframe_sequence()) - 1):
+            cur_node = self.graph.get_keyframe_sequence()[i]
+            
+            constraints = self.graph.nodes[cur_node]["applied_constraints"]
+            print(constraints)
 
         for i in range(len(self.graph.get_keyframe_sequence()) - 1):
             rospy.loginfo("LFD: Moving to a new point...")
@@ -314,6 +320,7 @@ class CC_LFD():
             # time_pub.publish(time_msg)
 
             constraints = self.graph.nodes[cur_node]["applied_constraints"]
+            print(constraints)
             constraints_msg = AppliedConstraints()
             constraints_msg.constraints = constraints
             constraint_pub.publish(constraints_msg)

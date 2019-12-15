@@ -558,15 +558,16 @@ class SphereOfInfluenceProcessor(EuclideanDistanceMixin):
 
     def _evaluate_SOI(self, curr_observation):
         end_effector_position = curr_observation.get_robot_data()["position"]
-        for item_id in self.item_ids:
-            in_SOI = []
-            item_position = curr_observation.get_item_data(item_id)[
-                "position"]
-            distance = self._euclidean(
-                end_effector_position, item_position)
-            if distance <= self.threshold_distance:
-                in_SOI.append(item_id)
-        curr_observation.data['robot']['in_SOI'] = in_SOI
+        if len(self.item_ids) > 0:
+            for item_id in self.item_ids:
+                in_SOI = []
+                item_position = curr_observation.get_item_data(item_id)[
+                    "position"]
+                distance = self._euclidean(
+                    end_effector_position, item_position)
+                if distance <= self.threshold_distance:
+                    in_SOI.append(item_id)
+            curr_observation.data['robot']['in_SOI'] = in_SOI
 
 
 class WithinPerimeterProcessor():

@@ -34,7 +34,7 @@ def main():
     )
 
     parser.add_argument(
-        '-t', '--threshold', type=int, default=-1200, metavar='THRESHOLD',
+        '-t', '--threshold', type=int, metavar='THRESHOLD',
         help='log-liklihood threshold value'
     )
 

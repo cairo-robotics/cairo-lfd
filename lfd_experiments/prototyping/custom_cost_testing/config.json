@@ -1,6 +1,6 @@
 {
     "settings":{
-        "planner": "RRTstarkConfigDefault",
+        "planner": "RRTkConfigDefault",
         "constraint_trigger_mechanism": "cuff_trigger",
         "start_pose": {
             "position":[0.635632, 0.28119, -0.14459],

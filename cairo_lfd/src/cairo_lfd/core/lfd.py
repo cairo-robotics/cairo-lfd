@@ -61,7 +61,7 @@ class ACC_LFD():
         metaconstraint_assigner = MetaconstraintAssigner(self.graph, metaconstraint_builders)
         metaconstraint_assigner.assign_metaconstraints()
 
-    def sample_keyframes(self, number_of_samples):
+    def sample_keyframes(self, number_of_samples, automate_threshold=False, culling_threshold=-1000):
         sample_to_obsv_converter = SawyerSampleConverter(self.moveit_interface)
 
         """ Build a ConstraintAnalyzer and KeyframeGraphAnalyzer """
@@ -100,7 +100,7 @@ class ACC_LFD():
             self.graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(
                 sample, run_fk=True) for sample in ranked_samples]
             prior_sample = ranked_samples[0]
-        self._cull_consecutive_keyframes()
+        self._cull_consecutive_keyframes(automate_threshold=False, culling_threshold=threshold)
 
     def _generate_samples(self, node, sampler, number_of_samples, min_samples=5, constraint_attempts=10):
         validated_set = set()
@@ -137,9 +137,9 @@ class ACC_LFD():
             ranked_samples = configuration_ranker.rank(self.graph.nodes[node]["model"], samples, prior_sample)
         return ranked_samples
 
-    def _cull_consecutive_keyframes(self):
+    def _cull_consecutive_keyframes(self, automate_threshold=False, culling_threshold=-1000):
         graph_analyzer = KeyframeGraphAnalyzer(self.graph, self.moveit_interface, get_observation_joint_vector)
-        graph_analyzer.cull_keyframes()
+        graph_analyzer.cull_keyframes(automate_threshold=automate_threshold, culling_threshold=culling_threshold)
 
     def perform_skill(self):
         """ Create a sequence of keyframe way points and execute motion plans to reconstruct skill """
@@ -194,7 +194,7 @@ class CC_LFD():
         self.graph.fit_models(get_observation_joint_vector)
         self.graph._identify_primal_observations(get_observation_joint_vector)
 
-    def sample_keyframes(self, number_of_samples):
+    def sample_keyframes(self, number_of_samples, automate_threshold=False, culling_threshold=-1000):
         sample_to_obsv_converter = SawyerSampleConverter(self.moveit_interface)
 
         """ Build a ConstraintAnalyzer and KeyframeGraphAnalyzer """
@@ -208,6 +208,7 @@ class CC_LFD():
             rospy.loginfo("KEYFRAME: {}".format(node))
             attempts, samples, matched_ids, constraints = self._generate_samples(
                 node, keyframe_sampler, number_of_samples)
+            rospy.loginfo("Initial sampling: %s valid of %s attempts", len(samples), attempts)
             if len(samples) < number_of_samples:
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(samples), number_of_samples)
             if len(samples) == 0:
@@ -217,7 +218,7 @@ class CC_LFD():
                 sample_to_obsv_converter.convert(sample, run_fk=True) for sample in samples]
             attempts, samples, matched_ids = self._refit_node_model(
                 node, keyframe_sampler, constraints, number_of_samples)
-            rospy.loginfo("Refitted keyframe %d: %s valid of %s attempts", node, len(samples), attempts)
+            rospy.loginfo("Refitted keyframe: %s valid of %s attempts", len(samples), attempts)
             if len(samples) < number_of_samples:
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(samples), number_of_samples)
             if len(samples) == 0:
@@ -227,7 +228,7 @@ class CC_LFD():
             self.graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(
                 sample, run_fk=True) for sample in ranked_samples]
             prior_sample = ranked_samples[0]
-        self._cull_consecutive_keyframes()
+        self._cull_consecutive_keyframes(automate_threshold=automate_threshold, culling_threshold=culling_threshold)
 
     def _generate_samples(self, node, sampler, number_of_samples):
 
@@ -274,9 +275,9 @@ class CC_LFD():
             ranked_samples = configuration_ranker.rank(self.graph.nodes[node]["model"], samples, prior_sample)
         return ranked_samples
 
-    def _cull_consecutive_keyframes(self):
+    def _cull_consecutive_keyframes(self, automate_threshold, culling_threshold):
         graph_analyzer = KeyframeGraphAnalyzer(self.graph, self.moveit_interface, get_observation_joint_vector)
-        graph_analyzer.cull_keyframes()
+        graph_analyzer.cull_keyframes(automate_threshold=automate_threshold, culling_threshold=culling_threshold)
 
     def perform_skill(self):
         """ Create a sequence of keyframe way points and execute motion plans to reconstruct skill """
@@ -294,13 +295,15 @@ class CC_LFD():
         # Create publisher for node information
         # time_pub = rospy.Publisher('/lfd/node_time', NodeTime, queue_size=10)
         constraint_pub = rospy.Publisher('/lfd/applied_constraints', AppliedConstraints, queue_size=10)
-	for i in range(len(self.graph.get_keyframe_sequence()) - 1):
-            cur_node = self.graph.get_keyframe_sequence()[i]
-            
-            constraints = self.graph.nodes[cur_node]["applied_constraints"]
 
         for i in range(len(self.graph.get_keyframe_sequence()) - 1):
-            rospy.loginfo("LFD: Moving to a new point...")
+            cur_node = self.graph.get_keyframe_sequence()[i]
+            constraints = self.graph.nodes[cur_node]["applied_constraints"]
+            rospy.loginfo("Keyframe: {}; Constraints: {}".format(cur_node, constraints))
+            rospy.loginfo("")
+
+        for i in range(len(self.graph.get_keyframe_sequence()) - 1):
+            
 
             # Grab nodes, samples, and joints
             cur_node = self.graph.get_keyframe_sequence()[i]
@@ -321,6 +324,6 @@ class CC_LFD():
             constraints_msg = AppliedConstraints()
             constraints_msg.constraints = constraints
             constraint_pub.publish(constraints_msg)
-
+            rospy.loginfo("LFD: Moving to a new point from keyframe {}".format(cur_node))
             # Execute movement using MoveIt!
             self.moveit_interface.move_to_joint_targets([cur_joints, next_joints])

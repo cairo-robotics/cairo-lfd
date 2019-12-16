@@ -166,7 +166,11 @@ def main():
             graph.nodes[node]["free_samples"] = free_samples
 
     """ Cull/remove keyframes/nodes that via change point estimation using log-likelihood """
-    graph_analyzer.cull_keyframes(threshold=args.threshold)
+    if "automated_culling_threshold" in config['settings']:
+        automated_threshold = config['settings']['automated_culling_threshold']
+    else:
+        automated_culling = True
+    graph_analyzer.cull_keyframes(threshold=args.threshold, automated=automated_threshold)
 
     # """ Order sampled points based on their intra-model log-likelihood """
     # for node in graph.get_keyframe_sequence():

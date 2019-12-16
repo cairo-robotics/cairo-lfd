@@ -34,6 +34,11 @@ def main():
     )
 
     parser.add_argument(
+        '-t', '--threshold', type=int, default=-1200, metavar='THRESHOLD',
+        help='log-liklihood threshold value'
+    )
+
+    parser.add_argument(
         '-n', '--number_of_samples', type=int, default=50, metavar='NUMBEROFSAMPLES',
         help='the number of samples to validate for each keyframe'
     )
@@ -68,7 +73,11 @@ def main():
     cclfd = CC_LFD(configs, moveit_interface)
     cclfd.build_environment()
     cclfd.build_keyframe_graph(demonstrations, args.bandwidth)
-    cclfd.sample_keyframes(args.number_of_samples)
+    if args.threshold is not None:
+        rospy.loginfo("Using user provided culling threshold of {}".format(args.threshold))
+        cclfd.sample_keyframes(args.number_of_samples, automate_threshold=False, culling_threshold=args.threshold)
+    else:
+        cclfd.sample_keyframes(args.number_of_samples, automate_threshold=True)
     cclfd.perform_skill()
 
 if __name__ == '__main__':

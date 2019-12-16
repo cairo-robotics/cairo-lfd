@@ -34,6 +34,11 @@ def main():
     )
 
     parser.add_argument(
+        '-t', '--threshold', type=int, default=-1200, metavar='THRESHOLD',
+        help='log-liklihood threshold value'
+    )
+
+    parser.add_argument(
         '-n', '--number_of_samples', type=int, default=50, metavar='NUMBEROFSAMPLES',
         help='the number of samples to validate for each keyframe'
     )
@@ -68,7 +73,10 @@ def main():
     acclfd.build_environment()
     acclfd.build_keyframe_graph(demonstrations, args.bandwidth)
     acclfd.generate_metaconstraints(demonstrations)
-    acclfd.sample_keyframes(args.number_of_samples)
+    if args.threshold is not None:
+        cclfd.sample_keyframes(args.number_of_samples, automate_threshold=False, culling_threshold=args.threshold)
+    else:
+        cclfd.sample_keyframes(args.number_of_samples, automate_threshold=True)
     acclfd.perform_skill()
 
 

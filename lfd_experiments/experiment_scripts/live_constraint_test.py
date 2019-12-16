@@ -42,7 +42,7 @@ def main():
     args = parser.parse_args(rospy.myargv()[1:])
 
     print("Initializing node... ")
-    rospy.init_node("sdk_joint_recorder")
+    rospy.init_node("live_constraint")
     print("Getting robot state... ")
     robot_state = intera_interface.RobotEnable(CHECK_VERSION)
     print("Enabling robot... ")

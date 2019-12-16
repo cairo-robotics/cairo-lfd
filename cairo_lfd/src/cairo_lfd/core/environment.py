@@ -152,8 +152,6 @@ class Environment(object):
             Constraint class for the given id.
         """
         if self.constraints is not None:
-            print(constraint_id)
-            print(self.constraints)
             return [constraint for constraint in self.constraints if constraint.id == constraint_id][0]
         else:
             raise EnvironmentError("There are no constraints configured into the environment!")

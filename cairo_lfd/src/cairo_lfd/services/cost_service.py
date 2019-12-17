@@ -43,7 +43,7 @@ class CustomCostService():
         return response
 
     def set_constraints_callback(self, data):
-        rospy.loginfo("Applied constraint set: {}".format(self.applied_constraints))
+        rospy.loginfo("Applied constraint set: {}".format(data.constraints))
         self.applied_constraints = data.constraints
 
     def start_server(self):

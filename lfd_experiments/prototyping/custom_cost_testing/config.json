@@ -1,6 +1,6 @@
 {
     "settings":{
-        "planner": "RRTkConfigDefault",
+        "planner": "PRMstarkConfigDefault",
         "constraint_trigger_mechanism": "cuff_trigger",
         "start_pose": {
             "position":[0.635632, 0.28119, -0.14459],
@@ -26,7 +26,7 @@
                 {
                     "constraint_id": 2,
                     "item_id": 1,
-                    "threshold_angle": 20,
+                    "threshold_angle": 5,
                     "axis": "z"
                 }
         }

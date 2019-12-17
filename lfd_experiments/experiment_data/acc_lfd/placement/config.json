@@ -1,6 +1,7 @@
 {
     "settings":{
         "constraint_trigger_mechanism": "web_trigger",
+        "planner": "RRTConnectkConfigDefault",
         "start_pose": {
             "position":[0.484487113319, 0.67936580045, -0.1519332149492],
             "orientation": [0.0150060306283, 0.999858210285, -0.00125256667301, -0.0075372042099]

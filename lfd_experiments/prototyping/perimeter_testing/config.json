@@ -1,6 +1,6 @@
 {
     "settings":{
-        "planner": "RRTstarkConfigDefault",
+        "planner": "RRTkConfigDefault",
         "constraint_trigger_mechanism": "web_trigger",
         "start_pose": {
             "position":[0.635632, 0.28119, -0.14459],
@@ -15,7 +15,7 @@
                     "constraint_id": 1,
                     "item_id": 1,
                     "reference_height": -0.15,
-                    "threshold_distance": 0.0001,
+                    "threshold_distance": 0.00,
                     "direction": "positive"
                 
                 }
@@ -31,13 +31,15 @@
                 }
         },
         {
-            "class": "OrientationConstraint",
+            "class": "HeightConstraint",
             "init_args" : 
                 {
                     "constraint_id": 3,
                     "item_id": 1,
-                    "threshold_angle": 10,
-                    "axis": "x"
+                    "reference_height": -0.13,
+                    "threshold_distance": 0.00,
+                    "direction": "negative"
+                
                 }
         }
     ],
@@ -87,18 +89,8 @@
                     "item_id": 1,
                     "upright_pose": 
                         {
-                            "position": 
-                                [
-                                    0.604698787426,
-                                    -0.439894686226,
-                                    0.159350584992
-                                ],
-                            "orientation": [
-                                0.712590112587,
-                                -0.00994445446764,
-                                0.701496927312,
-                                -0.00430119065513
-                            ]
+                            "position": [0.635632, 0.28119, -0.14459],
+                            "orientation": [0.674753, 0.737688, -0.0180208, -0.0141477]
                         }
                 }
         }

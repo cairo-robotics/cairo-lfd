@@ -5,7 +5,7 @@ import colored_traceback
 import rospy
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
-from cairo_lfd.core.lfd import ACC_LFD
+from cairo_lfd.core.lfd import LFD
 from cairo_lfd.core.environment import Observation, Demonstration
 from cairo_lfd.data.io import DataImporter, import_configuration
 
@@ -68,17 +68,17 @@ def main():
     moveit_interface = SawyerMoveitInterface()
     moveit_interface.set_velocity_scaling(.35)
     moveit_interface.set_acceleration_scaling(.25)
+    moveit_interface.set_planner(str(configs["settings"]["planner"]))
 
-    acclfd = ACC_LFD(configs, moveit_interface)
-    acclfd.build_environment()
-    acclfd.build_keyframe_graph(demonstrations, args.bandwidth)
-    acclfd.generate_metaconstraints(demonstrations)
+    lfd = LFD(configs, moveit_interface)
+    lfd.build_environment()
+    lfd.build_keyframe_graph(demonstrations, args.bandwidth)
     if args.threshold is not None:
-        cclfd.sample_keyframes(args.number_of_samples, automate_threshold=False, culling_threshold=args.threshold)
+        rospy.loginfo("Using user provided culling threshold of {}".format(args.threshold))
+        lfd.sample_keyframes(args.number_of_samples, automate_threshold=False, culling_threshold=args.threshold)
     else:
-        cclfd.sample_keyframes(args.number_of_samples, automate_threshold=True)
-    acclfd.perform_skill()
-
+        lfd.sample_keyframes(args.number_of_samples, automate_threshold=True)
+    lfd.perform_skill()
 
 if __name__ == '__main__':
     main()

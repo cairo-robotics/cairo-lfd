@@ -3,14 +3,15 @@
   <arg name="electric_gripper" default="true"/>
   <arg name="vrpn_server" default="desktop-ckithm9.local"/>
 
+  <include file="$(find sawyer_gazebo)/launch/sawyer_world.launch">
+        <arg name="paused" default="true"/>
+        <arg name="electric_gripper" value="$(arg electric_gripper)"/>
+          <!-- This argument sets the initial joint states -->
+    </include>
 
   <node name="joint_trajectory_action_server" pkg="intera_interface" type="joint_trajectory_action_server.py" respawn="true" />
 
   <include file="$(find sawyer_moveit_config)/launch/sawyer_moveit.launch">
-        <arg name="electric_gripper" value="$(arg electric_gripper)"/>
-  </include>
-
-  <include file="$(find sawyer_gazebo)/launch/sawyer_world.launch">
         <arg name="electric_gripper" value="$(arg electric_gripper)"/>
   </include>
 

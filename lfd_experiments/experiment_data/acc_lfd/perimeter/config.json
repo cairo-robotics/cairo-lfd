@@ -1,5 +1,6 @@
 {
     "settings":{
+        "planner": "RRTConnectkConfigDefault",
         "constraint_trigger_mechanism": "web_trigger",
         "start_pose": {
             "position":[0.635632, 0.28119, -0.14459],

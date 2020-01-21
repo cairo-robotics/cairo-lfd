@@ -154,7 +154,7 @@ class Environment(object):
         if self.constraints is not None:
             return [constraint for constraint in self.constraints if constraint.id == constraint_id][0]
         else:
-            raise EnvironmentError("There are no items configured into the environment!")
+            raise EnvironmentError("There are no constraints configured into the environment!")
 
     def check_constraint_triggers(self):
         """

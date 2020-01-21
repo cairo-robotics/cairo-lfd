@@ -15,10 +15,8 @@
   <depend>geometry_msgs</depend>
   <depend>predicate_classification</depend>
   <depend>predicate_classification_msgs</depend> 
-  <depend>message_generation</depend>
-  <depend>message_runtime</depend>
-
-
+  <depend>cairo_lfd_msgs</depend>
+  <depend>moveit_msgs</depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

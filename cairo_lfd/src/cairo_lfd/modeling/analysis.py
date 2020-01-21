@@ -61,7 +61,7 @@ class KeyframeGraphAnalyzer():
         mean_ll = np.mean(curr_ll)
         return (max_ll, mean_ll)
 
-    def cull_keyframes(self, threshold=-10000):
+    def cull_keyframes(self, automate_threshold=False, culling_threshold=-1000):
         """
         Culls consecutive keyframes sequentially until the one such keyframe's observations has an average LL is below
         the average LL between all keyframes, as scored by the current keyframes model.
@@ -71,19 +71,33 @@ class KeyframeGraphAnalyzer():
         threshold : int
             The threshold average log likelihood.
         """
-        mean, median, std = self._get_variational_distance_stats()
-        prev = self.graph.get_keyframe_sequence()[0]
-        curr = self.graph.successors(prev).next()
-        while([x for x in self.graph.successors(curr)] != []):
-            max_ll, mean_ll = self.max_mean_ll(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["observations"])
-            if mean_ll > mean and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
-                rospy.logwarn("Node {} average log-likelihood of {} is above the sequence mean variational distance log likelihood of {}".format(curr, mean_ll, mean))
-                succ = self.graph.successors(curr).next()
-                self.graph.cull_node(curr)
-                curr = succ
-                continue
-            prev = curr
-            curr = self.graph.successors(curr).next()
+        if automate_threshold is True:
+            mean, median, std = self._get_variational_distance_stats()
+            prev = self.graph.get_keyframe_sequence()[0]
+            curr = self.graph.successors(prev).next()
+            while([x for x in self.graph.successors(curr)] != []):
+                max_ll, mean_ll = self.max_mean_ll(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["observations"])
+                if mean_ll > mean and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
+                    rospy.logwarn("Node {} average log-likelihood of {} is above the sequence mean variational distance log likelihood of {}".format(curr, mean_ll, mean))
+                    succ = self.graph.successors(curr).next()
+                    self.graph.cull_node(curr)
+                    curr = succ
+                    continue
+                prev = curr
+                curr = self.graph.successors(curr).next()
+        else:
+            prev = self.graph.get_keyframe_sequence()[0]
+            curr = self.graph.successors(prev).next()
+            while([x for x in self.graph.successors(curr)] != []):
+                max_ll, mean_ll = self.max_mean_ll(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["observations"])
+                if mean_ll > culling_threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
+                    rospy.logwarn("Node {} average log-likelihood of {} is above user provided threshold of {}".format(curr, mean_ll, culling_threshold))
+                    succ = self.graph.successors(curr).next()
+                    self.graph.cull_node(curr)
+                    curr = succ
+                    continue
+                prev = curr
+                curr = self.graph.successors(curr).next()
 
     def _get_variational_distance_stats(self):
         prev = self.graph.get_keyframe_sequence()[0]
@@ -220,7 +234,8 @@ class ConstraintAnalyzer():
         for observation in observations:
             triggered = observation.get_triggered_constraint_data()
             new = list(set(triggered) - set(prev))
-            evaluated = self.evaluate(constraint_ids=prev, observation=observation)
+            prev_constraints = [c for c in self.environment.constraints if c.id in prev]
+            valid, evaluated = self.evaluate(constraints=prev_constraints, observation=observation)
             applied = list(set(evaluated).union(set(new)))
             prev = applied
             observation.data["applied_constraints"] = applied
@@ -240,8 +255,10 @@ class ConstraintAnalyzer():
 
         Returns
         -------
-        valid_constraints : list
-            Returns the list of valid constraints evaluated for the observation.
+        valid_ids : list
+            List of valid constraints ids evaluated for the observation.
+        valid_set : bool
+            Indicator of whether or not all constraints are valid.
         """
         valid_ids = [constraint.id for constraint in constraints if constraint.evaluate(self.environment, observation)]
         valid_set = True if len(valid_ids) == len(constraints) else False

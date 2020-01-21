@@ -2,7 +2,7 @@ from functools import partial
 
 import rospy
 from std_msgs.msg import Bool
-from cairo_lfd.srv import ConstraintWebTrigger, ConstraintWebTriggerRequest, ConstraintWebTriggerResponse
+from cairo_lfd_msgs.srv import ConstraintWebTrigger, ConstraintWebTriggerRequest, ConstraintWebTriggerResponse
 
 
 class ConstraintWebTriggerClient():

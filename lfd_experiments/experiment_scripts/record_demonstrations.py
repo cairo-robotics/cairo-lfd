@@ -107,6 +107,7 @@ def main():
     # instead the applied constraints are those explicitly set by the user.
     for demo in demos:
         if configs['settings']['constraint_trigger_mechanism'] == 'cuff_trigger':
+            # Using the cuff trigger will cause a propagation forward.
             constraint_analyzer.applied_constraint_evaluator(demo.observations)
         elif configs['settings']['constraint_trigger_mechanism'] == 'web_trigger':
             for observation in demo.observations:

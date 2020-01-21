@@ -74,7 +74,7 @@ class SawyerSampleConverter(object):
         interface : object
             SawyerMoveitInterface to help run forward kinematics.
         adapter : object
-            An adapter class designed to take raw sample from a model and convert it to either configuration space of EE space (pose).
+            An adapter class designed to take raw sample from a model and perform a transformation on the raw sample, generally to ground the object against some other object in the environment.
         """
         self.interface = interface
         self.adapter = adapter
@@ -145,6 +145,7 @@ class SawyerSampleConverter(object):
             Appended list of numerical values now containing pose information.
         """
         pose = self.interface.get_FK_pose(sample)
+
         if pose is not None:
             sample = np.insert(sample, 0, pose.orientation.w, axis=0)
             sample = np.insert(sample, 0, pose.orientation.z, axis=0)

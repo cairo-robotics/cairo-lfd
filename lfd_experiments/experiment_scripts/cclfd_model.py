@@ -1,12 +1,7 @@
 #!/usr/bin/python
 
-import os
 import argparse
-from functools import partial
-import random
 import colored_traceback
-import pudb
-import numpy as np
 import rospy
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
@@ -39,6 +34,11 @@ def main():
     )
 
     parser.add_argument(
+        '-t', '--threshold', type=int, metavar='THRESHOLD',
+        help='log-liklihood threshold value'
+    )
+
+    parser.add_argument(
         '-n', '--number_of_samples', type=int, default=50, metavar='NUMBEROFSAMPLES',
         help='the number of samples to validate for each keyframe'
     )
@@ -68,11 +68,16 @@ def main():
     moveit_interface = SawyerMoveitInterface()
     moveit_interface.set_velocity_scaling(.35)
     moveit_interface.set_acceleration_scaling(.25)
+    moveit_interface.set_planner(str(configs["settings"]["planner"]))
 
     cclfd = CC_LFD(configs, moveit_interface)
     cclfd.build_environment()
     cclfd.build_keyframe_graph(demonstrations, args.bandwidth)
-    cclfd.sample_keyframes(args.number_of_samples)
+    if args.threshold is not None:
+        rospy.loginfo("Using user provided culling threshold of {}".format(args.threshold))
+        cclfd.sample_keyframes(args.number_of_samples, automate_threshold=False, culling_threshold=args.threshold)
+    else:
+        cclfd.sample_keyframes(args.number_of_samples, automate_threshold=True)
     cclfd.perform_skill()
 
 if __name__ == '__main__':

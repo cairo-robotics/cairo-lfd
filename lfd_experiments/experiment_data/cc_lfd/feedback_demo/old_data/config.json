@@ -1,0 +1,97 @@
+{
+    "settings":{
+        "constraint_trigger_mechanism": "web_trigger",
+        "start_pose": {
+            "position":[0.635632, 0.28119, -0.14459],
+            "orientation": [0.674753, 0.737688, -0.0180208, -0.0141477]
+        }
+    },
+    "constraints": [
+        {
+            "class": "OrientationConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 2,
+                    "item_id": 1,
+                    "threshold_angle": 20,
+                    "axis": "x"
+                }
+        },
+        {
+            "class": "HeightConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 1,
+                    "item_id": 1,
+                    "reference_height": 0.0,
+                    "threshold_distance": 0.25
+                
+                }
+        }
+    ],
+    "triggers":[
+         {
+            "class": "WebTrigger",
+            "init_args":
+                {
+                    "constraint_id": 1,
+                    "constraint_name": "orientation_constraint"
+                }
+        },
+        {
+            "class": "WebTrigger",
+            "init_args":
+                {
+                    "constraint_id": 2,
+                    "constraint_name": "height_constraint"
+                }
+        }
+    ],
+   "items": [
+        {
+            "class": "StaticItem",
+            "init_args":
+                {
+                    "item_id": 2,
+                    "name": "block",
+                    "pose": 
+                        {
+                            "position":[0.7452, -0.08986, -0.173911],
+                            "orientation": [0.015391, -0.0089937, 0.70554, 0.70845]
+                        },
+                    "perimeter":
+                        {
+                            "inner": [[0.776137218844, 0.139981643691], [0.770539955483, -0.238921358537], [0.551349799735, -0.247211591728], [0.54590815399, 0.131074418809]],
+                            "outer": [[0.831064450566, 0.197736817943], [0.838702700984, -0.299700731139], [0.487428974079, -0.300435951469], [0.487396714263, 0.186147518899]]
+
+                        }
+                }
+        } 
+    ],
+    "robots": [
+        {
+            "class": "SawyerRobot",
+            "init_args":
+                {
+                    "item_id": 1,
+                    "upright_pose": 
+                        {
+                            "position": 
+                                [
+                                    0.604698787426,
+                                    -0.439894686226,
+                                    0.159350584992
+                                ],
+                            "orientation": [
+                                0.712590112587,
+                                -0.00994445446764,
+                                0.701496927312,
+                                -0.00430119065513
+                            ]
+                        }
+                }
+        }
+
+    ]
+       
+}

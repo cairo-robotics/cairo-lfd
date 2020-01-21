@@ -7,6 +7,7 @@ import pudb
 import numpy as np
 import rospy
 
+from cairo_lfd_msgs.msg import NodeTime
 from cairo_lfd.core.environment import Environment
 from cairo_lfd.core.items import ItemFactory
 from cairo_lfd.data.conversion import SawyerSampleConverter
@@ -149,10 +150,6 @@ class ACC_LFD():
 
     def serialize_out(self):
         json_data = {}
-        for node in self.graph.get_keyframe_sequence():
-            sample = self.graph.nodes[node]["samples"][0]
-            joints = sample.get_joint_angle()
-            joint_config_array.append(joints)
 
     def serialize_in(self):
         pass
@@ -263,10 +260,27 @@ class CC_LFD():
 
     def perform_skill(self):
         """ Create a sequence of keyframe way points and execute motion plans to reconstruct skill """
-        joint_config_array = []
-        for node in self.graph.get_keyframe_sequence():
-            sample = self.graph.nodes[node]["samples"][0]
-            joints = sample.get_joint_angle()
-            joint_config_array.append(joints)
 
-        self.moveit_interface.move_to_joint_targets(joint_config_array)
+        # Create publisher for node information
+        pub = rospy.Publisher('/lfd/node_time', NodeTime, queue_size=10)
+
+        for i in range(len(self.graph.get_keyframe_sequence()) - 1):
+            rospy.loginfo("LFD: Moving to a new point...")
+
+            # Grab nodes, samples, and joints
+            cur_node = self.graph.get_keyframe_sequence()[i]
+            next_node = self.graph.get_keyframe_sequence()[i+1]
+            cur_sample = self.graph.nodes[cur_node]["samples"][0]
+            next_sample = self.graph.nodes[next_node]["samples"][0]
+            cur_joints = cur_sample.get_joint_angle()
+            next_joints = next_sample.get_joint_angle()
+
+            # Build and publish node data
+            msg = NodeTime()
+            msg.cur_node = int(cur_node)
+            msg.next_node = int(next_node)
+            msg.timestamp = rospy.Time.now()
+            pub.publish(msg)
+
+            # Execute movement using MoveIt!
+            self.moveit_interface.move_to_joint_targets([cur_joints, next_joints])

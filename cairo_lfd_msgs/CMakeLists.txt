@@ -51,7 +51,6 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   AppliedConstraints.msg
-  ConstraintTrigger.msg
   NodeTime.msg
 )
 

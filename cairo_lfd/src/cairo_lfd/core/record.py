@@ -12,6 +12,7 @@ from sensor_msgs.msg import Image
 from std_msgs.msg import Int16MultiArray, String
 
 from cairo_lfd.core.environment import Observation, Demonstration
+import intera_interface
 from robot_interface.moveit_interface import SawyerMoveitInterface
 
 
@@ -53,6 +54,44 @@ class KeyboardController(object):
               'd' - Discard current demo while recording.
               'c' - Capture current demo while recording.
               's' - Move to start configuration
+              """)
+
+
+class CuffController(object):
+
+    def __init__(self):
+        self._navigator = intera_interface.Navigator()
+        self.cmd_pub = rospy.Publisher('/cairo_lfd/record_command', String, queue_size=10)
+
+    def run_loop(self):
+        """
+        Return whether or not recording is done.
+
+        Returns
+        : bool
+            The _done attribute.
+        """
+        self.print_instructions()
+        while not rospy.is_shutdown():
+            if self._navigator.get_button_state("right_button_show") == 2:
+                self.cmd_pub.publish("record")
+            elif self._navigator.get_button_state("right_button_back") == 2:
+                self.cmd_pub.publish("quit")
+            elif self._navigator.get_button_state("right_button_back") == 3:
+                self.cmd_pub.publish("discard")
+            elif self._navigator.get_button_state("right_button_show") == 3:
+                self.cmd_pub.publish("capture")
+            elif self._navigator.get_button_state("right_button_ok") == 2:
+                self.cmd_pub.publish("start")
+
+    def print_instructions(self):
+        print("""
+        Sawyer Cuff Buttons interface for collecting demonstrations:
+              hold 'ii' - Record
+              hold '<--' - Quit 
+              double tap '<--' - Discard current demo while recording.
+              double tap 'ii' - Capture current demo while recording.
+              press & hold 'wheel' - Move to start configuration
               """)
 
 
@@ -200,14 +239,12 @@ class SawyerRecorder(object):
             if self.command == "discard":
                 rospy.loginfo("~~~DISCARDED~~~")
                 self.interaction_publisher.send_position_mode_cmd()
-                print("Demonstration discarded!\n Press 'r' or 'ii' cuff button record again or 'q' to end the session.\n")
                 self._clear_command()
                 return []
             if self.command == "capture":
                 rospy.loginfo("~~~CAPTURED~~~")
                 self.interaction_publisher.send_position_mode_cmd()
                 self._clear_command()
-                print("Demonstration captured!\n Press 'r' or 'ii' cuff button record or hold center cuff wheel to record again or 'q' to end the session.\n")
                 return observations
             self._rate.sleep()
 

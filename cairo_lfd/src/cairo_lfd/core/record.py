@@ -2,7 +2,6 @@
 The record.py module contains classes and methods for recording data during live demonstrations.
 """
 import sys
-import select
 import os
 
 import rospy
@@ -10,9 +9,40 @@ import intera_interface
 import cv2
 import cv_bridge
 from sensor_msgs.msg import Image
-from std_msgs.msg import Int16MultiArray
+from std_msgs.msg import Int16MultiArray, String
 
 from cairo_lfd.core.environment import Observation, Demonstration
+from robot_interface.moveit_interface import SawyerMoveitInterface
+
+
+class KeyboardController(object):
+
+    def __init__(self):
+        self.cmd_pub = rospy.Publisher('/cairo_lfd/record_command', String, queue_size=10)
+
+    def run_loop(self):
+        """
+        Return whether or not recording is done.
+
+        Returns
+        : bool
+            The _done attribute.
+        """
+        while not rospy.is_shutdown():
+            _ = os.system('clear')
+            user_input = raw_input("Enter a command: ")
+            if user_input == "":
+                self.cmd_pub.publish("")
+            elif user_input == "r":
+                self.cmd_pub.publish("record")
+            elif user_input == "q":
+                self.cmd_pub.publish("quit")
+            elif user_input == "d":
+                self.cmd_pub.publish("discard")
+            elif user_input == "c":
+                self.cmd_pub.publish("capture")
+            elif user_input == "s":
+                self.cmd_pub.publish("reset")
 
 
 class SawyerRecorder(object):
@@ -31,13 +61,14 @@ class SawyerRecorder(object):
     _done : bool
         Termination flag.
     """
-    def __init__(self, rate, interaction_publisher=None, interaction_options=None):
+    def __init__(self, reset_pose, rate, interaction_publisher=None, interaction_options=None):
         """
         Parameters
         ----------
         rate : int
             The rate at which to capture state data.
         """
+        self._reset_pose = reset_pose
         self._raw_rate = rate
         self._rate = rospy.Rate(self._raw_rate)
         self._start_time = rospy.get_time()
@@ -47,6 +78,11 @@ class SawyerRecorder(object):
         self.head_display_pub = rospy.Publisher('/robot/head_display', Image, latch=True, queue_size=10)
         self.recording_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/Recording.jpg')
         self.ready_to_record_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/ReadyToRecord.jpg')
+        self.command = ""
+        self.command_sub = rospy.Subscriber("/cairo_lfd/record_command", String, self.command_callback)
+
+    def command_callback(self, data):
+        self.command = data.data
 
     def _time_stamp(self):
         """
@@ -77,13 +113,8 @@ class SawyerRecorder(object):
             self.stop()
         return self._done
 
-    def record_demonstrations(self, environment, constraint_analyzer=None, auto_zeroG=False):
+    def run(self, environment, constraint_analyzer=None, auto_zeroG=False):
         """
-        Records the current joint positions to a csv file if outputFilename was
-        provided at construction this function will record the latest set of
-        joint angles in a csv format.
-
-        If a file exists, the function will overwrite existing file.
 
         Parameters
         ----------
@@ -92,76 +123,82 @@ class SawyerRecorder(object):
 
         Returns
         -------
-        demosntrations : list
+        demonstrations : list
             List of Demonstration objects each of which captures Observations during user demonstrations.
         """
-        robot = environment.robot
 
         demonstrations = []
 
         while not self.done():
-            print("Press 'r' or hold 'ii' cuff button to enter recording mode or 'q' to quit.\n")
-            recording = False
-            user_input = ''
-            while user_input != 'q':
-                self.head_display_pub.publish(self._setup_image(self.ready_to_record_image_path))
-                # pu.db
-                stdin, stdout, stderr = select.select([sys.stdin], [], [], .0001)
-                for s in stdin:
-                    if s == sys.stdin:
-                        user_input = sys.stdin.readline().strip()
-                if environment.robot._navigator.get_button_state("right_button_show") == 2 or user_input == "r":
-                    print("Recording!")
-                    recording = True
-                    self.head_display_pub.publish(self._setup_image(self.recording_image_path))
-                    if auto_zeroG and self.interaction_publisher is not None and self.interaction_options is not None:
-                        self.interaction_publisher.external_rate_send_command(self.interaction_options)
-                    elif auto_zeroG and self.interaction_publisher is None or self.interaction_options is None:
-                        rospy.logerr("Sawyer Recorder must possess an interaction publisher and/or interaction options for zeroG")
-                        raise ValueError("Sawyer Recorder must possess an interaction publisher and/or interaction options zeroG")
+            self.head_display_pub.publish(self._setup_image(self.ready_to_record_image_path))
+            if self.command == "record":
+                print("Recording!")
+                self.head_display_pub.publish(self._setup_image(self.recording_image_path))
+                if auto_zeroG and self.interaction_publisher is not None and self.interaction_options is not None:
+                    self.interaction_publisher.external_rate_send_command(self.interaction_options)
+                elif auto_zeroG and self.interaction_publisher is None or self.interaction_options is None:
+                    rospy.logerr("Sawyer Recorder must possess an interaction publisher and/or interaction options for zeroG")
+                    raise ValueError("Sawyer Recorder must possess an interaction publisher and/or interaction options zeroG")
                 observations = []
                 counter = 0
-                while recording:
-                    if robot._gripper:
-                        if robot._cuff.upper_button():
-                            robot._gripper.open()
-                        elif robot._cuff.lower_button():
-                            robot._gripper.close()
-                    data = {
-                        "time": self._time_stamp(),
-                        "robot": environment.get_robot_state(),
-                        "items": environment.get_item_state(),
-                        "triggered_constraints": environment.check_constraint_triggers()
-                    }
-                    observation = Observation(data)
-                    if constraint_analyzer is not None:
-                        valid_constraints = constraint_analyzer.evaluate(environment.constraints, observation)[1]
-                        pub = rospy.Publisher('/cairo_lfd/valid_constraints', Int16MultiArray, queue_size=10)
-                        msg = Int16MultiArray(data=valid_constraints)
-                        pub.publish(msg)
-                    observations.append(observation)
-                    stdin, stdout, stderr = select.select([sys.stdin], [], [], .00000000001)
-                    for s in stdin:
-                        if s == sys.stdin:
-                            user_input = sys.stdin.readline().strip()
-                    if user_input == "d":
-                        rospy.loginfo("~~~DISCARDED~~~")
-                        self.interaction_publisher.send_position_mode_cmd()
-                        user_input = ''
-                        recording = False
-                        print("Demonstration discarded!\n Press 'r' or 'ii' cuff button record again or 'q' to end the session.\n")
-                    if environment.robot._navigator.get_button_state("right_button_back") == 2 or user_input == "c":
-                        demonstrations.append(Demonstration(observations))
-                        rospy.loginfo("~~~CAPTURED~~~")
-                        self.interaction_publisher.send_position_mode_cmd()
-                        user_input = ''
-                        recording = False
-                        print("Demonstration captured!\n Press 'r' or hold center cuff wheel to record again or 'q' to end the session.\n")
-                    self._rate.sleep()
-            if user_input == 'q':
+                observations = self._record_demonstration(environment, constraint_analyzer=None)
+                if len(observations) > 0:
+                    demonstrations.append(Demonstration(observations))
+            if self.command == "quit":
+                print("Quitting!")
+                self._clear_command()
                 self.stop()
-
+            if self.command == "reset":
+                print("Moving to reset position!")
+                self._move_to_reset_pose()
         return demonstrations
+
+    def _move_to_reset_pose(self):
+        """ Create the moveit_interface """
+        moveit_interface = SawyerMoveitInterface()
+        moveit_interface.set_velocity_scaling(.35)
+        moveit_interface.set_acceleration_scaling(.25)
+        moveit_interface.set_pose_target(self._reset_pose)
+        moveit_interface.execute(moveit_interface.plan())
+        self._clear_command()
+
+    def _record_demonstration(self, environment, constraint_analyzer):
+        observations = []
+        while True:
+            robot = environment.robot
+            if robot._gripper:
+                if robot._cuff.upper_button():
+                    robot._gripper.open()
+                elif robot._cuff.lower_button():
+                    robot._gripper.close()
+            data = {
+                "time": self._time_stamp(),
+                "robot": environment.get_robot_state(),
+                "items": environment.get_item_state(),
+                "triggered_constraints": environment.check_constraint_triggers()
+            }
+            observation = Observation(data)
+
+            if constraint_analyzer is not None:
+                valid_constraints = constraint_analyzer.evaluate(environment.constraints, observation)[1]
+                pub = rospy.Publisher('/cairo_lfd/valid_constraints', Int16MultiArray, queue_size=10)
+                msg = Int16MultiArray(data=valid_constraints)
+                pub.publish(msg)
+
+            observations.append(observation)
+            if self.command == "discard":
+                rospy.loginfo("~~~DISCARDED~~~")
+                self.interaction_publisher.send_position_mode_cmd()
+                print("Demonstration discarded!\n Press 'r' or 'ii' cuff button record again or 'q' to end the session.\n")
+                self._clear_command()
+                return []
+            if self.command == "capture":
+                rospy.loginfo("~~~CAPTURED~~~")
+                self.interaction_publisher.send_position_mode_cmd()
+                self._clear_command()
+                print("Demonstration captured!\n Press 'r' or 'ii' cuff button record or hold center cuff wheel to record again or 'q' to end the session.\n")
+                return observations
+            self._rate.sleep()
 
     def _setup_image(self, image_path):
         """
@@ -178,3 +215,6 @@ class SawyerRecorder(object):
         img = cv2.imread(image_path)
         # Return msg
         return cv_bridge.CvBridge().cv2_to_imgmsg(img, encoding="bgr8")
+
+    def _clear_command(self):
+        self.command = ""

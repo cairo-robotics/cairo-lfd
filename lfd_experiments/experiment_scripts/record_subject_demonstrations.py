@@ -93,8 +93,8 @@ def main():
     exp = DataExporter()
 
     constraint_analyzer = ConstraintAnalyzer(environment)
-    reset_pose = convert_data_to_pose(configs["settings"]["start_pose"]["position"], configs["settings"]["start_pose"]["orientation"])
-    recorder = SawyerRecorder(reset_pose, args.record_rate, interaction_pub, interaction_options)
+    start_configuration = configs["settings"]["start_configuration"]
+    recorder = SawyerRecorder(start_configuration, args.record_rate, interaction_pub, interaction_options)
     rospy.on_shutdown(recorder.stop)
     demos = recorder.run(environment, constraint_analyzer, auto_zeroG=True)
 

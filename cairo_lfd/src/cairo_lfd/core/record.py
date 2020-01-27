@@ -30,6 +30,7 @@ class KeyboardController(object):
         """
         while not rospy.is_shutdown():
             _ = os.system('clear')
+            self.print_instructions()
             user_input = raw_input("Enter a command: ")
             if user_input == "":
                 self.cmd_pub.publish("")
@@ -42,7 +43,17 @@ class KeyboardController(object):
             elif user_input == "c":
                 self.cmd_pub.publish("capture")
             elif user_input == "s":
-                self.cmd_pub.publish("reset")
+                self.cmd_pub.publish("start")
+
+    def print_instructions(self):
+        print("""
+        Keyboard interface for collecting demonstrations:
+              'r' - Record
+              'q' - Quit
+              'd' - Discard current demo while recording.
+              'c' - Capture current demo while recording.
+              's' - Move to start configuration
+              """)
 
 
 class SawyerRecorder(object):
@@ -61,14 +72,14 @@ class SawyerRecorder(object):
     _done : bool
         Termination flag.
     """
-    def __init__(self, reset_pose, rate, interaction_publisher=None, interaction_options=None):
+    def __init__(self, start_configuration, rate, interaction_publisher=None, interaction_options=None):
         """
         Parameters
         ----------
         rate : int
             The rate at which to capture state data.
         """
-        self._reset_pose = reset_pose
+        self._start_configuration = start_configuration
         self._raw_rate = rate
         self._rate = rospy.Rate(self._raw_rate)
         self._start_time = rospy.get_time()
@@ -148,17 +159,17 @@ class SawyerRecorder(object):
                 print("Quitting!")
                 self._clear_command()
                 self.stop()
-            if self.command == "reset":
-                print("Moving to reset position!")
-                self._move_to_reset_pose()
+            if self.command == "start":
+                print("Moving to start position!")
+                self._move_to_start_configuration()
         return demonstrations
 
-    def _move_to_reset_pose(self):
+    def _move_to_start_configuration(self):
         """ Create the moveit_interface """
         moveit_interface = SawyerMoveitInterface()
         moveit_interface.set_velocity_scaling(.35)
         moveit_interface.set_acceleration_scaling(.25)
-        moveit_interface.set_pose_target(self._reset_pose)
+        moveit_interface.set_joint_target(self._start_configuration)
         moveit_interface.execute(moveit_interface.plan())
         self._clear_command()
 

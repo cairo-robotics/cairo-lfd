@@ -1,0 +1,101 @@
+{
+    "settings":{
+        "planner": "RRTkConfigDefault",
+        "constraint_trigger_mechanism": "web_trigger",
+        "start_pose": {
+            "position":[0.635632, 0.28119, -0.14459],
+            "orientation": [0.674753, 0.737688, -0.0180208, -0.0141477]
+        }
+    },
+    "constraints": [
+        {
+            "class": "HeightConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 1,
+                    "item_id": 1,
+                    "reference_height": -0.15,
+                    "threshold_distance": 0.00,
+                    "direction": "positive"
+                
+                }
+        },
+        {
+            "class": "Perimeter2DConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 2,
+                    "perimeter_item_id": 2,
+                    "traversing_item_id": 1,
+                    "axis": "z"
+                }
+        },
+        {
+            "class": "HeightConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 3,
+                    "item_id": 1,
+                    "reference_height": -0.13,
+                    "threshold_distance": 0.00,
+                    "direction": "negative"
+                
+                }
+        }
+    ],
+     "triggers":[
+        {
+            "class": "SawyerCuffButtonTrigger",
+            "init_args":
+                {
+                    "constraint_id": 1,
+                    "cuff_button": "right_button_square"
+                }
+        },
+        {
+            "class": "SawyerCuffButtonTrigger",
+            "init_args":
+                {
+                    "constraint_id": 2,
+                    "cuff_button": "right_button_circle"
+                }
+        }
+    ],
+    "items": [
+        {
+            "class": "StaticItem",
+            "init_args":
+                {
+                    "item_id": 2,
+                    "name": "block",
+                    "pose": 
+                        {
+                            "position":[0.6952, -0.03986, -0.173911],
+                            "orientation": [0.015391, -0.0089937, 0.70554, 0.70845]
+                        },
+                    "perimeter":
+                        {
+                            "inner": [[0.828470625, 0.06511343749999998], [0.828470625, -0.1448334375], [0.5619293750000001, -0.1448334375], [0.5619293750000001, 0.06511343749999998]],
+                            "outer": [[0.89220875, 0.115318125], [0.89220875, -0.195038125], [0.49819125000000003, -0.195038125], [0.49819125000000003, 0.115318125]]
+                        }
+                }
+        }
+    ],
+    "robots": [
+        {
+            "class": "SawyerRobot",
+            "init_args":
+                {
+                    "item_id": 1,
+                    "upright_pose": 
+                        {
+                            "position": [0.635632, 0.28119, -0.14459],
+                            "orientation": [0.674753, 0.737688, -0.0180208, -0.0141477]
+                        }
+                }
+        }
+
+    ]
+        
+}
+

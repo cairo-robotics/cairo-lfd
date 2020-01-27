@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+import os
 
 import rospy
 import argparse
@@ -36,8 +37,19 @@ def main():
 
     required.add_argument(
         '-d', '--directory', dest='directory', required=True,
-        help='the directory to save raw demonstration .json files'
+        help='the root directory to save raw demonstration .json files'
     )
+
+    required.add_argument(
+        '-t', '--task', dest='task', required=True,
+        help='the name of the task being demonstrated'
+    )
+
+    required.add_argument(
+        '-s', '--subject', dest='subject', required=True,
+        help='the ID of the subject'
+    )
+
     parser.add_argument(
         '-r', '--record_rate', type=int, default=50, metavar='RECORDRATE',
         help='rate at which to record (default: 50)'
@@ -80,7 +92,6 @@ def main():
 
     exp = DataExporter()
 
-    print("Recording. Press Ctrl-C to stop.")
     constraint_analyzer = ConstraintAnalyzer(environment)
     start_configuration = configs["settings"]["start_configuration"]
     recorder = SawyerRecorder(start_configuration, args.record_rate, interaction_pub, interaction_options)
@@ -112,7 +123,13 @@ def main():
     for idx, demo in enumerate(demos):
         raw_data = [obs.data for obs in demo.observations]
         print("'/raw_demonstration{}.json': {} observations".format(idx, len(raw_data)))
-        exp.export_to_json(args.directory + "/raw_demonstration{}.json".format(idx), raw_data)
+        dirname_raw = args.directory + '/' + args.task + '/' + args.subject + '/raw'
+        dirname_labeled = args.directory + '/' + args.task + '/' + args.subject + '/labeled'
+        if not os.path.exists(dirname_raw):
+            os.makedirs(dirname_raw)
+        if not os.path.exists(dirname_labeled):
+            os.makedirs(dirname_labeled)
+        exp.export_to_json(dirname_raw + "/raw_demonstration{}.json".format(idx), raw_data)
 
 
 if __name__ == '__main__':

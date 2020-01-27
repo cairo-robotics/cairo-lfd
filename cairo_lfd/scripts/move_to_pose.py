@@ -13,12 +13,12 @@ def main():
     required = parser.add_argument_group('required arguments')
 
     required.add_argument(
-        '-p', '--position', dest='position', nargs=3, type=float,
+        '-p', '--position', dest='position', nargs=3, type=float, required=True,
         help='the x, y, z position of the end-effector'
     )
 
     parser.add_argument(
-        '-o', '--orientation', dest='orientation', nargs=4, type=float,
+        '-o', '--orientation', dest='orientation', nargs=4, type=float, required=True,
         help='the x, y, z, w quaternion orientation of the end-effector'
     )
     args = parser.parse_args(rospy.myargv()[1:])

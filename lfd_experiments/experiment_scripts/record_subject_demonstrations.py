@@ -51,8 +51,8 @@ def main():
     )
 
     parser.add_argument(
-        '-r', '--record_rate', type=int, default=50, metavar='RECORDRATE',
-        help='rate at which to record (default: 50)'
+        '-r', '--record_rate', type=int, default=20, metavar='RECORDRATE',
+        help='rate (Hz) at which to record (default: 20)'
     )
     args = parser.parse_args(rospy.myargv()[1:])
 

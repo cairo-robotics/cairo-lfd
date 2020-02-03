@@ -92,7 +92,11 @@ def main():
             "triggered_constraints": environment.check_constraint_triggers()
         }
         observation = Observation(data)
+        print "Position: " + str(data["robot"]["position"])
+        print "Orientation: " + str(data["robot"]["orientation"])
+        print "Config" + str(data["robot"]["joint_angle"])
         print(constraint_analyzer.evaluate(constraints, observation))
+        print(data["triggered_constraints"])
         rospy.sleep(1)
         if rospy.is_shutdown():
             return 1

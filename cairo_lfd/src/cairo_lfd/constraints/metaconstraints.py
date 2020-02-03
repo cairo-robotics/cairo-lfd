@@ -1,6 +1,6 @@
 from collections import Counter
 
-from cairo_lfd.constraints.concept_constraints import HeightConstraint, OrientationConstraint, Perimeter2DConstraint, OverUnderConstraint
+from cairo_lfd.constraints.concept_constraints import PlanarConstraint, OrientationConstraint, Perimeter2DConstraint, OverUnderConstraint
 
 
 class HeightMetaconstraint():
@@ -8,7 +8,7 @@ class HeightMetaconstraint():
     def __init__(self, name, static_parameters):
         self.name = name
         self.static_params = static_parameters
-        self.constraint_class = HeightConstraint
+        self.constraint_class = PlanarConstraint
         self.valid_constraints = []
 
     def parameterize_constraints(self, discrete_heights):

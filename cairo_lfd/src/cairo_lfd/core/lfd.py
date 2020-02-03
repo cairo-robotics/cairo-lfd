@@ -278,16 +278,6 @@ class CC_LFD():
 
     def perform_skill(self):
         """ Create a sequence of keyframe way points and execute motion plans to reconstruct skill """
-        joint_config_array = []
-        for node in self.graph.get_keyframe_sequence():
-            sample = self.graph.nodes[node]["samples"][0]
-            joints = sample.get_joint_angle()
-            joint_config_array.append(joints)
-
-        self.moveit_interface.move_to_joint_targets(joint_config_array)
-
-    def perform_skill(self):
-        """ Create a sequence of keyframe way points and execute motion plans to reconstruct skill """
 
         # Create publisher for node information
         # time_pub = rospy.Publisher('/lfd/node_time', NodeTime, queue_size=10)
@@ -326,6 +316,7 @@ class CC_LFD():
             # Execute movement using MoveIt!
             rospy.sleep(1)
             self.moveit_interface.move_to_joint_targets([cur_joints, next_joints])
+
 
 class LFD():
 
@@ -444,7 +435,6 @@ class LFD():
         graph_analyzer = KeyframeGraphAnalyzer(self.graph, self.moveit_interface, get_observation_joint_vector)
         graph_analyzer.cull_keyframes(automate_threshold=automate_threshold, culling_threshold=culling_threshold)
 
-
     def perform_skill(self):
         """ Create a sequence of keyframe way points and execute motion plans to reconstruct skill """
 
@@ -458,8 +448,7 @@ class LFD():
             rospy.loginfo("Keyframe: {}; Constraints: {}".format(cur_node, constraints))
             rospy.loginfo("")
 
-        for i in range(len(self.graph.get_keyframe_sequence()) - 1):
-            
+        for i in range(len(self.graph.get_keyframe_sequence()) - 1):       
 
             # Grab nodes, samples, and joints
             cur_node = self.graph.get_keyframe_sequence()[i]
@@ -483,3 +472,12 @@ class LFD():
             rospy.loginfo("LFD: Moving to a new point from keyframe {}".format(cur_node))
             # Execute movement using MoveIt!
             self.moveit_interface.move_to_joint_targets([cur_joints, next_joints])
+
+    def generate_representation(self):
+        keyframe_data = {}
+        for i in range(len(self.graph.get_keyframe_sequence()) - 1):       
+            data = {}
+            data["applied_constraints"] = self.graph.nodes[cur_node]["applied_constraints"]
+            data["observation"] = self.graph.nodes[cur_node]["samples"][0]
+            keyframe_data[node]
+        return keyframe_data

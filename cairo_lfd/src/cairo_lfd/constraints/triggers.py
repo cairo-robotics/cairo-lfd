@@ -71,22 +71,22 @@ class WebTrigger(AbstractTrigger):
 
     Attributes
     ----------
-    constraint_name : str
-        The name of the constraint to check the parsed data.
+    constraint_id : int
+        The ID of the constraint to check.
     triggered : bool
         The current state of whether the constraint is triggered.
     """
 
-    def __init__(self, constraint_id, constraint_name):
+    def __init__(self, constraint_id):
         """
         Parameters
         ----------
-        constraint_name : str
-            The name of the constraint to check the parsed data.
+        constraint_id : int
+            The ID of the constraint to check.
         """
-        self.constraint_name = constraint_name
         self.constraint_id = constraint_id
         self.service = ConstraintWebTriggerClient("constraint_trigger_service")
+        rospy.loginfo("Web trigger for Constraint ID {} connected to web trigger service.".format(self.constraint_id))
 
     def check(self):
         """
@@ -97,7 +97,7 @@ class WebTrigger(AbstractTrigger):
         : int
             Int value indicating if triggered state is true or false.
         """
-        if self.service.call(self.constraint_name):
+        if self.service.call(self.constraint_id):
             return 1
         else:
             return 0
@@ -128,6 +128,13 @@ class TriggerFactory(object):
                 {
                     "constraint_id": 1,
                     "button": "right_button_square"
+                }
+        },
+        {
+            "class": "WebTrigger",
+            "init_args":
+                {
+                    "constraint_id": 1
                 }
         }
     """

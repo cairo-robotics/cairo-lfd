@@ -9,90 +9,10 @@ import intera_interface
 import cv2
 import cv_bridge
 from sensor_msgs.msg import Image
-from std_msgs.msg import Int16MultiArray, String
+from std_msgs.msg import Int8MultiArray, String
 
 from cairo_lfd.core.environment import Observation, Demonstration
-import intera_interface
 from robot_interface.moveit_interface import SawyerMoveitInterface
-
-
-class KeyboardController(object):
-
-    def __init__(self):
-        self.cmd_pub = rospy.Publisher('/cairo_lfd/record_command', String, queue_size=10)
-
-    def run_loop(self):
-        """
-        Return whether or not recording is done.
-
-        Returns
-        : bool
-            The _done attribute.
-        """
-        while not rospy.is_shutdown():
-            _ = os.system('clear')
-            self.print_instructions()
-            user_input = raw_input("Enter a command: ")
-            if user_input == "":
-                self.cmd_pub.publish("")
-            elif user_input == "r":
-                self.cmd_pub.publish("record")
-            elif user_input == "q":
-                self.cmd_pub.publish("quit")
-            elif user_input == "d":
-                self.cmd_pub.publish("discard")
-            elif user_input == "c":
-                self.cmd_pub.publish("capture")
-            elif user_input == "s":
-                self.cmd_pub.publish("start")
-
-    def print_instructions(self):
-        print("""
-        Keyboard interface for collecting demonstrations:
-              'r' - Record
-              'q' - Quit
-              'd' - Discard current demo while recording.
-              'c' - Capture current demo while recording.
-              's' - Move to start configuration
-              """)
-
-
-class CuffController(object):
-
-    def __init__(self):
-        self._navigator = intera_interface.Navigator()
-        self.cmd_pub = rospy.Publisher('/cairo_lfd/record_command', String, queue_size=10)
-
-    def run_loop(self):
-        """
-        Return whether or not recording is done.
-
-        Returns
-        : bool
-            The _done attribute.
-        """
-        self.print_instructions()
-        while not rospy.is_shutdown():
-            if self._navigator.get_button_state("right_button_show") == 2:
-                self.cmd_pub.publish("record")
-            elif self._navigator.get_button_state("right_button_back") == 2:
-                self.cmd_pub.publish("quit")
-            elif self._navigator.get_button_state("right_button_back") == 3:
-                self.cmd_pub.publish("discard")
-            elif self._navigator.get_button_state("right_button_show") == 3:
-                self.cmd_pub.publish("capture")
-            elif self._navigator.get_button_state("right_button_ok") == 2:
-                self.cmd_pub.publish("start")
-
-    def print_instructions(self):
-        print("""
-        Sawyer Cuff Buttons interface for collecting demonstrations:
-              hold 'ii' - Record
-              hold '<--' - Quit 
-              double tap '<--' - Discard current demo while recording.
-              double tap 'ii' - Capture current demo while recording.
-              press & hold 'wheel' - Move to start configuration
-              """)
 
 
 class SawyerRecorder(object):
@@ -116,7 +36,7 @@ class SawyerRecorder(object):
         Parameters
         ----------
         rate : int
-            The rate at which to capture state data.
+            The Hz rate at which to capture state data.
         """
         self._start_configuration = start_configuration
         self._raw_rate = rate
@@ -191,7 +111,7 @@ class SawyerRecorder(object):
                     raise ValueError("Sawyer Recorder must possess an interaction publisher and/or interaction options zeroG")
                 observations = []
                 counter = 0
-                observations = self._record_demonstration(environment, constraint_analyzer=None)
+                observations = self._record_demonstration(environment, constraint_analyzer)
                 if len(observations) > 0:
                     demonstrations.append(Demonstration(observations))
             if self.command == "quit":
@@ -228,11 +148,10 @@ class SawyerRecorder(object):
                 "triggered_constraints": environment.check_constraint_triggers()
             }
             observation = Observation(data)
-
             if constraint_analyzer is not None:
                 valid_constraints = constraint_analyzer.evaluate(environment.constraints, observation)[1]
-                pub = rospy.Publisher('/cairo_lfd/valid_constraints', Int16MultiArray, queue_size=10)
-                msg = Int16MultiArray(data=valid_constraints)
+                pub = rospy.Publisher('cairo_lfd/valid_constraints', Int8MultiArray, queue_size=10)
+                msg = Int8MultiArray(data=valid_constraints)
                 pub.publish(msg)
 
             observations.append(observation)

@@ -39,8 +39,8 @@ def main():
     )
 
     parser.add_argument(
-        '-t', '--threshold', type=int, default=-1200, metavar='THRESHOLD',
-        help='log-liklihood threshold value'
+        '-t', '--threshold', type=int, default=, metavar='THRESHOLD',
+        help='Kullbach-Leibler divergence threshold value - optional'
     )
 
     parser.add_argument(

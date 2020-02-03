@@ -35,7 +35,7 @@ class KeyframeGraphAnalyzer():
         self.interface = sawyer_moveit_interface
         self.vectorizor = observation_vectorizor
 
-    def max_mean_ll(self, model, observation):
+    def max_mean_ll(self, model, observations):
         """
         Given a set of observations, generate the mean log likelihood and max log likelihood of the set scored by a given model.
 
@@ -52,7 +52,7 @@ class KeyframeGraphAnalyzer():
             Returns the maximum log likelihood of scored samples as well as the average of all the sample scores.
         """
         vectors = []
-        for ob in observation:
+        for ob in observations:
             vector = self.vectorizor(ob)
             vectors.append(vector)
         vectors = np.array(vectors)
@@ -61,24 +61,23 @@ class KeyframeGraphAnalyzer():
         mean_ll = np.mean(curr_ll)
         return (max_ll, mean_ll)
 
-    def cull_keyframes(self, automate_threshold=False, culling_threshold=-1000):
+    def cull_keyframes(self, automate_threshold=False, culling_threshold=10):
         """
-        Culls consecutive keyframes sequentially until the one such keyframe's observations has an average LL is below
-        the average LL between all keyframes, as scored by the current keyframes model.
-
+        Culls consecutive keyframes sequentially until the one such keyframe's has a KL divergence greater than the mean + 1 std KL divergence calculated from all consecutive keyframes.
         Parameters
         ----------
-        threshold : int
-            The threshold average log likelihood.
+        culling_threshold : int
+            The threshold value for culling if intending to pass a value manually.
         """
         if automate_threshold is True:
-            mean, median, std = self._get_variational_distance_stats()
+            average_KL_divergence, std_divergence = self._get_KL_divergence_stats()
+            print(average_KL_divergence, std_divergence)
             prev = self.graph.get_keyframe_sequence()[0]
             curr = self.graph.successors(prev).next()
             while([x for x in self.graph.successors(curr)] != []):
-                max_ll, mean_ll = self.max_mean_ll(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["observations"])
-                if mean_ll > mean and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
-                    rospy.logwarn("Node {} average log-likelihood of {} is above the sequence mean variational distance log likelihood of {}".format(curr, mean_ll, mean))
+                est_divergence = self._KL_divergence_estimate(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["model"])
+                if est_divergence < average_KL_divergence + std_divergence and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
+                    rospy.logwarn("KL estimate between nodes {} and {} is {} which is one std above mean divergence of {}".format(prev, curr, est_divergence, average_KL_divergence))
                     succ = self.graph.successors(curr).next()
                     self.graph.cull_node(curr)
                     curr = succ
@@ -89,9 +88,9 @@ class KeyframeGraphAnalyzer():
             prev = self.graph.get_keyframe_sequence()[0]
             curr = self.graph.successors(prev).next()
             while([x for x in self.graph.successors(curr)] != []):
-                max_ll, mean_ll = self.max_mean_ll(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["observations"])
-                if mean_ll > culling_threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
-                    rospy.logwarn("Node {} average log-likelihood of {} is above user provided threshold of {}".format(curr, mean_ll, culling_threshold))
+                est_divergence = self._KL_divergence_estimate(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["model"])
+                if est_divergence < culling_threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
+                    rospy.logwarn("KL estimate between nodes {} and {} is {} which below set threshold of {}".format(prev, curr, est_divergence, culling_threshold))
                     succ = self.graph.successors(curr).next()
                     self.graph.cull_node(curr)
                     curr = succ
@@ -99,16 +98,24 @@ class KeyframeGraphAnalyzer():
                 prev = curr
                 curr = self.graph.successors(curr).next()
 
-    def _get_variational_distance_stats(self):
+    def _get_KL_divergence_stats(self):
         prev = self.graph.get_keyframe_sequence()[0]
         curr = self.graph.successors(prev).next()
-        log_likelihoods = []
+        divergences = []
         while([x for x in self.graph.successors(curr)] != []):
-            max_ll, mean_ll = self.max_mean_ll(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["observations"])
-            log_likelihoods.append(mean_ll)
+            estimated_divergence = self._KL_divergence_estimate(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["model"])
+            divergences.append(estimated_divergence)
             prev = curr
             curr = self.graph.successors(curr).next()
-        return np.average(log_likelihoods), np.median(log_likelihoods), np.std(log_likelihoods)
+        return np.average(divergences), np.std(divergences)
+
+    def _KL_divergence_estimate(self, P, Q, n_samples=5 * 10**3):
+        # uses a sampling based approach to estimate KL divergence
+        # KL(p||q) = \int p(x) log(p(x) / q(x)) dx = E_p[ log(p(x) / q(x))
+        X = P.generate_samples(n_samples)
+        logP_X = P.score_samples(X)
+        logQ_X = Q.score_samples(X)
+        return np.average(logP_X) - np.average(logQ_X)
 
 
 class MotionPlanAnalyzer():

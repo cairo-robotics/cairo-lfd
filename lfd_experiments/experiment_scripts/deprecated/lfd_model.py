@@ -58,7 +58,7 @@ def main():
         observations = []
         for entry in datum:
             observations.append(Observation(entry))
-        demonstrations.append(Demonstration(observations))
+        demonstrations.append(Demonstration(labeled_observations=observations))
 
     if len(demonstrations) == 0:
         rospy.logwarn("No demonstration data to model!!")

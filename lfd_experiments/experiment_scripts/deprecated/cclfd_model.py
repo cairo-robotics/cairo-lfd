@@ -5,7 +5,7 @@ import colored_traceback
 import rospy
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
-from cairo_lfd.core.lfd import ACC_LFD
+from cairo_lfd.core.lfd import CC_LFD
 from cairo_lfd.core.environment import Observation, Demonstration
 from cairo_lfd.data.io import DataImporter, import_configuration
 
@@ -58,7 +58,7 @@ def main():
         observations = []
         for entry in datum:
             observations.append(Observation(entry))
-        demonstrations.append(Demonstration(observations))
+        demonstrations.append(Demonstration(labeled_observations=observations))
 
     if len(demonstrations) == 0:
         rospy.logwarn("No demonstration data to model!!")
@@ -68,16 +68,18 @@ def main():
     moveit_interface = SawyerMoveitInterface()
     moveit_interface.set_velocity_scaling(.35)
     moveit_interface.set_acceleration_scaling(.25)
+    moveit_interface.set_planner(str(configs["settings"]["planner"]))
 
-    acclfd = ACC_LFD(configs, moveit_interface)
-    acclfd.build_environment()
-    acclfd.build_keyframe_graph(demonstrations, args.bandwidth)
-    acclfd.generate_metaconstraints(demonstrations)
+    cclfd = CC_LFD(configs, moveit_interface)
+    cclfd.build_environment()
+    cclfd.build_keyframe_graph(demonstrations, args.bandwidth)
     if args.threshold is not None:
+        rospy.loginfo("Using user provided culling threshold of {}".format(args.threshold))
         cclfd.sample_keyframes(args.number_of_samples, automate_threshold=False, culling_threshold=args.threshold)
     else:
         cclfd.sample_keyframes(args.number_of_samples, automate_threshold=True)
-    acclfd.perform_skill()
+    cclfd.perform_skill()
+
 
 
 if __name__ == '__main__':

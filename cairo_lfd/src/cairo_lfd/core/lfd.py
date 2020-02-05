@@ -152,17 +152,24 @@ class ACC_LFD():
 
         self.moveit_interface.move_to_joint_targets(joint_config_array)
 
+    def generate_representation(self):
+        # TODO
+        pass
+
     def serialize_out(self):
+        # TODO
         json_data = {}
 
     def serialize_in(self):
+        # TODO
         pass
 
 
 class CC_LFD():
 
-    def __init__(self, configs, moveit_interface):
+    def __init__(self, configs, modeling_settings, moveit_interface):
         self.configs = configs
+        self.settings = modeling_settings
         self.moveit_interface = moveit_interface
 
     def build_environment(self):
@@ -316,6 +323,26 @@ class CC_LFD():
             # Execute movement using MoveIt!
             rospy.sleep(1)
             self.moveit_interface.move_to_joint_targets([cur_joints, next_joints])
+
+    def generate_representation(self):
+        keyframe_data = {}
+        keyframe_data["point_array"] = []
+        for node in self.graph.get_keyframe_sequence():
+            data = {}
+            data["applied_constraints"] = self.graph.nodes[node]["applied_constraints"]
+            robot_data = {}
+            robot_data["position"] = list(self.graph.nodes[node]["samples"][0].data["robot"]["position"])
+            robot_data["orientation"] = list(self.graph.nodes[node]["samples"][0].data["robot"]["orientation"])
+            data["robot"] = robot_data
+            data["keyframe_id"] = node
+            keyframe_data["point_array"].append(data)
+        return keyframe_data
+
+    def applied_constraint_update(self, update_data):
+        for node in self.graph.get_keyframe_sequence():
+            pass 
+
+
 
 
 class LFD():
@@ -475,9 +502,9 @@ class LFD():
 
     def generate_representation(self):
         keyframe_data = {}
-        for i in range(len(self.graph.get_keyframe_sequence()) - 1):       
+        for node in self.graph.get_keyframe_sequence():
             data = {}
-            data["applied_constraints"] = self.graph.nodes[cur_node]["applied_constraints"]
-            data["observation"] = self.graph.nodes[cur_node]["samples"][0]
-            keyframe_data[node]
+            data["applied_constraints"] = self.graph.nodes[node]["applied_constraints"]
+            data["observation"] = self.graph.nodes[node]["samples"][0].data
+            keyframe_data[node] = data
         return keyframe_data

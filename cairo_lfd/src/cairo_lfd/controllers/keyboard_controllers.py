@@ -8,7 +8,7 @@ from std_msgs.msg import String
 class RecordingKeyboardController(object):
 
     def __init__(self):
-        self.cmd_pub = rospy.Publisher('/cairo_lfd/record_command', String, queue_size=10)
+        self.cmd_pub = rospy.Publisher('cairo_lfd/record_commands', String, queue_size=10)
 
     def run_loop(self):
         """
@@ -39,7 +39,7 @@ class RecordingKeyboardController(object):
         print("""
         Keyboard interface for collecting demonstrations:
               'r' - Record
-              'q' - Quit
+              'q' - Quit Recording Session
               'd' - Discard current demo while recording.
               'c' - Capture current demo while recording.
               's' - Move to start configuration
@@ -49,7 +49,7 @@ class RecordingKeyboardController(object):
 class ModelKeyboardController(object):
 
     def __init__(self):
-        self.cmd_pub = rospy.Publisher('/cairo_lfd/model_command', String, queue_size=10)
+        self.cmd_pub = rospy.Publisher('cairo_lfd/model_commands', String, queue_size=10)
 
     def run_loop(self):
         """
@@ -65,18 +65,27 @@ class ModelKeyboardController(object):
             user_input = raw_input("Enter a command: ")
             if user_input == "":
                 self.cmd_pub.publish("")
-            elif user_input == "e":
+            elif user_input == "execute":
                 self.cmd_pub.publish("execute")
-            elif user_input == "t":
+            elif user_input == "resample":
+                self.cmd_pub.publish("resample")
+            elif user_input == "train":
                 self.cmd_pub.publish("train")
-            elif user_input == "d":
-                self.cmd_pub.publish("discard")
+            elif user_input == "record":
+                self.cmd_pub.publish("record")
+            elif user_input == "representation":
+                self.cmd_pub.publish("get_representation")
+            elif user_input == "quit":
+                self.cmd_pub.publish("quit")
+
 
     def print_instructions(self):
         print("""
         Keyboard interface for executing and retraining model:
-              'e' - Execute skill
-              't' - Train models.
-              'r' - Resend model representation.
-              'q' - Quit
+              'execute' - Execute skill
+              'resample' - Resample keyframes.
+              'representation' - Publish model representation.
+              'record' - Record
+              'train' - Train model with current demonstrations.
+              'quit' - Quit
               """)

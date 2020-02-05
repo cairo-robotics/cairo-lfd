@@ -5,17 +5,57 @@ import sys
 import os
 
 import rospy
-import intera_interface
 import cv2
 import cv_bridge
 from sensor_msgs.msg import Image
 from std_msgs.msg import Int8MultiArray, String
+from geometry_msgs.msg import Pose
+
+import intera_interface
+from intera_core_msgs.msg import InteractionControlCommand
+from intera_motion_interface import InteractionOptions, InteractionPublisher
 
 from cairo_lfd.core.environment import Observation, Demonstration
+from cairo_lfd.data.labeling import ConstraintKeyframeLabeler
+from cairo_lfd.data.io import DataExporter
+from cairo_lfd.modeling.analysis import ConstraintAnalyzer
+
 from robot_interface.moveit_interface import SawyerMoveitInterface
 
+import copy
 
-class SawyerRecorder(object):
+
+class SawyerDemonstrationLabeler():
+    def __init__(self, settings, demo_aligner):
+        """
+        Parameters
+        ----------
+        """
+        self.divisor = settings.get("divisor", 20)
+        self.window = settings.get("window", 10)
+        self.output = settings.get("")
+        self.demo_aligner = demo_aligner
+
+    def label(self, demonstrations):
+        rospy.loginfo("Aligning demonstrations...this can take some time.")
+
+        # For more details about alignment, see the alignment_example.
+        aligned_demos, constraint_transitions = self.demo_aligner.align(demonstrations)
+        # Create ConstraintKeyframeLabeler passing in the aligned demonstrations and the constraint transition
+        # ordering, both of which are returned from the DemonstratinAligner object.
+        keyframe_labeler = ConstraintKeyframeLabeler(copy.deepcopy(aligned_demos), constraint_transitions)
+        rospy.loginfo("Labeling demonstrations.")
+        """Call label_demontrations. The first parameter is the average group length divisor which determines the number of keyframes for that group. So if the first grouping of data before the first constraint transition has an average length of 100, then that first grouping will generate 5 keyframes (100/20 = 5). 
+
+        The second parameter is the window size i.e. how big each keyframe size should be (+/- one depending on if odd number of elements in the grouping list per demonstration) 
+        """
+        labeled_demonstrations = keyframe_labeler.label_demonstrations(self.divisor, self.window)
+        # for demo in labeled_demonstrations:
+
+        return labeled_demonstrations
+
+
+class SawyerDemonstrationRecorder():
     """
     Class to record state data from the ReThink Robotics Sawyer robot for capturing demonstrated data for 
     LfD experimentation.
@@ -31,25 +71,29 @@ class SawyerRecorder(object):
     _done : bool
         Termination flag.
     """
-    def __init__(self, start_configuration, rate, interaction_publisher=None, interaction_options=None):
+    def __init__(self, settings, environment, processor_pipeline=None, publish_constraint_validity=True):
         """
         Parameters
         ----------
         rate : int
             The Hz rate at which to capture state data.
         """
-        self._start_configuration = start_configuration
-        self._raw_rate = rate
+        self.start_configuration = settings.get("start_configuration", None)
+        self._raw_rate = settings.get("sampling_rate", 25)
         self._rate = rospy.Rate(self._raw_rate)
         self._start_time = rospy.get_time()
         self._done = False
-        self.interaction_publisher = interaction_publisher
-        self.interaction_options = interaction_options
+        self.publish_constraint_validity = publish_constraint_validity
+        self.constraint_trigger = settings.get("constraint_trigger_mechanism", "web_trigger")
+        self.processor_pipeline = processor_pipeline
         self.head_display_pub = rospy.Publisher('/robot/head_display', Image, latch=True, queue_size=10)
         self.recording_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/Recording.jpg')
         self.ready_to_record_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/ReadyToRecord.jpg')
         self.command = ""
-        self.command_sub = rospy.Subscriber("/cairo_lfd/record_command", String, self.command_callback)
+        self.command_sub = rospy.Subscriber("/cairo_lfd/record_commands", String, self.command_callback)
+        self.environment = environment
+        self.constraint_analyzer = ConstraintAnalyzer(self.environment)
+        self._setup_zero_g()
 
     def command_callback(self, data):
         self.command = data.data
@@ -83,7 +127,10 @@ class SawyerRecorder(object):
             self.stop()
         return self._done
 
-    def run(self, environment, constraint_analyzer=None, auto_zeroG=False):
+    def start(self):
+        self._done = False
+
+    def record(self):
         """
 
         Parameters
@@ -98,41 +145,47 @@ class SawyerRecorder(object):
         """
 
         demonstrations = []
-
+        rospy.loginfo("Ready to record. Sampling will be at ~{}Hz".format(self._raw_rate))
+        self.start()
         while not self.done():
             self.head_display_pub.publish(self._setup_image(self.ready_to_record_image_path))
             if self.command == "record":
                 print("Recording!")
                 self.head_display_pub.publish(self._setup_image(self.recording_image_path))
-                if auto_zeroG and self.interaction_publisher is not None and self.interaction_options is not None:
-                    self.interaction_publisher.external_rate_send_command(self.interaction_options)
-                elif auto_zeroG and self.interaction_publisher is None or self.interaction_options is None:
-                    rospy.logerr("Sawyer Recorder must possess an interaction publisher and/or interaction options for zeroG")
-                    raise ValueError("Sawyer Recorder must possess an interaction publisher and/or interaction options zeroG")
+                self.interaction_publisher.external_rate_send_command(self.interaction_options)
                 observations = []
                 counter = 0
-                observations = self._record_demonstration(environment, constraint_analyzer)
+                observations = self._record_demonstration(self.environment)
                 if len(observations) > 0:
                     demonstrations.append(Demonstration(observations))
             if self.command == "quit":
-                print("Quitting!")
+                print("Stopping recording!")
                 self._clear_command()
                 self.stop()
             if self.command == "start":
                 print("Moving to start position!")
                 self._move_to_start_configuration()
+
+        if self.processor_pipeline is not None:
+            # Generates additional data
+            self.processor_pipeline.process(demonstrations)
+        self._analyze_applied_constraints(demonstrations)
+        self._clear_command()
         return demonstrations
 
     def _move_to_start_configuration(self):
         """ Create the moveit_interface """
-        moveit_interface = SawyerMoveitInterface()
-        moveit_interface.set_velocity_scaling(.35)
-        moveit_interface.set_acceleration_scaling(.25)
-        moveit_interface.set_joint_target(self._start_configuration)
-        moveit_interface.execute(moveit_interface.plan())
+        if self.start_configuration is not None:
+            moveit_interface = SawyerMoveitInterface()
+            moveit_interface.set_velocity_scaling(.35)
+            moveit_interface.set_acceleration_scaling(.25)
+            moveit_interface.set_joint_target(self.start_configuration)
+            moveit_interface.execute(moveit_interface.plan())
+        else:
+            rospy.logwarn("No start configuration provided in your config.json file.")
         self._clear_command()
 
-    def _record_demonstration(self, environment, constraint_analyzer):
+    def _record_demonstration(self, environment):
         observations = []
         while True:
             robot = environment.robot
@@ -148,12 +201,11 @@ class SawyerRecorder(object):
                 "triggered_constraints": environment.check_constraint_triggers()
             }
             observation = Observation(data)
-            if constraint_analyzer is not None:
-                valid_constraints = constraint_analyzer.evaluate(environment.constraints, observation)[1]
+            if self.publish_constraint_validity:
+                valid_constraints = self.constraint_analyzer.evaluate(environment.constraints, observation)[1]
                 pub = rospy.Publisher('cairo_lfd/valid_constraints', Int8MultiArray, queue_size=10)
                 msg = Int8MultiArray(data=valid_constraints)
                 pub.publish(msg)
-
             observations.append(observation)
             if self.command == "discard":
                 rospy.loginfo("~~~DISCARDED~~~")
@@ -164,8 +216,22 @@ class SawyerRecorder(object):
                 rospy.loginfo("~~~CAPTURED~~~")
                 self.interaction_publisher.send_position_mode_cmd()
                 self._clear_command()
+                rospy.loginfo("{} observations captured.".format(len(observations)))
                 return observations
             self._rate.sleep()
+
+    def _analyze_applied_constraints(self, demos):
+        # Analyze observations for constraints. If using web triggered constraints, we don't evaluate and
+        # instead the applied constraints are those explicitly set by the user.
+        for demo in demos:
+            if self.constraint_trigger == 'cuff_trigger':
+                # Using the cuff trigger will cause a propagation forward of current set of applied constraints
+                self.constraint_analyzer.applied_constraint_evaluator(demo.observations)
+            elif self.constraint_trigger == 'web_trigger':
+                for observation in demo.observations:
+                    observation.data["applied_constraints"] = observation.get_triggered_constraint_data()
+            else:
+                rospy.logerr("No valid constraint trigger mechanism passed.")
 
     def _setup_image(self, image_path):
         """
@@ -182,6 +248,30 @@ class SawyerRecorder(object):
         img = cv2.imread(image_path)
         # Return msg
         return cv_bridge.CvBridge().cv2_to_imgmsg(img, encoding="bgr8")
+
+    def _setup_zero_g(self):
+        ########################################
+        #  Setup Intera to Support Zero-G Mode #
+        ########################################
+        interaction_pub = InteractionPublisher()
+        interaction_options = InteractionOptions()
+        interaction_options.set_max_impedance([False])
+        interaction_options.set_rotations_for_constrained_zeroG(True)
+        interaction_frame = Pose()
+        interaction_frame.position.x = 0
+        interaction_frame.position.y = 0
+        interaction_frame.position.z = 0
+        interaction_frame.orientation.x = 0
+        interaction_frame.orientation.y = 0
+        interaction_frame.orientation.z = 0
+        interaction_frame.orientation.w = 1
+        interaction_options.set_K_impedance([0, 0, 0, 0, 0, 0])
+        interaction_options.set_K_nullspace([0, 0, 0, 0, 0, 0, 0])
+        interaction_options.set_interaction_frame(interaction_frame)
+        rospy.loginfo(interaction_options.to_msg())
+        rospy.on_shutdown(interaction_pub.send_position_mode_cmd)
+        self.interaction_publisher = interaction_pub
+        self.interaction_options = interaction_options
 
     def _clear_command(self):
         self.command = ""

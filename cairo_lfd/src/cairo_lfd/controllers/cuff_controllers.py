@@ -9,7 +9,7 @@ class CuffRecordingController(object):
 
     def __init__(self):
         self._navigator = intera_interface.Navigator()
-        self.cmd_pub = rospy.Publisher('/cairo_lfd/record_command', String, queue_size=10)
+        self.cmd_pub = rospy.Publisher('/cairo_lfd/record_commands', String, queue_size=10)
 
     def run_loop(self):
         """

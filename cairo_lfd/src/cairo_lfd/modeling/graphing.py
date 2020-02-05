@@ -104,7 +104,7 @@ class ObservationClusterer():
     """
     def generate_clusters(self, demonstrations):
         """
-        Generates clustered Observations from a list of Demonstrations.
+        Generates clustered Observations from a list of Demonstrations with labeled observations.
 
         Parameters
         ----------
@@ -119,7 +119,7 @@ class ObservationClusterer():
         """
         observations = []
         for demo in demonstrations:
-            for obsv in demo.observations:
+            for obsv in demo.labeled_observations:
                 observations.append(obsv)
         clusters = self._cluster_observations_by_id(observations)
         for cluster in clusters.values():
@@ -130,7 +130,7 @@ class ObservationClusterer():
     def _cluster_observations_by_id(self, observations):
         """
         Takes in a the entirety of observations from all Demonstrations and groups them together
-        by keyframe ID.
+        by keyframe ID. This
 
         Parameters
         ----------

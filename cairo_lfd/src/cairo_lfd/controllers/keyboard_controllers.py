@@ -8,7 +8,7 @@ from std_msgs.msg import String
 class RecordingKeyboardController(object):
 
     def __init__(self):
-        self.cmd_pub = rospy.Publisher('cairo_lfd/record_commands', String, queue_size=10)
+        self.cmd_pub = rospy.Publisher('/cairo_lfd/record_commands', String, queue_size=10)
 
     def run_loop(self):
         """
@@ -49,7 +49,7 @@ class RecordingKeyboardController(object):
 class ModelKeyboardController(object):
 
     def __init__(self):
-        self.cmd_pub = rospy.Publisher('cairo_lfd/model_commands', String, queue_size=10)
+        self.cmd_pub = rospy.Publisher('/cairo_lfd/model_commands', String, queue_size=10)
 
     def run_loop(self):
         """
@@ -75,9 +75,10 @@ class ModelKeyboardController(object):
                 self.cmd_pub.publish("record")
             elif user_input == "representation":
                 self.cmd_pub.publish("get_representation")
+            elif user_input == "save":
+                self.cmd_pub.publish("save")
             elif user_input == "quit":
                 self.cmd_pub.publish("quit")
-
 
     def print_instructions(self):
         print("""
@@ -87,5 +88,6 @@ class ModelKeyboardController(object):
               'representation' - Publish model representation.
               'record' - Record
               'train' - Train model with current demonstrations.
+              'save' - Save the current subjects demonstrations, raw and labeled.
               'quit' - Quit
               """)

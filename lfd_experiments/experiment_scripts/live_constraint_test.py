@@ -9,7 +9,6 @@ from intera_interface import CHECK_VERSION
 from intera_core_msgs.msg import InteractionControlCommand
 from geometry_msgs.msg import Pose
 from intera_motion_interface import InteractionOptions, InteractionPublisher
-from cairo_lfd.core.record import SawyerRecorder
 from cairo_lfd.core.environment import Environment, Observation
 from cairo_lfd.core.items import ItemFactory
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory

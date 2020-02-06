@@ -58,7 +58,7 @@ def main():
     #  ROS Node Initialization #
     ############################
     print("Initializing node... ")
-    rospy.init_node("sdk_joint_recorder")
+    rospy.init_node("ar4lfd")
     print("Getting robot state... ")
     robot_state = intera_interface.RobotEnable(CHECK_VERSION)
     print("Enabling robot... ")
@@ -88,13 +88,13 @@ def main():
     soi_processor = SphereOfInfluenceProcessor(environment.get_item_ids(), environment.get_robot_id())
     rp_processor = RelativePositionProcessor(environment.get_item_ids(), environment.get_robot_id())
     wp_processor = WithinPerimeterProcessor(environment.get_item_ids(), environment.get_robot_id())
-    processpors_pipeline = ProcessorPipeline([rk_processor, ic_processor, soi_processor, rp_processor, wp_processor])
+    processor_pipeline = ProcessorPipeline([rk_processor, ic_processor, soi_processor, rp_processor, wp_processor])
 
     ###############################################
     # Configure the Sawyer Demonstration Recorder #
     ###############################################
     rec_settings = configs["settings"]["recording_settings"]
-    recorder = SawyerDemonstrationRecorder(rec_settings, environment, processpors_pipeline, publish_constraint_validity=True)
+    recorder = SawyerDemonstrationRecorder(rec_settings, environment, processor_pipeline, publish_constraint_validity=True)
     rospy.on_shutdown(recorder.stop)
 
     ##############################################
@@ -133,7 +133,6 @@ def main():
         rospy.logwarn("No prior demonstration data to model!! You sure you're using the right experiment script?")
         return 0
     labeled_initial_demos = demo_labeler.label(demonstrations)
-    print(labeled_initial_demos[0].observations[0].data)
     cclfd.build_environment()
     cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))
     cclfd.sample_keyframes(model_settings.get("number_of_samples", 50), automate_threshold=True)

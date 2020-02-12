@@ -7,7 +7,7 @@
                     "position": [0.2821271154625369, 0.6993660443827091, -0.2166083219212962],
                     "orientation": [-0.005523956201021585, 0.9998884034279703, -0.004719975318146538, 0.01305329196600423]
                 },
-            "start_configuration": [0.575306640625, -0.336431640625, -0.359044921875, 1.458134765625, 0.6804560546875, 0.5560009765625, 1.6094990234375],
+            "start_configuration": [0.6534853515625, 1.1256357421875, -2.1817939453125, 0.99794921875, 2.6248046875, -0.2416748046875, -1.23457421875],
             "sampling_rate": 50,
             "constraint_trigger_mechanism": "web_trigger"
         },
@@ -32,7 +32,7 @@
             {
                 "constraint_id": 1,
                 "item_id": 1,
-                "reference_position": 0.01428,
+                "reference_position": 0.2966802974925514,
                 "threshold_distance": 0.00,
                 "direction": "negative",
                 "axis": "z"
@@ -44,7 +44,7 @@
             {
                 "constraint_id": 2,
                 "item_id": 1,
-                "reference_position": -0.01495,
+                "reference_position": -0.13352188044506202,
                 "threshold_distance": 0.00,
                 "direction": "positive",
                 "axis": "z"
@@ -52,52 +52,52 @@
         },
         {
             "class": "OrientationConstraint",
-            "init_args" : 
+            "init_args" :
                 {
                     "constraint_id": 3,
                     "item_id": 1,
-                    "threshold_angle": 8,
-                    "reference_orientation": [0.017721236427960724, -0.6896867930096543, 0.723890701324838, 0.0005812598018143569],
+                    "threshold_angle": 15,
+                    "reference_orientation": [-0.7004280251164267, -0.03822381459818689, -0.7126935914473872, -0.0027141000150390227],
                     "axis": "z"
                 }
         },
                 {
             "class": "OrientationConstraint",
-            "init_args" : 
+            "init_args" :
                 {
                     "constraint_id": 4,
                     "item_id": 1,
                     "threshold_angle": 15,
-                    "reference_orientation": [-0.7071318608127011, -0.02090705254793435, -0.011310713675474933, -0.7066820319871432],
+                    "reference_orientation": [-0.17733966272293872, -0.5961402035699118, 0.7010622262256246, -0.34882553901987895],
                     "axis": "z"
                 }
         },
          {
             "class": "OverUnderConstraint",
-            "init_args" : 
+            "init_args" :
                 {
                     "constraint_id": 5,
                     "above_item_id": 1,
                     "below_item_id": 2,
                     "threshold_distance": 0.08,
                     "reference_pose": {
-                        "position": [0.6109314212320098, 0.36505230607231814, -0.11699769749427],
-                        "orientation":  [-0.003588055934499179, -0.9989722612831933, -0.004546341379431041, 0.044954174682852586]
+                        "position": [0.796822468835666, -0.5726076696256587, -0.06436333069221895],
+                        "orientation":  [-0.013231016542013863, -0.7174692588960555, 0.6770078077176437, -0.1634724167245361]
                     },
                     "axis": "z"
                 }
         },
          {
             "class": "OverUnderConstraint",
-            "init_args" : 
+            "init_args" :
                 {
                     "constraint_id": 6,
                     "above_item_id": 1,
                     "below_item_id": 2,
                     "threshold_distance": 0.08,
                     "reference_pose": {
-                        "position": [0.6704478539344562, -0.5229082037023104, 0.19256496442827226],
-                        "orientation":  [0.006374615488541097, 0.9999187409979692, -0.0053489284453452565, 0.009657362108587664]
+                        "position": [0.7867475583654228, 0.5074727296930507, -0.1272849248034536],
+                        "orientation":  [-0.7196705745156081, 0.049714198758544784, -0.691829848593205, -0.031212548977507387]
                     },
                     "axis": "z"
                 }

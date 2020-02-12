@@ -32,7 +32,7 @@
             {
                 "constraint_id": 13,
                 "item_id": 1,
-                "reference_position": 0.01428,
+                "reference_position": 0.03174696254091882,
                 "threshold_distance": 0.00,
                 "direction": "negative",
                 "axis": "z"
@@ -44,7 +44,7 @@
             {
                 "constraint_id": 14,
                 "item_id": 1,
-                "reference_position": -0.01495,
+                "reference_position": -0.0605552,
                 "threshold_distance": 0.00,
                 "direction": "positive",
                 "axis": "z"
@@ -52,7 +52,7 @@
         },
         {
             "class": "OrientationConstraint",
-            "init_args" : 
+            "init_args" :
                 {
                     "constraint_id": 15,
                     "item_id": 1,
@@ -63,18 +63,18 @@
         },
                 {
             "class": "OrientationConstraint",
-            "init_args" : 
+            "init_args" :
                 {
                     "constraint_id": 16,
                     "item_id": 1,
                     "threshold_angle": 15,
-                    "reference_orientation": [-0.7071318608127011, -0.02090705254793435, -0.011310713675474933, -0.7066820319871432],
+                    "reference_orientation": [-0.5025809059472035, -0.455533381558173, 0.5438250996747817, -0.4941214751730367],
                     "axis": "z"
                 }
         },
          {
             "class": "OverUnderConstraint",
-            "init_args" : 
+            "init_args" :
                 {
                     "constraint_id": 17,
                     "above_item_id": 1,
@@ -89,7 +89,7 @@
         },
          {
             "class": "OverUnderConstraint",
-            "init_args" : 
+            "init_args" :
                 {
                     "constraint_id": 18,
                     "above_item_id": 1,

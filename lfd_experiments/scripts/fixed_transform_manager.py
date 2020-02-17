@@ -176,6 +176,8 @@ class Middleman(object):
 
         #Individually publish each keyframe to the HoloLens
         traj_object = json.loads(msg.data)
+        traj_pusher = {}
+        traj_pusher["trajectory"] = []
         for point_object in traj_object["point_array"]:
             #Update position and orientation
             pos = point_object["robot"]["position"]
@@ -190,11 +192,11 @@ class Middleman(object):
             json_object["robot"]["position"] = [updated_pose.pose.position.x, updated_pose.pose.position.y, updated_pose.pose.position.z]
             json_object["robot"]["orientation"] = [updated_pose.pose.orientation.x, updated_pose.pose.orientation.y, updated_pose.pose.orientation.z, updated_pose.pose.orientation.w]
 
-            #transmit JSON for this transformed pose
-            keyframe_msg = String()
-            keyframe_msg.data = json.dumps(json_object)
-            self.hololens_pub.publish(keyframe_msg)
-            time.sleep(0.2)
+            traj_pusher["trajectory"].append(json_object)
+        #transmit JSON for this transformed pose
+        keyframe_msg = String()
+        keyframe_msg.data = json.dumps(traj_pusher)
+        self.hololens_pub.publish(keyframe_msg)
 
 
 def main():

@@ -158,6 +158,13 @@ class SawyerDemonstrationRecorder():
                 observations = self._record_demonstration(self.environment)
                 if len(observations) > 0:
                     demonstrations.append(Demonstration(observations))
+            if self.command == "discard":
+                if len(demonstrations) > 0:
+                    demonstrations.pop()
+                    print("Discarded most recent demonstration recording!")
+                else:
+                    print("There are no new demonstrations to discard.")
+                self._clear_command()
             if self.command == "quit":
                 print("Stopping recording!")
                 self._clear_command()

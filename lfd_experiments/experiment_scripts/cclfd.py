@@ -19,7 +19,7 @@ from cairo_lfd.data.processing import ProcessorPipeline, RelativeKinematicsProce
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory
 from cairo_lfd.constraints.triggers import TriggerFactory
 from cairo_lfd.core.lfd import CC_LFD
-from cairo_lfd.controllers.study_controllers import ARStudyController
+from cairo_lfd.controllers.study_controllers import CCLfDController
 
 
 def main():
@@ -34,22 +34,22 @@ def main():
     )
 
     required.add_argument(
-        '-i', '--input_directory', dest='input_directory', required=True,
-        help='the directory from which to input prior poor/broken demonstration .json files'
+        '-i', '--input_directory', dest='input_directory', required=False,
+        help='the directory from which to input prior demonstration .json files'
     )
 
     required.add_argument(
-        '-o', '--output_directory', dest='output_directory', required=True,
+        '-o', '--output_directory', dest='output_directory', required=False,
         help='the directory to save the given subjects .json files data'
     )
 
     required.add_argument(
-        '-t', '--task', dest='task', required=True,
+        '-t', '--task', dest='task', required=False,
         help='the name of the task being demonstrated'
     )
 
     required.add_argument(
-        '-s', '--subject', dest='subject', required=True,
+        '-s', '--subject', dest='subject', required=False,
         help='the ID of the subject'
     )
     args = parser.parse_args(rospy.myargv()[1:])
@@ -102,9 +102,9 @@ def main():
     recorder = SawyerDemonstrationRecorder(rec_settings, environment, processor_pipeline, publish_constraint_validity=True)
     rospy.on_shutdown(recorder.stop)
 
-    ##########################################################
-    # Configure the Sawyer Demonstration Aligner and Labeler #
-    ##########################################################
+    ##############################################
+    # Configure the Sawyer Demonstration Labeler #
+    ##############################################
 
     label_settings = configs["settings"]["labeling_settings"]
     # Demonstration vectorizor that converts observations into state vector in desired space for DTW alignment.
@@ -123,29 +123,56 @@ def main():
     moveit_interface.set_planner(str(model_settings["planner"]))
     cclfd = CC_LFD(configs, model_settings, moveit_interface)
 
-    ################################################
-    # Import Poor/Broken Skills for AR 4 LfD Study #
-    ################################################
+    #########################
+    # Import Initial Demos  #
+    #########################
 
-    importer = DataImporter()
-
-    prior_poor_demonstrations = importer.load_json_files(args.input_directory + "/*.json")
-    # Convert imported data into Demonstrations and Observations
-    demonstrations = []
-    for datum in prior_poor_demonstrations["data"]:
-        observations = []
-        for entry in datum:
-            observations.append(Observation(entry))
-        demonstrations.append(Demonstration(observations))
-    if len(demonstrations) == 0:
-        rospy.logwarn("No prior demonstration data to model!! You sure you're using the right experiment script?")
-        return 0
-    labeled_initial_demos = demo_labeler.label(demonstrations)
     cclfd.build_environment()
-    cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))
-    cclfd.sample_keyframes(model_settings.get("number_of_samples", 50), automate_threshold=True)
+    if args.input_directory is not None:
+        importer = DataImporter()
 
-    study = ARStudyController(cclfd, recorder, demo_labeler, labeled_initial_demos, args.output_directory, args.task, args.subject)
+        prior_poor_demonstrations = importer.load_json_files(args.input_directory + "/*.json")
+        # Convert imported data into Demonstrations and Observations
+        demonstrations = []
+        for datum in prior_poor_demonstrations["data"]:
+            observations = []
+            for entry in datum:
+                observations.append(Observation(entry))
+            demonstrations.append(Demonstration(observations))
+        if len(demonstrations) == 0:
+            rospy.logwarn("No prior demonstration data to model!! You sure you're using the right experiment script?")
+            return 0
+        labeled_initial_demos = demo_labeler.label(demonstrations)
+        cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))
+        cclfd.sample_keyframes(model_settings.get("number_of_samples", 50), automate_threshold=True)
+    else:
+        labeled_initial_demos = []
+        cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))
+
+    #######################################
+    # Set defaults for command line args  #
+    #######################################
+
+    if args.task is None:
+        output_directory = ""
+    else:
+        output_directory = args.output_directory
+
+    if args.task is None:
+        task_name = "****"
+    else:
+        task_name = args.task
+
+    if args.subject is None:
+        subject = "####"
+    else:
+        subject = args.subject
+
+    #########################
+    # Run Study Controller  #
+    #########################
+
+    study = CCLfDController(cclfd, recorder, demo_labeler, labeled_initial_demos, output_directory, task_name, subject)
     study.run()
 
 

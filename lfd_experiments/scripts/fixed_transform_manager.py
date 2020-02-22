@@ -17,7 +17,6 @@ Contains a class for transforming from a fixed coordinate system to a HoloLens w
 Code modified from Dan Koral's arvr_device package: https://github.com/cu-ironlab/ros_arvr_device_and_robot_management
 '''
 
-
 class FixedTransformManager(object):
     def __init__(self, name, origin_translation, origin_rotation, selector_matrix):
         """
@@ -65,30 +64,27 @@ class FixedTransformManager(object):
         :param pose: point in world coordinates to be transformed to HoloLens space
         """
 
-        # lookup transform between world and this device if it has been longer than one second since last lookup
+        #lookup transform between world and this device if it has been longer than one second since last lookup
         if(self.last_lookup is None or time.time() - self.last_lookup > 1):
-            self.frame_transform = self.tf2_buffer.lookup_transform(
-                self.name, "world", rospy.Time(0), rospy.Duration(1.0))
+            self.frame_transform = self.tf2_buffer.lookup_transform(self.name, "world", rospy.Time(0), rospy.Duration(1.0))
             self.last_lookup = time.time()
 
-        # apply transform to point
+        #apply transform to point
         pose_stamped = PoseStamped()
         pose_stamped.header.frame_id = "world"
         pose_stamped.header.stamp = rospy.Time.now()
         pose_stamped.pose = pose
-        transformed_pose = tf2_geometry_msgs.do_transform_pose(
-            pose_stamped, self.frame_transform)
+        transformed_pose = tf2_geometry_msgs.do_transform_pose(pose_stamped, self.frame_transform)
 
-        # switch coordinate axes
+        #switch coordinate axes
         device_pose = world_to_arvr(transformed_pose, self.selector_matrix)
         return device_pose
+
 
 
 '''
 Helper functions modified from https://github.com/cu-ironlab/ros_arvr_device_and_robot_management/blob/master/src/arvr_utility/msg_transformations.py
 '''
-
-
 def arvr_to_world(msg, transformation_matrix):
     """
     This is a helper function to transform a arvr coordinate to the world space when given the
@@ -100,13 +96,13 @@ def arvr_to_world(msg, transformation_matrix):
     :return:
     """
     translation_vector = np.array([msg.pose.position.x,
-                                   msg.pose.position.y,
-                                   msg.pose.position.z,
-                                   1]).transpose()
+                    msg.pose.position.y,
+                    msg.pose.position.z,
+                    1]).transpose()
     quaternion_vector = np.array([msg.pose.orientation.x,
-                                  msg.pose.orientation.y,
-                                  msg.pose.orientation.z,
-                                  msg.pose.orientation.w]).transpose()
+                    msg.pose.orientation.y,
+                    msg.pose.orientation.z,
+                    msg.pose.orientation.w]).transpose()
 
     translation_vector = transformation_matrix.dot(translation_vector)
     quaternion_vector = transformation_matrix.dot(quaternion_vector)
@@ -153,20 +149,17 @@ class Middleman(object):
         :param hololens_pub_topic:
         """
 
-        # Create transform manager (position and axes hardcoded for now)
-        self.transform_manager = FixedTransformManager("hololens", Vector3(1.0, 0.0, -0.2632),
-                                                       Quaternion(0.0, 0.0, 1.0, 0.0), [[0, 0, 1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1]])
+        #Create transform manager (position and axes hardcoded for now)
+        self.transform_manager = FixedTransformManager( "hololens", Vector3(1.0, 0.0, -0.2632),
+                                Quaternion(0.0, 0.0, 1.0, 0.0), [[0, 0, 1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1]] )
 
-        # Initialize Publishers
+        #Initialize Publishers
         self.request_pub = rospy.Publisher(request_topic, String, queue_size=1)
-        self.hololens_pub = rospy.Publisher(
-            hololens_pub_topic, String, queue_size=1)
+        self.hololens_pub = rospy.Publisher(hololens_pub_topic, String, queue_size=1)
 
-        # Initialize Subscribers
-        self.command_sub = rospy.Subscriber(
-            command_topic, String, self._command_cb)
-        self.trajectory_sub = rospy.Subscriber(
-            traj_representation_topic, String, self._trajectory_cb)
+        #Initialize Subscribers
+        self.command_sub = rospy.Subscriber(command_topic, String, self._command_cb)
+        self.trajectory_sub = rospy.Subscriber(traj_representation_topic, String, self._trajectory_cb)
 
     def _command_cb(self, msg):
         '''
@@ -174,35 +167,33 @@ class Middleman(object):
         '''
         self.request_pub.publish(String("get_representation"))
 
+
     def _trajectory_cb(self, msg):
 
-        # Clear out any visualizations currently present first
+        #Clear out any visualizations currently present first
         self.hololens_pub.publish(String("CLEAR"))
-        time.sleep(0.2)
+        time.sleep(1.0)
 
-        # Individually publish each keyframe to the HoloLens
+        #Individually publish each keyframe to the HoloLens
         traj_object = json.loads(msg.data)
         traj_pusher = {}
         traj_pusher["trajectory"] = []
         for point_object in traj_object["point_array"]:
-            # Update position and orientation
+            #Update position and orientation
             pos = point_object["robot"]["position"]
             quat = point_object["robot"]["orientation"]
-            updated_pose = self.transform_manager.world_to_hololens(Pose(
-                Point(pos[0], pos[1], pos[2]), Quaternion(quat[0], quat[1], quat[2], quat[3])))
+            updated_pose = self.transform_manager.world_to_hololens(Pose(Point(pos[0], pos[1], pos[2]),Quaternion(quat[0], quat[1], quat[2], quat[3])))
 
-            # update JSON with transformed pose
+            #update JSON with transformed pose
             json_object = {}
             json_object["keyframe_id"] = point_object["keyframe_id"]
             json_object["applied_constraints"] = point_object["applied_constraints"]
             json_object["robot"] = {}
-            json_object["robot"]["position"] = [updated_pose.pose.position.x,
-                                                updated_pose.pose.position.y, updated_pose.pose.position.z]
-            json_object["robot"]["orientation"] = [updated_pose.pose.orientation.x,
-                                                   updated_pose.pose.orientation.y, updated_pose.pose.orientation.z, updated_pose.pose.orientation.w]
+            json_object["robot"]["position"] = [updated_pose.pose.position.x, updated_pose.pose.position.y, updated_pose.pose.position.z]
+            json_object["robot"]["orientation"] = [updated_pose.pose.orientation.x, updated_pose.pose.orientation.y, updated_pose.pose.orientation.z, updated_pose.pose.orientation.w]
 
             traj_pusher["trajectory"].append(json_object)
-        # transmit JSON for this transformed pose
+        #transmit JSON for this transformed pose
         keyframe_msg = String()
         keyframe_msg.data = json.dumps(traj_pusher)
         self.hololens_pub.publish(keyframe_msg)
@@ -210,8 +201,7 @@ class Middleman(object):
 
 def main():
     rospy.init_node("middleman")
-    mm = Middleman("start_ar", "/cairo_lfd/model_commands",
-                   "/cairo_lfd/lfd_representation", "/constraint_manager")
+    mm = Middleman("start_ar", "/cairo_lfd/model_commands", "/cairo_lfd/lfd_representation", "/constraint_manager")
     rospy.spin()
 
 

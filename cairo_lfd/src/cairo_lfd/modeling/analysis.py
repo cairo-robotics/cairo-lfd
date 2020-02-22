@@ -69,36 +69,38 @@ class KeyframeGraphAnalyzer():
         culling_threshold : int
             The threshold value for culling if intending to pass a value manually.
         """
-        if automate_threshold is True:
-            average_KL_divergence, std_divergence = self._get_KL_divergence_stats()
-            print(average_KL_divergence, std_divergence)
-            prev = self.graph.get_keyframe_sequence()[0]
-            curr = self.graph.successors(prev).next()
-            while([x for x in self.graph.successors(curr)] != []):
-                est_divergence = self._KL_divergence_estimate(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["model"])
-                if est_divergence < average_KL_divergence + std_divergence and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
-                    rospy.logwarn("KL estimate between nodes {} and {} is {} which is one std above mean divergence of {}".format(prev, curr, est_divergence, average_KL_divergence))
-                    succ = self.graph.successors(curr).next()
-                    self.graph.cull_node(curr)
-                    curr = succ
-                    continue
-                prev = curr
-                curr = self.graph.successors(curr).next()
-        else:
-            prev = self.graph.get_keyframe_sequence()[0]
-            curr = self.graph.successors(prev).next()
-            while([x for x in self.graph.successors(curr)] != []):
-                est_divergence = self._KL_divergence_estimate(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["model"])
-                if est_divergence < culling_threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
-                    rospy.logwarn("KL estimate between nodes {} and {} is {} which below set threshold of {}".format(prev, curr, est_divergence, culling_threshold))
-                    succ = self.graph.successors(curr).next()
-                    self.graph.cull_node(curr)
-                    curr = succ
-                    continue
-                prev = curr
-                curr = self.graph.successors(curr).next()
+        if len(self.graph.get_keyframe_sequence()) > 0:
+            if automate_threshold is True:
+                average_KL_divergence, std_divergence = self._get_KL_divergence_stats()
+                print(average_KL_divergence, std_divergence)
+                prev = self.graph.get_keyframe_sequence()[0]
+                curr = self.graph.successors(prev).next()
+                while([x for x in self.graph.successors(curr)] != []):
+                    est_divergence = self._KL_divergence_estimate(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["model"])
+                    if est_divergence < average_KL_divergence and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
+                        rospy.logwarn("KL estimate between nodes {} and {} is {} which below the mean divergence of {}".format(prev, curr, est_divergence, average_KL_divergence))
+                        succ = self.graph.successors(curr).next()
+                        self.graph.cull_node(curr)
+                        curr = succ
+                        continue
+                    prev = curr
+                    curr = self.graph.successors(curr).next()
+            else:
+                prev = self.graph.get_keyframe_sequence()[0]
+                curr = self.graph.successors(prev).next()
+                while([x for x in self.graph.successors(curr)] != []):
+                    est_divergence = self._KL_divergence_estimate(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["model"])
+                    if est_divergence < culling_threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
+                        rospy.logwarn("KL estimate between nodes {} and {} is {} which below set threshold of {}".format(prev, curr, est_divergence, culling_threshold))
+                        succ = self.graph.successors(curr).next()
+                        self.graph.cull_node(curr)
+                        curr = succ
+                        continue
+                    prev = curr
+                    curr = self.graph.successors(curr).next()
 
     def _get_KL_divergence_stats(self):
+        print(self.graph)
         prev = self.graph.get_keyframe_sequence()[0]
         curr = self.graph.successors(prev).next()
         divergences = []

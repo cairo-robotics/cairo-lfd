@@ -83,6 +83,23 @@ def xy_radial_distance(observation, above_item_id, below_item_id):
     xy_below = observation.get_item_data(below_item_id)['position'][0:1]
     return np.array([euclidean(xy_above, xy_below)])
 
+def xy_radial_distance_with_static(observation, above_item_id, static_xy):
+    """
+    Vectorizes an observation by comparing xy radial/planer distance between two objects.
+
+    Parameters
+    ----------
+    observation : Observation
+      Observation to vectorize.
+
+    Returns
+    -------
+     : ndarray
+        Numpy vector of shape (1,)
+    """
+    xy = observation.get_item_data(above_item_id)['position'][0:1]
+    return np.array([euclidean(xy, static_xy)])
+
 
 def boolean_within_SOI(observation, item1_id, item2_id):
     """
@@ -101,6 +118,31 @@ def boolean_within_SOI(observation, item1_id, item2_id):
         Numpy vector of shape (1,)
     """
     if item2_id in observation.get_item_data(item1_id).get('in_SOI', []):
+        return True
+    else:
+        return False
+
+
+def boolean_within_proximity(observation, item_id, static_position, threshold=.1):
+    """
+    Vectorizes an observation to a boolean if an object's position is within a threshold distance.
+
+    Depends on the SphereOfInfluenceProcessor object having processed the observation and will simply evaluate to False if this is not the case.
+
+    Parameters
+    ----------
+    observation : Observation
+      Observation to vectorize.
+
+    Returns
+    -------
+     : bool
+        Numpy vector of shape (1,)
+    """
+    object_position = observation.get_item_data(item_id)['position']
+    distance = euclidean(object_position, static_position)
+
+    if distance < threshold:
         return True
     else:
         return False

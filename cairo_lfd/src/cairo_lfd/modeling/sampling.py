@@ -109,10 +109,10 @@ class KeyframeSampler():
             return True
 
 
-class MetaconstraintSampler():
+class AutoconstraintSampler():
 
-    def __init__(self, metaconstraint_dict):
-        self.metaconstraint_dict = metaconstraint_dict
+    def __init__(self, autoconstraint_dict):
+        self.autoconstraint_dict = autoconstraint_dict
         self.current_set = set()
 
     def validate(self, validated_set):
@@ -126,12 +126,12 @@ class MetaconstraintSampler():
 
     def sample(self, validated_set):
         if self.current_set == set():
-            for name, metaconstraint in self.metaconstraint_dict.items():
+            for name, autoconstraint in self.autoconstraint_dict.items():
                 self.current_set.add((name, 0))
         elif self.current_set.difference(validated_set) == set():
             self.current_set.clear()
             for name, idx in list(validated_set):
-                if idx + 1 < len(self.metaconstraint_dict[name].constraints):
+                if idx + 1 < len(self.autoconstraint_dict[name].constraints):
                     self.current_set.add((name, idx + 1))
                 else:
                     self.current_set.add((name, idx))
@@ -139,9 +139,9 @@ class MetaconstraintSampler():
             missing_constraints_name_id = self.current_set.difference(validated_set)
             self.current_set = validated_set
             for name, idx in list(missing_constraints_name_id):
-                if idx + 1 < len(self.metaconstraint_dict[name].constraints):
+                if idx + 1 < len(self.autoconstraint_dict[name].constraints):
                     self.current_set.add((name, idx + 1))
-        return [self.metaconstraint_dict[name_id[0]].constraints[name_id[1]] for name_id in self.current_set]
+        return [self.autoconstraint_dict[name_id[0]].constraints[name_id[1]] for name_id in self.current_set]
 
 
 class ModelScoreSampleRanker():

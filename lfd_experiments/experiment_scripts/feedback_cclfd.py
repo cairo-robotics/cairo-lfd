@@ -19,7 +19,7 @@ from cairo_lfd.data.processing import ProcessorPipeline, RelativeKinematicsProce
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory
 from cairo_lfd.constraints.triggers import TriggerFactory
 from cairo_lfd.core.lfd import CC_LFD
-from cairo_lfd.controllers.study_controllers import ARStudyController
+from cairo_lfd.controllers.study_controllers import FeedbackLfDStudyController
 
 
 def main():
@@ -136,7 +136,7 @@ def main():
     cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))
     cclfd.sample_keyframes(model_settings.get("number_of_samples", 50), automate_threshold=True)
 
-    study = ARStudyController(cclfd, recorder, demo_labeler, labeled_initial_demos, args.output_directory)
+    study = FeedbackLfDStudyController(cclfd, recorder, demo_labeler, labeled_initial_demos, args.output_directory)
     study.run()
 
 

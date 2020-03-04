@@ -5,7 +5,7 @@ import uuid
 import rospy
 from std_msgs.msg import String
 
-from cairo_lfd.data.io import DataExporter
+from cairo_lfd.data.io import export_to_json
 
 
 class ARStudyController():
@@ -71,7 +71,6 @@ class ARStudyController():
                 self._clear_command()
 
     def save_trial_data(self):
-        exp = DataExporter()
         dirname_raw = './' + self.output_directory + '/' + self.task + '/' + self.subject + '/raw'
         if not os.path.exists(dirname_raw):
             os.makedirs(dirname_raw)
@@ -83,11 +82,11 @@ class ARStudyController():
         for idx, demo in enumerate(self.raw_demos):
             unique_filename = str(uuid.uuid4())
             raw_data = [obs.data for obs in demo.observations]
-            exp.export_to_json(dirname_raw + "/raw_demo_{}.json".format(unique_filename), raw_data)
+            export_to_json(dirname_raw + "/raw_demo_{}.json".format(unique_filename), raw_data)
         for idx, demo in enumerate(self.labeled_demos):
             unique_filename = str(uuid.uuid4())
             raw_data = [obs.data for obs in demo.observations]
-            exp.export_to_json(dirname_labeled + "/labeled_demo_{}.json".format(unique_filename), raw_data)
+            export_to_json(dirname_labeled + "/labeled_demo_{}.json".format(unique_filename), raw_data)
 
     def _command_callback(self, msg):
         self.command = msg.data
@@ -132,7 +131,6 @@ class RecordingOnlyController():
         self.save_recording_data()
 
     def save_recording_data(self):
-        exp = DataExporter()
         dirname_raw = './' + self.output_directory + '/raw'
         if not os.path.exists(dirname_raw):
             os.makedirs(dirname_raw)
@@ -140,7 +138,7 @@ class RecordingOnlyController():
         for idx, demo in enumerate(self.raw_demos):
             unique_filename = str(uuid.uuid4())
             raw_data = [obs.data for obs in demo.observations]
-            exp.export_to_json(dirname_raw + "/raw_demo_{}.json".format(unique_filename), raw_data)
+            export_to_json(dirname_raw + "/raw_demo_{}.json".format(unique_filename), raw_data)
 
 
 class ACCLfDController():
@@ -220,11 +218,11 @@ class ACCLfDController():
         for idx, demo in enumerate(self.raw_demos):
             unique_filename = str(uuid.uuid4())
             raw_data = [obs.data for obs in demo.observations]
-            exp.export_to_json(dirname_raw + "/raw_demo_{}.json".format(unique_filename), raw_data)
+            export_to_json(dirname_raw + "/raw_demo_{}.json".format(unique_filename), raw_data)
         for idx, demo in enumerate(self.labeled_demos):
             unique_filename = str(uuid.uuid4())
             raw_data = [obs.data for obs in demo.observations]
-            exp.export_to_json(dirname_labeled + "/labeled_demo_{}.json".format(unique_filename), raw_data)
+            export_to_json(dirname_labeled + "/labeled_demo_{}.json".format(unique_filename), raw_data)
 
     def _command_callback(self, msg):
         self.command = msg.data
@@ -298,7 +296,6 @@ class CCLfDController():
                 self._clear_command()
 
     def save_trial_data(self):
-        exp = DataExporter()
         dirname_raw = './' + self.output_directory + '/' + self.task + '/' + self.subject + '/raw'
         if not os.path.exists(dirname_raw):
             os.makedirs(dirname_raw)
@@ -310,11 +307,11 @@ class CCLfDController():
         for idx, demo in enumerate(self.raw_demos):
             unique_filename = str(uuid.uuid4())
             raw_data = [obs.data for obs in demo.observations]
-            exp.export_to_json(dirname_raw + "/raw_demo_{}.json".format(unique_filename), raw_data)
+            export_to_json(dirname_raw + "/raw_demo_{}.json".format(unique_filename), raw_data)
         for idx, demo in enumerate(self.labeled_demos):
             unique_filename = str(uuid.uuid4())
             raw_data = [obs.data for obs in demo.observations]
-            exp.export_to_json(dirname_labeled + "/labeled_demo_{}.json".format(unique_filename), raw_data)
+            export_to_json(dirname_labeled + "/labeled_demo_{}.json".format(unique_filename), raw_data)
 
     def _command_callback(self, msg):
         self.command = msg.data
@@ -392,7 +389,6 @@ class LfDController():
                 self._clear_command()
 
     def save_trial_data(self):
-        exp = DataExporter()
         dirname_raw = './' + self.output_directory + '/' + self.task + '/' + self.subject + '/raw'
         if not os.path.exists(dirname_raw):
             os.makedirs(dirname_raw)
@@ -404,11 +400,11 @@ class LfDController():
         for idx, demo in enumerate(self.raw_demos):
             unique_filename = str(uuid.uuid4())
             raw_data = [obs.data for obs in demo.observations]
-            exp.export_to_json(dirname_raw + "/raw_demo_{}.json".format(unique_filename), raw_data)
+            export_to_json(dirname_raw + "/raw_demo_{}.json".format(unique_filename), raw_data)
         for idx, demo in enumerate(self.labeled_demos):
             unique_filename = str(uuid.uuid4())
             raw_data = [obs.data for obs in demo.observations]
-            exp.export_to_json(dirname_labeled + "/labeled_demo_{}.json".format(unique_filename), raw_data)
+            export_to_json(dirname_labeled + "/labeled_demo_{}.json".format(unique_filename), raw_data)
 
     def _command_callback(self, msg):
         self.command = msg.data
@@ -478,7 +474,6 @@ class FeedbackLfDStudyController():
                 self._clear_command()
 
     def save_trial_data(self):
-        exp = DataExporter()
         dirname_raw = './' + self.output_directory + '/raw'
         if not os.path.exists(dirname_raw):
             os.makedirs(dirname_raw)
@@ -490,11 +485,11 @@ class FeedbackLfDStudyController():
         for idx, demo in enumerate(self.raw_demos):
             unique_filename = str(uuid.uuid4())
             raw_data = [obs.data for obs in demo.observations]
-            exp.export_to_json(dirname_raw + "/raw_demo_{}.json".format(unique_filename), raw_data)
+            export_to_json(dirname_raw + "/raw_demo_{}.json".format(unique_filename), raw_data)
         for idx, demo in enumerate(self.labeled_demos):
             unique_filename = str(uuid.uuid4())
             raw_data = [obs.data for obs in demo.observations]
-            exp.export_to_json(dirname_labeled + "/labeled_demo_{}.json".format(unique_filename), raw_data)
+            export_to_json(dirname_labeled + "/labeled_demo_{}.json".format(unique_filename), raw_data)
 
     def _command_callback(self, msg):
         self.command = msg.data

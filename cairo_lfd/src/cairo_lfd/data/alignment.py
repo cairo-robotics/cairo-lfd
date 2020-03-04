@@ -9,7 +9,7 @@ from fastdtw import fastdtw
 from scipy.spatial.distance import euclidean
 
 
-class DemonstrationAligner(object):
+class DemonstrationAlignment(object):
 
     """
     Demonstration aligning class to align demonstrations, ensuring uniform constraint transitions across 
@@ -35,7 +35,7 @@ class DemonstrationAligner(object):
         """
         Alignment is performed using the FastDTW algorithm. It first separates trajectories that are constraint
         annotated, and aligns those first. Secondly, arbitrarily uses one of those trajectories as a reference
-        against which to align all the remaining trajectories captured during demonstrations. If there are no 
+        against which to align all the remaining trajectories captured during demonstrations.
 
         Returns
         -------
@@ -55,6 +55,7 @@ class DemonstrationAligner(object):
         # Align constrained demonstrations first, else if there are none, align all the trajectories without considering
         # constraints.
         if len(constrained_demonstrations) > 0:
+            # Use the shortest demonstration as the reference. For now, this is an arbitrary alignment. 
             constrained_demonstrations.sort(key = lambda d: len(d.observations))
             reference_demo = constrained_demonstrations[0]
 

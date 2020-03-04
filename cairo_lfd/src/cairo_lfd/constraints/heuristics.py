@@ -29,7 +29,7 @@ class HeightHeuristicModel():
         else:
             raise UnfittedModelError("The heuristic model needs to be fitted to the data in order to retrieve heuristic parameters from by segmentation component.")
 
-    def assign_to_component(self, vectors):
+    def assign_to_component(self, segmentation_model, vectors):
         # using raw observations of a keyframe, assign the keyframe to the most common component id.
         predictions = self.model.predict(vectors)
         predictions_counter = Counter(predictions)

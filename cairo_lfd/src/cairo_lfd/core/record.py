@@ -17,8 +17,7 @@ from intera_motion_interface import InteractionOptions, InteractionPublisher
 
 from cairo_lfd.core.environment import Observation, Demonstration
 from cairo_lfd.data.labeling import ConstraintKeyframeLabeler
-from cairo_lfd.data.io import DataExporter
-from cairo_lfd.modeling.analysis import ConstraintAnalyzer
+from cairo_lfd.modeling.analysis import evaluate_applied_constraints, check_constraint_validity
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
 
@@ -92,7 +91,6 @@ class SawyerDemonstrationRecorder():
         self.command = ""
         self.command_sub = rospy.Subscriber("/cairo_lfd/record_commands", String, self.command_callback)
         self.environment = environment
-        self.constraint_analyzer = ConstraintAnalyzer(self.environment)
         self._setup_zero_g()
 
     def command_callback(self, data):
@@ -209,7 +207,7 @@ class SawyerDemonstrationRecorder():
             }
             observation = Observation(data)
             if self.publish_constraint_validity:
-                valid_constraints = self.constraint_analyzer.evaluate(environment.constraints, observation)[1]
+                valid_constraints = check_constraint_validity(environment.constraints, observation)[1]
                 pub = rospy.Publisher('cairo_lfd/valid_constraints', Int8MultiArray, queue_size=10)
                 msg = Int8MultiArray(data=valid_constraints)
                 pub.publish(msg)
@@ -233,7 +231,7 @@ class SawyerDemonstrationRecorder():
         for demo in demos:
             if self.constraint_trigger == 'cuff_trigger':
                 # Using the cuff trigger will cause a propagation forward of current set of applied constraints
-                self.constraint_analyzer.applied_constraint_evaluator(demo.observations)
+                evaluate_applied_constraints(demo.observations)
             elif self.constraint_trigger == 'web_trigger':
                 for observation in demo.observations:
                     observation.data["applied_constraints"] = observation.get_triggered_constraint_data()

@@ -5,7 +5,7 @@ from std_msgs.msg import String
 import intera_interface
 
 
-class CuffRecordingController(object):
+class RecordingCuffController(object):
 
     def __init__(self):
         self._navigator = intera_interface.Navigator()

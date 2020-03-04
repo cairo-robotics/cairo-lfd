@@ -14,9 +14,8 @@ class BayesianGMMSegmentModel():
         self.dimensionality = training_data.shape[1]
         self.n_components = n_components
         self.n_samples = len(training_data)
-        self._fit_model()
 
-    def _fit_model(self):
+    def fit_model(self):
         # Build model using every observation available
         X = self.training_data
         if self.n_samples < self.n_components:

@@ -6,7 +6,7 @@ import copy
 import numpy as np
 from geometry_msgs.msg import Pose
 
-from cairo_lfd.core.environment import Environment, Observation
+from cairo_lfd.core.environment import Observation
 
 
 def convert_data_to_pose(position, orientation):
@@ -40,25 +40,11 @@ def convert_data_to_pose(position, orientation):
     return pose
 
 
-class StaticRelativePositionAdapter(object):
-
-    def __init__(self, environment, static_item_id):
-        self.environment = environment
-        self.item_id = static_item_id
-
-    def transform(sample):
-        static_object_pos = self.enviroment.get_item_state_by_id(self.item_id)
-        x = static_object_pos[0] + sample[0]
-        y = static_object_pos[1] + sample[1]
-        z = static_object_pos[2] + sample[2]
-        return [x, y, z]
-
-
-class SawyerSampleConverter(object):
+class SawyerSampleConversion(object):
     """
     Converts raw samples generated from models into Observation objects.
 
-    The main goal of this class is to take samples generated from a model and ground them into a usable
+    The main purpose of this class is to take samples generated from a model and ground them into a usable
     state space for the robot. This could be converting an end-effector relative to object translation sample into the configuration space of the robot, or the pose space of the end-effector. The class is capable of running forward kinematics if needed.
 
     Attributes
@@ -67,17 +53,17 @@ class SawyerSampleConverter(object):
         SawyerMoveitInterface to help run forward kinematics.
     """
 
-    def __init__(self, interface, adapter=None):
+    def __init__(self, interface, grounded_transform=None):
         """
         Parameters
         ----------
-        interface : object
+        interface : cairo_robot_interface.base_inteface.AbstractRobotInterface
             SawyerMoveitInterface to help run forward kinematics.
         adapter : object
             An adapter class designed to take raw sample from a model and perform a transformation on the raw sample, generally to ground the object against some other object in the environment.
         """
         self.interface = interface
-        self.adapter = adapter
+        self.grounded_transform = grounded_transform
 
     def convert(self, sample, primal_observation=None, run_fk=False, normalize_quaternion=False):
         """
@@ -102,8 +88,8 @@ class SawyerSampleConverter(object):
         obsv : lfd.environment.Observation
             Observation object constructed from the converted sample.
         """
-        if self.adapter is not None:
-            sample = self.adapter.transform(sample)
+        if self.grounded_transform is not None:
+            sample = self.grounded_transform(sample)
         if run_fk is True:
             sample = self._run_foward_kinematics(sample)
         if normalize_quaternion:

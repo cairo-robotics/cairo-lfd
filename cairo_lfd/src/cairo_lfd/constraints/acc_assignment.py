@@ -12,19 +12,13 @@ from cairo_lfd.constraints.segmentation import BayesianGMMSegmentModel
 from cairo_lfd.constraints.heuristics import HeightHeuristicModel, OrientationHeuristicModel, OverUnderHeuristicModel, PerimeterHeuristicModel
 
 
-class AutoconstraintAssigner():
-
-    def __init__(self, graph, autoconstraint_builders):
-        self.graph = graph
-        self.builders = autoconstraint_builders
-
-    def assign_autoconstraints(self):
-        for node in self.graph.get_keyframe_sequence():
-            for builder in self.builders:
-                name, autoconstraints = builder.build_autoconstraint(
-                    self.graph.nodes[node])
-                if autoconstraints is not None:
-                    self.graph.nodes[node]['autoconstraints'][name] = autoconstraints
+def assign_autoconstraints(self, graph, autoconstraint_builders):
+    for node in self.graph.get_keyframe_sequence():
+        for builder in self.builders:
+            name, autoconstraints = builder.build_autoconstraint(
+                self.graph.nodes[node])
+            if autoconstraints is not None:
+                self.graph.nodes[node]['autoconstraints'][name] = autoconstraints
 
 
 class AutoconstraintFactory():
@@ -69,6 +63,7 @@ class AutoconstraintFactory():
                 X = vectorizor(demonstrations)
                 segmentation_model = builder_config["segmentation_model"](
                     X, **builder['segmentation']['init_args'])
+                segmentation_model.fit()
                 heuristic_model = builder_config["heuristic_model"](
                     segmentation_model)
             else:

@@ -74,7 +74,7 @@ Code modified from Dan Koral's arvr_device package: https://github.com/cu-ironla
 '''
 
 
-class FixedTransformManager(object):
+class ARVRFixedTransform(object):
     def __init__(self, name, origin_translation, origin_rotation, selector_matrix):
         """
         :type name: str
@@ -155,7 +155,7 @@ class AR4LfDMiddleware(object):
         """
 
         # Create transform manager (position and axes hardcoded for now)
-        self.transform_manager = FixedTransformManager("hololens", Vector3(1.15, 0.0, -0.2632),
+        self.transform_manager = ARVRFixedTransform("hololens", Vector3(1.15, 0.0, -0.2632),
                                                        Quaternion(0.0, 0.0, 1.0, 0.0), [[0, 0, 1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1]])
 
         # Initialize Publishers

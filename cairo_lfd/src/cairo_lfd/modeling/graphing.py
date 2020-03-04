@@ -82,7 +82,7 @@ class KeyframeGraph(MultiDiGraph):
         np_array = np.array(np_array)
         self.nodes[node]["model"].fit(np_array)
 
-    def _identify_primal_observations(self, observation_vectorizor):
+    def identify_primal_observations(self, observation_vectorizor):
         for node in self.nodes():
             np_array = []
             best_obs = None

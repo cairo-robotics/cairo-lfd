@@ -499,7 +499,8 @@ class FeedbackLfDStudyController():
         parsed_data = {}
         for node, data in unity_json_data.items():
             parsed_data[int(node)] = {"applied_constraints": [int(value) for value in data["applied_constraints"] if "applied_constraints" in data.keys()]}
-        self.lfd_model.model_update(parsed_data)
+        # TODO need to update lfd_model to accept an append command
+        self.lfd_model.model_update(parsed_data) 
         # Sample and refit existing keyframe models.
         self.lfd_model.sample_keyframes(self.lfd_model.settings.get("number_of_samples", .025))
 

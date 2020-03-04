@@ -1,61 +1,42 @@
 """
 The module sampling.py contains classes for sampling and ranking points from Keyframe models.
 """
-import numpy as np
 import rospy
+import numpy as np
+from scipy.spatial.distance import euclidean
 
-from cairo_lfd.data.processing import EuclideanDistanceMixin
+from cairo_lfd.modeling.analysis import check_constraint_validity, check_state_validity
 
 
-class KeyframeSampler():
+class KeyframeModelSampler():
     """
     Sampling class that uses a keyframe's model to sample points.
 
     Attributes
     ----------
-    analyzer : object
-        Analysis object that evaluates sampled points for their validity (constraint satisfcation).
     data_converter : func
         Function to convert a raw sample into an Observation object for use by the analyzer.
     """
-    def __init__(self, analyzer, data_converter, robot_interface):
+    def __init__(self, sample_converter, robot_interface):
         """
         Parameters
         ----------
-        analyzer : ConstraintAnalyzer
-            Evaluates sampled points for their validity (constraint satisfcation).
-        data_converter : func
-            Function to convert a raw sample into an Observation object for use by the analyzer.
+        data_converter : SawyerSampleConverter
+            Object that manipulates a raw sample into an Observation object.
         """
-        self.analyzer = analyzer
-        self.converter = data_converter
-        self.interface = robot_interface
+        self.sample_converter = sample_converter
+        self.robot_interface = robot_interface
 
-    def generate_raw_samples(self, model, num_of_samples):
+    def sample(self, environment, model, primal_observation, constraints, n=100):
         """
         Parameters
         ----------
         model : object
             Model object used to generate raw samples.
-        num_of_samples : int
-            Number of samples to generate.
-
-        Returns
-        -------
-        raw_samples : list
-            List of raw samples generated from the model.
-        """
-        raw_samples = model.generate_samples(num_of_samples)
-        return raw_samples
-
-    def generate_n_valid_samples(self, model, primal_observation, constraints, n=100):
-        """
-        Parameters
-        ----------
-        model : object
-            Model object used to generate raw samples.
-        constraint_ids : list
-            List of constraint IDs required for validity.
+        primal_observation : Observation
+            The most representative observation of the keyframe from which to derive all other metadata.
+        constraints : list
+            List of Constraint object on which to validate the sample for constraint validity.
         n : int
             Number of valid samples to generate.
 
@@ -71,42 +52,16 @@ class KeyframeSampler():
             attempts += 1
             if attempts >= n * 10:
                 break
-            samples = self.generate_raw_samples(model, 1)
+            samples = model.generate_samples(1)
             if len(samples) > 0:
                 sample = samples[0]
-                observation = self.converter.convert(sample, primal_observation, run_fk=True)
-                occlusion_free = self.evaluate_keyframe_occlusion(observation)
-                constraint_valid, matched_ids = self.analyzer.evaluate(constraints, observation)
+                observation = self.sample_converter.convert(sample, primal_observation, run_fk=True)
+                occlusion_free = check_state_validity(observation, self.robot_interface)
+                constraint_valid, matched_ids = check_constraint_validity(environment, constraints, observation)
                 validated_set = validated_set.union(set(matched_ids))
                 if constraint_valid and occlusion_free:
                     valid_samples.append(sample)
         return attempts, valid_samples, validated_set
-
-    def evaluate_keyframe_occlusion(self, observation):
-        """
-        Evaluates a given list of keyframe observations for occlusion using the interface's check_point_validity()
-        function.
-
-        Parameters
-        ----------
-        keyframe_observations : list
-           List of keyframe observations to evaluate. Expects Observation objects.
-
-        Returns
-        -------
-        (free_observations, occluded_observations) : tuple
-            A tuple containing a list of free observations as the first element and a list of occluded observations as the second element.
-        """
-
-        joints = observation.get_joint_angle()
-        if joints is None:
-            observation.data["robot"]["joints"] = self.interface.get_pose_IK_joints(observation.get_pose_list())
-        if type(joints) is not list:
-            joints = joints.tolist()
-        if not self.interface.check_point_validity(self.interface.create_robot_state(joints)):
-            return False
-        else:
-            return True
 
 
 class AutoconstraintSampler():
@@ -144,7 +99,7 @@ class AutoconstraintSampler():
         return [self.autoconstraint_dict[name_id[0]].constraints[name_id[1]] for name_id in self.current_set]
 
 
-class ModelScoreSampleRanker():
+class ModelScoreRanking():
 
     def rank(self, model, samples):
         """
@@ -175,7 +130,7 @@ class ModelScoreSampleRanker():
         return rank_sorted_sampled
 
 
-class ConfigurationSpaceSampleRanker(EuclideanDistanceMixin):
+class ConfigurationSpaceRanking():
 
     def rank(self, model, samples, prior_sample):
         """
@@ -199,7 +154,7 @@ class ConfigurationSpaceSampleRanker(EuclideanDistanceMixin):
             array.append(sample)
         np_array = np.array(array)
 
-        distances = np.array([self._euclidean(prior_sample, sample) for sample in samples])
+        distances = np.array([euclidean(prior_sample, sample) for sample in samples])
         order = np.argsort(distances)
         distances = distances[order]
         samples = np_array[order]

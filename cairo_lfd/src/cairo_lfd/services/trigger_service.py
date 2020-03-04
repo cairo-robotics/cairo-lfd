@@ -1,7 +1,7 @@
 from functools import partial
 
 import rospy
-from std_msgs.msg import Bool
+from std_msgs.msg import Int8MultiArray
 from cairo_lfd_msgs.srv import ConstraintWebTrigger, ConstraintWebTriggerRequest, ConstraintWebTriggerResponse
 
 
@@ -10,10 +10,8 @@ class ConstraintWebTriggerClient():
         self.ns = service_name
         # TODO reconnect logic since we're using persistent connection
         self.service = rospy.ServiceProxy(self.ns, ConstraintWebTrigger, persistent=True)
-        rospy.loginfo("Connecting to Constraint Trigger service.")
         try:
             rospy.wait_for_service(self.ns, 20)
-            rospy.loginfo("Connected to Constraint Trigger service")
         except (rospy.ServiceException, rospy.ROSException), e:
             rospy.logerr("Service call failed: %s" % (e,))
             return False
@@ -21,10 +19,10 @@ class ConstraintWebTriggerClient():
     def close(self):
         self.service.close()
 
-    def call(self, constraint_name):
+    def call(self, constraint_id):
 
         req = ConstraintWebTriggerRequest()
-        req.constraint_name = constraint_name
+        req.constraint_id = constraint_id
 
         try:
             rospy.wait_for_service(self.ns, 5.0)
@@ -42,7 +40,7 @@ class ConstraintWebTriggerClient():
 class ConstraintWebTriggerService():
     """
     Class that creates a ROS service to handle incoming calls to calculate
-    transformations from one frame to another. 
+    transformations from one frame to another.
 
     Attributes
     ----------
@@ -56,27 +54,16 @@ class ConstraintWebTriggerService():
         service_name : str
             The ROS Service proxy object
         """
-        self.constraint_states = constraint_states if constraint_states is not None else {
-            "orientation_constraint": False,
-            "height_constraint": False,
-            "over_under_constraint": False,
-            "perimeter_constraint": False
-        }
+        self.triggered_constraints = []
         self.service_name = service_name
 
-    def callback(self, data, topic):
-        self.constraint_states[topic] = data.data
-        rospy.logerr(self.constraint_states)
-
-    def build_subscribers(self):
-        subscribers = []
-        for topic in self.constraint_states.keys():
-            subscribers.append(rospy.Subscriber(topic, Bool, self.callback, callback_args=topic))
-        return subscribers
+    def triggered_callback(self, msg):
+        print(msg)
+        self.triggered_constraints = msg.data
 
     def get_state(self, req):
         """
-        Function to lookup transform given a TransformLookupRequest
+        Function to whether or not a given constraint has been triggered via the web-based interface.
 
         Parameters
         ----------
@@ -86,18 +73,18 @@ class ConstraintWebTriggerService():
         Returns
         -------
         res : ConstraintTriggerServiceResponse
-            The response indicting the triggered status for the requested constraint name.
+            The response indicting the triggered status for the requested constraint id.
         """
         resp = ConstraintWebTriggerResponse()
-        resp.status = self.constraint_states[req.constraint_name]
-        return resp     
+        print(req.constraint_id, self.triggered_constraints)
+        resp.status = True if req.constraint_id in self.triggered_constraints else False
+        return resp
 
     def start_server(self):
         """
         Initiates/starts the Constraint Web Trigger service
         """
-        rospy.loginfo("Server started")
-        subscribers = self.build_subscribers()
+        subscribers = rospy.Subscriber("cairo_lfd/triggered_constraints", Int8MultiArray, self.triggered_callback)
         s = rospy.Service(self.service_name, ConstraintWebTrigger, self.get_state)
         rospy.loginfo("{} service running...".format(self.service_name))
         rospy.spin()

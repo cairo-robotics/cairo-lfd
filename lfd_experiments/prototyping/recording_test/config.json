@@ -46,19 +46,27 @@
     ],
      "triggers":[
         {
-            "class": "SawyerCuffButtonTrigger",
+            "class": "WebTrigger",
             "init_args":
                 {
                     "constraint_id": 1,
-                    "cuff_button": "right_button_square"
+                    "constraint_name": "orientation_constraint"
                 }
         },
         {
-            "class": "SawyerCuffButtonTrigger",
+            "class": "WebTrigger",
             "init_args":
                 {
                     "constraint_id": 2,
-                    "cuff_button": "right_button_circle"
+                    "constraint_name": "height_constraint"
+                }
+        },
+        {
+            "class": "WebTrigger",
+            "init_args":
+                {
+                    "constraint_id": 3,
+                    "constraint_name": "over_under_constraint"
                 }
         }
     ],

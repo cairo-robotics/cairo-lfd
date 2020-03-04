@@ -6,16 +6,16 @@ import rospy
 
 import intera_interface
 
-from predicate_classification.pose_classifiers import height, orientation, over_under
+from predicate_classification.pose_classifiers import planar, twist, over_under, cone
 from predicate_classification.path_classifiers import perimeter_2D
 from cairo_lfd.data.conversion import convert_data_to_pose
 
 
-class HeightConstraint(object):
+class PlanarConstraint(object):
     """
-    HeightConstraint class to evaluate the height predicate classifier assigned to a given item.
+    PlanarConstraint class to evaluate the planar predicate classifier assigned to a given item.
 
-    height() returns true if object distance from reference_height is greater than threshold distnace.
+    planar() returns true if object distance from reference_height is greater than threshold distnace.
 
         A positive threshold distance mean height above
 
@@ -33,7 +33,7 @@ class HeightConstraint(object):
         The distance from reference (positive: above; negative; below) to compare an object's distance
         from reference.
     """
-    def __init__(self, constraint_id, item_id, reference_height, threshold_distance, direction="positive", axis="z"):
+    def __init__(self, constraint_id, item_id, reference_position, threshold_distance, direction="positive", axis="z"):
 
         """
         These arguments should be in the "init_args" field of the config.json file's entry representing
@@ -46,8 +46,8 @@ class HeightConstraint(object):
             of a metaconstraint ('height', 0) for sampling purposes.
         item_id : int
             Id of the item on which the constraint can be applied.
-        reference_height : int
-            The reference or starting height to compare an objects height distance against the threshold_distance.
+        reference_position : int
+            The reference or starting position to compare an objects height distance against the threshold_distance along the given axis.
         threshold_distance : int
             The distance from reference (positive: above; negative; below) to compare an object's distance from reference.
         direction : str
@@ -58,7 +58,7 @@ class HeightConstraint(object):
 
         self.id = constraint_id
         self.item_id = item_id
-        self.reference_height = reference_height
+        self.reference_position = reference_position
         self.threshold_distance = threshold_distance
         self.direction = direction
         self.axis = axis
@@ -89,18 +89,17 @@ class HeightConstraint(object):
             item_data = observation.get_item_data(self.item_id)
             item_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
 
-        return height(item_pose, self.reference_height, self.threshold_distance, direction=self.direction, axis=self.axis)
+        return planar(item_pose, self.reference_position, self.threshold_distance, direction=self.direction, axis=self.axis)
 
     def __repr__(self):
-        return "HeightConstraint({})".format(self.__dict__)
+        return "PlanarConstraint({})".format(self.__dict__)
 
 
-class OrientationConstraint(object):
+class ConeConstraint(object):
     """
-    Orientation Constraint class to evaluate the orientation predicate classifier assigned to a given item.
+    The ConeConstraint class evaluates the orientation predicate classifier assigned to a given item.
 
-    orientation() returns true if object distance is within a threshold angle from its defined orientation,
-    pivoting around a given axis.
+    orientation() returns true if object's orientation is within a cone centered around a given axis and with a threshold angle dead center in that cone. 
 
     Attributes
     ----------
@@ -114,7 +113,83 @@ class OrientationConstraint(object):
     axis : int
         The axis from which angle of deviation is calculated.
     """
-    def __init__(self, constraint_id, item_id, threshold_angle, axis='z', reference_orientation=None):
+    def __init__(self, constraint_id, item_id, threshold_angle, reference_orientation=None):
+        """
+        These arguments should be in the "init_args" field of the config.json file's entry representing this constraint.
+
+        Parameters
+        ----------
+        constraint_id : int/tuple
+            Id of the constraint as defined in the config.json file. Can be a tuple when used within the context
+            of a metaconstraint ('orientation', 0) for sampling purposes.
+        item_id : int
+            Id of the item on which the constraint can be applied.
+        threshold_angle : int
+            The angle within which the assigned item's (from item_id) current orientation must be compared with its defined upright position.
+        reference_orientation : list
+            The x, y, z, w values of the orientation that should be used as the upright orientation rather than grabbing orientation assigned to the item.
+        """
+        self.id = constraint_id
+        self.item_id = item_id
+        self.threshold_angle = threshold_angle
+        self.reference_orientation = reference_orientation
+
+    def evaluate(self, environment, observation):
+        """
+        This function evaluates an observation for the assigned constraint of the class. It differentiates
+        between Sawyer (end-effector) and general items (blocks etc,.).
+
+        Parameters
+        ----------
+        environment : Environment
+            The Environment object containing the current demonstrations environment (SawyerRobot, Items, Constraints)
+            and helper methods.
+
+        observation : Observation
+            The observation to evaluate for the constraint.
+
+        Returns
+        -------
+         : int
+            Integer value of constraint evaluation for the associate constraint and item.
+        """
+        if self.item_id == environment.get_robot_info()["id"]:
+            item_data = observation.get_robot_data()
+            item_info = environment.get_robot_info()
+        else:
+            item_data = observation.get_item_data(self.item_id)
+            item_info = environment.get_item_info(self.item_id)
+
+        current_pose = convert_data_to_pose(item_data["position"], item_data["orientation"])
+        if self.reference_orientation is None:
+            upright_pose = convert_data_to_pose(item_info["reference_pose"]["position"], item_info["reference_pose"]["orientation"])
+        else:
+            upright_pose = convert_data_to_pose([0, 0, 0], self.reference_orientation)
+        return cone(upright_pose, current_pose, self.threshold_angle)
+
+    def __repr__(self):
+        return "ConeConstraint({}, {}, {}, {}, {})".format(self.id, self.item_id, self.threshold_angle, self.reference_orientation)
+
+
+class OrientationConstraint(object):
+    """
+    The ConeConstraint class evaluates the orientation predicate classifier assigned to a given item.
+
+    orientation() returns true if object's orientation is within a cone centered around a given axis and with a threshold angle dead center in that cone.
+
+    Attributes
+    ----------
+    id : int
+        Id of the constraint as defined in the config.json file.
+    item_id : int
+        Id of the item on which the constraint can be applied.
+     threshold_angle : int
+        The angle within which the assigned item's (from item_id) current orientation must be compared with its
+        defined upright position.
+    axis : int
+        The axis from which angle of deviation is calculated.
+    """
+    def __init__(self, constraint_id, item_id, threshold_angle, axis="z", reference_orientation=None):
         """
         These arguments should be in the "init_args" field of the config.json file's entry representing this constraint.
 
@@ -170,7 +245,12 @@ class OrientationConstraint(object):
             upright_pose = convert_data_to_pose(item_info["upright_pose"]["position"], item_info["upright_pose"]["orientation"])
         else:
             upright_pose = convert_data_to_pose([0, 0, 0], self.reference_orientation)
-        return orientation(upright_pose, current_pose, self.threshold_angle, self.axis)
+        cone_eval = cone(upright_pose, current_pose, self.threshold_angle, self.axis)
+        twist_eval = twist(upright_pose, current_pose, self.threshold_angle, self.axis)
+        if cone_eval and twist_eval:
+            return 1
+        else:
+            return 0
 
     def __repr__(self):
         return "OrientationConstraint({}, {}, {}, {}, {})".format(self.id, self.item_id, self.threshold_angle, self.axis, self.reference_orientation)
@@ -197,7 +277,7 @@ class OverUnderConstraint(object):
     axis : str
         The axis from which angle of deviation is calculated.
     """
-    def __init__(self, constraint_id, above_item_id, below_item_id, threshold_distance, axis):
+    def __init__(self, constraint_id, above_item_id, below_item_id, threshold_distance, axis, reference_pose=None):
 
         """
         These arguments should be in the "init_args" field of the config.json file's entry representing
@@ -217,12 +297,15 @@ class OverUnderConstraint(object):
             from reference.
         axis : str
             The axis from which angle of deviation is calculated.
+        reference_pose : dict
+            Dictionary of position and orientation.
         """
         self.id = constraint_id
         self.above_item_id = above_item_id
         self.below_item_id = below_item_id
         self.threshold_distance = threshold_distance
         self.axis = str(axis)
+        self.reference_pose = reference_pose
 
     def evaluate(self, environment, observation):
         """
@@ -243,6 +326,17 @@ class OverUnderConstraint(object):
          : int
             Integer value of constraint evaluation for the height constraint.
         """
+        if self.reference_pose is None:
+            above_pose, below_pose = self._get_poses(environment, observation)
+        else:
+            above_pose, below_pose = self._get_poses_with_reference(environment, observation)
+
+        return over_under(above_pose, below_pose, self.threshold_distance, axis=self.axis)
+
+    def __repr__(self):
+        return "OverUnderConstraint({}, {}, {}, {}, {})".format(self.id, self.above_item_id, self.below_item_id, self.threshold_distance, self.axis)
+
+    def _get_poses(self, environment, observation):
         if self.above_item_id == int(environment.get_robot_info()["id"]):
             above_data = observation.get_robot_data()
             above_pose = convert_data_to_pose(above_data["position"], above_data["orientation"])
@@ -258,10 +352,18 @@ class OverUnderConstraint(object):
             above_pose = convert_data_to_pose(above_data["position"], above_data["orientation"])
             below_data = observation.get_item_data(self.below_item_id)
             below_pose = convert_data_to_pose(below_data["position"], below_data["orientation"])
-        return over_under(above_pose, below_pose, self.threshold_distance, axis=self.axis)
+        return above_pose, below_pose
 
-    def __repr__(self):
-        return "OverUnderConstraint({}, {}, {}, {}, {})".format(self.id, self.above_item_id, self.below_item_id, self.threshold_distance, self.axis)
+    def _get_poses_with_reference(self, environment, observation):
+        if self.above_item_id == int(environment.get_robot_info()["id"]):
+            above_data = observation.get_robot_data()
+            above_pose = convert_data_to_pose(above_data["position"], above_data["orientation"])
+            below_pose = convert_data_to_pose(self.reference_pose["position"], self.reference_pose["orientation"])
+        else:
+            above_data = observation.get_item_data(self.above_item_id)
+            above_pose = convert_data_to_pose(above_data["position"], above_data["orientation"])
+            below_pose = convert_data_to_pose(self.reference_pose["position"], self.reference_pose["orientation"])
+        return above_pose, below_pose
 
 
 class Perimeter2DConstraint(object):
@@ -384,8 +486,9 @@ class ConstraintFactory(object):
         """
         self.configs = configs
         self.constraint_classes = {
+            "ConeConstraint": ConeConstraint,
             "OrientationConstraint": OrientationConstraint,
-            "HeightConstraint": HeightConstraint,
+            "PlanarConstraint": PlanarConstraint,
             "OverUnderConstraint": OverUnderConstraint,
             "Perimeter2DConstraint": Perimeter2DConstraint
         }

@@ -8,8 +8,8 @@ import select
 from intera_interface import CHECK_VERSION
 from intera_core_msgs.msg import InteractionControlCommand
 from geometry_msgs.msg import Pose
+from std_msgs.msg import Int8MultiArray, String
 from intera_motion_interface import InteractionOptions, InteractionPublisher
-from cairo_lfd.core.record import SawyerRecorder
 from cairo_lfd.core.environment import Environment, Observation
 from cairo_lfd.core.items import ItemFactory
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory
@@ -92,7 +92,15 @@ def main():
             "triggered_constraints": environment.check_constraint_triggers()
         }
         observation = Observation(data)
+        print "Position: " + str(data["robot"]["position"])
+        print "Orientation: " + str(data["robot"]["orientation"])
+        print "Config" + str(data["robot"]["joint_angle"])
         print(constraint_analyzer.evaluate(constraints, observation))
+        print(data["triggered_constraints"])
+        valid_constraints = constraint_analyzer.evaluate(environment.constraints, observation)[1]
+        pub = rospy.Publisher('cairo_lfd/valid_constraints', Int8MultiArray, queue_size=10)
+        msg = Int8MultiArray(data=valid_constraints)
+        pub.publish(msg)
         rospy.sleep(1)
         if rospy.is_shutdown():
             return 1

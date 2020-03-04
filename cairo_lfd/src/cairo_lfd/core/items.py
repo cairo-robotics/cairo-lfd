@@ -64,8 +64,8 @@ class SawyerRobot(AbstractItem):
     ----------
     robot_id : int
             Id of robot assigned in the config.json configuration files.
-    upright_pose : dict
-       Dictionary with position and orientation fields indicating the upright orientation of the Sawyer end-effector.
+    reference_pose : dict
+       Dictionary with position and orientation fields indicating the 'correct' orientation of the Sawyer end-effector.
     _limb : object
         Intera SDK class object that provides controlling functionality of the Sawyer Robot.
     _cuff : object
@@ -82,13 +82,13 @@ class SawyerRobot(AbstractItem):
         The client that makes calls to TransformLookupServer in order to get the transformation between world_frame and child_frame
     """
 
-    def __init__(self, item_id, upright_pose, base_frame="world", child_frame="right_gripper_tip", service_name="transform_lookup_service"):
+    def __init__(self, item_id, reference_pose, base_frame="world", child_frame="right_gripper_tip", service_name="transform_lookup_service"):
         """
         Parameters
         ----------
         robot_id : int
             Id of robot assigned in the config.json configuration files.
-        upright_pose : dict
+        reference_pose : dict
            Dictionary with position and orientation fields
         base_frame : str
             The base / world frame from which to calculate the transformation to the child frame.
@@ -99,7 +99,7 @@ class SawyerRobot(AbstractItem):
         """
 
         self.id = item_id
-        self.upright_pose = upright_pose
+        self.reference_pose = reference_pose
         self._limb = intera_interface.Limb("right")
         self._cuff = intera_interface.Cuff("right")
         self._navigator = intera_interface.Navigator()
@@ -153,7 +153,7 @@ class SawyerRobot(AbstractItem):
             The info of the robot item
         """
         return {"id": self.id,
-                "upright_pose": self.upright_pose
+                "upright_pose": self.reference_pose
                 }
 
     def _get_transform(self):

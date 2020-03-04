@@ -40,25 +40,11 @@ def convert_data_to_pose(position, orientation):
     return pose
 
 
-class StaticRelativePositionAdapter(object):
-
-    def __init__(self, environment, static_item_id):
-        self.environment = environment
-        self.item_id = static_item_id
-
-    def transform(sample):
-        static_object_pos = self.enviroment.get_item_state_by_id(self.item_id)
-        x = static_object_pos[0] + sample[0]
-        y = static_object_pos[1] + sample[1]
-        z = static_object_pos[2] + sample[2]
-        return [x, y, z]
-
-
-class SawyerSampleConverter(object):
+class SawyerSampleConversion(object):
     """
     Converts raw samples generated from models into Observation objects.
 
-    The main goal of this class is to take samples generated from a model and ground them into a usable
+    The main purpose of this class is to take samples generated from a model and ground them into a usable
     state space for the robot. This could be converting an end-effector relative to object translation sample into the configuration space of the robot, or the pose space of the end-effector. The class is capable of running forward kinematics if needed.
 
     Attributes

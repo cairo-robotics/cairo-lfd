@@ -348,7 +348,7 @@ class CC_LFD():
             cur_joints = cur_sample.get_joint_angle()
             next_joints = next_sample.get_joint_angle()
 
-            Build and publish node data
+            # Build and publish node data
             time_msg = NodeTime()
             time_msg.cur_node = int(cur_node)
             time_msg.next_node = int(next_node)

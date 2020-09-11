@@ -56,3 +56,4 @@ coverage.xml
 
 # Quick testing/prototyping
 testing/
+.vscode/

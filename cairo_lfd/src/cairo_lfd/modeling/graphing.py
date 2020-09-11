@@ -97,19 +97,19 @@ class KeyframeGraph(MultiDiGraph):
             self.nodes[node]["primal_observation"] = best_obs
 
 
-class ObservationClusterer():
+class KeyframeClustering():
     """
-    Clusters together observations by keyframe ID and gathers pertinent information regarding each keyframe. This will
+    Cluster observations by keyframe ID and gathers pertinent information regarding each keyframe. This will
     be used by a KeyframeGraph object to build nodes, each of which represent a keyframe.
     """
-    def generate_clusters(self, demonstrations):
+    def get_clusters(self, demonstrations):
         """
         Generates clustered Observations from a list of Demonstrations with labeled observations.
 
         Parameters
         ----------
         demonstrations : list
-            List of the Demonstration objects from which labeled Observations.
+            List of the Demonstration objects from which to cluster labeled observations according to labeled id.
 
         Returns
         -------
@@ -126,6 +126,7 @@ class ObservationClusterer():
             self._assign_keyframe_type(cluster)
             self._assign_applied_constraints(cluster)
         return clusters
+
 
     def _cluster_observations_by_id(self, observations):
         """

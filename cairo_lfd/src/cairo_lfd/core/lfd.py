@@ -9,7 +9,7 @@ from cairo_lfd.data.conversion import SawyerSampleConversion
 from cairo_lfd.data.vectorization import get_observation_joint_vector
 from cairo_lfd.constraints.acc_assignment import assign_autoconstraints, AutoconstraintFactory
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory
-from cairo_lfd.modeling.graphing import ObservationClusterer, KeyframeGraph
+from cairo_lfd.modeling.graphing import KeyframeClustering, KeyframeGraph
 from cairo_lfd.modeling.models import KDEModel
 from cairo_lfd.modeling.sampling import KeyframeModelSampler, ModelScoreRanking, ConfigurationSpaceRanking, AutoconstraintSampler
 from cairo_lfd.modeling.analysis import get_culling_candidates, check_constraint_validity, check_state_validity
@@ -32,13 +32,13 @@ class ACC_LFD():
 
     def build_keyframe_graph(self, demonstrations, bandwidth, vectorizor=None):
         self.graph = KeyframeGraph()
-        cluster_generator = ObservationClusterer()
+        keyframe_clustering = KeyframeClustering()
 
         """
         Generate clusters using labeled observations, build the models, graphs, and attributes for each
         cluster in the KeyFrameGraph
         """
-        clusters = cluster_generator.generate_clusters(demonstrations)
+        clusters = keyframe_clustering.get_clusters(demonstrations)
         for cluster_id in clusters.keys():
             self.graph.add_node(cluster_id)
             self.graph.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
@@ -60,6 +60,7 @@ class ACC_LFD():
         else:
             self.graph.fit_models(get_observation_joint_vector)
         self.graph.identify_primal_observations(get_observation_joint_vector)
+
 
     def generate_autoconstraints(self, demonstrations):
         rospy.loginfo("Building autoconstraints.")
@@ -212,13 +213,13 @@ class CC_LFD():
 
     def build_keyframe_graph(self, demonstrations, bandwidth):
         self.graph = KeyframeGraph()
-        cluster_generator = ObservationClusterer()
+        keyframe_clustering = KeyframeClustering()
 
         """
         Generate clusters using labeled observations, build the models, graphs, and attributes for each
         cluster in the KeyFrameGraph
         """
-        clusters = cluster_generator.generate_clusters(demonstrations)
+        clusters = keyframe_clustering.get_clusters(demonstrations)
         for cluster_id in clusters.keys():
             self.graph.add_node(cluster_id)
             self.graph.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
@@ -402,13 +403,13 @@ class LFD():
 
     def build_keyframe_graph(self, demonstrations, bandwidth):
         self.graph = KeyframeGraph()
-        cluster_generator = ObservationClusterer()
+        keyframe_clustering = KeyframeClustering()
 
         """
         Generate clusters using labeled observations, build the models, graphs, and attributes for each
         cluster in the KeyFrameGraph
         """
-        clusters = cluster_generator.generate_clusters(demonstrations)
+        clusters = keyframe_clustering.get_clusters(demonstrations)
         for cluster_id in clusters.keys():
             self.graph.add_node(cluster_id)
             self.graph.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]

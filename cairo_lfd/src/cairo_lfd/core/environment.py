@@ -408,7 +408,7 @@ class Observation(object):
 
     def get_keyframe_info(self):
         """
-        send back tuple of keyframe num and type
+        Returns back the keyframe id and type as a tuple.
 
         Returns
         -------

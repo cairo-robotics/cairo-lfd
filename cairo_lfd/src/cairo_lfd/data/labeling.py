@@ -41,10 +41,13 @@ class ConstraintKeyframeLabeler():
 
     def label_demonstrations(self, divisor=20, keyframe_window_size=8):
         """
-        This function serves to take each demonstration and create a list of observations labeled with keyframe_ids.
+        This function serves to take each demonstration and create a list of observations labeled with keyframe_ids 
+        and an assocated keyframe type of either 'regular' or 'constraint_transition".
+
         For each demonstration, the function gets the observation grouping and then iteratively calls
-        _get_labeled_group() from which it extends a list using the function's returned labeled_group. This list becomes
-        the labeled_observations list of observation objects assigned to the demonstration object.
+        _get_labeled_group() from which it extends a list using that function's returned labeled_group. 
+        
+        This list becomes the labeled_observations list of observation objects assigned to the demonstration object.
 
         Parameters
         ----------
@@ -57,7 +60,7 @@ class ConstraintKeyframeLabeler():
         Returns
         -------
         demonstrations : tuple
-            Returns the classes demonstrations attribute each of which will have a new parameter assigned with a list called
+            Returns the class's 'demonstrations' attribute each of which will have a new parameter assigned with a list called
             'labeled_observations'.
         """
         rospy.loginfo("Labeling keyframe groups...")

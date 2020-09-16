@@ -16,6 +16,7 @@ from cairo_lfd.modeling.analysis import get_culling_candidates, check_constraint
 
 from cairo_lfd_msgs.msg import AppliedConstraints
 
+
 class ACC_LFD():
 
     def __init__(self, configs, modeling_settings, robot_interface):
@@ -56,11 +57,10 @@ class ACC_LFD():
                 kernel='gaussian', bandwidth=bandwidth)
         self.graph.add_path(self.graph.nodes())
         if vectorizor is not None:
-            self.graph.fit_models(vecotorizor)
+            self.graph.fit_models(vectorizor)
         else:
             self.graph.fit_models(get_observation_joint_vector)
         self.graph.identify_primal_observations(get_observation_joint_vector)
-
 
     def generate_autoconstraints(self, demonstrations):
         rospy.loginfo("Building autoconstraints.")
@@ -141,7 +141,7 @@ class ACC_LFD():
         constraints = []
         autoconstraint_attempts = 0
 
-        while autoconstraint_sampler.validate(validated_set) is False or len(samples) < min_samples:
+        while autoconstraint_sampler.validate(validated_set) is False or len(valid_samples) < min_samples:
             if autoconstraint_attempts == constraint_attempts:
                 break
             autoconstraint_attempts += 1
@@ -160,7 +160,7 @@ class ACC_LFD():
         return attempted_count, samples, matched_ids
 
     def _rank_node_valid_samples(self, node, samples, prior_sample=None):
-        model_score_ranker = ModelScoreSampleRanker()
+        model_score_ranker = ModelScoreRanking()
         configuration_ranker = ConfigurationSpaceRanking()
         # Order sampled points based on their intra-model log-likelihood if no prior sample if the first keyframe
         if prior_sample is None:
@@ -340,7 +340,7 @@ class CC_LFD():
             rospy.loginfo("")
 
         for i in range(len(self.graph.get_keyframe_sequence()) - 1):
-            
+
             # Grab nodes, samples, and joints
             cur_node = self.graph.get_keyframe_sequence()[i]
             next_node = self.graph.get_keyframe_sequence()[i + 1]
@@ -502,7 +502,7 @@ class LFD():
 
     def _rank_node_valid_samples(self, node, samples, prior_sample=None):
         model_score_ranker = ModelScoreRanking()
-        configuration_ranker = ConfigurationSpaceSampleRanker()
+        configuration_ranker = ConfigurationSpaceRanking()
         # Order sampled points based on their intra-model log-likelihood if no prior sample if the first keyframe
         if prior_sample is None:
             ranked_samples = model_score_ranker.rank(

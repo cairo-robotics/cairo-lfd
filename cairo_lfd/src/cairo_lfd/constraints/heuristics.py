@@ -29,7 +29,7 @@ class HeightHeuristicModel():
         else:
             raise UnfittedModelError("The heuristic model needs to be fitted to the data in order to retrieve heuristic parameters from by segmentation component.")
 
-    def assign_to_component(self, segmentation_model, vectors):
+    def assign_to_component(self, vectors):
         # using raw observations of a keyframe, assign the keyframe to the most common component id.
         predictions = self.model.predict(vectors)
         predictions_counter = Counter(predictions)
@@ -106,7 +106,7 @@ class OrientationHeuristicModel():
             component_id = self.assign_to_component(vectors)
             return self.parameters[component_id]
         else:
-            raise UnfittedHeuristicModel("The heuristic model needs to be fitted to the data in order to retrieve heuristic parameters for a set of vectorized observations.")
+            raise UnfittedModelError("The heuristic model needs to be fitted to the data in order to retrieve heuristic parameters for a set of vectorized observations.")
 
     def assign_to_component(self, vectors):
         # using raw observations of a keyframe, assign the keyframe to the most common component id.
@@ -196,7 +196,7 @@ class OverUnderHeuristicModel():
         if self.fitted:
             return self.over_under_heuristic(vectors)
         else:
-            raise UnfittedHeuristicModel("The heuristic model needs to be fitted to the data in order to retrieve heuristic parameters for a set of vectorized observations.")
+            raise UnfittedModelError("The heuristic model needs to be fitted to the data in order to retrieve heuristic parameters for a set of vectorized observations.")
 
     def over_under_heuristic(self, radial_distances):
         std = np.std(radial_distances)
@@ -216,6 +216,6 @@ class PerimeterHeuristicModel():
         if self.fitted:
             return None
         else:
-            raise UnfittedHeuristicModel("The heuristic model needs to be fitted to the data in order to retrieve heuristic parameters for a set of vectorized observations.")
+            raise UnfittedModelError("The heuristic model needs to be fitted to the data in order to retrieve heuristic parameters for a set of vectorized observations.")
 
 

@@ -12,6 +12,7 @@ class KeyframeGraph(MultiDiGraph):
     """
     NetworkX MultiDiGraph extended graph class for containing keyframes and their corresponding models.
     """
+
     def __init__(self):
         MultiDiGraph.__init__(self)
 
@@ -90,7 +91,8 @@ class KeyframeGraph(MultiDiGraph):
             for obsv in self.nodes[node]["observations"]:
                 vector = np.array(observation_vectorizor(obsv))
                 sample = np.array(observation_vectorizor(obsv))
-                new_score = self.nodes[node]["model"].score_samples(np.array([sample]))[0]
+                new_score = self.nodes[node]["model"].score_samples(np.array([sample]))[
+                    0]
                 if new_score > old_score:
                     best_obs = obsv
                     old_score = new_score
@@ -102,6 +104,7 @@ class KeyframeClustering():
     Cluster observations by keyframe ID and gathers pertinent information regarding each keyframe. This will
     be used by a KeyframeGraph object to build nodes, each of which represent a keyframe.
     """
+
     def get_clusters(self, demonstrations):
         """
         Generates clustered Observations from a list of Demonstrations with labeled observations.
@@ -126,7 +129,6 @@ class KeyframeClustering():
             self._assign_keyframe_type(cluster)
             self._assign_applied_constraints(cluster)
         return clusters
-
 
     def _cluster_observations_by_id(self, observations):
         """
@@ -173,7 +175,8 @@ class KeyframeClustering():
         cluster : dict
             Dictionary to assign the applied constraints..
         """
-        applied_constraints = cluster['observations'][0].get_applied_constraint_data()
+        applied_constraints = cluster['observations'][0].get_applied_constraint_data(
+        )
         cluster["applied_constraints"] = applied_constraints
 
 
@@ -193,15 +196,15 @@ class IntermediateTrajectories():
         clusters : dict
             Dictionary of groups of trajectories. The key represents the keyframe_id at which the slices of the trajectories terminate.
         """
-        id_sequence = _constraint_transition_id_sequence(demonstrations[0])
+        id_sequence = self._constraint_transition_id_sequence(demonstrations[0])
         trajectory_groups = {}
-        for keyframe_id in id_sequence:
+        for transition_id in id_sequence:
             group = []
             for demo in demonstrations:
                 trajectory_slice = []
                 for obsv in demo.labeled_observations:
                     keyframe_id, keyframe_type = obsv.get_keyframe_info()
-                    if keyframe_id != keyframe_id:
+                    if keyframe_id != transition_id:
                         trajectory_slice.append(obsv)
                     else:
                         break
@@ -217,4 +220,3 @@ class IntermediateTrajectories():
                 if keyframe_id not in sequence:
                     sequence.append(keyframe_id)
         return sequence
-

@@ -291,7 +291,10 @@ class CCLfDController():
                 self._clear_command()
             if self.command == "save":
                 rospy.loginfo("Saving subject data...")
-                self.save_trial_data()
+                if self.raw_demos != []:
+                    self.save_trial_data()
+                else:
+                    rospy.loginfo("No data to save!")
                 self._clear_command()
 
     def save_trial_data(self):
@@ -302,6 +305,9 @@ class CCLfDController():
         dirname_labeled = './' + self.output_directory + '/' + self.task + '/' + self.subject + '/labeled'
         if not os.path.exists(dirname_labeled):
             os.makedirs(dirname_labeled)
+        if self.labeled_demos == []:
+            rospy.loginfo("Labeling raw demos in order to save labeled demosntrations...")
+            self.labeled_demos = self.labeler.label(self.raw_demos)
         rospy.loginfo("Saving labeled demos to '{}/'".format(dirname_labeled))
         for idx, demo in enumerate(self.raw_demos):
             unique_filename = str(uuid.uuid4())

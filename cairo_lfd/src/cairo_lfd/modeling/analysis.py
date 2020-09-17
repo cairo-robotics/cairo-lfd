@@ -39,8 +39,8 @@ def evaluate_applied_constraints(environment, observations):
         triggered = observation.get_triggered_constraint_data()
         new = list(set(triggered) - set(prev))
         prev_constraints = [c for c in environment.constraints if c.id in prev]
-        valid, evaluated = self.evaluate(constraints=prev_constraints, observation=observation)
-        applied = list(set(evaluated).union(set(new)))
+        _, valid_ids = check_constraint_validity(environment, constraints=prev_constraints, observation=observation)
+        applied = list(set(valid_ids).union(set(new)))
         prev = applied
         observation.data["applied_constraints"] = applied
 
@@ -118,7 +118,6 @@ def get_culling_candidates(graph, automate_threshold=False, culling_threshold=10
     if len(graph.get_keyframe_sequence()) > 0:
         if automate_threshold is True:
             average_KL_divergence, std_divergence = model_divergence_stats(graph)
-            print(average_KL_divergence, std_divergence)
             prev = graph.get_keyframe_sequence()[0]
             curr = graph.successors(prev).next()
             while([x for x in graph.successors(curr)] != []):

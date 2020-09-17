@@ -50,7 +50,6 @@ class SawyerDemonstrationLabeler():
         """
         labeled_demonstrations = keyframe_labeler.label_demonstrations(self.divisor, self.window)
         # for demo in labeled_demonstrations:
-
         return labeled_demonstrations
 
 
@@ -131,10 +130,6 @@ class SawyerDemonstrationRecorder():
     def record(self):
         """
 
-        Parameters
-        ----------
-        environment: Environment
-            The Environment object of the current LfD experiment.
 
         Returns
         -------
@@ -153,7 +148,7 @@ class SawyerDemonstrationRecorder():
                 self.interaction_publisher.external_rate_send_command(self.interaction_options)
                 observations = []
                 counter = 0
-                observations = self._record_demonstration(self.environment)
+                observations = self._record_demonstration()
                 if len(observations) > 0:
                     demonstrations.append(Demonstration(observations))
             if self.command == "discard":
@@ -174,7 +169,7 @@ class SawyerDemonstrationRecorder():
         if self.processor_pipeline is not None:
             # Generates additional data
             self.processor_pipeline.process(demonstrations)
-        self._analyze_applied_constraints(demonstrations)
+        self._analyze_applied_constraints(self.environment, demonstrations)
         self._clear_command()
         return demonstrations
 
@@ -190,10 +185,10 @@ class SawyerDemonstrationRecorder():
             rospy.logwarn("No start configuration provided in your config.json file.")
         self._clear_command()
 
-    def _record_demonstration(self, environment):
+    def _record_demonstration(self):
         observations = []
         while True:
-            robot = environment.robot
+            robot = self.environment.robot
             if robot._gripper:
                 if robot._cuff.upper_button():
                     robot._gripper.open()
@@ -201,13 +196,13 @@ class SawyerDemonstrationRecorder():
                     robot._gripper.close()
             data = {
                 "time": self._time_stamp(),
-                "robot": environment.get_robot_state(),
-                "items": environment.get_item_state(),
-                "triggered_constraints": environment.check_constraint_triggers()
+                "robot": self.environment.get_robot_state(),
+                "items": self.environment.get_item_state(),
+                "triggered_constraints": self.environment.check_constraint_triggers()
             }
             observation = Observation(data)
             if self.publish_constraint_validity:
-                valid_constraints = check_constraint_validity(environment.constraints, observation)[1]
+                valid_constraints = check_constraint_validity(self.environment, self.environment.constraints, observation)[1]
                 pub = rospy.Publisher('cairo_lfd/valid_constraints', Int8MultiArray, queue_size=10)
                 msg = Int8MultiArray(data=valid_constraints)
                 pub.publish(msg)
@@ -225,13 +220,13 @@ class SawyerDemonstrationRecorder():
                 return observations
             self._rate.sleep()
 
-    def _analyze_applied_constraints(self, demos):
+    def _analyze_applied_constraints(self, environment, demos):
         # Analyze observations for constraints. If using web triggered constraints, we don't evaluate and
         # instead the applied constraints are those explicitly set by the user.
         for demo in demos:
             if self.constraint_trigger == 'cuff_trigger':
                 # Using the cuff trigger will cause a propagation forward of current set of applied constraints
-                evaluate_applied_constraints(demo.observations)
+                evaluate_applied_constraints(environment, demo.observations)
             elif self.constraint_trigger == 'web_trigger':
                 for observation in demo.observations:
                     observation.data["applied_constraints"] = observation.get_triggered_constraint_data()

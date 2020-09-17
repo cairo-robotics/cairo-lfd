@@ -257,7 +257,7 @@ class CCLfDController():
         self.subject = subject
 
     def run(self):
-        rospy.loginfo("Running the ACC LfD Experiment Controller...")
+        rospy.loginfo("Running the CC LfD Experiment Controller...")
         rospy.loginfo("This depends on two keyboard input nodes from cairo_lfd: modeling_keyboard_commands.py & recording_keyboard_commands.py")
         while self.command != "quit" and not rospy.is_shutdown():
             if self.command == "resample":

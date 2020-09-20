@@ -33,7 +33,7 @@ def main():
     args = parser.parse_args(rospy.myargv()[1:])
 
     print("Initializing node... ")
-    rospy.init_node("intermediate_trajectories")
+    # rospy.init_node("intermediate_trajectories")
     # print("Getting robot state... ")
     # rs = intera_interface.RobotEnable(CHECK_VERSION)
     # print("Enabling robot... ")
@@ -61,10 +61,15 @@ def main():
     args = parser.parse_args(rospy.myargv()[1:])
     
     inter_trajectories = IntermediateTrajectories().get_trajectories(demonstrations)
-    print(inter_trajectories)
-    print(len(inter_trajectories[13][0]))
-    print(len(inter_trajectories[13][1]))
-    print(len(inter_trajectories[13][2]))
+    print(inter_trajectories.keys())
+    print(len(inter_trajectories[27]))
+    print(len(inter_trajectories[11]))
+    print(len(inter_trajectories[27][0]))
+    print(len(inter_trajectories[27][1]))
+    print(len(inter_trajectories[11][0]))
+    print(len(inter_trajectories[11][1]))
+    print(inter_trajectories[27][0][0])
+    print(inter_trajectories[11][1][0])
 
     # for idx, demo in enumerate(demonstrations):
     #     labeled_data = [obs.data for obs in demo.observations]

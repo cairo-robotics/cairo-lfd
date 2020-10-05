@@ -211,15 +211,18 @@ class CC_LFD():
         self.environment = Environment(items=items['items'], robot=items['robots']
                                        [0], constraints=constraints, triggers=None)
 
-    def build_keyframe_graph(self, demonstrations, bandwidth):
+    def build_keyframe_graph(self, labeled_demonstrations, bandwidth):
         self.graph = KeyframeGraph()
+        self.graph['demonstrations'] = labeled_demonstrations
+        self.graph['bandiwdth'] = bandwidth
+        self.graph['intermediate_trajectories'] = IntermediateTrajectories().get_trajectories(labeled_demonstrations)
         keyframe_clustering = KeyframeClustering()
 
         """
         Generate clusters using labeled observations, build the models, graphs, and attributes for each
         cluster in the KeyFrameGraph
         """
-        clusters = keyframe_clustering.get_clusters(demonstrations)
+        clusters = keyframe_clustering.get_clusters(labeled_demonstrations)
         for cluster_id in clusters.keys():
             self.graph.add_node(cluster_id)
             self.graph.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
@@ -386,6 +389,9 @@ class CC_LFD():
     def model_update(self, update_data):
         for node, data in update_data.items():
             self.graph.nodes[node]["applied_constraints"] = data["applied_constraints"]
+
+    def serialize_out(self, location, name):
+        with file("lfd_model") as f:
 
 
 class LFD():

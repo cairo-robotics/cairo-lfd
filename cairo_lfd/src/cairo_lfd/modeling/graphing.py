@@ -182,13 +182,13 @@ class KeyframeClustering():
 
 class IntermediateTrajectories():
 
-    def get_trajectories(self, demonstrations):
+    def get_trajectories(self, labeled_demonstrations):
         """
-        Takes in a list of demonstrations on which to extract the groups of intermediate trajectores (slices from each demo) that represent intermediate trajectories leading up to a constraint transition region. 
+        Takes in a list of 'labeled' demonstrations on which to extract the groups of intermediate trajectores (slices from each demo) that represent intermediate trajectories leading up to a constraint transition region. 
 
         Parameters
         ----------
-        demonstrations : list
+        labeled_demonstrations : list
             List of the Demonstration objects.
 
         Returns
@@ -196,11 +196,12 @@ class IntermediateTrajectories():
         clusters : dict
             Dictionary of groups of trajectories. The key represents the keyframe_id at which the slices of the trajectories terminate.
         """
-        id_sequence = self._constraint_transition_id_sequence(demonstrations[0])
+        id_sequence = self._constraint_transition_id_sequence(
+            labeled_demonstrations[0])
         trajectory_groups = {}
         for transition_id in id_sequence:
             group = []
-            for demo in demonstrations:
+            for demo in labeled_demonstrations:
                 trajectory_slice = []
                 for obsv in demo.labeled_observations:
                     keyframe_id, keyframe_type = obsv.get_keyframe_info()

@@ -14,7 +14,7 @@ from cairo_lfd.constraints.segmentation import BayesianGMMSegmentModel
 from cairo_lfd.constraints.heuristics import HeightHeuristicModel, OrientationHeuristicModel, OverUnderHeuristicModel, PerimeterHeuristicModel
 
 
-def assign_autoconstraints(self, graph, autoconstraint_builders):
+def assign_autoconstraints(graph, autoconstraint_builders):
     """
     Assigns Autoconstraints generated from each of the AutoconstraintBuilders to each node in a keyframe graph.
 
@@ -25,12 +25,12 @@ def assign_autoconstraints(self, graph, autoconstraint_builders):
     autoconstraint_builders : list
         A list of AutonconstraintBuilder objects that each build a parameterized set of Autoconstraints.
     """
-    for node in self.graph.get_keyframe_sequence():
-        for builder in self.builders:
+    for node in graph.get_keyframe_sequence():
+        for builder in autoconstraint_builders:
             name, autoconstraints = builder.build_autoconstraint(
-                self.graph.nodes[node])
+                graph.nodes[node])
             if autoconstraints is not None:
-                self.graph.nodes[node]['autoconstraints'][name] = autoconstraints
+                graph.nodes[node]['autoconstraints'][name] = autoconstraints
 
 
 class AutoconstraintFactory():

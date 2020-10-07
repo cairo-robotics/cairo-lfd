@@ -12,8 +12,9 @@ class KeyframeGraph(MultiDiGraph):
     """
     NetworkX MultiDiGraph extended graph class for containing keyframes and their corresponding models.
     """
+
     def __init__(self):
-        MultiDiGraph.__init__(self)
+        super(KeyframeGraph, self).__init__()
 
     def get_keyframe_sequence(self):
         """
@@ -90,26 +91,28 @@ class KeyframeGraph(MultiDiGraph):
             for obsv in self.nodes[node]["observations"]:
                 vector = np.array(observation_vectorizor(obsv))
                 sample = np.array(observation_vectorizor(obsv))
-                new_score = self.nodes[node]["model"].score_samples(np.array([sample]))[0]
+                new_score = self.nodes[node]["model"].score_samples(np.array([sample]))[
+                    0]
                 if new_score > old_score:
                     best_obs = obsv
                     old_score = new_score
             self.nodes[node]["primal_observation"] = best_obs
 
 
-class ObservationClusterer():
+class KeyframeClustering():
     """
-    Clusters together observations by keyframe ID and gathers pertinent information regarding each keyframe. This will
+    Cluster observations by keyframe ID and gathers pertinent information regarding each keyframe. This will
     be used by a KeyframeGraph object to build nodes, each of which represent a keyframe.
     """
-    def generate_clusters(self, demonstrations):
+
+    def get_clusters(self, demonstrations):
         """
         Generates clustered Observations from a list of Demonstrations with labeled observations.
 
         Parameters
         ----------
         demonstrations : list
-            List of the Demonstration objects from which labeled Observations.
+            List of the Demonstration objects from which to cluster labeled observations according to labeled id.
 
         Returns
         -------
@@ -172,5 +175,49 @@ class ObservationClusterer():
         cluster : dict
             Dictionary to assign the applied constraints..
         """
-        applied_constraints = cluster['observations'][0].get_applied_constraint_data()
+        applied_constraints = cluster['observations'][0].get_applied_constraint_data(
+        )
         cluster["applied_constraints"] = applied_constraints
+
+
+class IntermediateTrajectories():
+
+    def get_trajectories(self, labeled_demonstrations):
+        """
+        Takes in a list of 'labeled' demonstrations on which to extract the groups of intermediate trajectores (slices from each demo) that represent intermediate trajectories leading up to a constraint transition region. 
+
+        Parameters
+        ----------
+        labeled_demonstrations : list
+            List of the Demonstration objects.
+
+        Returns
+        -------
+        clusters : dict
+            Dictionary of groups of trajectories. The key represents the keyframe_id at which the slices of the trajectories terminate.
+        """
+        id_sequence = self._constraint_transition_id_sequence(
+            labeled_demonstrations[0])
+        trajectory_groups = {}
+        for transition_id in id_sequence:
+            group = []
+            for demo in labeled_demonstrations:
+                trajectory_slice = []
+                for obsv in demo.labeled_observations:
+                    keyframe_id, keyframe_type = obsv.get_keyframe_info()
+                    if keyframe_id != transition_id:
+                        trajectory_slice.append(obsv)
+                    else:
+                        break
+                group.append(trajectory_slice)
+            trajectory_groups[keyframe_id] = group
+        return trajectory_groups
+
+    def _constraint_transition_id_sequence(self, demonstration):
+        sequence = []
+        for obsv in demonstration.labeled_observations:
+            keyframe_id, keyframe_type = obsv.get_keyframe_info()
+            if keyframe_type == "constraint_transition":
+                if keyframe_id not in sequence:
+                    sequence.append(keyframe_id)
+        return sequence

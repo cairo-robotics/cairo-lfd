@@ -1,7 +1,10 @@
 <launch>
+  <arg name="address" default="192.168.50.126"/>
+  <arg name="port" default="9090"/>
+
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
-     <arg name="address" value="192.168.50.125"/>
-     <arg name="port" value="9090"/>
+     <arg name="address" value="$(arg address)"/>
+     <arg name="port" value="$(arg port)"/>
   </include>
   <node name="web_trigger_service" pkg="cairo_lfd" type="web_trigger_service.py" respawn="true"/>
 </launch>

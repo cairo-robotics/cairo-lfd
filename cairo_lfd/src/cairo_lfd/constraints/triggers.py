@@ -162,7 +162,7 @@ class TriggerFactory(object):
         """
         target_constraint_ids = []
         triggers = []
-        for config in self.configs["triggers"]:
+        for config in self.configs:
             if config["init_args"]["constraint_id"] in target_constraint_ids:
                 rospy.logwarn("More than one trigger targets the same constraint. Is this intended?")
             target_constraint_ids.append(config["init_args"]["constraint_id"])

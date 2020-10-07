@@ -43,6 +43,7 @@ def main():
     ############################
     #  ROS Node Initialization #
     ############################
+
     print("Initializing node... ")
     rospy.init_node("recording_only")
     print("Getting robot state... ")
@@ -53,48 +54,44 @@ def main():
     ########################
     # Import Configuration #
     ########################
+
     config_filepath = args.config
     configs = import_configuration(config_filepath)
-
-    #############################
-    # Build Environment Objects #
-    #############################
-    items = ItemFactory(configs).generate_items()
-    triggers = TriggerFactory(configs).generate_triggers()
-    constraints = ConstraintFactory(configs).generate_constraints()
-    # We only have just the one robot...for now.......
-    environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints, triggers=triggers)
-
-    #####################################
-    # Raw Demonstration Data Processors #
-    #####################################
-    # Build processors and process demonstrations to generate derivative data e.g. relative position.
-    rk_processor = RelativeKinematicsProcessor(environment.get_item_ids(), environment.get_robot_id())
-    ic_processor = InContactProcessor(environment.get_item_ids(), environment.get_robot_id(), .06, .5)
-    soi_processor = SphereOfInfluenceProcessor(environment.get_item_ids(), environment.get_robot_id())
-    rp_processor = RelativePositionProcessor(environment.get_item_ids(), environment.get_robot_id())
-    wp_processor = WithinPerimeterProcessor(environment.get_item_ids(), environment.get_robot_id())
-    processor_pipeline = ProcessorPipeline([rk_processor, ic_processor, soi_processor, rp_processor, wp_processor])
-
-    ###############################################
-    # Configure the Sawyer Demonstration Recorder #
-    ###############################################
-    rec_settings = configs["settings"]["recording_settings"]
-    recorder = SawyerDemonstrationRecorder(rec_settings, environment, processor_pipeline, publish_constraint_validity=True)
-    rospy.on_shutdown(recorder.stop)
 
     #################################
     # Configure the LFD class model #
     #################################
+
     model_settings = configs["settings"]["modeling_settings"]
     moveit_interface = SawyerMoveitInterface()
     moveit_interface.set_velocity_scaling(.35)
     moveit_interface.set_acceleration_scaling(.25)
     moveit_interface.set_planner(str(model_settings["planner"]))
     cclfd = CC_LFD(configs, model_settings, moveit_interface)
+    cclfd.build_environment()
 
-    study = RecordingOnlyController(cclfd, recorder, args.output_directory)
-    study.run()
+    #####################################
+    # Raw Demonstration Data Processors #
+    #####################################
+
+    # Build processors and process demonstrations to generate derivative data e.g. relative position.
+    rk_processor = RelativeKinematicsProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
+    ic_processor = InContactProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id(), .06, .5)
+    soi_processor = SphereOfInfluenceProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
+    rp_processor = RelativePositionProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
+    wp_processor = WithinPerimeterProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
+    processor_pipeline = ProcessorPipeline([rk_processor, ic_processor, soi_processor, rp_processor, wp_processor])
+
+    ###############################################
+    # Configure the Sawyer Demonstration Recorder #
+    ###############################################
+
+    rec_settings = configs["settings"]["recording_settings"]
+    recorder = SawyerDemonstrationRecorder(rec_settings, cclfd.environment, processor_pipeline, publish_constraint_validity=True)
+    rospy.on_shutdown(recorder.stop)
+
+    recording_controller = RecordingOnlyController(cclfd, recorder, args.output_directory)
+    recording_controller.run()
 
 
 if __name__ == '__main__':

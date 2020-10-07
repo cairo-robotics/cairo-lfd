@@ -504,7 +504,7 @@ class ConstraintFactory(object):
         """
         constraint_ids = []
         constraints = []
-        for config in self.configs["constraints"]:
+        for config in self.configs:
             if config["init_args"]["constraint_id"] in constraint_ids:
                 raise ValueError(
                     "Constraints must each have a unique integer 'constraint_id'")

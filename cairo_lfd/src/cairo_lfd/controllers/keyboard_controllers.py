@@ -77,6 +77,8 @@ class ModelKeyboardController(object):
                 self.cmd_pub.publish("get_representation")
             elif user_input == "save":
                 self.cmd_pub.publish("save")
+            elif user_input == "serialize":
+                self.cmd_pub.publish("serialize")
             elif user_input == "quit":
                 self.cmd_pub.publish("quit")
 
@@ -89,5 +91,6 @@ class ModelKeyboardController(object):
               'record' - Record
               'train' - Train model with current demonstrations.
               'save' - Save the current subjects demonstrations, raw and labeled.
+              'serialize' - Serialize the lfd model.
               'quit' - Quit
               """)

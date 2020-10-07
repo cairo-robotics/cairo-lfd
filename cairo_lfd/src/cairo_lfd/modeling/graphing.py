@@ -14,7 +14,7 @@ class KeyframeGraph(MultiDiGraph):
     """
 
     def __init__(self):
-        MultiDiGraph.__init__(self)
+        super(KeyframeGraph, self).__init__()
 
     def get_keyframe_sequence(self):
         """

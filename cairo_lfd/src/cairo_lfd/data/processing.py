@@ -4,17 +4,14 @@ relative distance and velocity data is calculated via the distances of objects.
 """
 import copy
 
-import rospy
 import numpy as np
 from scipy.spatial.distance import euclidean
-
-from predicate_classification.path_classifiers import perimeter_2D
 
 from cairo_lfd.core.environment import Observation
 from cairo_lfd.data.conversion import convert_data_to_pose
 
 
-def list_window(self, elements, idx, centrality='left', window_size=4):
+def list_window(elements, idx, centrality='left', window_size=4):
     """
     Retrieves a number of elements before given index. The number shrinks if the index would make number of elements reach out of the sequence index bounds.
 

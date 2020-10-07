@@ -43,7 +43,7 @@ class DemonstrationAlignment(object):
             Returns the demonstrations each having a new parameter called aligned_observations and the constraint transitions
         """
         demonstrations = copy.deepcopy(demonstrations)
-        rospy.loginfo("Aligning demonstrations...")
+        rospy.loginfo("Performing alignment via the FastDTW algorithm...")
         if not len(demonstrations) > 1:
             raise AlignmentException("Error! You are attempting to align ONLY ONE OR ZERO demonstrations.")
 
@@ -219,15 +219,4 @@ class AlignmentException(Exception):
     """
     Base class for exceptions in this module.
     """
-    def __init__(self, expression, message):
-        """
-        Parameters
-        ----------
-        expression : str
-            Expression used by Exception parent class.
-
-        message : str
-            Message used by Exception parent class describing the issue.
-        """
-        self.expression = expression
-        self.message = message
+    pass

@@ -2,12 +2,19 @@
 
   <arg name="electric_gripper" default="true"/>
   <arg name="vrpn_server" default="desktop-ckithm9.local"/>
+  <arg name="rosbridge_address" default="192.168.50.125"/>
+  <arg name="rosbridge_port" default="9090"/>
 
 
   <node name="joint_trajectory_action_server" pkg="intera_interface" type="joint_trajectory_action_server.py" respawn="true" />
 
   <include file="$(find sawyer_moveit_config)/launch/sawyer_moveit.launch">
         <arg name="electric_gripper" value="$(arg electric_gripper)"/>
+  </include>
+
+  <include file="$(find cairo_lfd)/launch/web_trigger.launch">
+        <arg name="address" value="$(arg rosbridge_address)"/>
+        <arg name="port" value="$(arg rosbridge_port)"/>
   </include>
 
   <node name="tf_visual_tools_publisher" pkg="tf_visual_tools" type="tf_visual_tools_publisher" respawn="true"/>

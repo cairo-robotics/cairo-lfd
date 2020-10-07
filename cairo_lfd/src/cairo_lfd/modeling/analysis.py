@@ -3,272 +3,145 @@ The analysis.py module contains a variety of methods and classes used to  analyz
 and objects in the Cairo LfD ecosystem. This includes KeyframeGraphs, MotionPlans, and Constraints.
 """
 import rospy
-import numpy as np
 import copy
 
+from cairo_lfd.modeling.stats import kullbach_leibler_divergence, model_divergence_stats
 
-class KeyframeGraphAnalyzer():
+
+def evaluate_applied_constraints(environment, observations):
     """
-    Supports the analysis of a KeyframeGraph.
+    This function evaluates observations for constraints that were triggered during the demonstration.
+    It will label a demonstration's entire list of observations with the constraints that were triggered and whether or not they are still applicable.
 
-    Attributes
-    ----------
-    graph : KeyframeGraph
-       KeyframeGraph class object on which to perform analysis
-    interface : robot_interface.moveit_interface.SawyerMoveitInterface
-       Sawyer Robot interface.
-    vectorizer : function
-       Function that vectorizes Observation object.
-    """
-    def __init__(self, task_graph, sawyer_moveit_interface, observation_vectorizor):
-        """
-        Parameters
-        ----------
-        task_graph : KeyframeGraph
-           KeyframeGraph class object on which to perform analysis
-        sawyer_moveit_interface : robot_interface.moveit_interface.SawyerMoveitInterface
-           Sawyer Robot interface.
-        observation_vectorizor : function
-           Function that vectorizes Observation object.
-        """
-        self.graph = task_graph
-        self.interface = sawyer_moveit_interface
-        self.vectorizor = observation_vectorizor
+    New constraints are those where the triggered constraints are different from the previously applied constraints:
 
-    def evaluate_keyframe_occlusion(self, keyframe_observations):
-        """
-        Evaluates a given list of keyframe observations for occlusion using the interface's check_point_validity()
-        function.
+        triggered = observation.get_triggered_constraint_data()
+        new = list(set(triggered)-set(prev))
 
-        Parameters
-        ----------
-        keyframe_observations : list
-           List of keyframe observations to evaluate. Expects Observation objects.
+    The evaluated constraints are those that are still valid from the previous observation's applied constraints.
 
-        Returns
-        -------
-        (free_observations, occluded_observations) : tuple
-            A tuple containing a list of free observations as the first element and a list of occluded observations as the second element.
-        """
-        occluded_observations = []
-        free_observations = []
-        for observation in keyframe_observations:
-            joints = observation.get_joint_angle()
-            if joints is None:
-                observation.data["robot"]["joints"] = self.interface.get_pose_IK_joints(observation.get_pose_list())
-            if type(joints) is not list:
-                joints = joints.tolist()
-            if not self.interface.check_point_validity(self.interface.create_robot_state(joints)):
-                occluded_observations.append(observation)
-            else:
-                free_observations.append(observation)
-        return (free_observations, occluded_observations)
+        evaluated = evaluate(constraint_ids=prev, observation=observation)
 
-    def max_mean_ll(self, model, observation):
-        """
-        Given a set of observations, generate the mean log likelihood and max log likelihood of the set scored by a given model.
+    The current observation's applied constraints are the union of the evaluated constraints and new constraints.
 
-        Parameters
-        ----------
-        priod_model : object
-            An modeling.models class object that has a score_samples() method.
-        observations : list
-           List of keyframe observations to evaluate their score.
+         applied = list(set(evaluated).union(set(new)))
 
-        Returns
-        -------
-        (max_ll, mean_ll) : tuple
-            Returns the maximum log likelihood of scored samples as well as the average of all the sample scores.
-        """
-        vectors = []
-        for ob in observation:
-            vector = self.vectorizor(ob)
-            vectors.append(vector)
-        vectors = np.array(vectors)
-        curr_ll = model.score_samples(vectors)
-        max_ll = np.amax(curr_ll)
-        mean_ll = np.mean(curr_ll)
-        return (max_ll, mean_ll)
-
-    def cull_keyframes(self, threshold=-10000):
-        """
-        Culls consecutive keyframes sequentially until the one such keyframe's observations has an average LL is below
-        a threshold as scored by the current keyframes model.
-
-        Parameters
-        ----------
-        threshold : int
-            The threshold average log likelihood.
-        """
-        prev = self.graph.get_keyframe_sequence()[0]
-        curr = self.graph.successors(prev).next()
-        while([x for x in self.graph.successors(curr)] != []):
-            rospy.loginfo("Prev: {}; Curr: {}".format(prev, curr))
-            max_ll, mean_ll = self.max_mean_ll(self.graph.nodes[prev]["model"], self.graph.nodes[curr]["observations"])
-            if mean_ll > threshold and self.graph.nodes[curr]["keyframe_type"] != "constraint_transition":
-                rospy.loginfo("Node {} average log-likelihood of {} is above threshold of {}".format(curr, mean_ll, threshold))
-                succ = self.graph.successors(curr).next()
-                self.graph.cull_node(curr)
-                curr = succ
-                continue
-            prev = curr
-            curr = self.graph.successors(curr).next()
-
-
-class MotionPlanAnalyzer():
-    """
-    WIP: THIS CLASS IS NOT USABLE NOR COMPLETE
-    Class with methods to support the analysis of a motion plan.
-
-    Attributes
+    Parameters
     ----------
     environment : Environment
-        Environment object for the current LFD environment.
+         Environment object for the current LFD environment.
+    observations : int
+       List of observations to be evaluated for constraints.
     """
-    def __init__(self, environment):
+    rospy.loginfo("Analyzing observations for applied constraints...")
+    prev = []
+    for observation in observations:
+        triggered = observation.get_triggered_constraint_data()
+        new = list(set(triggered) - set(prev))
+        prev_constraints = [c for c in environment.constraints if c.id in prev]
+        valid, evaluated = self.evaluate(constraints=prev_constraints, observation=observation)
+        applied = list(set(evaluated).union(set(new)))
+        prev = applied
+        observation.data["applied_constraints"] = applied
 
-        """
-        Parameters
-        ----------
-        environment : Environment
-           Environment object for the current LFD environment.
-        """
-        self.environment = environment
 
-    def evaluate_plan(self, constraint_ids, plan_observations):
-        """
-        Evaluates plan observations to ensure that the constraints specified in the list of constraint ids
-        is valid throughout the entire plan. If one observation in the plan violates the constraints,
-        the plan is invalidated.
+def check_constraint_validity(environment, constraints, observation):
+    """
+    This function evaluates an observation for a set of constraints. Every constraint object
+    should have an 'evaluate()'' function that takes in the environment and the observation.
 
-        Parameters
-        ----------
-        constraint_ids : list
-            List of constraint id's to evaluate.
+    Parameters
+    ----------
+    environment : Environment
+         Environment object for the current LFD environment.
+    constraints : list
+        List of constraint objects to evaluate.
+    observation : Observation
+        The observation to evaluate for the constraints.
 
-        plan_observations : list
-            The observation to evaluate for the constraints.
+    Returns
+    -------
+    valid_ids : list
+        List of valid constraints ids evaluated for the observation.
+    valid_set : bool
+        Indicator of whether or not all constraints are valid.
+    """
+    valid_ids = [constraint.id for constraint in constraints if constraint.evaluate(environment, observation)]
+    valid_set = True if len(valid_ids) == len(constraints) else False
+    return valid_set, valid_ids
 
-        Returns
-        -------
-         : boolean
-           Returns true if the given constraints are valid throughout the entirety of the plan, false otherwise.
-        """
-        for observation in plan_observations:
-            evaluation = self.evaluate(constraint_ids, observation)
-            # print constraint_ids, evaluation
-            if constraint_ids != evaluation:
-                return False
+
+def check_state_validity(observation, robot_interface):
+    """
+    Evaluates an observations for occlusion using the a robot interface's check_point_validity()
+    function.
+
+    Parameters
+    ----------
+    observation : Observation
+       Observations to evaluate.
+    robot_interface : RobotInterface from cairo_robot_interface package
+
+    Returns
+    -------
+    : bool
+        Whether or not the observation constitutes a valid robot state.
+    """
+
+    joints = observation.get_joint_angle()
+    if joints is None:
+        observation.data["robot"]["joints"] = robot_interface.get_pose_IK_joints(observation.get_pose_list())
+    if type(joints) is not list:
+        joints = joints.tolist()
+    if not robot_interface.check_point_validity(robot_interface.create_robot_state(joints)):
+        return False
+    else:
         return True
 
-    def evaluate(self, constraint_ids, observation):
-        """
-        This function evaluates an observation for all the constraints in the list constraint_ids. It depends on
-        being able to access the constraint objects from the self.environment object. Every constraint object
-        should have an 'evaluate()'' function that takes in the environment and the observation.
 
-        Parameters
-        ----------
-        constraint_ids : list
-            List of constraint id's to evaluate.
-
-        observation : Observation
-            The observation to evaluate for the constraints.
-
-        Returns
-        -------
-        valid_constraints : list
-            Returns the list of valid constraints evaluated for the observation.
-        """
-        if constraint_ids != []:
-            valid_constraints = []
-            for constraint_id in constraint_ids:
-                constraint = self.environment.get_constraint_by_id(constraint_id)
-                result = constraint.evaluate(self.environment, observation)
-                if result == 1:
-                    valid_constraints.append(constraint_id)
-            return valid_constraints
-        else:
-            return []
-
-
-class ConstraintAnalyzer():
+def get_culling_candidates(graph, automate_threshold=False, culling_threshold=10):
     """
-    Constraint analysis class to evaluate observations for constraints.
 
-    Attributes
+    Generates candidate node ID's from a KeyframeGraph representing keyframes that are consecutively too "close" according to the automated or passed in culling threshold according the Kullbach Leibler Divergence between keyframe models.
+
+    Parameters
     ----------
-    environment : Environment
-        Environment object for the current LFD environment.
+    graph : KeyframeGraph
+        Graph from which to generate candidate keyframe
+    automate_threshold : bool
+        Indicates whether or not to use automated thresholding for culling candidacy
+    culling_threshold : int
+        The threshold value for culling if intending to pass a value manually.
     """
-    def __init__(self, environment):
-        """
-        Parameters
-        ----------
-        environment : Environment
-           Environment object for the current LFD environment.
-        """
-        self.environment = environment
+    candidate_ids = []
 
-    def applied_constraint_evaluator(self, observations):
-        """
-        This function evaluates observations for constraints that were triggered during the demonstration.
-        It will label a demonstration's entire list of observations with the constraints that were triggered and whether or not they are still applicable.
-
-        New constraints are those where the triggered constraints are different from the previously applied constraints:
-
-            triggered = observation.get_triggered_constraint_data()
-            new = list(set(triggered)-set(prev))
-
-        The evaluated constraints are those that are still valid from the previous observation's applied constraints.
-
-            evaluated = self.evaluate(constraint_ids=prev, observation=observation)
-
-        The current observation's applied constraints are the union of the evaluated constraints and new constraints.
-
-             applied = list(set(evaluated).union(set(new)))
-
-        Parameters
-        ----------
-        observations : int
-           List of observations to be evaluated for constraints.
-        """
-        rospy.loginfo("Analyzing observations for applied constraints...")
-        prev = []
-        for observation in observations:
-            triggered = observation.get_triggered_constraint_data()
-            new = list(set(triggered) - set(prev))
-            evaluated = self.evaluate(constraint_ids=prev, observation=observation)
-            applied = list(set(evaluated).union(set(new)))
-            prev = applied
-            observation.data["applied_constraints"] = applied
-
-    def evaluate(self, constraint_ids, observation):
-        """
-        This function evaluates an observation for all the constraints in the list constraint_ids. It depends on
-        being able to access the constraint objects from the self.environment object. Every constraint object
-        should have an 'evaluate()'' function that takes in the environment and the observation.
-
-        Parameters
-        ----------
-        constraint_ids : list
-            List of constraint id's to evaluate.
-
-        observation : Observation
-            The observation to evaluate for the constraints.
-
-        Returns
-        -------
-        valid_constraints : list
-            Returns the list of valid constraints evaluated for the observation.
-        """
-        if constraint_ids != []:
-            valid_constraints = []
-            for constraint_id in constraint_ids:
-                constraint = self.environment.get_constraint_by_id(constraint_id)
-                result = constraint.evaluate(self.environment, observation)
-                if result == 1:
-                    valid_constraints.append(constraint_id)
-            return valid_constraints
+    if len(graph.get_keyframe_sequence()) > 0:
+        if automate_threshold is True:
+            average_KL_divergence, std_divergence = model_divergence_stats(graph)
+            print(average_KL_divergence, std_divergence)
+            prev = graph.get_keyframe_sequence()[0]
+            curr = graph.successors(prev).next()
+            while([x for x in graph.successors(curr)] != []):
+                est_divergence = kullbach_leibler_divergence(graph.nodes[prev]["model"], graph.nodes[curr]["model"])
+                if est_divergence < average_KL_divergence and graph.nodes[curr]["keyframe_type"] != "constraint_transition":
+                    rospy.logwarn("KL estimate between nodes {} and {} is {} which below the mean divergence of {}".format(prev, curr, est_divergence, average_KL_divergence))
+                    succ = graph.successors(curr).next()
+                    candidate_ids.append(curr)
+                    curr = succ
+                    continue
+                prev = curr
+                curr = graph.successors(curr).next()
         else:
-            return []
+            prev = graph.get_keyframe_sequence()[0]
+            curr = graph.successors(prev).next()
+            while([x for x in graph.successors(curr)] != []):
+                est_divergence = kullbach_leibler_divergence(graph.nodes[prev]["model"], graph.nodes[curr]["model"])
+                if est_divergence < culling_threshold and graph.nodes[curr]["keyframe_type"] != "constraint_transition":
+                    rospy.logwarn("KL estimate between nodes {} and {} is {} which below set threshold of {}".format(prev, curr, est_divergence, culling_threshold))
+                    succ = graph.successors(curr).next()
+                    candidate_ids.append(curr)
+                    curr = succ
+                    continue
+                prev = curr
+                curr = graph.successors(curr).next()
+    return candidate_ids

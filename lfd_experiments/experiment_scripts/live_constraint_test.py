@@ -8,13 +8,14 @@ import select
 from intera_interface import CHECK_VERSION
 from intera_core_msgs.msg import InteractionControlCommand
 from geometry_msgs.msg import Pose
+from std_msgs.msg import Int8MultiArray, String
 from intera_motion_interface import InteractionOptions, InteractionPublisher
-from cairo_lfd.core.record import SawyerRecorder
-from cairo_lfd.core.environment import Environment, Observation, import_configuration
+from cairo_lfd.core.environment import Environment, Observation
 from cairo_lfd.core.items import ItemFactory
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory
+from cairo_lfd.constraints.triggers import TriggerFactory
 from cairo_lfd.modeling.analysis import ConstraintAnalyzer
-from cairo_lfd.data.io import DataExporter
+from cairo_lfd.data.io import DataExporter, import_configuration
 
 
 def main():
@@ -41,7 +42,7 @@ def main():
     args = parser.parse_args(rospy.myargv()[1:])
 
     print("Initializing node... ")
-    rospy.init_node("sdk_joint_recorder")
+    rospy.init_node("live_constraint")
     print("Getting robot state... ")
     robot_state = intera_interface.RobotEnable(CHECK_VERSION)
     print("Enabling robot... ")
@@ -70,11 +71,12 @@ def main():
     configs = import_configuration(config_filepath)
 
     items = ItemFactory(configs).generate_items()
+    triggers = TriggerFactory(configs).generate_triggers()
     constraints = ConstraintFactory(configs).generate_constraints()
     constraint_ids = [constraint.id for constraint in constraints]
     print("Constraint IDs: {}".format(constraint_ids))
     # We only have just the one robot...for now.......
-    environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints)
+    environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints, triggers=triggers)
 
     constraint_analyzer = ConstraintAnalyzer(environment)
 
@@ -90,7 +92,15 @@ def main():
             "triggered_constraints": environment.check_constraint_triggers()
         }
         observation = Observation(data)
-        print(constraint_analyzer.evaluate(constraint_ids, observation))
+        print "Position: " + str(data["robot"]["position"])
+        print "Orientation: " + str(data["robot"]["orientation"])
+        print "Config" + str(data["robot"]["joint_angle"])
+        print(constraint_analyzer.evaluate(constraints, observation))
+        print(data["triggered_constraints"])
+        valid_constraints = constraint_analyzer.evaluate(environment.constraints, observation)[1]
+        pub = rospy.Publisher('cairo_lfd/valid_constraints', Int8MultiArray, queue_size=10)
+        msg = Int8MultiArray(data=valid_constraints)
+        pub.publish(msg)
         rospy.sleep(1)
         if rospy.is_shutdown():
             return 1

@@ -8,21 +8,6 @@ from collections import OrderedDict
 from geometry_msgs.msg import Pose
 
 
-def import_configuration(filepath):
-    """
-    Wrapper function around json.load() to import a config.json file used to inform the Environment object.
-    """
-    with open(filepath) as json_data:
-        configs = json.load(json_data, object_pairs_hook=OrderedDict)
-        if "constraints" not in configs:
-            raise ConfigurationError("config.json file must contain the 'constraints' key, even if its value is an empty list.")
-        if "items" not in configs:
-            raise ConfigurationError("config.json file must contain the 'items' key, even if its value is an empty list.")
-        if "robots" not in configs:
-            raise ConfigurationError("config.json file must contain the 'robots' key, even if its value is an empty list.")
-        return configs
-
-
 class Environment(object):
     """
     Environment container class that houses various objects (items, robots, constraints) relevant to conducting 
@@ -36,8 +21,10 @@ class Environment(object):
         AbstractItem extended class object representing the robot.
     constraints : list
         List of constrain class objects representing the available constraints for the Demonstration.
+    triggers : list
+        List of trigger class objects that represent when a user has triggered a constraint.
     """
-    def __init__(self, items, robot, constraints):
+    def __init__(self, items, robot, constraints, triggers):
         """
         Parameters
         ----------
@@ -51,6 +38,7 @@ class Environment(object):
         self.items = items
         self.robot = robot
         self.constraints = constraints
+        self.triggers = triggers
 
     def get_robot_state(self):
         """
@@ -166,11 +154,11 @@ class Environment(object):
         if self.constraints is not None:
             return [constraint for constraint in self.constraints if constraint.id == constraint_id][0]
         else:
-            raise EnvironmentError("There are no items configured into the environment!")
+            raise EnvironmentError("There are no constraints configured into the environment!")
 
     def check_constraint_triggers(self):
         """
-        Checks all constraints for their trigger. A triggered constraint might be a button press on Sawyer's cuff or a natural language dictated constraint.
+        Checks all constraints for their trigger. A triggered constraint might be a button press on Sawyer's cuff, a subscribed topic listening for web interface initiated triggers etc,.
 
         Returns
         -------
@@ -178,10 +166,10 @@ class Environment(object):
           List of the id's of all the constraints currently triggered
         """
         triggered_constraints = []
-        for constraint in self.constraints:
-            result = constraint.check_trigger()
+        for trigger in self.triggers:
+            result = trigger.check()
             if result != 0:
-                triggered_constraints.append(constraint.id)
+                triggered_constraints.append(trigger.constraint_id)
         return triggered_constraints
 
 
@@ -335,16 +323,17 @@ class Observation(object):
         self.data = observation_data
 
     @classmethod
-    def init_samples(cls, position, orientation, joints):
+    def init_samples(cls, position, orientation, joints_angles):
         """
         Parameters
         ----------
         position : array of position data
         orientation: array of orientation data
+        joints_angles: array of joint angles (configuration)
         """
         observation_data = {"robot": {"orientation": orientation,
                                       "position": position,
-                                      "joint_angle": joints}}
+                                      "joint_angle": joints_angles}}
         return cls(observation_data)
 
     def get_timestamp(self):
@@ -442,8 +431,11 @@ class Observation(object):
         : float
             Integer timestamp in milliseconds representing time from epoch.
         """
+        if item_id == self.data["robot"]["id"]:
+            return self.get_robot_data()
         items = self.data["items"]
         for item in items:
+
             # return first occurrence, should only be one
             if item["id"] == item_id:
                 return item
@@ -473,15 +465,6 @@ class Observation(object):
             return self.data["applied_constraints"]
         else:
             return None
-
-
-class ConfigurationError(Exception):
-
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self): 
-        return(repr(self.value))
 
 
 class EnvironmentError(Exception):

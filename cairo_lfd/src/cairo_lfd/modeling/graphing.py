@@ -74,7 +74,15 @@ class KeyframeGraph(MultiDiGraph):
             np_array = np.array(np_array)
             self.nodes[node]["model"].fit(np_array)
 
-    def _identify_primal_observations(self, observation_vectorizor):
+    def fit_models_on_valid_samples(self, node, observation_vectorizor):
+        np_array = []
+        for obsv in self.nodes[node]["samples"]:
+            vector = np.array(observation_vectorizor(obsv))
+            np_array.append(np.array(observation_vectorizor(obsv)))
+        np_array = np.array(np_array)
+        self.nodes[node]["model"].fit(np_array)
+
+    def identify_primal_observations(self, observation_vectorizor):
         for node in self.nodes():
             np_array = []
             best_obs = None
@@ -96,7 +104,7 @@ class ObservationClusterer():
     """
     def generate_clusters(self, demonstrations):
         """
-        Generates clustered Observations from a list of Demonstrations.
+        Generates clustered Observations from a list of Demonstrations with labeled observations.
 
         Parameters
         ----------
@@ -111,7 +119,7 @@ class ObservationClusterer():
         """
         observations = []
         for demo in demonstrations:
-            for obsv in demo.observations:
+            for obsv in demo.labeled_observations:
                 observations.append(obsv)
         clusters = self._cluster_observations_by_id(observations)
         for cluster in clusters.values():
@@ -122,7 +130,7 @@ class ObservationClusterer():
     def _cluster_observations_by_id(self, observations):
         """
         Takes in a the entirety of observations from all Demonstrations and groups them together
-        by keyframe ID.
+        by keyframe ID. This
 
         Parameters
         ----------

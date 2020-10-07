@@ -1,0 +1,188 @@
+{
+    "settings":{
+        "planner": "RRTConnectkConfigDefault",
+        "constraint_trigger_mechanism": "web_trigger",
+        "start_pose": {
+            "position":[0.635632, 0.28119, -0.14459],
+            "orientation": [0.674753, 0.737688, -0.0180208, -0.0141477]
+        }
+    },
+
+    "metaconstraint_builders": [
+        {
+            "class": "HeightMetaconstraintBuilder",
+            "name": "height_above",
+            "segmentation": {
+                "init_args" : 
+                    {
+                        "n_components": 10
+                    }
+            },
+            "static_parameters":
+            {
+                "item_id": 1,
+                "reference_height": -0.2,
+                "direction": "positive"
+            }
+        },
+         {
+            "class": "HeightMetaconstraintBuilder",
+            "name": "height_below",
+            "segmentation": {
+                "init_args" : 
+                    {
+                        "n_components": 10
+                    }
+            },
+            "static_parameters":
+            {
+                "item_id": 1,
+                "reference_height": -0.170,
+                "direction": "negative"
+            }
+        },
+        {
+            "class": "OrientationMetaconstraintBuilder",
+            "name": "orientation",
+            "segmentation": {
+                "init_args" : 
+                    {
+                        "n_components": 10
+                    }
+            },
+            "static_parameters":
+            {
+                "item_id": 1
+            }
+        },
+
+        {
+            "class": "Perimeter2DMetaconstraintBuilder",
+            "name": "perimeter",
+            "static_parameters":
+                {
+
+                    "perimeter_item_id": 2,
+                    "traversing_item_id": 1,
+                    "axis": "z"
+                }
+        }
+
+    ],
+    "constraints": [
+        {
+            "class": "OrientationConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 1,
+                    "item_id": 1,
+                    "threshold_angle": 10,
+                    "axis": "x"
+                }
+        },
+        {
+            "class": "HeightConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 2,
+                    "item_id": 1,
+                    "reference_height": -0.2,
+                    "threshold_distance": 0.2
+                
+                }
+        },
+        {
+            "class": "HeightConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 3,
+                     "item_id": 3,
+                    "reference_height": -0.2,
+                    "threshold_distance": 0.2
+                }
+        },
+        {
+            "class": "Perimeter2DConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 4,
+                    "perimeter_item_id": 2,
+                    "traversing_item_id": 1,
+                    "axis": "z"
+                }
+        }
+
+    ],
+    "triggers":[
+         {
+            "class": "WebTrigger",
+            "init_args":
+                {
+                    "constraint_id": 1,
+                    "constraint_name": "orientation_constraint"
+                }
+        },
+        {
+            "class": "WebTrigger",
+            "init_args":
+                {
+                    "constraint_id": 2,
+                    "constraint_name": "height_constraint"
+                }
+        },
+        {
+            "class": "WebTrigger",
+            "init_args":
+                {
+                    "constraint_id": 3,
+                    "constraint_name": "over_under_constraint"
+                }
+        },
+        {
+            "class": "WebTrigger",
+            "init_args":
+                {
+                    "constraint_id": 4,
+                    "constraint_name": "perimeter_constraint"
+                }
+        }
+    ],
+   "items": [
+        {
+            "class": "StaticItem",
+            "init_args":
+                {
+                    "item_id": 2,
+                    "name": "block",
+                    "pose": 
+                        {
+                            "position":[0.7452, -0.08986, -0.173911],
+                            "orientation": [0.015391, -0.0089937, 0.70554, 0.70845]
+                        },
+                    "perimeter":
+                        {
+                            "inner": [[0.776137218844, 0.139981643691], [0.770539955483, -0.238921358537], [0.551349799735, -0.247211591728], [0.54590815399, 0.131074418809]],
+                            "outer": [[0.831064450566, 0.197736817943], [0.838702700984, -0.299700731139], [0.487428974079, -0.300435951469], [0.487396714263, 0.186147518899]]
+
+                        }
+                }
+        } 
+    ],
+    "robots": [
+        {
+            "class": "SawyerRobot",
+            "init_args":
+                {
+                    "item_id": 1,
+                    "upright_pose": 
+                        {
+                            "position": 
+                                 [0.5787328079679346, -0.39777983071444956, -0.011060337755885927],
+                            "orientation":  [-0.002778033826517201, -0.71012094053788, 0.7038782980109595, 0.016609452936554414]
+                        }
+                }
+        }
+
+    ]
+       
+}

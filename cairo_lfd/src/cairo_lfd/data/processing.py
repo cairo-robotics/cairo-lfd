@@ -8,10 +8,66 @@ import rospy
 import numpy as np
 from scipy.spatial.distance import euclidean
 
+from predicate_classification.path_classifiers import perimeter_2D
+
 from cairo_lfd.core.environment import Observation
+from cairo_lfd.data.conversion import convert_data_to_pose
 
 
-class ProcessorPipeline():
+def list_window(self, elements, idx, centrality='left', window_size=4):
+    """
+    Retrieves a number of elements before given index. The number shrinks if the index would make number of elements reach out of the sequence index bounds.
+
+    Parameters
+    ----------
+    elements : list
+        List of elements.
+
+    idx : int
+        The index of the current observation.
+
+    centrality : str
+        Determines relative positioning of window relative to idx. One of three choices: 'left', 'right', 'center'.
+
+    window_size : int
+        Numeric size of window.
+
+    Returns
+    -------
+    : list
+        List of prior Observation objects.
+
+    Note
+    ----
+    Along index boundary the window self adjusts to avoid index errors. This can result in fewer
+    Observations than the given window size.
+    """
+    if centrality not in ['left', 'right', 'center']:
+        raise ValueError(
+            "Centrality must be either 'left', 'right', or 'center'.")
+
+    if idx > len(elements) - 1:
+        raise IndexError(
+            "Index not valid for given length of observations sequence.")
+    for spread in reversed(range(window_size + 1)):
+        if centrality == 'left':
+            if 0 <= idx - spread < len(elements) and 0 <= idx + spread < len(elements):
+                return elements[idx - spread:idx + 1]
+        elif centrality == 'right':
+            if 0 <= idx + spread < len(elements):
+                return elements[idx:idx + spread + 1]
+        else:
+            obsvs = elements[idx:idx + 1]
+            if 0 <= idx - int(spread / 2) < len(elements):
+                obsvs = elements[idx - int(spread / 2):idx] + obsvs
+            if 0 <= idx + int(spread / 2) < len(elements):
+                obsvs = obsvs + \
+                    elements[idx + 1:idx + int(spread / 2) + 1]
+            return obsvs
+    return []
+
+
+class DataProcessingPipeline():
 
     def __init__(self, processor_list):
         self.processors = processor_list
@@ -20,86 +76,6 @@ class ProcessorPipeline():
         for idx, demo in enumerate(demonstrations):
             for processor in self.processors:
                 processor.process(demo.observations)
-
-
-class EuclideanDistanceMixin():
-
-    def _euclidean(self, obj1_posistion, obj2_position):
-        """
-        Calculates the euclidean distance using SciPy's euclidean function
-
-        Parameters
-        ----------
-        obj1_posistion : array-like
-            List of x,y,z coordinates of object 1's position.
-
-        obj2_position : array-like
-            List of x,y,z coordinates of object 2's position.
-
-        Returns
-        -------
-        : float
-            The distance.
-        """
-        if isinstance(obj1_posistion, (list, np.ndarray)) and isinstance(obj2_position, (list, np.ndarray)):
-            return euclidean(obj1_posistion, obj2_position)
-        else:
-            raise ValueError("Argument must be array-like (list or ndarray)")
-
-
-class ListWindowMixin():
-
-    def _retrieve_window(self, observations, idx, centrality='left', window_size=4):
-        """
-        Retrieves a number of observations before given index. The number shrinks if the index would make number of elements reach out of the sequence index bounds.
-
-        Parameters
-        ----------
-        observations : list
-            List of Observation objects.
-
-        idx : int
-            The index of the current observation.
-
-        centrality : str
-            Determines relative positioning of window relative to idx. One of three choices: 'left', 'right', 'center'.
-
-        window_size : int
-            Numeric size of window.
-
-        Returns
-        -------
-        : list
-            List of prior Observation objects.
-
-        Note
-        ----
-        Along index boundary the window self adjusts to avoid index errors. This can result in fewer
-        Observations than the given window size.
-        """
-        if centrality not in ['left', 'right', 'center']:
-            raise ValueError(
-                "Centrality must be either 'left', 'right', or 'center'.")
-
-        if idx > len(observations) - 1:
-            raise IndexError(
-                "Index not valid for given length of observations sequence.")
-        for spread in reversed(range(window_size + 1)):
-            if centrality == 'left':
-                if 0 <= idx - spread < len(observations) and 0 <= idx + spread < len(observations):
-                    return observations[idx - spread:idx + 1]
-            elif centrality == 'right':
-                if 0 <= idx + spread < len(observations):
-                    return observations[idx:idx + spread + 1]
-            else:
-                obsvs = observations[idx:idx + 1]
-                if 0 <= idx - int(spread / 2) < len(observations):
-                    obsvs = observations[idx - int(spread / 2):idx] + obsvs
-                if 0 <= idx + int(spread / 2) < len(observations):
-                    obsvs = obsvs + \
-                        observations[idx + 1:idx + int(spread / 2) + 1]
-                return obsvs
-        return []
 
 
 class RelativePositionProcessor(object):
@@ -125,10 +101,10 @@ class RelativePositionProcessor(object):
             List of Observation objects.
         """
         for idx, obsv in enumerate(observations):
-            self.generate_robot_relative_pos(obsv)
-            self.generate_item_relative_pos(obsv)
+            self._generate_robot_relative_pos(obsv)
+            self._generate_item_relative_pos(obsv)
 
-    def generate_robot_relative_pos(self, obsv):
+    def _generate_robot_relative_pos(self, obsv):
         # relative to robots
         for item_id in self.item_ids:
             relative_positions = {}
@@ -145,7 +121,7 @@ class RelativePositionProcessor(object):
                 item_position, robot_position)
             item_data["relative_positions"] = relative_positions
 
-    def generate_item_relative_pos(self, obsv):
+    def _generate_item_relative_pos(self, obsv):
         # relative to robots
         relative_positions = {}
         robot_data = obsv.get_robot_data()
@@ -162,7 +138,7 @@ class RelativePositionProcessor(object):
         return [x, y, z]
 
 
-class RelativeKinematicsProcessor(EuclideanDistanceMixin, ListWindowMixin):
+class RelativeKinematicsProcessor():
     """
     Calculates object to object relative distance, velocity and acceleration based on data
     contained in lists of Observations.
@@ -200,15 +176,15 @@ class RelativeKinematicsProcessor(EuclideanDistanceMixin, ListWindowMixin):
             List of Observation objects.
         """
         for idx, obsv in enumerate(observations):
-            self.relative_distance(obsv)
+            self._relative_distance(obsv)
         for idx, obsv in enumerate(observations):
-            window = self._retrieve_window(observations, idx, 'center', 4)
-            self.relative_velocity(obsv, window)
+            window = list_window(observations, idx, 'center', 4)
+            self._relative_velocity(obsv, window)
         for idx, obsv in enumerate(observations):
-            window = self._retrieve_window(observations, idx, 'center', 4)
-            self.relative_acceleration(obsv, window)
+            window = list_window(observations, idx, 'center', 4)
+            self._relative_acceleration(obsv, window)
 
-    def relative_distance(self, observation):
+    def _relative_distance(self, observation):
         """
         Calculates relative distance, between item-item pairs and item-robot pair.
 
@@ -230,10 +206,10 @@ class RelativeKinematicsProcessor(EuclideanDistanceMixin, ListWindowMixin):
                 if item_id != target_id:
                     target_position = observation.get_item_data(target_id)[
                         "position"]
-                    relative_distances[target_id] = self._euclidean(
+                    relative_distances[target_id] = euclidean(
                         item_position, target_position)
             robot_position = observation.get_robot_data()["position"]
-            relative_distances[self.robot_id] = self._euclidean(
+            relative_distances[self.robot_id] = euclidean(
                 item_position, robot_position)
             item_data["relative_distance"] = relative_distances
 
@@ -243,11 +219,11 @@ class RelativeKinematicsProcessor(EuclideanDistanceMixin, ListWindowMixin):
         robot_position = robot_data["position"]
         for item_id in self.item_ids:
             item_position = observation.get_item_data(item_id)["position"]
-            relative_distances[item_id] = self._euclidean(
+            relative_distances[item_id] = euclidean(
                 robot_position, item_position)
         robot_data["relative_distance"] = relative_distances
 
-    def relative_velocity(self, curr_observation, observation_window):
+    def _relative_velocity(self, curr_observation, observation_window):
         """
         Calculates relative velocity, between item-item pairs and item-robot pair.
 
@@ -309,7 +285,7 @@ class RelativeKinematicsProcessor(EuclideanDistanceMixin, ListWindowMixin):
                     distances, timestamps)
         robot_data["relative_velocity"] = relative_velocities
 
-    def relative_acceleration(self, curr_observation, observation_window):
+    def _relative_acceleration(self, curr_observation, observation_window):
         """
         Calculates relative velocity, between item-item pairs and item-robot pair.
 
@@ -431,7 +407,7 @@ class RelativeKinematicsProcessor(EuclideanDistanceMixin, ListWindowMixin):
         return (dist_after - dist_before) / abs(start_time - end_time)
 
 
-class InContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
+class InContactProcessor():
 
     def __init__(self, item_ids, robot_id, threshold_distance=.06, window_percentage=.5):
         """
@@ -470,7 +446,7 @@ class InContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
             The surrounding preceding window of observations used for evaluating contact.
         """
         for idx, obsv in enumerate(observations):
-            window = self._retrieve_window(
+            window = list_window(
                 observations, idx, 'left', window_size)
             self._evaluate_contact(obsv, window)
 
@@ -486,7 +462,7 @@ class InContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
                             "position"]
                         target_position = observation.get_item_data(target_id)[
                             "position"]
-                        distance = self._euclidean(
+                        distance = euclidean(
                             item_position, target_position)
                         if distance <= self.threshold_distance:
                             within_threshold.append(True)
@@ -500,7 +476,7 @@ class InContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
             for observation in observation_window:
                 item_position = observation.get_item_data(item_id)["position"]
                 robot_position = observation.get_robot_data()["position"]
-                distance = self._euclidean(item_position, robot_position)
+                distance = euclidean(item_position, robot_position)
                 if distance <= self.threshold_distance:
                     within_threshold.append(True)
                 else:
@@ -520,7 +496,7 @@ class InContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
                 robot_position = observation.get_robot_data()["position"]
                 target_position = observation.get_item_data(target_id)[
                     "position"]
-                distance = self._euclidean(robot_position, target_position)
+                distance = euclidean(robot_position, target_position)
                 if distance <= self.threshold_distance:
                     within_threshold.append(True)
                 else:
@@ -532,7 +508,7 @@ class InContactProcessor(EuclideanDistanceMixin, ListWindowMixin):
         robot_data["in_contact"] = in_contact
 
 
-class SphereOfInfluenceProcessor(EuclideanDistanceMixin):
+class SphereOfInfluenceProcessor():
 
     def __init__(self, item_ids, robot_id, threshold_distance=.1):
         self.item_ids = item_ids
@@ -555,12 +531,48 @@ class SphereOfInfluenceProcessor(EuclideanDistanceMixin):
 
     def _evaluate_SOI(self, curr_observation):
         end_effector_position = curr_observation.get_robot_data()["position"]
-        for item_id in self.item_ids:
-            in_SOI = []
-            item_position = curr_observation.get_item_data(item_id)[
-                "position"]
-            distance = self._euclidean(
-                end_effector_position, item_position)
-            if distance <= self.threshold_distance:
-                in_SOI.append(item_id)
-        curr_observation.data['robot']['in_SOI'] = in_SOI
+        if len(self.item_ids) > 0:
+            for item_id in self.item_ids:
+                in_SOI = []
+                item_position = curr_observation.get_item_data(item_id)[
+                    "position"]
+                distance = euclidean(
+                    end_effector_position, item_position)
+                if distance <= self.threshold_distance:
+                    in_SOI.append(item_id)
+            curr_observation.data['robot']['in_SOI'] = in_SOI
+
+
+class WithinPerimeterProcessor():
+
+    def __init__(self, item_ids, robot_id):
+        self.item_ids = item_ids
+        self.robot_id = robot_id
+
+    def process(self, observations):
+        """
+        Parameters
+        ----------
+        observations : list
+           List of Observation objects.
+        """
+        for obsv in observations:
+            self._evaluate_within_perimeter(obsv)
+
+    def _evaluate_within_perimeter(self, curr_observation):
+        for target_item_id in self.item_ids:
+            within_perimeter = []
+            perimeter = curr_observation.get_item_data(target_item_id).get(
+                "perimeter", None)
+            if perimeter is not None:
+                # robot first 
+                robot_pose = convert_data_to_pose(curr_observation.get_robot_data()["position"], curr_observation.get_robot_data()["orientation"])
+                if perimeter_2D(robot_pose, perimeter["inner"], perimeter["outer"]):
+                    within_perimeter.append(self.robot_id)
+                # now all items
+                for item_id in self.item_ids:
+                    if target_item_id != item_id:
+                        item_pose = convert_data_to_pose(curr_observation.get_item_data(item_id)["position"], curr_observation.get_item_data(item_id)["orientation"])
+                        if perimeter_2D(item_pose, perimeter["inner"], perimeter["outer"]):
+                            within_perimeter.append(target_id)
+                curr_observation.get_item_data(target_item_id)['in_perimeter'] = within_perimeter

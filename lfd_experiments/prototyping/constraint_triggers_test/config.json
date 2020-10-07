@@ -1,0 +1,132 @@
+{
+    "settings":{
+        "constraint_trigger_mechanism": "web_trigger"
+    },
+    "constraints": [
+        {
+            "class": "OrientationConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 1,
+                    "item_id": 1,
+                    "threshold_angle": 10,
+                    "axis": "x"
+                }
+        },
+        {
+            "class": "HeightConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 2,
+                    "item_id": 1,
+                    "reference_height": 0.0,
+                    "threshold_distance": 0.2
+                
+                }
+        },
+        {
+            "class": "OverUnderConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 3,
+                    "above_item_id": 1,
+                    "below_item_id": 2,
+                    "threshold_distance": 0.25,
+                    "axis": "z"
+                }
+        },
+        {
+            "class": "Perimeter2DConstraint",
+            "init_args" : 
+                {
+                    "constraint_id": 4,
+                    "perimeter_item_id": 2,
+                    "traversing_item_id": 1,
+                    "axis": "z"
+                }
+        }
+
+    ],
+    "triggers":[
+         {
+            "class": "WebTrigger",
+            "init_args":
+                {
+                    "constraint_id": 1,
+                    "constraint_name": "orientation_constraint"
+                }
+        },
+        {
+            "class": "WebTrigger",
+            "init_args":
+                {
+                    "constraint_id": 2,
+                    "constraint_name": "height_constraint"
+                }
+        },
+        {
+            "class": "WebTrigger",
+            "init_args":
+                {
+                    "constraint_id": 3,
+                    "constraint_name": "over_under_constraint"
+                }
+        },
+        {
+            "class": "WebTrigger",
+            "init_args":
+                {
+                    "constraint_id": 4,
+                    "constraint_name": "perimeter_constraint"
+                }
+        }
+    ],
+   "items": [
+        {
+            "class": "StaticItem",
+            "init_args":
+                {
+                    "item_id": 2,
+                    "name": "block",
+                    "pose": 
+                        {
+                            "position":[0.7452, -0.08986, -0.173911],
+                            "orientation": [0.015391, -0.0089937, 0.70554, 0.70845]
+                        },
+                    "perimeter":
+                        {
+                            "inner": [[0.828470625, 0.06511343749999998], [0.828470625, -0.1448334375], [0.5619293750000001, -0.1448334375], [0.5619293750000001, 0.06511343749999998]],
+                            "outer": [[0.978470625, 0.21511343749999998], [0.978470625, -0.2948334375], [0.41192937500000004, -0.2948334375], [0.41192937500000004, 0.21511343749999998]]
+
+                        }
+                }
+        }
+    ],
+    "robots": [
+        {
+            "class": "SawyerRobot",
+            "init_args":
+                {
+                    "item_id": 1,
+                    "upright_pose": 
+                        {
+                            "position": 
+                                [
+                                    0.604698787426,
+                                    -0.439894686226,
+                                    0.159350584992
+                                ],
+                            "orientation": [
+                                0.712590112587,
+                                -0.00994445446764,
+                                0.701496927312,
+                                -0.00430119065513
+                            ]
+                        }
+                }
+        }
+
+    ]
+       
+}
+

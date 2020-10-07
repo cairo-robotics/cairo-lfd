@@ -11,11 +11,12 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <depend>rospy</depend>
+  <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>predicate_classification</depend>
   <depend>predicate_classification_msgs</depend> 
-
-
+  <depend>cairo_lfd_msgs</depend>
+  <depend>moveit_msgs</depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

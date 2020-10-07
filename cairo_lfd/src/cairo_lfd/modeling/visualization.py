@@ -78,7 +78,6 @@ class GaussianMixture3D():
             # find the rotation matrix and radii of the axes
             U, s, rotation = linalg.svd(covar)
             radii = np.sqrt(s)
-            print(radii)
 
             # now carry on with EOL's answer
             u = np.linspace(0.0, 2.0 * np.pi, 100)

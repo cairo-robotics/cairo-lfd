@@ -26,11 +26,11 @@ class KMeansModel(object):
         self.n_clusters = n_clusters
         self.model = KMeans(n_clusters=self.n_clusters)
 
-    def fit(self):
+    def fit(self, train_X):
         """
         Wrapper method for fit() method of kmeans model.
         """
-        self.model.fit(self.observations)
+        self.model.fit(train_X)
 
     def get_clusters(self, train_X):
         """

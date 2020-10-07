@@ -2,19 +2,59 @@
 The record.py module contains classes and methods for recording data during live demonstrations.
 """
 import sys
-import select
 import os
 
 import rospy
-import intera_interface
 import cv2
 import cv_bridge
 from sensor_msgs.msg import Image
+from std_msgs.msg import Int8MultiArray, String
+from geometry_msgs.msg import Pose
+
+import intera_interface
+from intera_core_msgs.msg import InteractionControlCommand
+from intera_motion_interface import InteractionOptions, InteractionPublisher
 
 from cairo_lfd.core.environment import Observation, Demonstration
+from cairo_lfd.data.labeling import ConstraintKeyframeLabeler
+from cairo_lfd.modeling.analysis import evaluate_applied_constraints, check_constraint_validity
+
+from robot_interface.moveit_interface import SawyerMoveitInterface
+
+import copy
 
 
-class SawyerRecorder(object):
+class SawyerDemonstrationLabeler():
+    def __init__(self, settings, demo_aligner):
+        """
+        Parameters
+        ----------
+        """
+        self.divisor = settings.get("divisor", 20)
+        self.window = settings.get("window", 10)
+        self.output = settings.get("")
+        self.demo_aligner = demo_aligner
+
+    def label(self, demonstrations):
+        rospy.loginfo("Aligning demonstrations...this can take some time.")
+
+        # For more details about alignment, see the alignment_example.
+        aligned_demos, constraint_transitions = self.demo_aligner.align(demonstrations)
+        # Create ConstraintKeyframeLabeler passing in the aligned demonstrations and the constraint transition
+        # ordering, both of which are returned from the DemonstratinAligner object.
+        keyframe_labeler = ConstraintKeyframeLabeler(copy.deepcopy(aligned_demos), constraint_transitions)
+        rospy.loginfo("Labeling demonstrations.")
+        """Call label_demontrations. The first parameter is the average group length divisor which determines the number of keyframes for that group. So if the first grouping of data before the first constraint transition has an average length of 100, then that first grouping will generate 5 keyframes (100/20 = 5). 
+
+        The second parameter is the window size i.e. how big each keyframe size should be (+/- one depending on if odd number of elements in the grouping list per demonstration) 
+        """
+        labeled_demonstrations = keyframe_labeler.label_demonstrations(self.divisor, self.window)
+        # for demo in labeled_demonstrations:
+
+        return labeled_demonstrations
+
+
+class SawyerDemonstrationRecorder():
     """
     Class to record state data from the ReThink Robotics Sawyer robot for capturing demonstrated data for 
     LfD experimentation.
@@ -30,22 +70,31 @@ class SawyerRecorder(object):
     _done : bool
         Termination flag.
     """
-    def __init__(self, rate, interaction_publisher=None, interaction_options=None):
+    def __init__(self, settings, environment, processor_pipeline=None, publish_constraint_validity=True):
         """
         Parameters
         ----------
         rate : int
-            The rate at which to capture state data.
+            The Hz rate at which to capture state data.
         """
-        self._raw_rate = rate
-        self._rate = rospy.Rate(rate)
+        self.start_configuration = settings.get("start_configuration", None)
+        self._raw_rate = settings.get("sampling_rate", 25)
+        self._rate = rospy.Rate(self._raw_rate)
         self._start_time = rospy.get_time()
         self._done = False
-        self.interaction_publisher = interaction_publisher
-        self.interaction_options = interaction_options
+        self.publish_constraint_validity = publish_constraint_validity
+        self.constraint_trigger = settings.get("constraint_trigger_mechanism", "web_trigger")
+        self.processor_pipeline = processor_pipeline
         self.head_display_pub = rospy.Publisher('/robot/head_display', Image, latch=True, queue_size=10)
         self.recording_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/Recording.jpg')
         self.ready_to_record_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/ReadyToRecord.jpg')
+        self.command = ""
+        self.command_sub = rospy.Subscriber("/cairo_lfd/record_commands", String, self.command_callback)
+        self.environment = environment
+        self._setup_zero_g()
+
+    def command_callback(self, data):
+        self.command = data.data
 
     def _time_stamp(self):
         """
@@ -76,13 +125,11 @@ class SawyerRecorder(object):
             self.stop()
         return self._done
 
-    def record_demonstrations(self, environment, auto_zeroG=False):
-        """
-        Records the current joint positions to a csv file if outputFilename was
-        provided at construction this function will record the latest set of
-        joint angles in a csv format.
+    def start(self):
+        self._done = False
 
-        If a file exists, the function will overwrite existing file.
+    def record(self):
+        """
 
         Parameters
         ----------
@@ -91,70 +138,105 @@ class SawyerRecorder(object):
 
         Returns
         -------
-        demosntrations : list
+        demonstrations : list
             List of Demonstration objects each of which captures Observations during user demonstrations.
         """
-        robot = environment.robot
 
         demonstrations = []
-
+        rospy.loginfo("Ready to record. Sampling will be at ~{}Hz".format(self._raw_rate))
+        self.start()
         while not self.done():
-            print("Press 'r' or hold 'ii' cuff button to enter recording mode or 'q' to quit.\n")
-            recording = False
-            user_input = ''
-            while user_input != 'q':
-                self.head_display_pub.publish(self._setup_image(self.ready_to_record_image_path))
-                # pu.db
-                stdin, stdout, stderr = select.select([sys.stdin], [], [], .0001)
-                for s in stdin:
-                    if s == sys.stdin:
-                        user_input = sys.stdin.readline().strip()
-                if environment.robot._navigator.get_button_state("right_button_show") == 2 or user_input == "r":
-                    print("Recording!")
-                    recording = True
+            self.head_display_pub.publish(self._setup_image(self.ready_to_record_image_path))
+            if self.command == "record":
+                print("Recording!")
+                self.head_display_pub.publish(self._setup_image(self.recording_image_path))
+                self.interaction_publisher.external_rate_send_command(self.interaction_options)
                 observations = []
-                while recording:
-                    self.head_display_pub.publish(self._setup_image(self.recording_image_path))
-                    if auto_zeroG and self.interaction_publisher is not None and self.interaction_options is not None:
-                        self.interaction_publisher.external_rate_send_command(self.interaction_options)
-                    elif auto_zeroG and self.interaction_publisher is None or self.interaction_options is None:
-                        rospy.logerr("Sawyer Recorder must possess an interaction publisher and/or interaction options for zeroG")
-                        raise ValueError("Sawyer Recorder must possess an interaction publisher and/or interaction options zeroG")
-                    if robot._gripper:
-                        if robot._cuff.upper_button():
-                            robot._gripper.open()
-                        elif robot._cuff.lower_button():
-                            robot._gripper.close()
-                    data = {
-                        "time": self._time_stamp(),
-                        "robot": environment.get_robot_state(),
-                        "items": environment.get_item_state(),
-                        "triggered_constraints": environment.check_constraint_triggers()
-                    }
-                    observation = Observation(data)
-                    observations.append(observation)
-                    stdin, stdout, stderr = select.select([sys.stdin], [], [], .0001)
-                    for s in stdin:
-                        if s == sys.stdin:
-                            user_input = sys.stdin.readline().strip()
-                    if user_input == "d":
-                        rospy.loginfo("~~~DISCARDED~~~")
-                        self.interaction_publisher.send_position_mode_cmd()
-                        user_input = ''
-                        recording = False
-                        print("Demonstration discarded!\n Press 'r' or 'ii' cuff button record again or 'q' to end the session.\n")
-                    if environment.robot._navigator.get_button_state("right_button_back") == 2 or user_input == "c":
-                        demonstrations.append(Demonstration(observations))
-                        rospy.loginfo("~~~CAPTURED~~~")
-                        self.interaction_publisher.send_position_mode_cmd()
-                        user_input = ''
-                        recording = False
-                        print("Demonstration captured!\n Press 'r' or hold center cuff wheel to record again or 'q' to end the session.\n")
-                    self._rate.sleep()
-            if user_input == 'q':
+                counter = 0
+                observations = self._record_demonstration(self.environment)
+                if len(observations) > 0:
+                    demonstrations.append(Demonstration(observations))
+            if self.command == "discard":
+                if len(demonstrations) > 0:
+                    demonstrations.pop()
+                    print("Discarded most recent demonstration recording!")
+                else:
+                    print("There are no new demonstrations to discard.")
+                self._clear_command()
+            if self.command == "quit":
+                print("Stopping recording!")
+                self._clear_command()
                 self.stop()
+            if self.command == "start":
+                print("Moving to start position!")
+                self._move_to_start_configuration()
 
+        if self.processor_pipeline is not None:
+            # Generates additional data
+            self.processor_pipeline.process(demonstrations)
+        self._analyze_applied_constraints(demonstrations)
+        self._clear_command()
         return demonstrations
+
+    def _move_to_start_configuration(self):
+        """ Create the moveit_interface """
+        if self.start_configuration is not None:
+            moveit_interface = SawyerMoveitInterface()
+            moveit_interface.set_velocity_scaling(.35)
+            moveit_interface.set_acceleration_scaling(.25)
+            moveit_interface.set_joint_target(self.start_configuration)
+            moveit_interface.execute(moveit_interface.plan())
+        else:
+            rospy.logwarn("No start configuration provided in your config.json file.")
+        self._clear_command()
+
+    def _record_demonstration(self, environment):
+        observations = []
+        while True:
+            robot = environment.robot
+            if robot._gripper:
+                if robot._cuff.upper_button():
+                    robot._gripper.open()
+                elif robot._cuff.lower_button():
+                    robot._gripper.close()
+            data = {
+                "time": self._time_stamp(),
+                "robot": environment.get_robot_state(),
+                "items": environment.get_item_state(),
+                "triggered_constraints": environment.check_constraint_triggers()
+            }
+            observation = Observation(data)
+            if self.publish_constraint_validity:
+                valid_constraints = check_constraint_validity(environment.constraints, observation)[1]
+                pub = rospy.Publisher('cairo_lfd/valid_constraints', Int8MultiArray, queue_size=10)
+                msg = Int8MultiArray(data=valid_constraints)
+                pub.publish(msg)
+            observations.append(observation)
+            if self.command == "discard":
+                rospy.loginfo("~~~DISCARDED~~~")
+                self.interaction_publisher.send_position_mode_cmd()
+                self._clear_command()
+                return []
+            if self.command == "capture":
+                rospy.loginfo("~~~CAPTURED~~~")
+                self.interaction_publisher.send_position_mode_cmd()
+                self._clear_command()
+                rospy.loginfo("{} observations captured.".format(len(observations)))
+                return observations
+            self._rate.sleep()
+
+    def _analyze_applied_constraints(self, demos):
+        # Analyze observations for constraints. If using web triggered constraints, we don't evaluate and
+        # instead the applied constraints are those explicitly set by the user.
+        for demo in demos:
+            if self.constraint_trigger == 'cuff_trigger':
+                # Using the cuff trigger will cause a propagation forward of current set of applied constraints
+                evaluate_applied_constraints(demo.observations)
+            elif self.constraint_trigger == 'web_trigger':
+                for observation in demo.observations:
+                    observation.data["applied_constraints"] = observation.get_triggered_constraint_data()
+            else:
+                rospy.logerr("No valid constraint trigger mechanism passed.")
 
     def _setup_image(self, image_path):
         """
@@ -171,3 +253,30 @@ class SawyerRecorder(object):
         img = cv2.imread(image_path)
         # Return msg
         return cv_bridge.CvBridge().cv2_to_imgmsg(img, encoding="bgr8")
+
+    def _setup_zero_g(self):
+        ########################################
+        #  Setup Intera to Support Zero-G Mode #
+        ########################################
+        interaction_pub = InteractionPublisher()
+        interaction_options = InteractionOptions()
+        interaction_options.set_max_impedance([False])
+        interaction_options.set_rotations_for_constrained_zeroG(True)
+        interaction_frame = Pose()
+        interaction_frame.position.x = 0
+        interaction_frame.position.y = 0
+        interaction_frame.position.z = 0
+        interaction_frame.orientation.x = 0
+        interaction_frame.orientation.y = 0
+        interaction_frame.orientation.z = 0
+        interaction_frame.orientation.w = 1
+        interaction_options.set_K_impedance([0, 0, 0, 0, 0, 0])
+        interaction_options.set_K_nullspace([0, 0, 0, 0, 0, 0, 0])
+        interaction_options.set_interaction_frame(interaction_frame)
+        rospy.loginfo(interaction_options.to_msg())
+        rospy.on_shutdown(interaction_pub.send_position_mode_cmd)
+        self.interaction_publisher = interaction_pub
+        self.interaction_options = interaction_options
+
+    def _clear_command(self):
+        self.command = ""

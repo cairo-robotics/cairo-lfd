@@ -9,7 +9,7 @@ from fastdtw import fastdtw
 from scipy.spatial.distance import euclidean
 
 
-class DemonstrationAligner(object):
+class DemonstrationAlignment(object):
 
     """
     Demonstration aligning class to align demonstrations, ensuring uniform constraint transitions across 
@@ -17,50 +17,45 @@ class DemonstrationAligner(object):
 
     Attributes
     ----------
-    demonstrations : list
-       List of demonstrations to align.
-
     vectorize_func : func
-        A function used to vectorize the dictionary data of a demonstrations observations.
+        A function used to vectorize the dictionary data of a demonstrations observations into the state space used by the DTW algorithm.
     """
 
-    def __init__(self, demonstrations, vectorize_func):
+    def __init__(self, vectorize_func):
         """
         Parameters
         ----------
-        demonstrations : list
-           List of demonstrations to align.
-
         vectorize_func : func
-            A function used to vectorize the dictionary data of a demonstrations observations.
+            A function used to vectorize the dictionary data of a demonstrations observations into the state space used by the DTW algorithm.
         """
-        self.demonstrations = demonstrations
         self.vectorize_func = vectorize_func
 
-    def align(self):
+    def align(self, demonstrations):
 
         """
         Alignment is performed using the FastDTW algorithm. It first separates trajectories that are constraint
         annotated, and aligns those first. Secondly, arbitrarily uses one of those trajectories as a reference
-        against which to align all the remaining trajectories captured during demonstrations. If there are no 
+        against which to align all the remaining trajectories captured during demonstrations.
 
         Returns
         -------
-        self.demonstrations : tuple
-            Returns the demonstrations each having a new parameter called aligned_observations.
+        : tuple
+            Returns the demonstrations each having a new parameter called aligned_observations and the constraint transitions
         """
+        demonstrations = copy.deepcopy(demonstrations)
         rospy.loginfo("Aligning demonstrations...")
-        if not len(self.demonstrations) > 1:
+        if not len(demonstrations) > 1:
             raise AlignmentException("Error! You are attempting to align ONLY ONE OR ZERO demonstrations.")
 
-        for demo in self.demonstrations:
+        for demo in demonstrations:
             demo.aligned_observations = self._deep_copy_observations(demo.observations)
 
-        constrained_demonstrations = [demo for demo in self.demonstrations if any([len(ob.data["applied_constraints"]) != 0 for ob in demo.observations])]
+        constrained_demonstrations = [demo for demo in demonstrations if any([len(ob.data["applied_constraints"]) != 0 for ob in demo.observations])]
 
         # Align constrained demonstrations first, else if there are none, align all the trajectories without considering
         # constraints.
         if len(constrained_demonstrations) > 0:
+            # Use the shortest demonstration as the reference. For now, this is an arbitrary alignment. 
             constrained_demonstrations.sort(key = lambda d: len(d.observations))
             reference_demo = constrained_demonstrations[0]
 
@@ -73,22 +68,22 @@ class DemonstrationAligner(object):
                     reference_demo.aligned_observations = alignments["reference"]
 
             # Realign until uniform constraint transition mappings across all demonstrations
-            while self._check_for_equivalent_constraint_transitions(self.demonstrations) is False:
-                self.demonstrations.sort(key = lambda d: len(d.observations))
-                for curr_demo in self.demonstrations:
+            while self._check_for_equivalent_constraint_transitions(demonstrations) is False:
+                demonstrations.sort(key = lambda d: len(d.observations))
+                for curr_demo in demonstrations:
                     alignments = self._get_alignment(curr_demo, reference_demo)
                     curr_demo.aligned_observations = alignments["current"]
                     reference_demo.aligned_observations = alignments["reference"]
         else:
-            self.demonstrations.sort(key=lambda d: len(d.aligned_observations), reverse=True)
-            reference_demo = self.demonstrations[0]
-            for curr_demo in self.demonstrations:
+            demonstrations.sort(key=lambda d: len(d.aligned_observations), reverse=True)
+            reference_demo = demonstrations[0]
+            for curr_demo in demonstrations:
                 alignments = self._get_alignment(curr_demo, reference_demo)
                 curr_demo.aligned_observations = alignments["current"]
                 reference_demo.aligned_observations = alignments["reference"]
 
-        constraint_transitions = self._get_universal_constraint_transitions(self.demonstrations)
-        return (self.demonstrations, constraint_transitions)
+        constraint_transitions = self._get_universal_constraint_transitions(demonstrations)
+        return (demonstrations, constraint_transitions)
 
     def _get_alignment(self, current_demo, reference_demo):
 

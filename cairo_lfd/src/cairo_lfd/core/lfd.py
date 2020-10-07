@@ -4,12 +4,15 @@ import rospy
 
 from cairo_lfd_msgs.msg import NodeTime
 from cairo_lfd.core.environment import Environment
+from cairo_lfd.constraints.triggers import TriggerFactory
 from cairo_lfd.core.items import ItemFactory
+from cairo_lfd.core.robots import RobotFactory
 from cairo_lfd.data.conversion import SawyerSampleConversion
 from cairo_lfd.data.vectorization import get_observation_joint_vector
+from cairo_lfd.data.io import export_to_json
 from cairo_lfd.constraints.acc_assignment import assign_autoconstraints, AutoconstraintFactory
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory
-from cairo_lfd.modeling.graphing import KeyframeClustering, KeyframeGraph
+from cairo_lfd.modeling.graphing import KeyframeClustering, KeyframeGraph, IntermediateTrajectories
 from cairo_lfd.modeling.models import KDEModel
 from cairo_lfd.modeling.sampling import KeyframeModelSampler, ModelScoreRanking, ConfigurationSpaceRanking, AutoconstraintSampler
 from cairo_lfd.modeling.analysis import get_culling_candidates, check_constraint_validity, check_state_validity
@@ -25,14 +28,16 @@ class ACC_LFD():
         self.robot_interface = robot_interface
 
     def build_environment(self):
-        items = ItemFactory(self.configs).generate_items()
-        constraints = ConstraintFactory(self.configs).generate_constraints()
+        items = ItemFactory(
+            self.configs["robots"], self.configs['items']).generate_items()
+        constraints = ConstraintFactory(
+            self.configs["constraints"]).generate_constraints()
         # We only have just the one robot...for now.......
         self.environment = Environment(items=items['items'], robot=items['robots']
                                        [0], constraints=constraints, triggers=None)
 
     def build_keyframe_graph(self, demonstrations, bandwidth, vectorizor=None):
-        self.graph = KeyframeGraph()
+        self.G = KeyframeGraph()
         keyframe_clustering = KeyframeClustering()
 
         """
@@ -41,26 +46,26 @@ class ACC_LFD():
         """
         clusters = keyframe_clustering.get_clusters(demonstrations)
         for cluster_id in clusters.keys():
-            self.graph.add_node(cluster_id)
-            self.graph.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
-            self.graph.nodes[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
+            self.G.add_node(cluster_id)
+            self.G.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
+            self.G.nodes[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
 
             ####################################################
             # NEED TO BE ABLE TO SUPPORT CC-LFD eventually!
             # graph.nodes[cluster_id]["applied_constraints"] = [clusters[cluster_id]["applied_constraints"]]
-            self.graph.nodes[cluster_id]["applied_constraints"] = []
+            self.G.nodes[cluster_id]["applied_constraints"] = []
             ####################################################
-            self.graph.nodes[cluster_id]["autoconstraints"] = {}
+            self.G.nodes[cluster_id]["autoconstraints"] = {}
             # Used to track changes in the autoconstraint assignment according to segmentation and proximity style constraint assignment.
-            self.graph.nodes[cluster_id]["autoconstraint_transitions"] = []
-            self.graph.nodes[cluster_id]["model"] = KDEModel(
+            self.G.nodes[cluster_id]["autoconstraint_transitions"] = []
+            self.G.nodes[cluster_id]["model"] = KDEModel(
                 kernel='gaussian', bandwidth=bandwidth)
-        self.graph.add_path(self.graph.nodes())
+        self.G.add_path(self.G.nodes())
         if vectorizor is not None:
-            self.graph.fit_models(vectorizor)
+            self.G.fit_models(vectorizor)
         else:
-            self.graph.fit_models(get_observation_joint_vector)
-        self.graph.identify_primal_observations(get_observation_joint_vector)
+            self.G.fit_models(get_observation_joint_vector)
+        self.G.identify_primal_observations(get_observation_joint_vector)
 
     def generate_autoconstraints(self, demonstrations):
         rospy.loginfo("Building autoconstraints.")
@@ -68,17 +73,17 @@ class ACC_LFD():
         autoconstraint_builders = AutoconstraintFactory(
             self.configs).generate_autoconstraint_builders(demonstrations)
         # Assigns built autosconstraints to keyframes nodes.
-        assign_autoconstraints(self.graph, autoconstraint_builders)
+        assign_autoconstraints(self.G, autoconstraint_builders)
         self._apply_autoconstraint_transitions()
 
     def _apply_autoconstraint_transitions(self):
         prev_set = set()
-        for node in self.graph.get_keyframe_sequence():
-            curr_set = set(self.graph.nodes[node]
+        for node in self.G.get_keyframe_sequence():
+            curr_set = set(self.G.nodes[node]
                            ["autoconstraint_transitions"])
             diff = prev_set.symmetric_difference(curr_set)
             if len(diff) > 0:
-                self.graph.nodes[node]["keyframe_type"] = "constraint_transition"
+                self.G.nodes[node]["keyframe_type"] = "constraint_transition"
             prev_set = curr_set
 
     def sample_keyframes(self, number_of_samples, automate_threshold=False, culling_threshold=-1000):
@@ -90,7 +95,7 @@ class ACC_LFD():
             sample_to_obsv_converter, self.robot_interface)
 
         prior_sample = None
-        for node in self.graph.get_keyframe_sequence():
+        for node in self.G.get_keyframe_sequence():
             rospy.loginfo("")
             rospy.loginfo("KEYFRAME: {}".format(node))
             attempts, samples, validated_set, autoconstraint_attempts, constraints = self._generate_samples(
@@ -98,7 +103,7 @@ class ACC_LFD():
             if autoconstraint_attempts == 10:
                 rospy.logwarn(
                     "Not able to sample enough points for autoconstrained keyframe {}.".format(node))
-                self.graph.cull_node(node)
+                self.G.cull_node(node)
                 continue
             rospy.loginfo("Validated autoconstraints: {}".format(
                 list(validated_set)))
@@ -108,9 +113,9 @@ class ACC_LFD():
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(
                     samples), number_of_samples)
             if len(samples) == 0:
-                self.graph.cull_node(node)
+                self.G.cull_node(node)
                 continue
-            self.graph.nodes[node]["samples"] = [
+            self.G.nodes[node]["samples"] = [
                 sample_to_obsv_converter.convert(sample, run_fk=True) for sample in samples]
             attempts, samples, matched_ids = self._refit_node_model(
                 node, keyframe_sampler, constraints, number_of_samples)
@@ -120,23 +125,23 @@ class ACC_LFD():
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(
                     samples), number_of_samples)
             if len(samples) == 0:
-                self.graph.cull_node(node)
+                self.G.cull_node(node)
                 continue
             ranked_samples = self._rank_node_valid_samples(
                 node, samples, prior_sample)
-            self.graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(
+            self.G.nodes[node]["samples"] = [sample_to_obsv_converter.convert(
                 sample, run_fk=True) for sample in ranked_samples]
             prior_sample = ranked_samples[0]
 
         # Cull candidate keyframes.
-        for node in get_culling_candidates(self.graph, automate_threshold, culling_threshold):
-            self.graph.cull_node(node)
+        for node in get_culling_candidates(self.G, automate_threshold, culling_threshold):
+            self.G.cull_node(node)
 
     def _generate_samples(self, node, keyframe_sampler, number_of_samples, min_samples=5, constraint_attempts=10):
         validated_set = set()
         attempted_count = 0
         autoconstraint_sampler = AutoconstraintSampler(
-            self.graph.nodes[node]["autoconstraints"])
+            self.G.nodes[node]["autoconstraints"])
         valid_samples = []
         constraints = []
         autoconstraint_attempts = 0
@@ -147,16 +152,16 @@ class ACC_LFD():
             autoconstraint_attempts += 1
             constraints = autoconstraint_sampler.sample(validated_set)
             attempted_count, samples, validated_set = keyframe_sampler.sample(self.environment,
-                                                                              self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+                                                                              self.G.nodes[node]["model"], self.G.nodes[node]["primal_observation"], constraints, n=number_of_samples)
             valid_samples.extend(samples)
         return attempted_count, valid_samples, validated_set, autoconstraint_attempts, constraints
 
     def _refit_node_model(self, node, sampler, constraints, number_of_samples):
         # refit models
-        self.graph.fit_models_on_valid_samples(
+        self.G.fit_models_on_valid_samples(
             node, get_observation_joint_vector)
         attempted_count, samples, matched_ids = sampler.sample(self.environment,
-                                                               self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+                                                               self.G.nodes[node]["model"], self.G.nodes[node]["primal_observation"], constraints, n=number_of_samples)
         return attempted_count, samples, matched_ids
 
     def _rank_node_valid_samples(self, node, samples, prior_sample=None):
@@ -165,34 +170,22 @@ class ACC_LFD():
         # Order sampled points based on their intra-model log-likelihood if no prior sample if the first keyframe
         if prior_sample is None:
             ranked_samples = model_score_ranker.rank(
-                self.graph.nodes[node]["model"], samples)
+                self.G.nodes[node]["model"], samples)
         # else use the closest
         else:
             ranked_samples = configuration_ranker.rank(
-                self.graph.nodes[node]["model"], samples, prior_sample)
+                self.G.nodes[node]["model"], samples, prior_sample)
         return ranked_samples
 
     def perform_skill(self):
         """ Create a sequence of keyframe way points and execute motion plans to reconstruct skill """
         joint_config_array = []
-        for node in self.graph.get_keyframe_sequence():
-            sample = self.graph.nodes[node]["samples"][0]
+        for node in self.G.get_keyframe_sequence():
+            sample = self.G.nodes[node]["samples"][0]
             joints = sample.get_joint_angle()
             joint_config_array.append(joints)
 
         self.robot_interface.move_to_joint_targets(joint_config_array)
-
-    def generate_representation(self):
-        # TODO
-        pass
-
-    def serialize_out(self):
-        # TODO
-        json_data = {}
-
-    def serialize_in(self):
-        # TODO
-        pass
 
 
 class CC_LFD():
@@ -205,17 +198,20 @@ class CC_LFD():
         self.robot_interface = robot_interface
 
     def build_environment(self):
-        items = ItemFactory(self.configs).generate_items()
-        constraints = ConstraintFactory(self.configs).generate_constraints()
+        robots = RobotFactory(self.configs['robots']).generate_robots()
+        items = ItemFactory(self.configs['items']).generate_items()
+        triggers = TriggerFactory(self.configs['triggers']).generate_triggers()
+        constraints = ConstraintFactory(
+            self.configs['constraints']).generate_constraints()
         # We only have just the one robot...for now.......
-        self.environment = Environment(items=items['items'], robot=items['robots']
-                                       [0], constraints=constraints, triggers=None)
+        self.environment = Environment(
+            items=items, robot=robots[0], constraints=constraints, triggers=triggers)
 
     def build_keyframe_graph(self, labeled_demonstrations, bandwidth):
-        self.graph = KeyframeGraph()
-        self.graph['demonstrations'] = labeled_demonstrations
-        self.graph['bandiwdth'] = bandwidth
-        self.graph['intermediate_trajectories'] = IntermediateTrajectories().get_trajectories(labeled_demonstrations)
+        self.G = KeyframeGraph()
+        self.G.graph['labeled_demonstrations'] = labeled_demonstrations
+        self.G.graph['intermediate_trajectories'] = IntermediateTrajectories(
+        ).get_trajectories(labeled_demonstrations)
         keyframe_clustering = KeyframeClustering()
 
         """
@@ -224,15 +220,15 @@ class CC_LFD():
         """
         clusters = keyframe_clustering.get_clusters(labeled_demonstrations)
         for cluster_id in clusters.keys():
-            self.graph.add_node(cluster_id)
-            self.graph.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
-            self.graph.nodes[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
-            self.graph.nodes[cluster_id]["applied_constraints"] = clusters[cluster_id]["applied_constraints"]
-            self.graph.nodes[cluster_id]["model"] = KDEModel(
+            self.G.add_node(cluster_id)
+            self.G.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
+            self.G.nodes[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
+            self.G.nodes[cluster_id]["applied_constraints"] = clusters[cluster_id]["applied_constraints"]
+            self.G.nodes[cluster_id]["model"] = KDEModel(
                 kernel='gaussian', bandwidth=bandwidth)
-        self.graph.add_path(self.graph.nodes())
-        self.graph.fit_models(get_observation_joint_vector)
-        self.graph.identify_primal_observations(get_observation_joint_vector)
+        self.G.add_path(self.G.nodes())
+        self.G.fit_models(get_observation_joint_vector)
+        self.G.identify_primal_observations(get_observation_joint_vector)
 
     def sample_keyframes(self, number_of_samples, automate_threshold=False, culling_threshold=12):
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
@@ -241,7 +237,7 @@ class CC_LFD():
             sample_to_obsv_converter, self.robot_interface)
 
         prior_sample = None
-        for node in self.graph.get_keyframe_sequence():
+        for node in self.G.get_keyframe_sequence():
             rospy.loginfo("")
             rospy.loginfo("KEYFRAME: {}".format(node))
             attempts, samples, matched_ids, constraints = self._generate_samples(
@@ -252,9 +248,9 @@ class CC_LFD():
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(
                     samples), number_of_samples)
             if len(samples) == 0 and self.cull_overconstrained:
-                self.graph.cull_node(node)
+                self.G.cull_node(node)
                 continue
-            self.graph.nodes[node]["samples"] = [
+            self.G.nodes[node]["samples"] = [
                 sample_to_obsv_converter.convert(sample, run_fk=True) for sample in samples]
             attempts, samples, matched_ids = self._refit_node_model(
                 node, keyframe_sampler, constraints, number_of_samples)
@@ -264,53 +260,53 @@ class CC_LFD():
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(
                     samples), number_of_samples)
             if len(samples) == 0:
-                self.graph.cull_node(node)
+                self.G.cull_node(node)
                 continue
             ranked_samples = self._rank_node_valid_samples(
                 node, samples, prior_sample)
-            self.graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(
+            self.G.nodes[node]["samples"] = [sample_to_obsv_converter.convert(
                 sample, run_fk=True) for sample in ranked_samples]
             prior_sample = ranked_samples[0]
 
         # Cull candidate keyframes.
-        for node in get_culling_candidates(self.graph, automate_threshold, culling_threshold):
-            self.graph.cull_node(node)
+        for node in get_culling_candidates(self.G, automate_threshold, culling_threshold):
+            self.G.cull_node(node)
 
     def _generate_samples(self, node, sampler, number_of_samples):
 
-        if self.graph.nodes[node]["keyframe_type"] == "constraint_transition":
+        if self.G.nodes[node]["keyframe_type"] == "constraint_transition":
             rospy.loginfo("Sampling from a constraint transition keyframe.")
             constraints = [self.environment.get_constraint_by_id(
-                constraint_id) for constraint_id in self.graph.nodes[node]["applied_constraints"]]
+                constraint_id) for constraint_id in self.G.nodes[node]["applied_constraints"]]
             attempts, samples, matched_ids = sampler.sample(self.environment,
-                                                            self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+                                                            self.G.nodes[node]["model"], self.G.nodes[node]["primal_observation"], constraints, n=number_of_samples)
             if len(samples) == 0:
                 # Some constraints couldn't be sampled successfully, so using best available samples.
-                diff = list(set(self.graph.nodes[node]["applied_constraints"]).difference(
+                diff = list(set(self.G.nodes[node]["applied_constraints"]).difference(
                     set(matched_ids)))
                 if len(matched_ids) > 0:
                     rospy.logwarn(
                         "Constraints {} couldn't be met so attempting to find valid samples with constraints {}.".format(diff, matched_ids))
                     constraints = [self.environment.get_constraint_by_id(
-                        constraint_id) for constraint_id in self.graph.nodes[node]["applied_constraints"]]
+                        constraint_id) for constraint_id in self.G.nodes[node]["applied_constraints"]]
                     attempts, samples, matched_ids = sampler.sample(self.environment,
-                                                                    self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+                                                                    self.G.nodes[node]["model"], self.G.nodes[node]["primal_observation"], constraints, n=number_of_samples)
                 else:
                     rospy.logwarn(
                         "Constraints {} couldn't be met so. Cannot meet any constraints.".format(diff))
         else:
             constraints = [self.environment.get_constraint_by_id(
-                constraint_id) for constraint_id in self.graph.nodes[node]["applied_constraints"]]
+                constraint_id) for constraint_id in self.G.nodes[node]["applied_constraints"]]
             attempts, samples, matched_ids = sampler.sample(self.environment,
-                                                            self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+                                                            self.G.nodes[node]["model"], self.G.nodes[node]["primal_observation"], constraints, n=number_of_samples)
         return attempts, samples, matched_ids, constraints
 
     def _refit_node_model(self, node, sampler, constraints, number_of_samples):
         # refit models
-        self.graph.fit_models_on_valid_samples(
+        self.G.fit_models_on_valid_samples(
             node, get_observation_joint_vector)
         attempted_count, samples, matched_ids = sampler.sample(self.environment,
-                                                               self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+                                                               self.G.nodes[node]["model"], self.G.nodes[node]["primal_observation"], constraints, n=number_of_samples)
         return attempted_count, samples, matched_ids
 
     def _rank_node_valid_samples(self, node, samples, prior_sample=None):
@@ -319,11 +315,11 @@ class CC_LFD():
         # Order sampled points based on their intra-model log-likelihood if no prior sample if the first keyframe
         if prior_sample is None:
             ranked_samples = model_score_ranker.rank(
-                self.graph.nodes[node]["model"], samples)
+                self.G.nodes[node]["model"], samples)
         # else use the closest
         else:
             ranked_samples = configuration_ranker.rank(
-                self.graph.nodes[node]["model"], samples, prior_sample)
+                self.G.nodes[node]["model"], samples, prior_sample)
         return ranked_samples
 
     def perform_skill(self):
@@ -335,20 +331,20 @@ class CC_LFD():
             '/lfd/applied_constraints', AppliedConstraints, queue_size=10)
         rospy.sleep(5)
 
-        for i in range(len(self.graph.get_keyframe_sequence()) - 1):
-            cur_node = self.graph.get_keyframe_sequence()[i]
-            constraints = self.graph.nodes[cur_node]["applied_constraints"]
+        for i in range(len(self.G.get_keyframe_sequence()) - 1):
+            cur_node = self.G.get_keyframe_sequence()[i]
+            constraints = self.G.nodes[cur_node]["applied_constraints"]
             rospy.loginfo("Keyframe: {}; Constraints: {}".format(
                 cur_node, constraints))
             rospy.loginfo("")
 
-        for i in range(len(self.graph.get_keyframe_sequence()) - 1):
+        for i in range(len(self.G.get_keyframe_sequence()) - 1):
 
             # Grab nodes, samples, and joints
-            cur_node = self.graph.get_keyframe_sequence()[i]
-            next_node = self.graph.get_keyframe_sequence()[i + 1]
-            cur_sample = self.graph.nodes[cur_node]["samples"][0]
-            next_sample = self.graph.nodes[next_node]["samples"][0]
+            cur_node = self.G.get_keyframe_sequence()[i]
+            next_node = self.G.get_keyframe_sequence()[i + 1]
+            cur_sample = self.G.nodes[cur_node]["samples"][0]
+            next_sample = self.G.nodes[next_node]["samples"][0]
             cur_joints = cur_sample.get_joint_angle()
             next_joints = next_sample.get_joint_angle()
 
@@ -359,7 +355,7 @@ class CC_LFD():
             time_msg.timestamp = rospy.Time.now()
             time_pub.publish(time_msg)
 
-            constraints = self.graph.nodes[cur_node]["applied_constraints"]
+            constraints = self.G.nodes[cur_node]["applied_constraints"]
             constraints_msg = AppliedConstraints()
             constraints_msg.constraints = constraints
             constraint_pub.publish(constraints_msg)
@@ -373,14 +369,14 @@ class CC_LFD():
     def generate_representation(self):
         keyframe_data = {}
         keyframe_data["point_array"] = []
-        for node in self.graph.get_keyframe_sequence():
+        for node in self.G.get_keyframe_sequence():
             data = {}
-            data["applied_constraints"] = self.graph.nodes[node]["applied_constraints"]
+            data["applied_constraints"] = self.G.nodes[node]["applied_constraints"]
             robot_data = {}
             robot_data["position"] = list(
-                self.graph.nodes[node]["samples"][0].data["robot"]["position"])
+                self.G.nodes[node]["samples"][0].data["robot"]["position"])
             robot_data["orientation"] = list(
-                self.graph.nodes[node]["samples"][0].data["robot"]["orientation"])
+                self.G.nodes[node]["samples"][0].data["robot"]["orientation"])
             data["robot"] = robot_data
             data["keyframe_id"] = node
             keyframe_data["point_array"].append(data)
@@ -388,10 +384,24 @@ class CC_LFD():
 
     def model_update(self, update_data):
         for node, data in update_data.items():
-            self.graph.nodes[node]["applied_constraints"] = data["applied_constraints"]
+            self.G.nodes[node]["applied_constraints"] = data["applied_constraints"]
 
-    def serialize_out(self, location, name):
-        with file("lfd_model") as f:
+    def serialize_out(self, path):
+        data = {}
+        data['config'] = self.configs
+        data['labeled_demosntrations'] = [[obsv.data for obsv in demo.labeled_observations]
+                                          for demo in self.G.graph['labeled_demonstrations']]
+        data['intermediate_trajectories'] = {key: [[o.data for o in segment] for segment in group]
+                                             for key, group in self.G.graph['intermediate_trajectories'].iteritems()}
+        data['keyframes'] = {}
+        for i in range(len(self.G.get_keyframe_sequence()) - 1):
+            cur_node = self.G.get_keyframe_sequence()[i]
+            data['keyframes'][cur_node] = {}
+            data['keyframes'][cur_node]['applied_constraints'] = self.G.nodes[cur_node]["applied_constraints"]
+            data['keyframes'][cur_node]['observations'] = [
+                obsv.data for obsv in self.G.nodes[cur_node]["observations"]]
+            data['keyframes'][cur_node]['keyframe_type'] = self.G.nodes[cur_node]["keyframe_type"]
+        export_to_json(path, data)
 
 
 class LFD():
@@ -401,14 +411,17 @@ class LFD():
         self.robot_interface = robot_interface
 
     def build_environment(self):
-        items = ItemFactory(self.configs).generate_items()
-        constraints = ConstraintFactory(self.configs).generate_constraints()
+        robots = RobotFactory(self.configs['robots']).generate_robots()
+        items = ItemFactory(self.configs['items']).generate_items()
+        triggers = TriggerFactory(self.configs['triggers']).generate_triggers()
+        constraints = ConstraintFactory(
+            self.configs['constraints']).generate_constraints()
         # We only have just the one robot...for now.......
-        self.environment = Environment(items=items['items'], robot=items['robots']
-                                       [0], constraints=constraints, triggers=None)
+        self.environment = Environment(
+            items=items, robot=robots[0], constraints=constraints, triggers=triggers)
 
     def build_keyframe_graph(self, demonstrations, bandwidth):
-        self.graph = KeyframeGraph()
+        self.G = KeyframeGraph()
         keyframe_clustering = KeyframeClustering()
 
         """
@@ -417,15 +430,15 @@ class LFD():
         """
         clusters = keyframe_clustering.get_clusters(demonstrations)
         for cluster_id in clusters.keys():
-            self.graph.add_node(cluster_id)
-            self.graph.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
-            self.graph.nodes[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
-            self.graph.nodes[cluster_id]["applied_constraints"] = []
-            self.graph.nodes[cluster_id]["model"] = KDEModel(
+            self.G.add_node(cluster_id)
+            self.G.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
+            self.G.nodes[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
+            self.G.nodes[cluster_id]["applied_constraints"] = []
+            self.G.nodes[cluster_id]["model"] = KDEModel(
                 kernel='gaussian', bandwidth=bandwidth)
-        self.graph.add_path(self.graph.nodes())
-        self.graph.fit_models(get_observation_joint_vector)
-        self.graph.identify_primal_observations(get_observation_joint_vector)
+        self.G.add_path(self.G.nodes())
+        self.G.fit_models(get_observation_joint_vector)
+        self.G.identify_primal_observations(get_observation_joint_vector)
 
     def sample_keyframes(self, number_of_samples, automate_threshold=False, culling_threshold=-1000):
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
@@ -434,7 +447,7 @@ class LFD():
             sample_to_obsv_converter, self.robot_interface)
 
         prior_sample = None
-        for node in self.graph.get_keyframe_sequence():
+        for node in self.G.get_keyframe_sequence():
             rospy.loginfo("")
             rospy.loginfo("KEYFRAME: {}".format(node))
             attempts, samples, matched_ids, constraints = self._generate_samples(
@@ -445,9 +458,9 @@ class LFD():
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(
                     samples), number_of_samples)
             if len(samples) == 0:
-                self.graph.cull_node(node)
+                self.G.cull_node(node)
                 continue
-            self.graph.nodes[node]["samples"] = [
+            self.G.nodes[node]["samples"] = [
                 sample_to_obsv_converter.convert(sample, run_fk=True) for sample in samples]
             attempts, samples, matched_ids = self._refit_node_model(
                 node, keyframe_sampler, constraints, number_of_samples)
@@ -457,53 +470,53 @@ class LFD():
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(
                     samples), number_of_samples)
             if len(samples) == 0:
-                self.graph.cull_node(node)
+                self.G.cull_node(node)
                 continue
             ranked_samples = self._rank_node_valid_samples(
                 node, samples, prior_sample)
-            self.graph.nodes[node]["samples"] = [sample_to_obsv_converter.convert(
+            self.G.nodes[node]["samples"] = [sample_to_obsv_converter.convert(
                 sample, run_fk=True) for sample in ranked_samples]
             prior_sample = ranked_samples[0]
 
         # Cull candidate keyframes.
-        for node in get_culling_candidates(self.graph, automate_threshold, culling_threshold):
-            self.graph.cull_node(node)
+        for node in get_culling_candidates(self.G, automate_threshold, culling_threshold):
+            self.G.cull_node(node)
 
     def _generate_samples(self, node, sampler, number_of_samples):
 
-        if self.graph.nodes[node]["keyframe_type"] == "constraint_transition":
+        if self.G.nodes[node]["keyframe_type"] == "constraint_transition":
             rospy.loginfo("Sampling from a constraint transition keyframe.")
             constraints = [self.environment.get_constraint_by_id(
-                constraint_id) for constraint_id in self.graph.nodes[node]["applied_constraints"]]
+                constraint_id) for constraint_id in self.G.nodes[node]["applied_constraints"]]
             attempts, samples, matched_ids = sampler.sample(self.environment,
-                                                            self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+                                                            self.G.nodes[node]["model"], self.G.nodes[node]["primal_observation"], constraints, n=number_of_samples)
             if len(samples) == 0:
                 # Some constraints couldn't be sampled successfully, so using best available samples.
-                diff = list(set(self.graph.nodes[node]["applied_constraints"]).difference(
+                diff = list(set(self.G.nodes[node]["applied_constraints"]).difference(
                     set(matched_ids)))
                 if len(matched_ids) > 0:
                     rospy.logwarn(
                         "Constraints {} couldn't be met so attempting to find valid samples with constraints {}.".format(diff, matched_ids))
                     constraints = [self.environment.get_constraint_by_id(
-                        constraint_id) for constraint_id in self.graph.nodes[node]["applied_constraints"]]
+                        constraint_id) for constraint_id in self.G.nodes[node]["applied_constraints"]]
                     attempts, samples, matched_ids = sampler.sample(self.environment,
-                                                                    self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+                                                                    self.G.nodes[node]["model"], self.G.nodes[node]["primal_observation"], constraints, n=number_of_samples)
                 else:
                     rospy.logwarn(
                         "Constraints {} couldn't be met so. Cannot meet any constraints.".format(diff))
         else:
             constraints = [self.environment.get_constraint_by_id(
-                constraint_id) for constraint_id in self.graph.nodes[node]["applied_constraints"]]
+                constraint_id) for constraint_id in self.G.nodes[node]["applied_constraints"]]
             attempts, samples, matched_ids = sampler.sample(self.environment,
-                                                            self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+                                                            self.G.nodes[node]["model"], self.G.nodes[node]["primal_observation"], constraints, n=number_of_samples)
         return attempts, samples, matched_ids, constraints
 
     def _refit_node_model(self, node, sampler, constraints, number_of_samples):
         # refit models
-        self.graph.fit_models_on_valid_samples(
+        self.G.fit_models_on_valid_samples(
             node, get_observation_joint_vector)
         attempted_count, samples, matched_ids = sampler.sample(self.environment,
-                                                               self.graph.nodes[node]["model"], self.graph.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+                                                               self.G.nodes[node]["model"], self.G.nodes[node]["primal_observation"], constraints, n=number_of_samples)
         return attempted_count, samples, matched_ids
 
     def _rank_node_valid_samples(self, node, samples, prior_sample=None):
@@ -512,11 +525,11 @@ class LFD():
         # Order sampled points based on their intra-model log-likelihood if no prior sample if the first keyframe
         if prior_sample is None:
             ranked_samples = model_score_ranker.rank(
-                self.graph.nodes[node]["model"], samples)
+                self.G.nodes[node]["model"], samples)
         # else use the closest
         else:
             ranked_samples = configuration_ranker.rank(
-                self.graph.nodes[node]["model"], samples, prior_sample)
+                self.G.nodes[node]["model"], samples, prior_sample)
         return ranked_samples
 
     def perform_skill(self):
@@ -527,20 +540,20 @@ class LFD():
         constraint_pub = rospy.Publisher(
             '/lfd/applied_constraints', AppliedConstraints, queue_size=10)
         rospy.sleep(5)
-        for i in range(len(self.graph.get_keyframe_sequence()) - 1):
-            cur_node = self.graph.get_keyframe_sequence()[i]
-            constraints = self.graph.nodes[cur_node]["applied_constraints"]
+        for i in range(len(self.G.get_keyframe_sequence()) - 1):
+            cur_node = self.G.get_keyframe_sequence()[i]
+            constraints = self.G.nodes[cur_node]["applied_constraints"]
             rospy.loginfo("Keyframe: {}; Constraints: {}".format(
                 cur_node, constraints))
             rospy.loginfo("")
 
-        for i in range(len(self.graph.get_keyframe_sequence()) - 1):
+        for i in range(len(self.G.get_keyframe_sequence()) - 1):
 
             # Grab nodes, samples, and joints
-            cur_node = self.graph.get_keyframe_sequence()[i]
-            next_node = self.graph.get_keyframe_sequence()[i + 1]
-            cur_sample = self.graph.nodes[cur_node]["samples"][0]
-            next_sample = self.graph.nodes[next_node]["samples"][0]
+            cur_node = self.G.get_keyframe_sequence()[i]
+            next_node = self.G.get_keyframe_sequence()[i + 1]
+            cur_sample = self.G.nodes[cur_node]["samples"][0]
+            next_sample = self.G.nodes[next_node]["samples"][0]
             cur_joints = cur_sample.get_joint_angle()
             next_joints = next_sample.get_joint_angle()
 
@@ -551,7 +564,7 @@ class LFD():
             # time_msg.timestamp = rospy.Time.now()
             # time_pub.publish(time_msg)
 
-            constraints = self.graph.nodes[cur_node]["applied_constraints"]
+            constraints = self.G.nodes[cur_node]["applied_constraints"]
             constraints_msg = AppliedConstraints()
             constraints_msg.constraints = constraints
             constraint_pub.publish(constraints_msg)
@@ -563,9 +576,9 @@ class LFD():
 
     def generate_representation(self):
         keyframe_data = {}
-        for node in self.graph.get_keyframe_sequence():
+        for node in self.G.get_keyframe_sequence():
             data = {}
-            data["applied_constraints"] = self.graph.nodes[node]["applied_constraints"]
-            data["observation"] = self.graph.nodes[node]["samples"][0].data
+            data["applied_constraints"] = self.G.nodes[node]["applied_constraints"]
+            data["observation"] = self.G.nodes[node]["samples"][0].data
             keyframe_data[node] = data
         return keyframe_data

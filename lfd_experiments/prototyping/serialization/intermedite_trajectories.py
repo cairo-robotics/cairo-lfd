@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import json
 
 import rospy
 import argparse
@@ -61,15 +62,10 @@ def main():
     args = parser.parse_args(rospy.myargv()[1:])
     
     inter_trajectories = IntermediateTrajectories().get_trajectories(demonstrations)
-    print(inter_trajectories.keys())
-    print(len(inter_trajectories[27]))
-    print(len(inter_trajectories[11]))
-    print(len(inter_trajectories[27][0]))
-    print(len(inter_trajectories[27][1]))
-    print(len(inter_trajectories[11][0]))
-    print(len(inter_trajectories[11][1]))
-    print(inter_trajectories[27][0][0])
-    print(inter_trajectories[11][1][0])
+    it_data = {key: [[o.data for o in segment] for segment in group]
+                                             for key, group in inter_trajectories.iteritems()}
+    with file('./intermediate_trajectories.json', "w") as f:
+        json.dump(it_data, f)
 
     # for idx, demo in enumerate(demonstrations):
     #     labeled_data = [obs.data for obs in demo.observations]

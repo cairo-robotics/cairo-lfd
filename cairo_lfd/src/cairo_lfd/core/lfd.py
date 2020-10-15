@@ -1,6 +1,4 @@
-
 import rospy
-
 
 from cairo_lfd_msgs.msg import NodeTime
 from cairo_lfd.core.environment import Environment
@@ -394,8 +392,7 @@ class CC_LFD():
         data['intermediate_trajectories'] = {key: [[o.data for o in segment] for segment in group]
                                              for key, group in self.G.graph['intermediate_trajectories'].iteritems()}
         data['keyframes'] = {}
-        for i in range(len(self.G.get_keyframe_sequence()) - 1):
-            cur_node = self.G.get_keyframe_sequence()[i]
+        for cur_node in self.G.get_keyframe_sequence():
             data['keyframes'][cur_node] = {}
             data['keyframes'][cur_node]['applied_constraints'] = self.G.nodes[cur_node]["applied_constraints"]
             data['keyframes'][cur_node]['observations'] = [

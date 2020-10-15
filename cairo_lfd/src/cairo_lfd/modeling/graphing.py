@@ -186,6 +186,15 @@ class IntermediateTrajectories():
         """
         Takes in a list of 'labeled' demonstrations on which to extract the groups of intermediate trajectores (slices from each demo) that represent intermediate trajectories leading up to a constraint transition region. 
 
+        For example, if constraint set changes occur at keyframe 3 and 5 of a keyframe id sequence of 1 to 7
+        then the corresponding intermediate trajectories will be sliced accordingly:
+
+        clusters = {
+            3: [trajectories leading up to keyframe 3],
+            5: [trajectories leading up to keyframe 5],
+            7: [trajectories leading up to ending keyframe 7]
+        }
+
         Parameters
         ----------
         labeled_demonstrations : list
@@ -198,14 +207,16 @@ class IntermediateTrajectories():
         """
         id_sequence = self._constraint_transition_id_sequence(
             labeled_demonstrations[0])
+
+        id_sequence.append(self._get_last_keyframe_id(labeled_demonstrations[0]))
         trajectory_groups = {}
-        for transition_id in id_sequence:
+        for seq_id in id_sequence:
             group = []
             for demo in labeled_demonstrations:
                 trajectory_slice = []
                 for obsv in demo.labeled_observations:
                     keyframe_id, keyframe_type = obsv.get_keyframe_info()
-                    if keyframe_id != transition_id:
+                    if keyframe_id != seq_id:
                         trajectory_slice.append(obsv)
                     else:
                         break
@@ -221,3 +232,11 @@ class IntermediateTrajectories():
                 if keyframe_id not in sequence:
                     sequence.append(keyframe_id)
         return sequence
+    
+    def _get_last_keyframe_id(self, demonstration):
+        sequence = []
+        for obsv in demonstration.labeled_observations:
+            keyframe_id, keyframe_type = obsv.get_keyframe_info()
+            if keyframe_id not in sequence:
+                sequence.append(keyframe_id)
+        return sequence[-1]

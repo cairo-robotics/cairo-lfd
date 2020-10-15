@@ -87,7 +87,7 @@ class ARStudyController():
                 dirname = './' + self.output_directory + '/' + self.task + '/' + self.subject
                 if not os.path.exists(dirname):
                     os.makedirs(dirname)
-                path = dirname + '/serialization_' + unique_filename
+                path = dirname + '/serialization_' + unique_filename + '.json'
                 self.lfd_model.serialize_out(path)
                 self._clear_command()
 
@@ -252,7 +252,7 @@ class ACCLfDController():
                 dirname = './' + self.output_directory + '/' + self.task + '/' + self.subject
                 if not os.path.exists(dirname):
                     os.makedirs(dirname)
-                path = dirname + '/serialization_' + unique_filename
+                path = dirname + '/serialization_' + unique_filename + '.json'
                 self.lfd_model.serialize_out(path)
                 self._clear_command()
 
@@ -369,7 +369,7 @@ class CCLfDController():
                 dirname = './' + self.output_directory + '/' + self.task + '/' + self.subject
                 if not os.path.exists(dirname):
                     os.makedirs(dirname)
-                path = dirname + '/serialization_' + unique_filename
+                path = dirname + '/serialization_' + unique_filename + '.json'
                 self.lfd_model.serialize_out(path)
                 self._clear_command()
 
@@ -491,7 +491,7 @@ class LfDController():
                 dirname = './' + self.output_directory + '/' + self.task + '/' + self.subject
                 if not os.path.exists(dirname):
                     os.makedirs(dirname)
-                path = dirname + '/serialization_' + unique_filename
+                path = dirname + '/serialization_' + unique_filename + '.json'
                 self.lfd_model.serialize_out(path)
                 self._clear_command()
 
@@ -601,7 +601,7 @@ class FeedbackLfDStudyController():
                 dirname = './' + self.output_directory + '/' + self.task + '/' + self.subject
                 if not os.path.exists(dirname):
                     os.makedirs(dirname)
-                path = dirname + '/serialization_' + unique_filename
+                path = dirname + '/serialization_' + unique_filename + '.json'
                 self.lfd_model.serialize_out(path)
                 self._clear_command()
 

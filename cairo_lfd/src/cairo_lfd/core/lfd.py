@@ -380,9 +380,13 @@ class CC_LFD():
             keyframe_data["point_array"].append(data)
         return keyframe_data
 
-    def model_update(self, update_data):
-        for node, data in update_data.items():
+    def update_applied_constraints(self, applied_constraints_udpate):
+        for node, data in applied_constraints_udpate.items():
             self.G.nodes[node]["applied_constraints"] = data["applied_constraints"]
+
+    def update_constraints(self, constraint_config_update):
+        constraints = ConstraintFactory(constraint_config_update).generate_constraints()
+        self.environment.constraints = constraints
 
     def serialize_out(self, path):
         data = {}

@@ -140,6 +140,85 @@ class ARVRFixedTransform(object):
         return device_pose
 
 
+def remap_constraints_for_lfd(json_msg):
+
+    def height_constraint_below(constraint_id, args):
+        return {
+            "class": "PlanarConstraint",
+            "init_args":
+            {
+                "constraint_id": int(constraint_id),
+                "item_id": 1,
+                "reference_position": float(args[0]),
+                "threshold_distance": float(args[1]),
+                "direction": "negative",
+                "axis": "z"
+            }
+        }
+
+    def height_constraint_above(constraint_id, args):
+        return {
+            "class": "PlanarConstraint",
+            "init_args":
+            {
+                "constraint_id": int(constraint_id),
+                "item_id": 1,
+                "reference_position": float(args[0]),
+                "threshold_distance": float(args[1]),
+                "direction": "positive",
+                "axis": "z"
+            }
+        }
+
+    def upright_constraint(constraint_id, args):
+        return {
+            "class": "OrientationConstraint",
+            "init_args":
+                {
+                    "constraint_id": int(constraint_id),
+                    "item_id": 1,
+                    "threshold_angle": float(args[4]),
+                    "reference_orientation": [float(arg) for arg in args[0:4]],
+                    "axis": "z"
+                }
+        }
+
+    def over_under_constraint(constraint_id, args):
+        return {
+            "class": "OverUnderConstraint",
+            "init_args":
+                {
+                    "constraint_id": int(constraint_id),
+                    "above_item_id": 1,
+                    "below_item_id": 2,
+                    "threshold_distance": float(args[3]),
+                    "reference_pose": {
+                        "position": [float(arg) for arg in args[0:3]],
+                        "orientation": [0, 0, 0, 1.0]
+                    },
+                    "axis": "z"
+                }
+        }
+
+    mapping_functions = {
+        "HeightConstraintBelow": height_constraint_below,
+        "HeightConstraintAbove": height_constraint_above,
+        "UprightConstraint": upright_constraint,
+        "OverUnderConstraint": over_under_constraint
+    }
+
+    ar_constraints = json_msg["constraints"]
+
+    lfd_constraints = []
+
+    for constraint in ar_constraints:
+        class_name = constraint["className"]
+        cst_func = mapping_functions[class_name]
+        lfd_constraints.append(cst_func(constraint["id"], constraint["args"]))
+
+    return lfd_constraints
+
+
 class AR4LfDMiddleware(object):
 
     def __init__(self, command_topic, request_topic, traj_representation_topic, hololens_pub_topic):
@@ -156,7 +235,7 @@ class AR4LfDMiddleware(object):
 
         # Create transform manager (position and axes hardcoded for now)
         self.transform_manager = ARVRFixedTransform("hololens", Vector3(1.15, 0.0, -0.2632),
-                                                       Quaternion(0.0, 0.0, 1.0, 0.0), [[0, 0, 1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1]])
+                                                    Quaternion(0.0, 0.0, 1.0, 0.0), [[0, 0, 1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1]])
 
         # Initialize Publishers
         self.request_pub = rospy.Publisher(request_topic, String, queue_size=1)

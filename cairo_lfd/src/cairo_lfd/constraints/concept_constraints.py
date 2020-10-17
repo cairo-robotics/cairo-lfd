@@ -99,7 +99,7 @@ class ConeConstraint(object):
     """
     The ConeConstraint class evaluates the orientation predicate classifier assigned to a given item.
 
-    orientation() returns true if object's orientation is within a cone centered around a given axis and with a threshold angle dead center in that cone. 
+    orientation() returns true if object's orientation is within a cone centered around a given axis and with a threshold angle the allowed deviations from dead center in that cone. 
 
     Attributes
     ----------
@@ -173,9 +173,11 @@ class ConeConstraint(object):
 
 class OrientationConstraint(object):
     """
-    The ConeConstraint class evaluates the orientation predicate classifier assigned to a given item.
+    The OrientationConstraint class evaluates constraint validity using the cone and twist predicate classifiers.
 
-    orientation() returns true if object's orientation is within a cone centered around a given axis and with a threshold angle dead center in that cone.
+    orientation() returns true if object's orientation is within a cone centered around a given axis and with a 
+    threshold angle dead center in that cone as well as ensuring the item is not twisted about that axis by the same
+    degree threshold.
 
     Attributes
     ----------
@@ -183,7 +185,7 @@ class OrientationConstraint(object):
         Id of the constraint as defined in the config.json file.
     item_id : int
         Id of the item on which the constraint can be applied.
-     threshold_angle : int
+    threshold_angle : int
         The angle within which the assigned item's (from item_id) current orientation must be compared with its
         defined upright position.
     axis : int

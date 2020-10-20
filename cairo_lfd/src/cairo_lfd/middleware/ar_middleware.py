@@ -20,7 +20,7 @@ def arvr_to_world(msg, transformation_matrix):
     """
     This is a helper function to transform a arvr coordinate to the world space when given the
     selector transformation matrix that is specific to that arvr device.
-    :type msg: TransformStamped
+    :type msg: PoseStamped
     :type transformation_matrix: np.ndarray
     :param msg:
     :param transformation_matrix:
@@ -151,17 +151,18 @@ class ARVRFixedTransform(object):
             self.inverse_transform = self.tf2_buffer.lookup_transform(
                 "world", self.name, rospy.Time(0), rospy.Duration(1.0))
             self.last_inverse_lookup = time.time()
-
-        # switch coordinate axes
-        world_pose = arvr_to_world(pose, self.selector_matrix)
-
-        # apply transform to point
+        
         pose_stamped = PoseStamped()
         pose_stamped.header.frame_id = self.name
         pose_stamped.header.stamp = rospy.Time.now()
-        pose_stamped.pose = world_pose
+        pose_stamped.pose = pose
+
+        # switch coordinate axes
+        world_pose = arvr_to_world(pose_stamped, self.selector_matrix)
+
+        # apply transform to point
         transformed_pose = tf2_geometry_msgs.do_transform_pose(
-            pose_stamped, self.inverse_transform)
+            world_pose, self.inverse_transform)
 
         return transformed_pose
 
@@ -328,8 +329,8 @@ class AR4LfDMiddleware(object):
             elif(constraint["className"] == "UprightConstraint"):
                 # Transform upright constraint
                 updated_pose = self.transform_manager.hololens_to_world(Pose(
-                    Point(0, 0, 0), Quaternion(self.constraint["args"][0], self.constraint["args"][1],
-                    self.constraint["args"][2], self.constraint["args"][3])))
+                    Point(0, 0, 0), Quaternion(constraint["args"][0], constraint["args"][1],
+                    constraint["args"][2], constraint["args"][3])))
                 constraint["args"][0] = updated_pose.pose.orientation.x
                 constraint["args"][1] = updated_pose.pose.orientation.y
                 constraint["args"][2] = updated_pose.pose.orientation.z
@@ -337,7 +338,7 @@ class AR4LfDMiddleware(object):
             elif(constraint["className"] == "OverUnderConstraint"):
                 # Transform over-under constraint
                 updated_pose = self.transform_manager.hololens_to_world(Pose(
-                    Point(self.constraint["args"][0], self.constraint["args"][1], self.constraint["args"][2]), 
+                    Point(constraint["args"][0], constraint["args"][1], constraint["args"][2]), 
                     Quaternion(0, 0, 0, 1)))
                 constraint["args"][0] = updated_pose.pose.position.x
                 constraint["args"][1] = updated_pose.pose.position.y

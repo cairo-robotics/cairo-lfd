@@ -89,7 +89,9 @@ class ARVRFixedTransform(object):
         self.name = name
         self.selector_matrix = np.array(selector_matrix)
         self.last_lookup = time.time()
+        self.last_inverse_lookup = None
         self.frame_transform = None
+        self.inverse_transform = None
         self._update_transform(origin_translation, origin_rotation)
 
         # TF Specific Stuff
@@ -138,6 +140,30 @@ class ARVRFixedTransform(object):
         # switch coordinate axes
         device_pose = world_to_arvr(transformed_pose, self.selector_matrix)
         return device_pose
+
+    def hololens_to_world(self, pose):
+        """
+        :type pose: Pose
+        :param pose: point in HoloLens coordinates to be transformed to world space
+        """
+        # lookup transform between this device and world if it has been longer than one second since last lookup
+        if(self.last_inverse_lookup is None or time.time() - self.last_inverse_lookup > 1):
+            self.inverse_transform = self.tf2_buffer.lookup_transform(
+                "world", self.name, rospy.Time(0), rospy.Duration(1.0))
+            self.last_inverse_lookup = time.time()
+
+        # switch coordinate axes
+        world_pose = arvr_to_world(pose, self.selector_matrix)
+
+        # apply transform to point
+        pose_stamped = PoseStamped()
+        pose_stamped.header.frame_id = self.name
+        pose_stamped.header.stamp = rospy.Time.now()
+        pose_stamped.pose = world_pose
+        transformed_pose = tf2_geometry_msgs.do_transform_pose(
+            pose_stamped, self.inverse_transform)
+
+        return transformed_pose
 
 
 def remap_constraints_for_lfd(json_msg):
@@ -221,7 +247,7 @@ def remap_constraints_for_lfd(json_msg):
 
 class AR4LfDMiddleware(object):
 
-    def __init__(self, command_topic, request_topic, traj_representation_topic, hololens_pub_topic):
+    def __init__(self, command_topic, request_topic, traj_representation_topic, hololens_pub_topic, constraint_edits_in, constraint_edits_out):
         """
         :type command_topic: str
         :type request_topic: str
@@ -241,12 +267,16 @@ class AR4LfDMiddleware(object):
         self.request_pub = rospy.Publisher(request_topic, String, queue_size=1)
         self.hololens_pub = rospy.Publisher(
             hololens_pub_topic, String, queue_size=1)
+        self.constraints_pub = rospy.Publisher(
+            constraint_edits_out, String, queue_size=1)
 
         # Initialize Subscribers
         self.command_sub = rospy.Subscriber(
             command_topic, String, self._command_cb)
         self.trajectory_sub = rospy.Subscriber(
             traj_representation_topic, String, self._trajectory_cb)
+        self.constraints_sub = rospy.Subscriber(
+            constraint_edits_in, String, self._constraint_cb)
 
     def _command_cb(self, msg):
         '''
@@ -286,3 +316,36 @@ class AR4LfDMiddleware(object):
         keyframe_msg = String()
         keyframe_msg.data = json.dumps(traj_pusher)
         self.hololens_pub.publish(keyframe_msg)
+
+    def _constraint_cb(self, msg):
+        constraint_msg = json.loads(msg.data)
+        for constraint in constraint_msg["constraints"]:
+            if(constraint["className"] == "HeightConstraintAbove" or constraint["className"] == "HeightConstraintBelow"):
+                # Transform height constraint
+                updated_pose = self.transform_manager.hololens_to_world(Pose(
+                    Point(0, constraint["args"][0], 0), Quaternion(0, 0, 0, 1)))
+                constraint["args"][0] = updated_pose.pose.position.z
+            elif(constraint["className"] == "UprightConstraint"):
+                # Transform upright constraint
+                updated_pose = self.transform_manager.hololens_to_world(Pose(
+                    Point(0, 0, 0), Quaternion(self.constraint["args"][0], self.constraint["args"][1],
+                    self.constraint["args"][2], self.constraint["args"][3])))
+                constraint["args"][0] = updated_pose.pose.orientation.x
+                constraint["args"][1] = updated_pose.pose.orientation.y
+                constraint["args"][2] = updated_pose.pose.orientation.z
+                constraint["args"][3] = updated_pose.pose.orientation.w
+            elif(constraint["className"] == "OverUnderConstraint"):
+                # Transform over-under constraint
+                updated_pose = self.transform_manager.hololens_to_world(Pose(
+                    Point(self.constraint["args"][0], self.constraint["args"][1], self.constraint["args"][2]), 
+                    Quaternion(0, 0, 0, 1)))
+                constraint["args"][0] = updated_pose.pose.position.x
+                constraint["args"][1] = updated_pose.pose.position.y
+                constraint["args"][2] = updated_pose.pose.position.z
+            else:
+                # Unsupported constraint type
+                rospy.logwarn("Unsupported constraint type passed to transformer, being passed on as-is")
+
+        transformed_constraint_msg = String()
+        transformed_constraint_msg.data = json.dumps(constraint_msg)
+        self.constraints_pub.publish(transformed_constraint_msg)

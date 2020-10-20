@@ -380,18 +380,27 @@ class CC_LFD():
             keyframe_data["point_array"].append(data)
         return keyframe_data
 
-    def update_applied_constraints(self, applied_constraints_udpate):
-        for node, data in applied_constraints_udpate.items():
+    def update_applied_constraints(self, applied_constraints_update):
+        for node, data in applied_constraints_update.items():
             self.G.nodes[node]["applied_constraints"] = data["applied_constraints"]
 
     def update_constraints(self, constraint_config_update):
-        constraints = ConstraintFactory(constraint_config_update).generate_constraints()
+        new_constraints = ConstraintFactory(constraint_config_update).generate_constraints()
+        current_constraints = self.environment.constraints
+        for curr_idx, curr in enumerate(self.environment.constraints):
+            for new_idx, new in enumerate(new_constraints):
+                if new.id == curr.id:
+                    self.environment.constraints[curr_idx] = new
+                    new_constraints.pop(new_idx)
+                    break
+        constraints = current_constraints + new_constraints
         self.environment.constraints = constraints
+        print("Current Environment Constraints: {}".format(self.environment.constraints))
 
     def serialize_out(self, path):
         data = {}
         data['config'] = self.configs
-        data['labeled_demosntrations'] = [[obsv.data for obsv in demo.labeled_observations]
+        data['labeled_demonstrations'] = [[obsv.data for obsv in demo.labeled_observations]
                                           for demo in self.G.graph['labeled_demonstrations']]
         data['intermediate_trajectories'] = {key: [[o.data for o in segment] for segment in group]
                                              for key, group in self.G.graph['intermediate_trajectories'].iteritems()}

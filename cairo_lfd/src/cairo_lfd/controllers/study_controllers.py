@@ -131,8 +131,8 @@ class ARStudyController():
 
     def _update_constraints_callback(self, msg):
         unity_json_data = json.loads(msg.data)
-        new_constraint_configs = remap_constraints_for_lfd(unity_json_data)
-        self.lfd_model.update_constraints(new_constraint_configs)
+        constraint_configs = remap_constraints_for_lfd(unity_json_data)
+        self.lfd_model.update_constraints(constraint_configs)
         self.lfd_model.sample_keyframes(
             self.lfd_model.settings.get("number_of_samples", .025))
 

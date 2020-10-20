@@ -17,7 +17,7 @@ class GracefulQuit:
         signal.signal(signal.SIGTERM, self.exit_gracefully)
 
     def exit_gracefully(self, signum, frame):
-        self.kill_now = True
+        self.kill = True
 
 def main():
     rospy.init_node("constraint_update_test")
@@ -25,8 +25,8 @@ def main():
     fd = os.path.dirname(os.path.abspath(__file__))
     ar_constraint_data = load_json_file(fd + "/ar_constraints_test.json")
     print("Publishing: {}".format(json.dumps(ar_constraint_data)))
-    quit = GracefulQuit()
-    while not quit.kill:
+    g_quit = GracefulQuit()
+    while not g_quit.kill:
         rospy.sleep(1)
         pub.publish(json.dumps(ar_constraint_data))
 

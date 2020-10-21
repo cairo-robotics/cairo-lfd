@@ -1,4 +1,4 @@
-Check out the config_commented.json for some notes about what goes into the config_commented.json 
+Check out the config_commented.json for some notes about what goes into the configuration files.
 
 Recording a new skill:
 

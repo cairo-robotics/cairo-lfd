@@ -131,7 +131,7 @@ def import_csv_to_dict(path):
     return entries
 
 
-def import_json_to_dict(path):
+def import_trajectory_json_to_dict(path):
     """
     Import trajectories stored as .json files into a Ordered Dictionary. In this case, each file represents
     a single trajectory/demonstration.

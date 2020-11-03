@@ -6,7 +6,7 @@ import rospy
 from std_msgs.msg import String
 
 from cairo_lfd.data.io import export_to_json
-
+from cairo_lfd.middleware.ar_middleware import remap_constraints_for_lfd
 
 class ARStudyController():
     """
@@ -26,8 +26,10 @@ class ARStudyController():
         self.lfd_model = lfd_model
         self.recorder = recorder
         self.labeler = labeler
-        self.update_subscriber = rospy.Subscriber(
-            '/cairo_lfd/model_update', String, self._update_callback)
+        self.keyframe_update_subscriber = rospy.Subscriber(
+            '/cairo_lfd/keyframe_update', String, self._update_keyframe_callback)
+        self.constraint_update_subscriber = rospy.Subscriber(
+            '/cairo_lfd/constraint_update', String, self._update_constraints_callback)
         self.command_subscriber = rospy.Subscriber(
             '/cairo_lfd/model_commands', String, self._command_callback)
         self.representation_publisher = rospy.Publisher(
@@ -116,14 +118,21 @@ class ARStudyController():
     def _command_callback(self, msg):
         self.command = msg.data
 
-    def _update_callback(self, msg):
+    def _update_keyframe_callback(self, msg):
         unity_json_data = json.loads(msg.data)
         parsed_data = {}
         for node, data in unity_json_data.items():
             parsed_data[int(node)] = {"applied_constraints": [int(
                 value) for value in data["applied_constraints"] if "applied_constraints" in data.keys()]}
-        self.lfd_model.model_update(parsed_data)
+        self.lfd_model.update_applied_constraints(parsed_data)
         # Sample and refit existing keyframe models.
+        self.lfd_model.sample_keyframes(
+            self.lfd_model.settings.get("number_of_samples", .025))
+
+    def _update_constraints_callback(self, msg):
+        unity_json_data = json.loads(msg.data)
+        constraint_configs = remap_constraints_for_lfd(unity_json_data)
+        self.lfd_model.update_constraints(constraint_configs)
         self.lfd_model.sample_keyframes(
             self.lfd_model.settings.get("number_of_samples", .025))
 

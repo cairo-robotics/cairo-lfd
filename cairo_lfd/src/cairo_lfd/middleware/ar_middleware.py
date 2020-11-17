@@ -342,7 +342,8 @@ class AR4LfDMiddleware(object):
                     Quaternion(0, 0, 0, 1)))
                 constraint["args"][0] = updated_pose.pose.position.x
                 constraint["args"][1] = updated_pose.pose.position.y
-                constraint["args"][2] = updated_pose.pose.position.z
+                #Subtract half a meter to make up for hololens visualization. TODO: fix this on HoloLens side
+                constraint["args"][2] = updated_pose.pose.position.z - 0.5
             else:
                 # Unsupported constraint type
                 rospy.logwarn("Unsupported constraint type passed to transformer, being passed on as-is")

@@ -331,6 +331,7 @@ class OverUnderConstraint(object):
         if self.reference_pose is None:
             above_pose, below_pose = self._get_poses(environment, observation)
         else:
+            rospy.logdebug("Using reference pose")
             above_pose, below_pose = self._get_poses_with_reference(environment, observation)
 
         return over_under(above_pose, below_pose, self.threshold_distance, axis=self.axis)

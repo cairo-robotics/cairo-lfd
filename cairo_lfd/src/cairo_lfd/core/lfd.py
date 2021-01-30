@@ -26,13 +26,14 @@ class ACC_LFD():
         self.robot_interface = robot_interface
 
     def build_environment(self):
-        items = ItemFactory(
-            self.configs["robots"], self.configs['items']).generate_items()
+        robots = RobotFactory(self.configs['robots']).generate_robots()
+        items = ItemFactory(self.configs['items']).generate_items()
+        triggers = TriggerFactory(self.configs['triggers']).generate_triggers()
         constraints = ConstraintFactory(
             self.configs["constraints"]).generate_constraints()
         # We only have just the one robot...for now.......
-        self.environment = Environment(items=items['items'], robot=items['robots']
-                                       [0], constraints=constraints, triggers=None)
+        self.environment = Environment(
+            items=items, robot=robots[0], constraints=constraints, triggers=triggers)
 
     def build_keyframe_graph(self, demonstrations, bandwidth, vectorizor=None):
         self.G = KeyframeGraph()

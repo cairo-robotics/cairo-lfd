@@ -5,6 +5,7 @@ import argparse
 import intera_interface
 import sys
 import select
+import transforms3d
 from intera_interface import CHECK_VERSION
 from intera_core_msgs.msg import InteractionControlCommand
 from geometry_msgs.msg import Pose
@@ -14,8 +15,30 @@ from cairo_lfd.core.environment import Environment, Observation
 from cairo_lfd.core.items import ItemFactory
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory
 from cairo_lfd.constraints.triggers import TriggerFactory
-from cairo_lfd.modeling.analysis import ConstraintAnalyzer
-from cairo_lfd.data.io import DataExporter, import_configuration
+from cairo_lfd.modeling.analysis import check_constraint_validity
+from cairo_lfd.data.io import load_lfd_configuration
+
+import os
+import argparse
+import sys
+import select
+
+import transforms3d
+import rospy
+import intera_interface
+from intera_interface import CHECK_VERSION
+
+from robot_interface.moveit_interface import SawyerMoveitInterface
+from cairo_lfd.core.record import SawyerDemonstrationRecorder, SawyerDemonstrationLabeler
+from cairo_lfd.core.environment import Observation, Demonstration
+from cairo_lfd.data.io import load_json_files, load_lfd_configuration
+from cairo_lfd.data.vectorization import vectorize_demonstration, get_observation_joint_vector
+from cairo_lfd.data.alignment import DemonstrationAlignment
+from cairo_lfd.data.processing import DataProcessingPipeline, RelativeKinematicsProcessor, RelativePositionProcessor, InContactProcessor, SphereOfInfluenceProcessor, WithinPerimeterProcessor
+from cairo_lfd.constraints.concept_constraints import ConstraintFactory
+from cairo_lfd.core.robots import RobotFactory
+from cairo_lfd.core.lfd import CC_LFD
+from cairo_lfd.controllers.study_controllers import CCLfDController
 
 
 def main():
@@ -68,21 +91,21 @@ def main():
     rospy.on_shutdown(interaction_pub.send_position_mode_cmd)
     interaction_pub.external_rate_send_command(interaction_options)
     config_filepath = args.config
-    configs = import_configuration(config_filepath)
+    configs = load_lfd_configuration(config_filepath)
 
-    items = ItemFactory(configs).generate_items()
-    triggers = TriggerFactory(configs).generate_triggers()
-    constraints = ConstraintFactory(configs).generate_constraints()
+    robots = RobotFactory(configs['robots']).generate_robots()
+    items = ItemFactory(configs['items']).generate_items()
+    triggers = TriggerFactory(configs['triggers']).generate_triggers()
+    constraints = ConstraintFactory(configs["constraints"]).generate_constraints()
     constraint_ids = [constraint.id for constraint in constraints]
     print("Constraint IDs: {}".format(constraint_ids))
     # We only have just the one robot...for now.......
-    environment = Environment(items=items['items'], robot=items['robots'][0], constraints=constraints, triggers=triggers)
-
-    constraint_analyzer = ConstraintAnalyzer(environment)
+    environment = Environment(
+            items=items, robot=robots[0], constraints=constraints, triggers=triggers)
 
     user_input = ""
     while environment.robot._navigator.get_button_state("right_button_back") != 2 or user_input == "q":
-        stdin, stdout, stderr = select.select([sys.stdin], [], [], .0001)
+        stdin, _, _ = select.select([sys.stdin], [], [], .0001)
         for s in stdin:
             if s == sys.stdin:
                 user_input = sys.stdin.readline().strip()
@@ -92,12 +115,17 @@ def main():
             "triggered_constraints": environment.check_constraint_triggers()
         }
         observation = Observation(data)
+        euler = transforms3d.euler.quat2euler(data["robot"]["orientation"], axes='sxyz')
+        roll = euler[0]
+        pitch = euler[1]
+        yaw = euler[2]
         print "Position: " + str(data["robot"]["position"])
         print "Orientation: " + str(data["robot"]["orientation"])
-        print "Config" + str(data["robot"]["joint_angle"])
-        print(constraint_analyzer.evaluate(constraints, observation))
+        print "RPY: " + "{}, {}, {}".format(roll, pitch, yaw)
+        print "Configuration: " + str(data["robot"]["joint_angle"])
+        print(check_constraint_validity(environment, constraints, observation))
         print(data["triggered_constraints"])
-        valid_constraints = constraint_analyzer.evaluate(environment.constraints, observation)[1]
+        valid_constraints = check_constraint_validity(environment, constraints, observation)[1]
         pub = rospy.Publisher('cairo_lfd/valid_constraints', Int8MultiArray, queue_size=10)
         msg = Int8MultiArray(data=valid_constraints)
         pub.publish(msg)

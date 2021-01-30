@@ -15,7 +15,6 @@ from cairo_lfd.data.io import load_json_files, load_lfd_configuration
 from cairo_lfd.data.vectorization import vectorize_demonstration, get_observation_joint_vector
 from cairo_lfd.data.alignment import DemonstrationAlignment
 from cairo_lfd.data.processing import DataProcessingPipeline, RelativeKinematicsProcessor, RelativePositionProcessor, InContactProcessor, SphereOfInfluenceProcessor, WithinPerimeterProcessor
-from cairo_lfd.constraints.concept_constraints import ConstraintFactory
 from cairo_lfd.core.lfd import CC_LFD
 from cairo_lfd.controllers.study_controllers import CCLfDController
 

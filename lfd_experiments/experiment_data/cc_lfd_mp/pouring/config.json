@@ -27,13 +27,25 @@
    },
    "constraints": [
         {
+           "class": "PlanarConstraint",
+           "init_args":
+           {
+               "constraint_id": 1,
+               "item_id": 1,
+               "reference_position": 0.3,
+               "threshold_distance": 0.00,
+               "direction": "negative",
+               "axis": "z"
+           }
+        },
+        {
             "class": "OrientationConstraint", 
             "init_args" :
                 {
-                    "constraint_id": 1,
+                    "constraint_id": 2,
                     "item_id": 1,
                     "threshold_angle": 8,
-                    "reference_orientation": [0.679574990302018, -0.708650613867889, 0.13952574975361187, -0.12854845458569097],
+                    "reference_orientation": [0.7038235999438831, 0.019905589642572826, 0.7082354269567385, 0.05136815809838097],
                     "axis": "z"
                 }
         },
@@ -41,13 +53,13 @@
            "class": "OverUnderConstraint",
            "init_args" :
                {
-                   "constraint_id": 2,
+                   "constraint_id": 3,
                    "above_item_id": 1,
                    "below_item_id": 2,
                    "threshold_distance": 0.08,
                    "reference_pose": {
-                       "position": [0.35568369329594324, 0.15645754270327647, -0.7005125795583211],
-                       "orientation":  [0.6796409742383259, -0.7085771685029953, 0.139543982415887, -0.1285846778748221]
+                       "position": [0.7712039325143276, -0.5176682963271874, -0.051255953600384374],
+                       "orientation":  [-0.003588055934499179, -0.9989722612831933, -0.004546341379431041, 0.044954174682852586]
                    },
                    "axis": "z"
                }
@@ -67,6 +79,14 @@
            {
                "constraint_id": 2
            }
+       },
+       {
+           "class": "WebTrigger",
+           "init_args":
+           {
+               "constraint_id": 3
+           }
+       }
    ],
    "items": [],
    "robots": [

@@ -37,5 +37,6 @@
   <exec_depend>message_runtime</exec_depend>
   <depend>rospy</depend>
   <depend>cairo_lfd</depend>
+  <depend>cairo_robot_interface</depend>
   
 </package>

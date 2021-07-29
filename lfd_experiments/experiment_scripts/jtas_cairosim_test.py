@@ -1,47 +1,75 @@
 #! /usr/bin/env python
+
 import os
+import sys
+import argparse
 import json
 
-import roslib
 import rospy
-import actionlib
 import intera_interface
+from intera_interface import CHECK_VERSION
 
-from control_msgs.msg import (
-    FollowJointTrajectoryAction,
-    FollowJointTrajectoryGoal
-)
+from robot_clients.trajectory_client import JointPositionTrajectory
 
-from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+def main():
+    """SDK Joint Trajectory Example: Simple Action Client
 
+    Creates a client of the Joint Trajectory Action Server
+    to send commands of standard action type,
+    control_msgs/FollowJointTrajectoryAction.
 
-def execute_trajectory(sim_trajectory):
-    rospy.init_node('trajectory_test')
-    namespace = 'robot/limb/right/follow_joint_trajectory'
-    client = actionlib.SimpleActionClient(namespace, FollowJointTrajectoryAction)
-    client.wait_for_server()
+    Make sure to start the joint_trajectory_action_server.py
+    first. Then run this example on a specified limb to
+    command a short series of trajectory points for the arm
+    to follow.
+    """
+    rp = intera_interface.RobotParams()
+    valid_limbs = rp.get_limb_names()
+    if not valid_limbs:
+        rp.log_message(("Cannot detect any limb parameters on this robot. "
+          "Exiting."), "ERROR")
+        return
 
-    limb = intera_interface.Limb('right', synchronous_pub=True)
+    arg_fmt = argparse.RawDescriptionHelpFormatter
+    parser = argparse.ArgumentParser(formatter_class=arg_fmt,
+                                     description=main.__doc__)
+    parser.add_argument(
+        '-l', '--limb', choices=valid_limbs, default=valid_limbs[0],
+        help='send joint trajectory to which limb'
+    )
 
-    goal = FollowJointTrajectoryGoal()
-    goal.trajectory.joint_names = limb.joint_names()
-    joint_traj = JointTrajectory()
-    for pt in sim_trajectory:
-        jtp = JointTrajectoryPoint()
-        jtp.positions = []
-        jtp.time_from_start = 1
-        joint_traj.points.append(jtp)
+    args = parser.parse_args(rospy.myargv()[1:])
+    limb = args.limb
 
-    goal.trajectory = joint_traj
+    print("Initializing node... ")
+    rospy.init_node("sdk_joint_trajectory_client_{0}".format(limb))
+    print("Getting robot state... ")
+    rs = intera_interface.RobotEnable(CHECK_VERSION)
+    print("Enabling robot... ")
+    rs.enable()
+    print("Running. Ctrl-c to quit")
 
-    # Fill in the goal here
-    client.send_goal(goal)
-    client.wait_for_result(rospy.Duration.from_sec(5.0))
-
-if __name__ == "__main__":
+    limb_interface = intera_interface.Limb(limb)
+    limb_interface.set_joint_position_speed(speed=.3)
+    traj = JointPositionTrajectory(limb, limb_interface.joint_names())
+    print(limb_interface.joint_names())
+    rospy.on_shutdown(traj.stop)
+    # Command Current Joint Positions first
     abs_file_path = os.path.join(os.path.dirname(__file__), "traj.json")
     with open(abs_file_path, 'r') as f:
         data = json.load(f)
-    trajectory = [point['point'] for point in data['trajectory']]
-    
-    execute_trajectory(trajectory)
+    start_position = dict(zip(limb_interface.joint_names(), data['trajectory'][0]['point']))
+    limb_interface.move_to_joint_positions(start_position)
+    wait_duration = data['trajectory'][-1]['time']
+
+    for traj_pt in data['trajectory']:
+        print(traj_pt['time'])
+        traj.add_point(traj_pt['point'], traj_pt['time'])
+
+    traj.start()
+    traj.wait(wait_duration)
+
+    print("Exiting - Joint Trajectory Action Test Complete")
+
+if __name__ == "__main__":
+    main()

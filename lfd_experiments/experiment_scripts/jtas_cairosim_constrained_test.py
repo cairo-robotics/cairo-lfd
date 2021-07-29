@@ -55,15 +55,16 @@ def main():
     print(limb_interface.joint_names())
     rospy.on_shutdown(traj.stop)
     # Command Current Joint Positions first
-    abs_file_path = os.path.join(os.path.dirname(__file__), "traj.json")
+    abs_file_path = os.path.join(os.path.dirname(__file__), "constrained_traj.json")
     with open(abs_file_path, 'r') as f:
         data = json.load(f)
     start_position = dict(zip(limb_interface.joint_names(), data['trajectory'][0]['point']))
     limb_interface.move_to_joint_positions(start_position)
-    wait_duration = data['trajectory'][-1]['time']
+    wait_duration = data['trajectory'][-1]['time'] * 4
+    print(wait_duration)
 
     for traj_pt in data['trajectory']:
-        traj.add_point(traj_pt['point'], traj_pt['time'])
+        traj.add_point(traj_pt['point'], traj_pt['time'] * 4)
 
     traj.start()
     traj.wait(wait_duration)

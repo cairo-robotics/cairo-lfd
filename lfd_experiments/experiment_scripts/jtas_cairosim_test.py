@@ -9,7 +9,7 @@ import rospy
 import intera_interface
 from intera_interface import CHECK_VERSION
 
-from robot_clients.trajectory_client import JointPositionTrajectory
+from robot_clients.trajectory_client import JTASPositionClient
 
 def main():
     """SDK Joint Trajectory Example: Simple Action Client
@@ -51,7 +51,7 @@ def main():
 
     limb_interface = intera_interface.Limb(limb)
     limb_interface.set_joint_position_speed(speed=.3)
-    traj = JointPositionTrajectory(limb, limb_interface.joint_names())
+    traj = JTASPositionClient(limb, limb_interface.joint_names())
     print(limb_interface.joint_names())
     rospy.on_shutdown(traj.stop)
     # Command Current Joint Positions first

@@ -63,7 +63,7 @@ def main():
     wait_duration = data['trajectory'][-1]['time']
 
     for traj_pt in data['trajectory']:
-        traj.add_point(traj_pt['position'], traj_pt['velocity'], traj_pt['acceleration'], traj_pt['time'])
+        traj.add_point(traj_pt['position'], traj_pt['velocity'], traj_pt['acceleration'], traj_pt['time']/5)
 
     traj.start()
     traj.wait(wait_duration)

@@ -22,10 +22,10 @@ def main():
     print("Running. Ctrl-c to quit")
 
     limb_interface = intera_interface.Limb("right")
-    abs_file_path = os.path.join(os.path.dirname(__file__), "constrained_traj.json")
+    abs_file_path = os.path.join(os.path.dirname(__file__), "traj_w_id.json")
     with open(abs_file_path, 'r') as f:
         data = json.load(f)
-    start_position = dict(zip(limb_interface.joint_names(), data['trajectory'][0]['point']))
+    start_position = dict(zip(limb_interface.joint_names(), data['trajectory'][0]['position']))
     limb_interface.move_to_joint_positions(start_position)
 
     print("Generating MotionTrajectory")
@@ -34,7 +34,7 @@ def main():
 
     # Command Current Joint Positions first
     for traj_pt in data['trajectory']:
-        traj.append_waypoint(MotionWaypoint(traj_pt['point']))
+        traj.append_waypoint(MotionWaypoint(traj_pt['position']))
 
     traj.send_trajectory()
 

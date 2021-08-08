@@ -1,28 +1,15 @@
 #! /usr/bin/env python
-# Copyright (c) 2013-2018, Rethink Robotics Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
-"""
-Intera SDK Joint Trajectory Action Client Example
-"""
+import os
+import sys
 import argparse
+import json
 
 import rospy
 import intera_interface
 from intera_interface import CHECK_VERSION
 
-from robot_clients.trajectory_client import JointPositionTrajectory
+from robot_clients.trajectory_client import JTASWithIDClient
 
 def main():
     """SDK Joint Trajectory Example: Simple Action Client
@@ -38,7 +25,6 @@ def main():
     """
     rp = intera_interface.RobotParams()
     valid_limbs = rp.get_limb_names()
-    print(valid_limbs)
     if not valid_limbs:
         rp.log_message(("Cannot detect any limb parameters on this robot. "
           "Exiting."), "ERROR")
@@ -64,33 +50,25 @@ def main():
     print("Running. Ctrl-c to quit")
 
     limb_interface = intera_interface.Limb(limb)
-    traj = JointPositionTrajectory(limb, limb_interface.joint_names())
+    limb_interface.set_joint_position_speed(speed=.3)
+    traj = JTASWithIDClient(limb, limb_interface.joint_names())
     print(limb_interface.joint_names())
     rospy.on_shutdown(traj.stop)
     # Command Current Joint Positions first
-    limb_interface.move_to_neutral()
-    current_angles = [limb_interface.joint_angle(joint) for joint in limb_interface.joint_names()]
-    print(current_angles)
-    traj.add_point(current_angles, 0.0)
+    abs_file_path = os.path.join(os.path.dirname(__file__), "traj_w_id.json")
+    with open(abs_file_path, 'r') as f:
+        data = json.load(f)
+    start_position = dict(zip(limb_interface.joint_names(), data['trajectory'][0]['position']))
+    limb_interface.move_to_joint_positions(start_position)
+    wait_duration = data['trajectory'][-1]['time']
 
-    p1 = current_angles
-    n_sec = 1.0
-    traj.add_point(p1, n_sec)
-    n_sec += 3.0
-    traj.add_point([x * 0.6 for x in p1], n_sec)
-    n_sec += 3.0
-    traj.add_point([x * 0.3 for x in p1], n_sec)
-    n_sec += 3.0
-    traj.add_point([x * 0.6 for x in p1], n_sec)
-    n_sec += 3.0
-    traj.add_point([x * 0.3 for x in p1], n_sec)
-    n_sec += 3.0
-    traj.add_point([x * 0.6 for x in p1], n_sec)
-    n_sec += 3.0
-    traj.add_point([x * 1.0 for x in p1], n_sec)
+    for traj_pt in data['trajectory']:
+        traj.add_point(traj_pt['position'], traj_pt['velocity'], traj_pt['acceleration'], traj_pt['time']/5)
+
     traj.start()
-    traj.wait(n_sec)
-    print("Exiting - Joint Trajectory Action Test Complete")
+    traj.wait(wait_duration)
+
+    print("Exiting - Joint Trajectory Action w/ ID Test Complete")
 
 if __name__ == "__main__":
     main()

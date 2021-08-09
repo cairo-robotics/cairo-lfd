@@ -297,5 +297,5 @@ class ConstraintKeyframeLabeler():
         """
         for spread in reversed(range(int(window_size / 2) + 1)):
             if 0 <= central_idx - spread < len(sequence) and 0 <= central_idx + spread < len(sequence):
-                return sequence[central_idx - spread:central_idx + spread + 1]
+                return sequence[int(central_idx - spread):int(central_idx + spread + 1)]
         return []

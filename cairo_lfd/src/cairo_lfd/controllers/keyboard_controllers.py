@@ -21,7 +21,7 @@ class RecordingKeyboardController(object):
         while not rospy.is_shutdown():
             _ = os.system('clear')
             self.print_instructions()
-            user_input = raw_input("Enter a command: ")
+            user_input = input("Enter a command: ")
             if user_input == "":
                 self.cmd_pub.publish("")
             elif user_input == "r":
@@ -62,7 +62,7 @@ class ModelKeyboardController(object):
         while not rospy.is_shutdown():
             _ = os.system('clear')
             self.print_instructions()
-            user_input = raw_input("Enter a command: ")
+            user_input = input("Enter a command: ")
             if user_input == "":
                 self.cmd_pub.publish("")
             elif user_input == "execute":

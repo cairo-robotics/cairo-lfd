@@ -4,8 +4,6 @@ evaluate binary value conceptual constraints.
 """
 import rospy
 
-import intera_interface
-
 from predicate_classification.pose_classifiers import planar, twist, over_under, cone
 from predicate_classification.path_classifiers import perimeter_2D
 from cairo_lfd.data.conversion import convert_data_to_pose

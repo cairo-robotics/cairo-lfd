@@ -1,5 +1,7 @@
 import rospy
 
+import networkx as nx
+
 from cairo_lfd_msgs.msg import NodeTime
 from cairo_lfd.core.environment import Environment
 from cairo_lfd.constraints.triggers import TriggerFactory
@@ -59,7 +61,7 @@ class ACC_LFD():
             self.G.nodes[cluster_id]["autoconstraint_transitions"] = []
             self.G.nodes[cluster_id]["model"] = KDEModel(
                 kernel='gaussian', bandwidth=bandwidth)
-        self.G.add_path(self.G.nodes())
+        nx.add_path(self.G, self.G.nodes())
         if vectorizor is not None:
             self.G.fit_models(vectorizor)
         else:
@@ -225,7 +227,7 @@ class CC_LFD():
             self.G.nodes[cluster_id]["applied_constraints"] = clusters[cluster_id]["applied_constraints"]
             self.G.nodes[cluster_id]["model"] = KDEModel(
                 kernel='gaussian', bandwidth=bandwidth)
-        self.G.add_path(self.G.nodes())
+        nx.add_path(self.G, self.G.nodes())
         self.G.fit_models(get_observation_joint_vector)
         self.G.identify_primal_observations(get_observation_joint_vector)
 
@@ -447,7 +449,7 @@ class LFD():
             self.G.nodes[cluster_id]["applied_constraints"] = []
             self.G.nodes[cluster_id]["model"] = KDEModel(
                 kernel='gaussian', bandwidth=bandwidth)
-        self.G.add_path(self.G.nodes())
+        nx.add_path(self.G, self.G.nodes())
         self.G.fit_models(get_observation_joint_vector)
         self.G.identify_primal_observations(get_observation_joint_vector)
 

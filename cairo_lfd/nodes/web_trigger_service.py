@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from cairo_lfd.services.trigger_service import ConstraintWebTriggerService
 import rospy

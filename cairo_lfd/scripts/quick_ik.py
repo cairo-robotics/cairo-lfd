@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/python3
+
 import argparse
 import rospy
 from robot_interface.moveit_interface import SawyerMoveitInterface

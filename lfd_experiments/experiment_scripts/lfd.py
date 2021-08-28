@@ -10,15 +10,11 @@ from intera_interface import CHECK_VERSION
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
 from cairo_lfd.core.record import SawyerDemonstrationRecorder, SawyerDemonstrationLabeler
-from cairo_lfd.core.environment import Environment, Observation, Demonstration
-from cairo_lfd.core.items import ItemFactory
-from cairo_lfd.core.robots import RobotFactory
+from cairo_lfd.core.environment import Observation, Demonstration
 from cairo_lfd.data.io import load_json_files, load_lfd_configuration
 from cairo_lfd.data.vectorization import vectorize_demonstration, get_observation_joint_vector
 from cairo_lfd.data.alignment import DemonstrationAlignment
 from cairo_lfd.data.processing import DataProcessingPipeline, RelativeKinematicsProcessor, RelativePositionProcessor, InContactProcessor, SphereOfInfluenceProcessor, WithinPerimeterProcessor
-from cairo_lfd.constraints.concept_constraints import ConstraintFactory
-from cairo_lfd.constraints.triggers import TriggerFactory
 from cairo_lfd.core.lfd import LFD
 from cairo_lfd.controllers.study_controllers import LfDController
 

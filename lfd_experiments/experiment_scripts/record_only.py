@@ -23,7 +23,7 @@ def main():
     required = parser.add_argument_group('required arguments')
 
     required.add_argument(
-        '-c', '--config', dest='config', required=True,
+        '-c', '--config', dest='config', required=False,
         help='the file path of the demonstration '
     )
 
@@ -49,7 +49,10 @@ def main():
     # Import Configuration #
     ########################
 
-    config_filepath = args.config
+    if args.config is not None:
+        config_filepath = args.config
+    else:
+        config_filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./default_config.json")
     configs = load_lfd_configuration(config_filepath)
 
     #################################

@@ -406,7 +406,7 @@ class CC_LFD():
         data['labeled_demonstrations'] = [[obsv.data for obsv in demo.labeled_observations]
                                           for demo in self.G.graph['labeled_demonstrations']]
         data['intermediate_trajectories'] = {key: [[o.data for o in segment] for segment in group]
-                                             for key, group in self.G.graph['intermediate_trajectories'].iteritems()}
+                                             for key, group in self.G.graph['intermediate_trajectories'].items()}
         data['keyframes'] = {}
         for cur_node in self.G.get_keyframe_sequence():
             data['keyframes'][cur_node] = {}

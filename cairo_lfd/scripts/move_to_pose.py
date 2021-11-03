@@ -8,27 +8,15 @@ from cairo_lfd.data.conversion import convert_data_to_pose
 
 
 def main():
-    arg_fmt = argparse.RawDescriptionHelpFormatter
-    parser = argparse.ArgumentParser(formatter_class=arg_fmt,
-                                     description=main.__doc__)
-    required = parser.add_argument_group('required arguments')
+    position = [0.796822468835666, -0.5726076696256587, -0.06436333069221895]
+    # orientation = [0.999364381860628, -0.0321504866108988, 0.01184169368679194, -0.009846459751380035]
+    orientation = [0.6955931963895514, -0.00599257612720292, 0.7183945532979211, -0.004843548266260681]
 
-    required.add_argument(
-        '-p', '--position', dest='position', nargs=3, type=float, required=True,
-        help='the x, y, z position of the end-effector'
-    )
-
-    parser.add_argument(
-        '-o', '--orientation', dest='orientation', nargs=4, type=float, required=True,
-        help='the x, y, z, w quaternion orientation of the end-effector'
-    )
-    args = parser.parse_args(rospy.myargv()[1:])
-    print(args.position)
     """ Create the moveit_interface """
     moveit_interface = SawyerMoveitInterface()
     moveit_interface.set_velocity_scaling(.55)
     moveit_interface.set_acceleration_scaling(.55)
-    pose = convert_data_to_pose(position=args.position, orientation=args.orientation)
+    pose = convert_data_to_pose(position=position, orientation=orientation)
     moveit_interface.set_pose_target(pose)
     moveit_interface.execute(moveit_interface.plan())
 

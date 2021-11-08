@@ -19,5 +19,8 @@ def model_divergence_stats(graph):
         estimated_divergence = kullbach_leibler_divergence(graph.nodes[prev]["model"], graph.nodes[curr]["model"])
         divergences.append(estimated_divergence)
         prev = curr
-        curr = graph.successors(curr).__next__()
+        try:
+            curr = graph.successors(curr).__next__()
+        except StopIteration as e:
+            break
     return np.average(divergences), np.std(divergences)

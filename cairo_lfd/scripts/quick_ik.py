@@ -2,7 +2,7 @@
 
 import argparse
 import rospy
-from robot_interface.moveit_interface import SawyerMoveitInterface
+from robot_interface import SawyerMoveitInterface
 from cairo_lfd.data.conversion import convert_data_to_pose
 
 

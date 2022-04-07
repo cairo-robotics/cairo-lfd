@@ -119,10 +119,10 @@ def main():
         roll = euler[0]
         pitch = euler[1]
         yaw = euler[2]
-        print "Position: " + str(data["robot"]["position"])
-        print "Orientation: " + str(data["robot"]["orientation"])
-        print "RPY: " + "{}, {}, {}".format(roll, pitch, yaw)
-        print "Configuration: " + str(data["robot"]["joint_angle"])
+        print("Position: " + str(data["robot"]["position"]))
+        print("Orientation: " + str(data["robot"]["orientation"]))
+        print("RPY: " + "{}, {}, {}".format(roll, pitch, yaw))
+        print("Configuration: " + str(data["robot"]["joint_angle"]))
         print(check_constraint_validity(environment, constraints, observation))
         print(data["triggered_constraints"])
         valid_constraints = check_constraint_validity(environment, constraints, observation)[1]

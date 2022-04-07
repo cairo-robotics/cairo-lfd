@@ -62,10 +62,10 @@ def check_constraint_validity(environment, constraints, observation):
 
     Returns
     -------
-    valid_ids : list
-        List of valid constraints ids evaluated for the observation.
     valid_set : bool
         Indicator of whether or not all constraints are valid.
+    valid_ids : list
+        List of valid constraints ids evaluated for the observation.
     """
     valid_ids = [constraint.id for constraint in constraints if constraint.evaluate(
         environment, observation)]

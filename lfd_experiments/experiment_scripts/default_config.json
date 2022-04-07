@@ -1,0 +1,48 @@
+{
+    "settings":
+   {
+       "recording_settings": {
+           "calibration_pose":
+               {
+                   "position": [0.2821271154625369, 0.6993660443827091, -0.2166083219212962],
+                   "orientation": [-0.005523956201021585, 0.9998884034279703, -0.004719975318146538, 0.01305329196600423]
+               },
+           "start_configuration": [0.575306640625, -0.336431640625, -0.359044921875, 1.458134765625, 0.6804560546875, 0.5560009765625, 1.6094990234375],
+           "sampling_rate": 100,
+           "constraint_trigger_mechanism": "web_trigger"
+       },
+       "labeling_settings": {
+           "divisor": 20,
+           "window": 10
+       },
+       "modeling_settings": {
+           "planner": "RRTkConfigDefault",
+           "culling_threshold": 12,
+           "bandwidth": 0.025,
+           "number_of_samples": 50
+       },
+       "raw_output_directory": "./raw_demonstrations/",
+       "labeled_output_directory": "./labeled_demonstrations/"
+
+   },
+   "constraints": [],
+   "triggers": [],
+   "items": [],
+   "robots": [
+       {
+           "class": "SawyerRobot",
+           "init_args":
+           {
+               "item_id": 1,
+               "reference_pose":
+               {
+                   "position": [0.578695253097807, -0.39773819035311436, -0.011090908106854147],
+                   "orientation":[-0.7071318608127011, -0.02090705254793435, -0.011310713675474933, -0.7066820319871432]
+
+               }
+           }
+       }
+
+   ]
+
+}

@@ -28,7 +28,7 @@ class ConstraintWebTriggerClient():
         try:
             rospy.wait_for_service(self.ns, 5.0)
             resp = self.service(req)
-            if resp.error.error_string is not None:
+            if resp.status is None:
                 rospy.logwarn("Web trigger service call failed: %s" % (e,))
                 return None
             return resp.status

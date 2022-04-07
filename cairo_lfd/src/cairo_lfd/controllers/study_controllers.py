@@ -323,6 +323,7 @@ class CCLfDController():
         self.task = task
         self.output_directory = output_directory
         self.subject = subject
+        self.ready_to_serialize = False
 
     def run(self):
         rospy.loginfo("Running the CC LfD Experiment Controller...")
@@ -362,6 +363,7 @@ class CCLfDController():
                         "number_of_samples", .025), automate_threshold=True)
                     rospy.loginfo(
                         "Training complete. New keyframe model available for representation and execution.")
+                    self.ready_to_serialize = True
                 else:
                     rospy.loginfo("No demonstrations available for training.")
                 self._clear_command()
@@ -373,13 +375,16 @@ class CCLfDController():
                     rospy.loginfo("No data to save!")
                 self._clear_command()
             if self.command == "serialize":
-                rospy.loginfo("Serializing model...")
-                unique_filename = str(uuid.uuid4())
-                dirname = './' + self.output_directory + '/' + self.task + '/' + self.subject
-                if not os.path.exists(dirname):
-                    os.makedirs(dirname)
-                path = dirname + '/serialization_' + unique_filename + '.json'
-                self.lfd_model.serialize_out(path)
+                if self.ready_to_serialize is False:
+                    rospy.loginfo("No model available to seralize...train the model first.") 
+                else:
+                    rospy.loginfo("Serializing model...")
+                    unique_filename = str(uuid.uuid4())
+                    dirname = './' + self.output_directory + '/' + self.task + '/' + self.subject
+                    if not os.path.exists(dirname):
+                        os.makedirs(dirname)
+                    path = dirname + '/serialization_' + unique_filename + '.json'
+                    self.lfd_model.serialize_out(path)
                 self._clear_command()
 
     def save_trial_data(self):

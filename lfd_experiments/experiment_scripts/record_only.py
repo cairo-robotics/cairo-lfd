@@ -9,15 +9,9 @@ import intera_interface
 from intera_interface import CHECK_VERSION
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
-from cairo_lfd.core.record import SawyerDemonstrationRecorder, SawyerDemonstrationLabeler
-from cairo_lfd.core.environment import Environment, Observation, Demonstration
-from cairo_lfd.core.items import ItemFactory
-from cairo_lfd.data.io import DataImporter, import_configuration
-from cairo_lfd.data.vectorization import vectorize_demonstration, get_observation_joint_vector
-from cairo_lfd.data.alignment import DemonstrationAligner
-from cairo_lfd.data.processing import ProcessorPipeline, RelativeKinematicsProcessor, RelativePositionProcessor, InContactProcessor, SphereOfInfluenceProcessor, WithinPerimeterProcessor
-from cairo_lfd.constraints.concept_constraints import ConstraintFactory
-from cairo_lfd.constraints.triggers import TriggerFactory
+from cairo_lfd.core.record import SawyerDemonstrationRecorder
+from cairo_lfd.data.io import load_lfd_configuration
+from cairo_lfd.data.processing import DataProcessingPipeline, RelativeKinematicsProcessor, RelativePositionProcessor, InContactProcessor, SphereOfInfluenceProcessor, WithinPerimeterProcessor
 from cairo_lfd.core.lfd import CC_LFD
 from cairo_lfd.controllers.study_controllers import RecordingOnlyController
 
@@ -29,7 +23,7 @@ def main():
     required = parser.add_argument_group('required arguments')
 
     required.add_argument(
-        '-c', '--config', dest='config', required=True,
+        '-c', '--config', dest='config', required=False,
         help='the file path of the demonstration '
     )
 
@@ -55,8 +49,11 @@ def main():
     # Import Configuration #
     ########################
 
-    config_filepath = args.config
-    configs = import_configuration(config_filepath)
+    if args.config is not None:
+        config_filepath = args.config
+    else:
+        config_filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./default_config.json")
+    configs = load_lfd_configuration(config_filepath)
 
     #################################
     # Configure the LFD class model #
@@ -80,7 +77,7 @@ def main():
     soi_processor = SphereOfInfluenceProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
     rp_processor = RelativePositionProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
     wp_processor = WithinPerimeterProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
-    processor_pipeline = ProcessorPipeline([rk_processor, ic_processor, soi_processor, rp_processor, wp_processor])
+    processor_pipeline = DataProcessingPipeline([rk_processor, ic_processor, soi_processor, rp_processor, wp_processor])
 
     ###############################################
     # Configure the Sawyer Demonstration Recorder #

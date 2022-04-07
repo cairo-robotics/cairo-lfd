@@ -2,7 +2,7 @@
 
   <arg name="electric_gripper" default="true"/>
   <!-- <arg name="vrpn_server" default="desktop-ckithm9.local"/> -->
-  <arg name="rosbridge_address" default="192.168.50.125"/>
+  <arg name="rosbridge_address" default="192.168.50.106"/>
   <arg name="rosbridge_port" default="9090"/>
 
 

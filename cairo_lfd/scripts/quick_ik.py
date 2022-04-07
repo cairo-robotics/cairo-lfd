@@ -1,30 +1,18 @@
-#!/usr/bin/python
+#!/usr/bin/python3
+
 import argparse
 import rospy
-from robot_interface.moveit_interface import SawyerMoveitInterface
+from robot_interface import SawyerMoveitInterface
 from cairo_lfd.data.conversion import convert_data_to_pose
 
 
 def main():
-    arg_fmt = argparse.RawDescriptionHelpFormatter
-    parser = argparse.ArgumentParser(formatter_class=arg_fmt,
-                                     description=main.__doc__)
-    required = parser.add_argument_group('required arguments')
-
-    required.add_argument(
-        '-p', '--position', dest='position', nargs=3, type=float,
-        help='the x, y, z position of the end-effector'
-    )
-
-    parser.add_argument(
-        '-o', '--orientation', dest='orientation', nargs=4, type=float,
-        help='the x, y, z, w quaternion orientation of the end-effector'
-    )
-    args = parser.parse_args(rospy.myargv()[1:])
-    print(args.position)
+    position = [0.39511943327816434, 0.469853990842666, 0.8093717344145103]
+    orientation = [0.999364381860628, -0.0321504866108988, 0.01184169368679194, -0.009846459751380035]
     """ Create the moveit_interface """
     moveit_interface = SawyerMoveitInterface()
-    pose = convert_data_to_pose(position=args.position, orientation=args.orientation)
+    pose = convert_data_to_pose(position=position, orientation=orientation)
+
     print(moveit_interface.get_IK_pose(pose))
 
 

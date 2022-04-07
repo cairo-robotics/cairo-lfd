@@ -1,5 +1,7 @@
 import rospy
 
+import networkx as nx
+
 from cairo_lfd_msgs.msg import NodeTime
 from cairo_lfd.core.environment import Environment
 from cairo_lfd.constraints.triggers import TriggerFactory
@@ -26,13 +28,14 @@ class ACC_LFD():
         self.robot_interface = robot_interface
 
     def build_environment(self):
-        items = ItemFactory(
-            self.configs["robots"], self.configs['items']).generate_items()
+        robots = RobotFactory(self.configs['robots']).generate_robots()
+        items = ItemFactory(self.configs['items']).generate_items()
+        triggers = TriggerFactory(self.configs['triggers']).generate_triggers()
         constraints = ConstraintFactory(
             self.configs["constraints"]).generate_constraints()
         # We only have just the one robot...for now.......
-        self.environment = Environment(items=items['items'], robot=items['robots']
-                                       [0], constraints=constraints, triggers=None)
+        self.environment = Environment(
+            items=items, robot=robots[0], constraints=constraints, triggers=triggers)
 
     def build_keyframe_graph(self, demonstrations, bandwidth, vectorizor=None):
         self.G = KeyframeGraph()
@@ -58,7 +61,7 @@ class ACC_LFD():
             self.G.nodes[cluster_id]["autoconstraint_transitions"] = []
             self.G.nodes[cluster_id]["model"] = KDEModel(
                 kernel='gaussian', bandwidth=bandwidth)
-        self.G.add_path(self.G.nodes())
+        nx.add_path(self.G, self.G.nodes())
         if vectorizor is not None:
             self.G.fit_models(vectorizor)
         else:
@@ -224,7 +227,7 @@ class CC_LFD():
             self.G.nodes[cluster_id]["applied_constraints"] = clusters[cluster_id]["applied_constraints"]
             self.G.nodes[cluster_id]["model"] = KDEModel(
                 kernel='gaussian', bandwidth=bandwidth)
-        self.G.add_path(self.G.nodes())
+        nx.add_path(self.G, self.G.nodes())
         self.G.fit_models(get_observation_joint_vector)
         self.G.identify_primal_observations(get_observation_joint_vector)
 
@@ -403,7 +406,7 @@ class CC_LFD():
         data['labeled_demonstrations'] = [[obsv.data for obsv in demo.labeled_observations]
                                           for demo in self.G.graph['labeled_demonstrations']]
         data['intermediate_trajectories'] = {key: [[o.data for o in segment] for segment in group]
-                                             for key, group in self.G.graph['intermediate_trajectories'].iteritems()}
+                                             for key, group in self.G.graph['intermediate_trajectories'].items()}
         data['keyframes'] = {}
         for cur_node in self.G.get_keyframe_sequence():
             data['keyframes'][cur_node] = {}
@@ -446,7 +449,7 @@ class LFD():
             self.G.nodes[cluster_id]["applied_constraints"] = []
             self.G.nodes[cluster_id]["model"] = KDEModel(
                 kernel='gaussian', bandwidth=bandwidth)
-        self.G.add_path(self.G.nodes())
+        nx.add_path(self.G, self.G.nodes())
         self.G.fit_models(get_observation_joint_vector)
         self.G.identify_primal_observations(get_observation_joint_vector)
 

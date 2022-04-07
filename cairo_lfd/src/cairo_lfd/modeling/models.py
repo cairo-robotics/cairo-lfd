@@ -2,7 +2,7 @@
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
-from sklearn.neighbors.kde import KernelDensity
+from sklearn.neighbors import KernelDensity
 
 
 class KMeansModel(object):

@@ -12,9 +12,10 @@ class ConstraintWebTriggerClient():
         self.service = rospy.ServiceProxy(self.ns, ConstraintWebTrigger, persistent=True)
         try:
             rospy.wait_for_service(self.ns, 20)
-        except (rospy.ServiceException, rospy.ROSException), e:
-            rospy.logerr("Service call failed: %s" % (e,))
-            return False
+        except rospy.ServiceException as e:
+            rospy.logerr("Service startup failed: %s" % (e,))
+        except rospy.ROSException as e:
+            rospy.logerr("General ROS exception: %s" % (e,))
 
     def close(self):
         self.service.close()
@@ -27,13 +28,15 @@ class ConstraintWebTriggerClient():
         try:
             rospy.wait_for_service(self.ns, 5.0)
             resp = self.service(req)
+            if resp.status is None:
+                rospy.logwarn("Web trigger service call failed: %s" % (e,))
+                return None
             return resp.status
-        except (rospy.ServiceException, rospy.ROSException), e:
+        except rospy.ServiceException as e:
             rospy.logerr("Web trigger service call failed: %s" % (e,))
             return None
-
-        if resp.error.error_string is not None:
-            rospy.logwarn("Web trigger service call failed: %s" % (e,))
+        except rospy.ROSException as e:
+            rospy.logerr("Ros Exception, service call failed: %s" % (e,))
             return None
 
 
@@ -58,7 +61,6 @@ class ConstraintWebTriggerService():
         self.service_name = service_name
 
     def triggered_callback(self, msg):
-        print(msg)
         self.triggered_constraints = msg.data
 
     def get_state(self, req):

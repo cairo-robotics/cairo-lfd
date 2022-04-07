@@ -1,0 +1,200 @@
+{
+    "settings":
+   {
+       "recording_settings": {
+           "calibration_pose":
+               {
+                   "position": [0.2821271154625369, 0.6993660443827091, -0.2166083219212962],
+                   "orientation": [-0.005523956201021585, 0.9998884034279703, -0.004719975318146538, 0.01305329196600423]
+               },
+           "start_configuration": [0.575306640625, -0.336431640625, -0.359044921875, 1.458134765625, 0.6804560546875, 0.5560009765625, 1.6094990234375],
+           "sampling_rate": 100,
+           "constraint_trigger_mechanism": "web_trigger"
+       },
+       "labeling_settings": {
+           "divisor": 20,
+           "window": 10
+       },
+       "modeling_settings": {
+           "planner": "RRTkConfigDefault",
+           "culling_threshold": 12,
+           "bandwidth": 0.025,
+           "number_of_samples": 50
+       },
+       "raw_output_directory": "./raw_demonstrations/",
+       "labeled_output_directory": "./labeled_demonstrations/"
+
+   },
+   "constraints": [
+        {
+            "class": "OrientationConstraint",
+            "init_args" :
+                {
+                    "constraint_id": 6,
+                    "item_id": 1,
+                    "threshold_angle": 8,
+                    "reference_orientation": [0.6582126625613913, -0.7015632422017466, 0.17497249199920095, -0.20964192109119598],
+                    "axis": "z"
+                }
+        },
+        {
+            "class": "PlanarConstraint",
+            "init_args":
+             {
+                 "constraint_id": 7,
+                 "item_id": 1,
+                 "reference_position": 0.7,
+                 "threshold_distance": 0.00,
+                 "direction": "negative",
+                 "axis": "x"
+             }
+        },
+        {
+         "class": "PlanarConstraint",
+         "init_args":
+             {
+                 "constraint_id": 8,
+                 "item_id": 1,
+                 "reference_position": 0.65,
+                 "threshold_distance": 0.00,
+                 "direction": "positive",
+                 "axis": "x"
+             }
+         },
+         {
+            "class": "OrientationConstraint",
+            "init_args" :
+                {
+                    "constraint_id": 9,
+                    "item_id": 1,
+                    "threshold_angle": 8,
+                    "reference_orientation": [-0.6931170695976386, 0.6672054485911876, 0.1979085479104523, -0.18777066828072594],
+                    "axis": "z"
+                }
+        },
+        {
+            "class": "PlanarConstraint",
+            "init_args":
+             {
+                 "constraint_id": 10,
+                 "item_id": 1,
+                 "reference_position": 0.51,
+                 "threshold_distance": 0.00,
+                 "direction": "negative",
+                 "axis": "x"
+             }
+        },
+        {
+         "class": "PlanarConstraint",
+         "init_args":
+             {
+                 "constraint_id": 11,
+                 "item_id": 1,
+                 "reference_position": 0.45,
+                 "threshold_distance": 0.00,
+                 "direction": "positive",
+                 "axis": "x"
+             }
+         },
+        {
+            "class": "PlanarConstraint",
+            "init_args":
+             {
+                 "constraint_id": 12,
+                 "item_id": 1,
+                 "reference_position": -0.13,
+                 "threshold_distance": 0.00,
+                 "direction": "positive",
+                 "axis": "z"
+             }
+        },
+        {
+         "class": "PlanarConstraint",
+         "init_args":
+             {
+                 "constraint_id": 13,
+                 "item_id": 1,
+                 "reference_position": -0.06,
+                 "threshold_distance": 0.00,
+                 "direction": "negative",
+                 "axis": "z"
+             }
+         }
+   ],
+   "triggers": [
+       {
+           "class": "WebTrigger",
+           "init_args":
+           {
+               "constraint_id": 6
+           }
+       },
+       {
+           "class": "WebTrigger",
+           "init_args":
+           {
+               "constraint_id": 7
+           }
+       },
+       {
+           "class": "WebTrigger",
+           "init_args":
+           {
+               "constraint_id": 8
+           }
+       },
+       {
+           "class": "WebTrigger",
+           "init_args":
+           {
+               "constraint_id": 9
+           }
+       },
+        {
+           "class": "WebTrigger",
+           "init_args":
+           {
+               "constraint_id": 10
+           }
+       },
+       {
+           "class": "WebTrigger",
+           "init_args":
+           {
+               "constraint_id": 11
+           }
+       },
+       {
+           "class": "WebTrigger",
+           "init_args":
+            {
+                "constraint_id": 12
+            }
+       },
+       {
+           "class": "WebTrigger",
+           "init_args":
+            {
+                "constraint_id": 13
+            }
+       }
+   ],
+   "items": [],
+   "robots": [
+       {
+           "class": "SawyerRobot",
+           "init_args":
+           {
+               "item_id": 1,
+               "reference_pose":
+               {
+                   "position": [0.578695253097807, -0.39773819035311436, -0.011090908106854147],
+                   "orientation":[-0.7071318608127011, -0.02090705254793435, -0.011310713675474933, -0.7066820319871432]
+
+               }
+           }
+       }
+
+   ]
+
+}

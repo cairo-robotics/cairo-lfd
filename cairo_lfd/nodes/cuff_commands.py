@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 
 from cairo_lfd.controllers.cuff_controllers import RecordingCuffController

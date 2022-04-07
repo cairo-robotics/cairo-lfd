@@ -62,10 +62,10 @@ def check_constraint_validity(environment, constraints, observation):
 
     Returns
     -------
-    valid_ids : list
-        List of valid constraints ids evaluated for the observation.
     valid_set : bool
         Indicator of whether or not all constraints are valid.
+    valid_ids : list
+        List of valid constraints ids evaluated for the observation.
     """
     valid_ids = [constraint.id for constraint in constraints if constraint.evaluate(
         environment, observation)]
@@ -123,32 +123,32 @@ def get_culling_candidates(graph, automate_threshold=False, culling_threshold=10
             average_KL_divergence, std_divergence = model_divergence_stats(
                 graph)
             prev = graph.get_keyframe_sequence()[0]
-            curr = graph.successors(prev).next()
+            curr = graph.successors(prev).__next__()
             while([x for x in graph.successors(curr)] != []):
                 est_divergence = kullbach_leibler_divergence(
                     graph.nodes[prev]["model"], graph.nodes[curr]["model"])
                 if est_divergence < average_KL_divergence and graph.nodes[curr]["keyframe_type"] != "constraint_transition":
                     rospy.logwarn("KL estimate between nodes {} and {} is {} which below the mean divergence of {}".format(
                         prev, curr, est_divergence, average_KL_divergence))
-                    succ = graph.successors(curr).next()
+                    succ = graph.successors(curr).__next__()
                     candidate_ids.append(curr)
                     curr = succ
                     continue
                 prev = curr
-                curr = graph.successors(curr).next()
+                curr = graph.successors(curr).__next__()
         else:
             prev = graph.get_keyframe_sequence()[0]
-            curr = graph.successors(prev).next()
+            curr = graph.successors(prev).__next__()
             while([x for x in graph.successors(curr)] != []):
                 est_divergence = kullbach_leibler_divergence(
                     graph.nodes[prev]["model"], graph.nodes[curr]["model"])
                 if est_divergence < culling_threshold and graph.nodes[curr]["keyframe_type"] != "constraint_transition":
                     rospy.logwarn("KL estimate between nodes {} and {} is {} which below set threshold of {}".format(
                         prev, curr, est_divergence, culling_threshold))
-                    succ = graph.successors(curr).next()
+                    succ = graph.successors(curr).__next__()
                     candidate_ids.append(curr)
                     curr = succ
                     continue
                 prev = curr
-                curr = graph.successors(curr).next()
+                curr = graph.successors(curr).__next__()
     return candidate_ids

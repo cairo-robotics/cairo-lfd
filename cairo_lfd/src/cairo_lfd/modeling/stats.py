@@ -13,11 +13,14 @@ def kullbach_leibler_divergence(P_model, Q_model, n_samples=5 * 10**3):
 
 def model_divergence_stats(graph):
     prev = graph.get_keyframe_sequence()[0]
-    curr = graph.successors(prev).next()
+    curr = graph.successors(prev).__next__()
     divergences = []
     while([x for x in graph.successors(curr)] != []):
         estimated_divergence = kullbach_leibler_divergence(graph.nodes[prev]["model"], graph.nodes[curr]["model"])
         divergences.append(estimated_divergence)
         prev = curr
-        curr = graph.successors(curr).next()
+        try:
+            curr = graph.successors(curr).__next__()
+        except StopIteration as e:
+            break
     return np.average(divergences), np.std(divergences)

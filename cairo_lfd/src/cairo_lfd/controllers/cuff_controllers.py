@@ -34,6 +34,7 @@ class RecordingCuffController(object):
 
     def print_instructions(self):
         print("""
+        THIS IS NOT CONFIGURED TO WORK WITH POINTWISE RECORDING YET.
         Sawyer Cuff Buttons interface for collecting demonstrations:
               hold 'ii' - Record
               hold '<--' - Quit 

@@ -5,10 +5,11 @@ import json
 import time
 import numpy as np
 from std_msgs.msg import String
-from std_srvs.srv import Trigger
 from geometry_msgs.msg import TransformStamped, Transform, Pose, PoseStamped, Point, Quaternion, Vector3
-from tf.transformations import translation_matrix, quaternion_matrix, concatenate_matrices, inverse_matrix, \
-    translation_from_matrix, quaternion_from_matrix
+from tf.transformations import inverse_matrix
+
+from vrpn_middleware import VRPNFixedTransform
+from collision_ik.msg import EEPoseGoals, JointAngles
 
 
 '''
@@ -246,9 +247,9 @@ def remap_constraints_for_lfd(json_msg):
     return lfd_constraints
 
 
-class ARPOLfDMiddleware(object):
+class AR4LfDMiddleware(object):
 
-    def __init__(self, command_topic, request_topic, traj_representation_topic, hololens_pub_topic, cons):
+    def __init__(self, command_topic, request_topic, traj_representation_topic, hololens_pub_topic, constraint_edits_in, constraint_edits_out):
         """
         :type command_topic: str
         :type request_topic: str
@@ -268,12 +269,16 @@ class ARPOLfDMiddleware(object):
         self.request_pub = rospy.Publisher(request_topic, String, queue_size=1)
         self.hololens_pub = rospy.Publisher(
             hololens_pub_topic, String, queue_size=1)
+        self.constraints_pub = rospy.Publisher(
+            constraint_edits_out, String, queue_size=1)
 
         # Initialize Subscribers
         self.command_sub = rospy.Subscriber(
             command_topic, String, self._command_cb)
         self.trajectory_sub = rospy.Subscriber(
             traj_representation_topic, String, self._trajectory_cb)
+        self.constraints_sub = rospy.Subscriber(
+            constraint_edits_in, String, self._constraint_cb)
 
     def _command_cb(self, msg):
         '''
@@ -347,116 +352,41 @@ class ARPOLfDMiddleware(object):
         transformed_constraint_msg = String()
         transformed_constraint_msg.data = json.dumps(constraint_msg)
         self.constraints_pub.publish(transformed_constraint_msg)
+
+
+class ARPOLfDMiddleware():
+
+    def __init__(self, joint_configuration_topic="/joint_configuration", playback_cmd_topic="/trajectory_playback_cmd", joint_trajectory_topic="/joint_trajectory"):
+
+        # Callback stores
+        self.current_optimized_pose = []
+        self.current_trajectory = []
         
-
-class AR4LfDMiddleware(object):
-
-    def __init__(self, device_pos_offset, command_topic, request_topic, traj_representation_topic, hololens_pub_topic, constraint_edits_in, constraint_edits_out):
-        """
-        :type command_topic: str
-        :type request_topic: str
-        :type traj_representation_topic: str
-        :type hololens_pub_topic: str
-        :param command_topic:
-        :param request_topic:
-        :param traj_representation_topic:
-        :param hololens_pub_topic:
-        """
-
-        # Create transform manager (position and axes hardcoded for now)
-        self.transform_manager = ARVRFixedTransform("ar_device", Vector3(device_pos_offset[0], device_pos_offset[1], device_pos_offset[2]),
-                                                    Quaternion(0.0, 0.0, 1.0, 0.0), [[0, 0, 1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1]])
-
         # Initialize Publishers
-        self.request_pub = rospy.Publisher(request_topic, String, queue_size=1)
-        self.hololens_pub = rospy.Publisher(
-            hololens_pub_topic, String, queue_size=1)
-        self.constraints_pub = rospy.Publisher(
-            constraint_edits_out, String, queue_size=1)
+        # Publish joint configurations for hololens as JSON encoded String
+        self.joint_configuration_publisher = rospy.Publisher(joint_configuration_topic, String, queue_size=1)
+        # Publish joint trajectory for hololens as JSON encoded String
+        self.joint_trajectory_publisher = rospy.Publisher(joint_trajectory_topic, String, queue_size=1)
+        # Pubblish EEPoseGoals to CollisionIK to get a solution
+        self.ee_pose_goals_pub = rospy.Publisher('/collision_ik/ee_pose_goals', EEPoseGoals, queue_size=5)
 
         # Initialize Subscribers
-        self.command_sub = rospy.Subscriber(
-            command_topic, String, self._command_cb)
-        self.trajectory_sub = rospy.Subscriber(
-            traj_representation_topic, String, self._trajectory_cb)
-        self.constraints_sub = rospy.Subscriber(
-            constraint_edits_in, String, self._constraint_cb)
+        # Waits for a command to return the current trajectory for replay. 
+        self.playback_sub = rospy.Subscriber(playback_cmd_topic, String, self._playback_cmd_cb)
+        # Subscribes to Collision_IK_results
+        self.collision_ik_sub =  rospy.Subscriber('/collision_ik/joint_angle_solutions', JointAngles, self._ja_solution_cb)
 
-    def _command_cb(self, msg):
-        '''
-        Once message is received on this topic, start process of displaying trajectory
-        '''
-        self.request_pub.publish(String("get_representation"))
 
-    def _trajectory_cb(self, msg):
+    def target_pose(self, target_pose):
+        self.ee_pose_goals_pub
 
-        # Clear out any visualizations currently present first
-        self.hololens_pub.publish(String("CLEAR"))
-        time.sleep(1.0)
-
-        # Individually publish each keyframe to the HoloLens
-        traj_object = json.loads(msg.data)
-        traj_pusher = {}
-        traj_pusher["trajectory"] = []
-        for point_object in traj_object["point_array"]:
-            # Update position and orientation
-            pos = point_object["robot"]["position"]
-            quat = point_object["robot"]["orientation"]
-            updated_pose = self.transform_manager.world_to_hololens(Pose(
-                Point(pos[0], pos[1], pos[2]), Quaternion(quat[0], quat[1], quat[2], quat[3])))
-
-            # update JSON with transformed pose
-            json_object = {}
-            json_object["keyframe_id"] = point_object["keyframe_id"]
-            json_object["applied_constraints"] = point_object["applied_constraints"]
-            json_object["robot"] = {}
-            json_object["robot"]["position"] = [updated_pose.pose.position.x,
-                                                updated_pose.pose.position.y, updated_pose.pose.position.z]
-            json_object["robot"]["orientation"] = [updated_pose.pose.orientation.x,
-                                                   updated_pose.pose.orientation.y, updated_pose.pose.orientation.z, updated_pose.pose.orientation.w]
-
-            traj_pusher["trajectory"].append(json_object)
-        # transmit JSON for this transformed pose
-        keyframe_msg = String()
-        keyframe_msg.data = json.dumps(traj_pusher)
-        self.hololens_pub.publish(keyframe_msg)
-
-    def _constraint_cb(self, msg):
-        constraint_msg = json.loads(msg.data)
-        rospy.loginfo(constraint_msg)
-        for constraint in constraint_msg["constraints"]:
-            if(constraint["className"] == "HeightConstraintAbove" or constraint["className"] == "HeightConstraintBelow"):
-                # Transform height constraint
-                # constraint["args"][0] is jsut the single value of the height coming from hololens that we pass as the y axis (which is z in hololens. Think video games...)
-                updated_pose = self.transform_manager.hololens_to_world(Pose(
-                    Point(0, constraint["args"][0], 0), Quaternion(0, 0, 0, 1)))
-                constraint["args"][0] = updated_pose.pose.position.z
-            elif(constraint["className"] == "UprightConstraint"):
-                # pass # The quaternion from hololens is actually the real rotation we need since its about the same axes. We don't need to transform anything.
-                # Transform upright constraint
-                updated_pose = self.transform_manager.hololens_to_world(Pose(
-                    Point(0, 0, 0), Quaternion(constraint["args"][0], constraint["args"][1],
-                    constraint["args"][2], constraint["args"][3])))
-                constraint["args"][0] = updated_pose.pose.orientation.x
-                constraint["args"][1] = updated_pose.pose.orientation.y
-                constraint["args"][2] = updated_pose.pose.orientation.z
-                constraint["args"][3] = updated_pose.pose.orientation.w
-            elif(constraint["className"] == "OverUnderConstraint"):
-                # Transform over-under constraint
-                updated_pose = self.transform_manager.hololens_to_world(Pose(
-                    Point(constraint["args"][0], constraint["args"][1], constraint["args"][2]), 
-                    Quaternion(0, 0, 0, 1)))
-                constraint["args"][0] = updated_pose.pose.position.x
-                constraint["args"][1] = updated_pose.pose.position.y
-                #Subtract half a meter to make up for hololens centering in the middle of the constraint. TODO: fix this on HoloLens side
-                # constraint["args"][2] = updated_pose.pose.position.z - 0.5
-
-                constraint["args"][2] = updated_pose.pose.position.z
-            else:
-                # Unsupported constraint type
-                rospy.logwarn("Unsupported constraint type passed to transformer, being passed on as-is")
-
-        transformed_constraint_msg = String()
-        transformed_constraint_msg.data = json.dumps(constraint_msg)
-        rospy.loginfo(transformed_constraint_msg.data)
-        self.constraints_pub.publish(transformed_constraint_msg)
+    def _playback_cmd_cb(self, msg):
+        if msg.data == "true":
+            self.
+    
+    def _ja_solution_cb(self, data):
+        ja_solution = []
+        for a in data.angles.data:
+            ja_solution.append(a)
+        self.current_optimized_pose = ja_solution
+        self.current_trajectory 

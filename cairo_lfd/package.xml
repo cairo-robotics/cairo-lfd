@@ -16,6 +16,7 @@
   <depend>predicate_classification</depend>
   <depend>predicate_classification_msgs</depend> 
   <depend>cairo_lfd_msgs</depend>
+  <depend>collision_ik</depend>
   <depend>moveit_msgs</depend>
 
 

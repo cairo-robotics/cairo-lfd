@@ -474,3 +474,157 @@ class SawyerPointwiseRecorder():
 
     def _clear_command(self):
         self.command = ""
+
+class ARPOLfDRecorder():
+    
+    def __init__(self, settings, environment, processor_pipeline=None):
+        """
+        Parameters
+        ----------
+        rate : int
+            The Hz rate at which to capture state data.
+        """
+        self.start_configuration = settings.get("start_configuration", None)
+        self._start_time = rospy.get_time()
+        self._raw_rate = settings.get("sampling_rate", 25)
+        self._rate = rospy.Rate(self._raw_rate)
+        self._done = False
+        self.processor_pipeline = processor_pipeline
+        self.head_display_pub = rospy.Publisher('/robot/head_display', Image, latch=True, queue_size=10)
+        self.recording_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/Recording.jpg')
+        self.ready_to_record_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/ReadyToRecord.jpg')
+        self.command = ""
+        self.command_sub = rospy.Subscriber("/cairo_lfd/record_commands", String, self.command_callback)
+        self.environment = environment
+        self._setup_zero_g()
+
+    def command_callback(self, data):
+        self.command = data.data
+
+    def _time_stamp(self):
+        """
+        Captures time difference from start time to current time.
+
+        Returns
+        ----------
+         : float
+            Current time passed so far.
+        """
+        return rospy.get_time() - self._start_time
+
+    def stop(self):
+        """
+        Stop recording by setting _done flag to True.
+        """
+        self._done = True
+
+    def done(self):
+        """
+        Return whether or not recording is done.
+
+        Returns
+        : bool
+            The _done attribute.
+        """
+        if rospy.is_shutdown():
+            self.stop()
+        return self._done
+
+    def start(self):
+        self._done = False
+
+    def record(self):
+        """
+
+
+        Returns
+        -------
+        demonstrations : list
+            List of Demonstration objects each of which captures Observations during user demonstrations.
+        """
+
+        demonstrations = []
+        rospy.loginfo("Ready to record single points. Refresh rate will be at ~{}Hz".format(self._raw_rate))
+        self.start()
+        while not self.done():
+            self.head_display_pub.publish(self._setup_image(self.ready_to_record_image_path))
+            if self.command == "record":
+                print("Recording!")
+                self.head_display_pub.publish(self._setup_image(self.recording_image_path))
+                self.interaction_publisher.external_rate_send_command(self.interaction_options)
+                observations = []
+                counter = 0
+                observations = self._record_demonstration()
+                if len(observations) > 0:
+                    demonstrations.append(Demonstration(observations))
+            if self.command == "discard":
+                if len(demonstrations) > 0:
+                    demonstrations.pop()
+                    print("Discarded most recent demonstration recording!")
+                else:
+                    print("There are no new demonstrations to discard.")
+                self._clear_command()
+            if self.command == "quit":
+                print("Stopping recording!")
+                self._clear_command()
+                self.stop()
+            if self.command == "start":
+                print("Moving to start position!")
+                self._move_to_start_configuration()
+
+        if self.processor_pipeline is not None:
+            # Generates additional data
+            self.processor_pipeline.process(demonstrations)
+        self._analyze_applied_constraints(self.environment, demonstrations)
+        self._clear_command()
+        return demonstrations
+
+    def _move_to_start_configuration(self):
+        """ Create the moveit_interface """
+        if self.start_configuration is not None:
+            moveit_interface = SawyerMoveitInterface()
+            moveit_interface.set_velocity_scaling(.35)
+            moveit_interface.set_acceleration_scaling(.25)
+            moveit_interface.set_joint_target(self.start_configuration)
+            moveit_interface.execute(moveit_interface.plan())
+        else:
+            rospy.logwarn("No start configuration provided in your config.json file.")
+        self._clear_command()
+
+    def _record_demonstration(self):
+        observations = []
+        while True:
+            robot = self.environment.robot
+            if robot._gripper:
+                if robot._cuff.upper_button():
+                    robot._gripper.open()
+                elif robot._cuff.lower_button():
+                    robot._gripper.close()
+            data = {
+                "time": self._time_stamp(),
+                "robot": self.environment.get_robot_state(),
+                "items": self.environment.get_item_state(),
+                "triggered_constraints": self.environment.check_constraint_triggers()
+            }
+            observation = Observation(data)
+            if self.publish_constraint_validity:
+                valid_constraints = check_constraint_validity(self.environment, self.environment.constraints, observation)[1]
+                pub = rospy.Publisher('cairo_lfd/valid_constraints', Int8MultiArray, queue_size=10)
+                msg = Int8MultiArray(data=valid_constraints)
+                pub.publish(msg)
+            if self.command == "discard":
+                rospy.loginfo("~~~DISCARDED~~~")
+                self.interaction_publisher.send_position_mode_cmd()
+                self._clear_command()
+                return []
+            if self.command == "capture":
+                rospy.loginfo("~~~CAPTURED POINT~~~")
+                self._clear_command()
+                rospy.loginfo("{} observations captured.".format(len(observations)))
+                observations.append(observation)
+            if self.command == "end":
+                rospy.loginfo("~~~ENDING POINTWISE RECORDING~~~")
+                self.interaction_publisher.send_position_mode_cmd()
+                self._clear_command()
+                return observations
+            self._rate.sleep()

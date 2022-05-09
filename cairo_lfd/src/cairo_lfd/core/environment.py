@@ -467,6 +467,63 @@ class Observation(object):
             return None
 
 
+class SimpleObservation():
+    """
+    Observation object to contain raw dictionary data for an observation and retrieval methods for that data.
+
+    Example
+    -------
+    .. code-block:: json
+
+        {
+            "applied_constraints": [],
+            "robot": {
+                "x": 0.0,
+                "y": 1.0,
+                "theta": 90
+            },
+            "time": 0.38476085662841797
+        }
+
+    Attributes
+    ----------
+    data : dict
+        Dictionary of raw data collecting item, robot and constraint states.
+
+    """
+
+    def __init__(self, observation_data):
+        """
+        Parameters
+        ----------
+        observation_data : dict
+            Dictionary of raw data collecting item, robot and constraint states.
+        """
+        self.data = observation_data
+
+    def get_timestamp(self):
+        """
+        Gets observations timestamp
+
+        Returns
+        -------
+        : float
+            Integer timestamp in milliseconds representing time from epoch.
+        """
+        return self.data["time"]
+
+    def get_robot_data(self):
+        """
+        Get the observation's robot data.
+
+        Returns
+        -------
+        : dictionary
+            dictionary of robot data
+        """
+        return self.data["robot"]
+
+
 class EnvironmentError(Exception):
 
     def __init__(self, value):

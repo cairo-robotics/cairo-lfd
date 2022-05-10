@@ -6,7 +6,7 @@ import copy
 import numpy as np
 from geometry_msgs.msg import Pose
 
-from cairo_lfd.core.environment import Observation
+from cairo_lfd.core.environment import Observation, SimpleObservation
 
 
 def convert_data_to_pose(position, orientation):
@@ -163,3 +163,36 @@ class SawyerSampleConversion(object):
         z = z / normalize
         w = w / normalize
         return x, y, z, w
+    
+class Holonomic2DSampleConversion(object):
+    """
+    Converts raw samples generated from models into SimpleObservation objects for a holonomic x, y, theta robot.
+
+    """
+
+    def convert(self, sample):
+        """
+        Converts raw samples generated from models into Observation objects.
+
+        Parameters
+        ----------
+        sample : list
+            Raw sample to convert.
+
+        Returns
+        -------
+        obsv : lfd.environment.SimpleObservation
+            Simplebservation object constructed from the converted sample.
+        """
+        data = {
+            "robot": {
+                "x": sample[0],
+                "y": sample[1],
+                "theta": sample[2]
+            }
+        }
+        obsv = SimpleObservation(data)
+       
+        return obsv
+
+    

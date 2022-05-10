@@ -523,6 +523,31 @@ class SimpleObservation():
         """
         return self.data["robot"]
 
+    def get_keyframe_info(self):
+        """
+        Returns back the keyframe id and type as a tuple.
+
+        Returns
+        -------
+        : tuple
+            (keyframe_id, keyframe_type)
+        """
+        return (self.data["keyframe_id"], self.data["keyframe_type"])
+
+    def get_applied_constraint_data(self):
+        """
+        Get the applied constraints of an object.
+
+        Returns
+        -------
+        : list
+            List of constraint id's.
+        """
+        if "applied_constraints" in self.data.keys():
+            return self.data["applied_constraints"]
+        else:
+            return None
+
 
 class EnvironmentError(Exception):
 

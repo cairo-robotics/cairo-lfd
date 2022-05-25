@@ -13,7 +13,7 @@ from cairo_lfd.data.io import export_to_json
 from cairo_lfd.constraints.acc_assignment import assign_autoconstraints, AutoconstraintFactory
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory
 from cairo_lfd.modeling.graphing import KeyframeClustering, KeyframeGraph, IntermediateTrajectories
-from cairo_lfd.modeling.models import KDEModel
+from cairo_lfd.modeling.models import KDEModel, BayesianGaussianMixtureModel
 from cairo_lfd.modeling.sampling import ConstrainedKeyframeModelSampler, KeyframeModelSampler, ModelScoreRanking, ConfigurationSpaceRanking, AutoconstraintSampler
 from cairo_lfd.modeling.analysis import get_culling_candidates
 from cairo_lfd_msgs.msg import AppliedConstraints
@@ -628,8 +628,7 @@ class LfD2D():
             self.G.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
             self.G.nodes[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
             self.G.nodes[cluster_id]["applied_constraints"] = clusters[cluster_id]["applied_constraints"]
-            self.G.nodes[cluster_id]["model"] = KDEModel(
-                kernel='gaussian', bandwidth=bandwidth)
+            self.G.nodes[cluster_id]["model"] = BayesianGaussianMixtureModel()
         nx.add_path(self.G, self.G.nodes())
         self.G.fit_models(self.observation_vectorizer)
         self.G.identify_primal_observations(self.observation_vectorizer)
@@ -703,7 +702,7 @@ class LfD2D():
             ranked_samples = configuration_ranker.rank(
                 self.G.nodes[node]["model"], samples, prior_sample)
         return ranked_samples
-
+    
     def serialize_out(self, path):
         data = {}
         data['config'] = self.configs
@@ -744,3 +743,7 @@ class LfD2D():
 
             keyframe_waypoints_with_constraints.append((cur_state, next_state, self.G.nodes[cur_node]["applied_constraints"]))
         return keyframe_waypoints_with_constraints
+
+    def sample_from_keyframe(self, node_id, number_of_samples):
+        keyframe_sampler = KeyframeModelSampler()
+        return keyframe_sampler.sample(self.G.nodes[nodnode_ide]["model"], n=number_of_samples)[0]

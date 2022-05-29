@@ -744,6 +744,6 @@ class LfD2D():
             keyframe_waypoints_with_constraints.append((cur_state, next_state, self.G.nodes[cur_node]["applied_constraints"]))
         return keyframe_waypoints_with_constraints
 
-    def sample_from_keyframe(self, node_id, number_of_samples):
+    def sample_from_keyframe(self, node_id, n_samples):
         keyframe_sampler = KeyframeModelSampler()
-        return keyframe_sampler.sample(self.G.nodes[nodnode_ide]["model"], n=number_of_samples)[0]
+        return keyframe_sampler.sample(self.G.nodes[node_id]["model"], n=n_samples)[0]

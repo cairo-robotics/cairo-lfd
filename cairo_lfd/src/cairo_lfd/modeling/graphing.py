@@ -89,7 +89,6 @@ class KeyframeGraph(MultiDiGraph):
             best_obs = None
             old_score = -np.inf
             for obsv in self.nodes[node]["observations"]:
-                vector = np.array(observation_vectorizor(obsv))
                 sample = np.array(observation_vectorizor(obsv))
                 new_score = self.nodes[node]["model"].score_samples(np.array([sample]))[
                     0]

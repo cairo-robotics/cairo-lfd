@@ -7,16 +7,15 @@ from cairo_lfd.core.environment import Environment
 from cairo_lfd.constraints.triggers import TriggerFactory
 from cairo_lfd.core.items import ItemFactory
 from cairo_lfd.core.robots import RobotFactory
-from cairo_lfd.data.conversion import SawyerSampleConversion
+from cairo_lfd.data.conversion import SawyerSampleConversion, Holonomic2DSampleConversion
 from cairo_lfd.data.vectorization import get_observation_joint_vector
 from cairo_lfd.data.io import export_to_json
 from cairo_lfd.constraints.acc_assignment import assign_autoconstraints, AutoconstraintFactory
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory
 from cairo_lfd.modeling.graphing import KeyframeClustering, KeyframeGraph, IntermediateTrajectories
-from cairo_lfd.modeling.models import KDEModel
-from cairo_lfd.modeling.sampling import KeyframeModelSampler, ModelScoreRanking, ConfigurationSpaceRanking, AutoconstraintSampler
-from cairo_lfd.modeling.analysis import get_culling_candidates, check_constraint_validity, check_state_validity
-
+from cairo_lfd.modeling.models import KDEModel, BayesianGaussianMixtureModel
+from cairo_lfd.modeling.sampling import ConstrainedKeyframeModelSampler, KeyframeModelSampler, ModelScoreRanking, ConfigurationSpaceRanking, AutoconstraintSampler
+from cairo_lfd.modeling.analysis import get_culling_candidates
 from cairo_lfd_msgs.msg import AppliedConstraints
 
 
@@ -92,7 +91,7 @@ class ACC_LFD():
             "number_of_samples", number_of_samples)
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
 
-        keyframe_sampler = KeyframeModelSampler(
+        keyframe_sampler = ConstrainedKeyframeModelSampler(
             sample_to_obsv_converter, self.robot_interface)
 
         prior_sample = None
@@ -234,7 +233,7 @@ class CC_LFD():
     def sample_keyframes(self, number_of_samples, automate_threshold=False, culling_threshold=12):
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
 
-        keyframe_sampler = KeyframeModelSampler(
+        keyframe_sampler = ConstrainedKeyframeModelSampler(
             sample_to_obsv_converter, self.robot_interface)
 
         prior_sample = None
@@ -456,7 +455,7 @@ class LFD():
     def sample_keyframes(self, number_of_samples, automate_threshold=False, culling_threshold=-1000):
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
 
-        keyframe_sampler = KeyframeModelSampler(
+        keyframe_sampler = ConstrainedKeyframeModelSampler(
             sample_to_obsv_converter, self.robot_interface)
 
         prior_sample = None
@@ -595,3 +594,156 @@ class LFD():
             data["observation"] = self.G.nodes[node]["samples"][0].data
             keyframe_data[node] = data
         return keyframe_data
+
+
+class LfD2D():
+    
+    def __init__(self, observation_vectorizer):
+        self.observation_vectorizer = observation_vectorizer
+
+    # def build_environment(self):
+    #     robots = RobotFactory(self.configs['robots']).generate_robots()
+    #     items = ItemFactory(self.configs['items']).generate_items()
+    #     triggers = TriggerFactory(self.configs['triggers']).generate_triggers()
+    #     constraints = ConstraintFactory(
+    #         self.configs['constraints']).generate_constraints()
+    #     # We only have just the one robot...for now.......
+    #     self.environment = Environment(
+    #         items=items, robot=robots[0], constraints=constraints, triggers=triggers)
+
+    def build_keyframe_graph(self, labeled_demonstrations, bandwidth):
+        self.G = KeyframeGraph()
+        self.G.graph['labeled_demonstrations'] = labeled_demonstrations
+        self.G.graph['intermediate_trajectories'] = IntermediateTrajectories(
+        ).get_trajectories(labeled_demonstrations)
+        keyframe_clustering = KeyframeClustering()
+
+        """
+        Generate clusters using labeled observations, build the models, graphs, and attributes for each
+        cluster in the KeyFrameGraph
+        """
+        clusters = keyframe_clustering.get_clusters(labeled_demonstrations)
+        for cluster_id in clusters.keys():
+            self.G.add_node(cluster_id)
+            self.G.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
+            self.G.nodes[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
+            self.G.nodes[cluster_id]["applied_constraints"] = clusters[cluster_id]["applied_constraints"]
+            self.G.nodes[cluster_id]["model"] = BayesianGaussianMixtureModel()
+        nx.add_path(self.G, self.G.nodes())
+        self.G.fit_models(self.observation_vectorizer)
+        self.G.identify_primal_observations(self.observation_vectorizer)
+
+    def sample_keyframes(self, number_of_samples, automate_threshold=False, culling_threshold=12):
+        sample_to_obsv_converter = Holonomic2DSampleConversion()
+        keyframe_sampler = KeyframeModelSampler()
+
+        prior_sample = None
+        for node in self.G.get_keyframe_sequence():
+            rospy.loginfo("")
+            rospy.loginfo("KEYFRAME: {}".format(node))
+            samples = self._generate_samples(
+                node, keyframe_sampler, number_of_samples)
+            
+            self.G.nodes[node]["samples"] = [
+                sample_to_obsv_converter.convert(sample) for sample in samples]
+            samples = self._refit_node_model(node, keyframe_sampler, number_of_samples)
+           
+            ranked_samples = self._rank_node_valid_samples(
+                node, samples, prior_sample)
+            self.G.nodes[node]["samples"] = [sample_to_obsv_converter.convert(sample) for sample in ranked_samples]
+            prior_sample = ranked_samples[0]
+
+        # Cull candidate keyframes.
+        for node in get_culling_candidates(self.G, automate_threshold, culling_threshold):
+            self.G.cull_node(node)
+
+    def _generate_samples(self, node, sampler, number_of_samples):
+
+        if self.G.nodes[node]["keyframe_type"] == "constraint_transition":
+            rospy.loginfo("Sampling from a constraint transition keyframe.")
+          
+            samples = sampler.sample(self.G.nodes[node]["model"], n=number_of_samples)
+            # if len(samples) == 0:
+            #     # Some constraints couldn't be sampled successfully, so using best available samples.
+            #     diff = list(set(self.G.nodes[node]["applied_constraints"]).difference(
+            #         set(matched_ids)))
+            #     if len(matched_ids) > 0:
+            #         rospy.logwarn(
+            #             "Constraints {} couldn't be met so attempting to find valid samples with constraints {}.".format(diff, matched_ids))
+            #         constraints = [self.environment.get_constraint_by_id(
+            #             constraint_id) for constraint_id in self.G.nodes[node]["applied_constraints"]]
+            #         attempts, samples, matched_ids = sampler.sample(self.environment,
+            #                                                         self.G.nodes[node]["model"], self.G.nodes[node]["primal_observation"], constraints, n=number_of_samples)
+            #     else:
+            #         rospy.logwarn(
+            #             "Constraints {} couldn't be met so. Cannot meet any constraints.".format(diff))
+        else:
+            # constraints = [self.environment.get_constraint_by_id(
+            #     constraint_id) for constraint_id in self.G.nodes[node]["applied_constraints"]]
+            samples = sampler.sample(self.G.nodes[node]["model"], n=number_of_samples)
+        return samples
+
+    def _refit_node_model(self, node, sampler, number_of_samples):
+        # refit models
+        self.G.fit_models_on_valid_samples(
+            node, self.observation_vectorizer)
+        samples = sampler.sample(self.G.nodes[node]["model"], n=number_of_samples)
+        return samples
+
+    def _rank_node_valid_samples(self, node, samples, prior_sample=None):
+        model_score_ranker = ModelScoreRanking()
+        configuration_ranker = ConfigurationSpaceRanking()
+        # Order sampled points based on their intra-model log-likelihood if no prior sample if the first keyframe
+        if prior_sample is None:
+            ranked_samples = model_score_ranker.rank(
+                self.G.nodes[node]["model"], samples)
+        # else use the closest
+        else:
+            ranked_samples = configuration_ranker.rank(
+                self.G.nodes[node]["model"], samples, prior_sample)
+        return ranked_samples
+    
+    def serialize_out(self, path):
+        data = {}
+        data['config'] = self.configs
+        data['labeled_demonstrations'] = [[obsv.data for obsv in demo.labeled_observations]
+                                          for demo in self.G.graph['labeled_demonstrations']]
+        data['intermediate_trajectories'] = {key: [[o.data for o in segment] for segment in group]
+                                             for key, group in self.G.graph['intermediate_trajectories'].items()}
+        data['keyframes'] = {}
+        for cur_node in self.G.get_keyframe_sequence():
+            data['keyframes'][cur_node] = {}
+            data['keyframes'][cur_node]['applied_constraints'] = self.G.nodes[cur_node]["applied_constraints"]
+            data['keyframes'][cur_node]['observations'] = [
+                obsv.data for obsv in self.G.nodes[cur_node]["observations"]]
+            data['keyframes'][cur_node]['keyframe_type'] = self.G.nodes[cur_node]["keyframe_type"]
+        export_to_json(path, data)
+    
+    def get_model_waypoints(self):
+        """ Create a sequence of keyframe way points and execute motion plans to reconstruct skill """
+        keyframe_waypoints_with_constraints = []
+        # Create publisher for node information
+        # time_pub = rospy.Publisher('/lfd/node_time', NodeTime, queue_size=10)
+        for i in range(len(self.G.get_keyframe_sequence()) - 1):
+            cur_node = self.G.get_keyframe_sequence()[i]
+            constraints = self.G.nodes[cur_node]["applied_constraints"]
+            rospy.loginfo("Keyframe: {}; Constraints: {}".format(
+                cur_node, constraints))
+            rospy.loginfo("")
+
+        for i in range(len(self.G.get_keyframe_sequence()) - 1):
+
+            # Grab nodes, samples, and joints
+            cur_node = self.G.get_keyframe_sequence()[i]
+            next_node = self.G.get_keyframe_sequence()[i + 1]
+            cur_sample = self.G.nodes[cur_node]["samples"][0]
+            next_sample = self.G.nodes[next_node]["samples"][0]
+            cur_state = cur_sample.get_robot_data()
+            next_state= next_sample.get_robot_data()
+
+            keyframe_waypoints_with_constraints.append((cur_state, next_state, self.G.nodes[cur_node]["applied_constraints"]))
+        return keyframe_waypoints_with_constraints
+
+    def sample_from_keyframe(self, node_id, n_samples):
+        keyframe_sampler = KeyframeModelSampler()
+        return keyframe_sampler.sample(self.G.nodes[node_id]["model"], n=n_samples)[0]

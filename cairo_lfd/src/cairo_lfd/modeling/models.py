@@ -1,7 +1,7 @@
 """ Wrappers around various models"""
 import numpy as np
 from sklearn.cluster import KMeans
-from sklearn.mixture import GaussianMixture
+from sklearn.mixture import BayesianGaussianMixture
 from sklearn.neighbors import KernelDensity
 
 
@@ -62,7 +62,7 @@ class KMeansModel(object):
         return self.model.predict(X)
 
 
-class GaussianMixtureModel(object):
+class BayesianGaussianMixtureModel(object):
     """
     Wrapper class for Scikit Learn's Gaussian Mixture Model.
 
@@ -73,23 +73,22 @@ class GaussianMixtureModel(object):
     model : GaussianMixture
         Wrapped class model.
     """
-    def __init__(self, n_components=5, means_init=None):
+    def __init__(self, n_components=2):
         """
         Parameters
         ----------
         n_components : int
-            Number of GMM components.
+            Number of GMM components. Max potentially used by VGMM. 
         means_init : list
             List of length n_components of numerical values for initial means of GMM.
         """
         self.n_components = n_components
-        self.model = GaussianMixture(n_components=self.n_components,
-                                     covariance_type='full',
-                                     means_init=means_init)
+        self.model = BayesianGaussianMixture(n_components=self.n_components,
+                                     covariance_type='full')
 
     def fit(self, train_X):
         """
-        Wrapper method for fit() method of GMM model.
+        Wrapper method for fit() method of VGMM model.
 
         Parameters
         ----------
@@ -117,7 +116,7 @@ class GaussianMixtureModel(object):
         ----------
         X : {array-like, sparse matrix}, shape = [n_samples, n_features]
         """
-        return self.model.predict_proba(X)
+        return self.model.predict_proba(X).max(axis=1)
 
 
 class KDEModel(object):

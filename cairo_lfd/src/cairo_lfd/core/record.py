@@ -24,35 +24,6 @@ from robot_interface.moveit_interface import SawyerMoveitInterface
 import copy
 
 
-class SawyerDemonstrationLabeler():
-    def __init__(self, settings, demo_aligner):
-        """
-        Parameters
-        ----------
-        """
-        self.divisor = settings.get("divisor", 20)
-        self.window = settings.get("window", 10)
-        self.output = settings.get("")
-        self.demo_aligner = demo_aligner
-
-    def label(self, demonstrations):
-        rospy.loginfo("Aligning demonstrations...this can take some time.")
-
-        # For more details about alignment, see the alignment_example.
-        aligned_demos, constraint_transitions = self.demo_aligner.align(demonstrations)
-        # Create ConstraintKeyframeLabeler passing in the aligned demonstrations and the constraint transition
-        # ordering, both of which are returned from the DemonstratinAligner object.
-        keyframe_labeler = ConstraintKeyframeLabeler(copy.deepcopy(aligned_demos), constraint_transitions)
-        rospy.loginfo("Labeling demonstrations.")
-        """Call label_demontrations. The first parameter is the average group length divisor which determines the number of keyframes for that group. So if the first grouping of data before the first constraint transition has an average length of 100, then that first grouping will generate 5 keyframes (100/20 = 5). 
-
-        The second parameter is the window size i.e. how big each keyframe size should be (+/- one depending on if odd number of elements in the grouping list per demonstration) 
-        """
-        labeled_demonstrations = keyframe_labeler.label_demonstrations(self.divisor, self.window)
-        # for demo in labeled_demonstrations:
-        return labeled_demonstrations
-
-
 class SawyerDemonstrationRecorder():
     """
     Class to record state data from the ReThink Robotics Sawyer robot for capturing demonstrated data for 

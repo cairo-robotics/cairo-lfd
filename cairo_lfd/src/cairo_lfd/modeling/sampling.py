@@ -8,9 +8,9 @@ from scipy.spatial.distance import euclidean
 from cairo_lfd.modeling.analysis import check_constraint_validity, check_state_validity
 
 
-class KeyframeModelSampler():
+class ConstrainedKeyframeModelSampler():
     """
-    Sampling class that uses a keyframe's model to sample points.
+    Sampling class that uses a keyframe's model to sample points for the Sawyer robot.
 
     Attributes
     ----------
@@ -21,7 +21,7 @@ class KeyframeModelSampler():
         """
         Parameters
         ----------
-        data_converter : SawyerSampleConverter
+        data_converter : Object
             Object that manipulates a raw sample into an Observation object.
         """
         self.sample_converter = sample_converter
@@ -62,6 +62,30 @@ class KeyframeModelSampler():
                 if constraint_valid and occlusion_free:
                     valid_samples.append(sample)
         return attempts, valid_samples, validated_set
+    
+    
+class KeyframeModelSampler():
+    """
+    Sampling class that uses a keyframe's model to sample points. This is a very basic class for now that just directly samples
+    from the mode, but could be expanded to check for constraint validity amongst other things.
+
+    """
+ 
+    def sample(self, model, n):
+        """
+        Parameters
+        ----------
+        model : object
+            Model object used to generate raw samples.
+        n : int
+            Number of valid samples to generate.
+
+        Returns
+        -------
+         : list
+            List of valid raw samples generated from the model.
+        """
+        return model.generate_samples(n)
 
 
 class AutoconstraintSampler():

@@ -388,6 +388,9 @@ class CC_LFD():
             self.G.nodes[node]["applied_constraints"] = data["applied_constraints"]
 
     def update_constraints(self, constraint_config_update):
+        print("HEY HEY HEY HEY")
+        print("CONSTRAINT CONFIG UPDATE: {}".format(constraint_config_update))
+        print("HEY HEY HEY HEY")
         new_constraints = ConstraintFactory(constraint_config_update).generate_constraints()
         current_constraints = self.environment.constraints
         for curr_idx, curr in enumerate(self.environment.constraints):

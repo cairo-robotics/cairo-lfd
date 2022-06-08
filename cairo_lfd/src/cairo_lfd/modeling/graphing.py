@@ -78,7 +78,6 @@ class KeyframeGraph(MultiDiGraph):
     def fit_models_on_valid_samples(self, node, observation_vectorizor):
         np_array = []
         for obsv in self.nodes[node]["samples"]:
-            vector = np.array(observation_vectorizor(obsv))
             np_array.append(np.array(observation_vectorizor(obsv)))
         np_array = np.array(np_array)
         self.nodes[node]["model"].fit(np_array)

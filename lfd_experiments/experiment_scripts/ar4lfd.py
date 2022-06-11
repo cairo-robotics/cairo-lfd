@@ -125,17 +125,16 @@ def main():
                 observations.append(Observation(entry))
             demonstrations.append(Demonstration(observations))
         if len(demonstrations) == 0:
-            rospy.logwarn("No prior demonstration data to model!! You sure you're using the right experiment script?")
-            return 0
-        labeled_initial_demos = demo_labeler.label(demonstrations)
-        cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))
-        cclfd.sample_keyframes(model_settings.get("number_of_samples", 50), automate_threshold=True)
+            labeled_initial_demos = []
+            rospy.logwarn("No prior demonstration data to model!! Make sure to record demonstrations before learning a model!")
+        else:
+            labeled_initial_demos = demo_labeler.label(demonstrations)
+            cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))
+            cclfd.sample_keyframes(model_settings.get("number_of_samples", 50), automate_threshold=True)
     else:
         labeled_initial_demos = []
         cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))
-
-    cclfd.sample_keyframes(model_settings.get("number_of_samples", 50), automate_threshold=True)
-
+        
     study = ARStudyController(cclfd, recorder, demo_labeler, labeled_initial_demos, args.output_directory, args.task, args.subject)
     study.run()
 

@@ -12,13 +12,13 @@
             "constraint_trigger_mechanism": "web_trigger"
         },
         "labeling_settings": {
-            "divisor": 20,
-            "window": 10
+            "divisor": 50,
+            "window": 50
         },
         "modeling_settings": {
             "planner": "RRTkConfigDefault",
-            "culling_threshold": 12,
-            "bandwidth": 0.025,
+            "culling_threshold": 5,
+            "bandwidth": 0.1,
             "number_of_samples": 50,
             "cull_overconstrained": false
         },
@@ -85,7 +85,7 @@
                         "position": [0.6109314212320098, 0.36505230607231814, -0.11699769749427],
                         "orientation":  [-0.003588055934499179, -0.9989722612831933, -0.004546341379431041, 0.044954174682852586]
                     },
-                    "axis": "x"
+                    "axis": "y"
                 }
         },
          {
@@ -100,7 +100,7 @@
                         "position": [0.6704478539344562, -0.5229082037023104, 0.19256496442827226],
                         "orientation":  [0.006374615488541097, 0.9999187409979692, -0.0053489284453452565, 0.009657362108587664]
                     },
-                    "axis": "x"
+                    "axis": "y"
                 }
         }
     ],

@@ -261,7 +261,7 @@ class AR4LfDMiddleware(object):
         """
 
         # Create transform manager (position and axes hardcoded for now)
-        self.transform_manager = ARVRFixedTransform("hololens", Vector3(0.975, -0.09, -0.27),
+        self.transform_manager = ARVRFixedTransform("hololens_intermediate", Vector3(0.975, -0.09, -0.27),
                                                     Quaternion(0.0, 0.0, 1.0, 0.0), [[0, 0, 1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1]])
 
         # Initialize Publishers
@@ -323,6 +323,7 @@ class AR4LfDMiddleware(object):
         for constraint in constraint_msg["constraints"]:
             if(constraint["className"] == "HeightConstraintAbove" or constraint["className"] == "HeightConstraintBelow"):
                 # Transform height constraint
+                # constraint["args"][0] is jsut the single value of the height coming from hololens that we pass as the y axis (which is z in hololens. Think video games...)
                 updated_pose = self.transform_manager.hololens_to_world(Pose(
                     Point(0, constraint["args"][0], 0), Quaternion(0, 0, 0, 1)))
                 constraint["args"][0] = updated_pose.pose.position.z

@@ -1,5 +1,6 @@
-import rospy
+import random
 
+import rospy
 import networkx as nx
 
 from cairo_lfd_msgs.msg import NodeTime
@@ -231,7 +232,9 @@ class CC_LFD():
         self.G.fit_models(get_observation_joint_vector)
         self.G.identify_primal_observations(get_observation_joint_vector)
 
-    def sample_keyframes(self, number_of_samples, automate_threshold=False, culling_threshold=12):
+    def sample_keyframes(self, number_of_samples, automate_threshold=False, culling_threshold=5):
+        culling_threshold = self.settings.get("culling_threshold", culling_threshold)
+        
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
 
         keyframe_sampler = KeyframeModelSampler(
@@ -241,30 +244,40 @@ class CC_LFD():
         for node in self.G.get_keyframe_sequence():
             rospy.loginfo("")
             rospy.loginfo("KEYFRAME: {}".format(node))
-            attempts, samples, matched_ids, constraints = self._generate_samples(
+            attempts, generated_samples, matched_ids, constraints = self._generate_samples(
                 node, keyframe_sampler, number_of_samples)
             rospy.loginfo(
-                "Initial sampling: %s valid of %s attempts", len(samples), attempts)
-            if len(samples) < number_of_samples:
+                "Initial sampling: %s valid of %s attempts", len(generated_samples), attempts)
+            if len(generated_samples) < number_of_samples:
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(
-                    samples), number_of_samples)
-            if len(samples) == 0 and self.cull_overconstrained:
-                self.G.cull_node(node)
+                    generated_samples), number_of_samples)
+            if len(generated_samples) == 0:
+                if self.cull_overconstrained:
+                    rospy.logwarn("No valid samples found so culling keyframe from the model (this is permanent).")
+                    self.G.cull_node(node)
+                else:
+                    rospy.logwarn("No valid samples found. Original keyframe will be kept but will likely be constraint non-compliant.")
                 continue
             self.G.nodes[node]["samples"] = [
-                sample_to_obsv_converter.convert(sample, run_fk=True) for sample in samples]
-            attempts, samples, matched_ids = self._refit_node_model(
+                sample_to_obsv_converter.convert(sample, run_fk=True) for sample in generated_samples]
+            self._refit_node_model(
                 node, keyframe_sampler, constraints, number_of_samples)
+            attempts, generated_samples, matched_ids, constraints = self._generate_samples(
+                node, keyframe_sampler, number_of_samples)
             rospy.loginfo(
-                "Refitted keyframe: %s valid of %s attempts", len(samples), attempts)
-            if len(samples) < number_of_samples:
+                "Refitted keyframe: %s valid of %s attempts", len(generated_samples), attempts)
+            if len(generated_samples) < number_of_samples:
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(
-                    samples), number_of_samples)
-            if len(samples) == 0:
-                self.G.cull_node(node)
+                    generated_samples), number_of_samples)
+            if len(generated_samples) == 0:
+                if self.cull_overconstrained:
+                    rospy.logwarn("No valid samples found when refitting model so culling keyframe from the model (this is permanent).")
+                    self.G.cull_node(node)
+                else:
+                    rospy.logwarn("No valid samples found from refitted model. Original keyframe will be kept but will likely be constraint non-compliant.")
                 continue
             ranked_samples = self._rank_node_valid_samples(
-                node, samples, prior_sample)
+                node, generated_samples, prior_sample)
             self.G.nodes[node]["samples"] = [sample_to_obsv_converter.convert(
                 sample, run_fk=True) for sample in ranked_samples]
             prior_sample = ranked_samples[0]
@@ -306,9 +319,6 @@ class CC_LFD():
         # refit models
         self.G.fit_models_on_valid_samples(
             node, get_observation_joint_vector)
-        attempted_count, samples, matched_ids = sampler.sample(self.environment,
-                                                               self.G.nodes[node]["model"], self.G.nodes[node]["primal_observation"], constraints, n=number_of_samples)
-        return attempted_count, samples, matched_ids
 
     def _rank_node_valid_samples(self, node, samples, prior_sample=None):
         model_score_ranker = ModelScoreRanking()
@@ -375,9 +385,9 @@ class CC_LFD():
             data["applied_constraints"] = self.G.nodes[node]["applied_constraints"]
             robot_data = {}
             robot_data["position"] = list(
-                self.G.nodes[node]["samples"][0].data["robot"]["position"])
+                self.G.nodes[node]["samples"][random.randint(0, 5)].data["robot"]["position"])
             robot_data["orientation"] = list(
-                self.G.nodes[node]["samples"][0].data["robot"]["orientation"])
+                self.G.nodes[node]["samples"][random.randint(0, 5)].data["robot"]["orientation"])
             data["robot"] = robot_data
             data["keyframe_id"] = node
             keyframe_data["point_array"].append(data)
@@ -388,9 +398,6 @@ class CC_LFD():
             self.G.nodes[node]["applied_constraints"] = data["applied_constraints"]
 
     def update_constraints(self, constraint_config_update):
-        print("HEY HEY HEY HEY")
-        print("CONSTRAINT CONFIG UPDATE: {}".format(constraint_config_update))
-        print("HEY HEY HEY HEY")
         new_constraints = ConstraintFactory(constraint_config_update).generate_constraints()
         current_constraints = self.environment.constraints
         for curr_idx, curr in enumerate(self.environment.constraints):
@@ -466,15 +473,15 @@ class LFD():
         for node in self.G.get_keyframe_sequence():
             rospy.loginfo("")
             rospy.loginfo("KEYFRAME: {}".format(node))
-            attempts, samples, matched_ids, constraints = self._generate_samples(
+            attempts, generated_samples, matched_ids, constraints = self._generate_samples(
                 node, keyframe_sampler, number_of_samples)
             rospy.loginfo(
-                "Initial sampling: %s valid of %s attempts", len(samples), attempts)
-            if len(samples) < number_of_samples:
+                "Initial sampling: %s valid of %s attempts", len(generated_samples), attempts)
+            if len(generated_samples) < number_of_samples:
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(
                     samples), number_of_samples)
-            if len(samples) == 0:
-                self.G.cull_node(node)
+            if len(generated_samples) == 0:
+                rospy.logwarn("Couldn't fit any samples to the provided constraints")
                 continue
             self.G.nodes[node]["samples"] = [
                 sample_to_obsv_converter.convert(sample, run_fk=True) for sample in samples]
@@ -486,7 +493,7 @@ class LFD():
                 rospy.loginfo("Keyframe %d: only %s of %s waypoints provided", node, len(
                     samples), number_of_samples)
             if len(samples) == 0:
-                self.G.cull_node(node)
+                rospy.logwarn("Couldn't refit the model as no samples met the provided constraints")
                 continue
             ranked_samples = self._rank_node_valid_samples(
                 node, samples, prior_sample)

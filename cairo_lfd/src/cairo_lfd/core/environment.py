@@ -21,10 +21,13 @@ class Environment(object):
         AbstractItem extended class object representing the robot.
     constraints : list
         List of constrain class objects representing the available constraints for the Demonstration.
+    optimizers : list
+        List of optimizer class objects used to optimize single points for constraints represented by TSRs
+        triggers : list
     triggers : list
         List of trigger class objects that represent when a user has triggered a constraint.
     """
-    def __init__(self, items, robot, constraints, triggers):
+    def __init__(self, items, robot, constraints, optimizers, triggers):
         """
         Parameters
         ----------
@@ -34,10 +37,15 @@ class Environment(object):
             AbstractItem extended class object representing the robot.
         constraints : list
             List of constrain class objects representing the available constraints for the Demonstration.
+        optimizers : list
+            List of optimizer class objects used to optimize single points for constraints represented by TSRs
+        triggers : list
+        List of trigger class objects that represent when a user has triggered a constraint.
         """
         self.items = items
         self.robot = robot
         self.constraints = constraints
+        self.optimizers = optimizers
         self.triggers = triggers
 
     def get_robot_state(self):
@@ -155,6 +163,25 @@ class Environment(object):
             return [constraint for constraint in self.constraints if constraint.id == constraint_id][0]
         else:
             raise EnvironmentError("There are no constraints configured into the environment!")
+        
+    def get_optimizers_by_ids(self, constraint_ids):
+        """
+        Retrieves a point optimzier from the Environment by it's set of associated constraint ids.
+
+        Parameters
+        ----------
+        constraint_ids : list
+            The id of the constraint to retrieve.
+
+        Returns
+        -------
+        : Optimizer : object
+            Constraint class for the given id.
+        """
+        if self.optimizers is not None:
+            return [optimizer for optimizer in self.optimizers if optimizer.constraint_ids == constraint_ids][0]
+        else:
+            raise EnvironmentError("There are no optimizers configured into the environment!")
 
     def check_constraint_triggers(self):
         """

@@ -223,7 +223,7 @@ def remap_constraints_for_lfd(json_msg):
                         "position": [float(arg) for arg in args[0:3]],
                         "orientation": [0, 0, 0, 1.0]
                     },
-                    "axis": "x"
+                    "axis": "y"
                 }
         }
 
@@ -261,7 +261,7 @@ class AR4LfDMiddleware(object):
         """
 
         # Create transform manager (position and axes hardcoded for now)
-        self.transform_manager = ARVRFixedTransform("hololens_intermediate", Vector3(0.975, -0.09, -0.27),
+        self.transform_manager = ARVRFixedTransform("hololens_intermediate", Vector3(0.95, -0.09, -0.3),
                                                     Quaternion(0.0, 0.0, 1.0, 0.0), [[0, 0, 1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1]])
 
         # Initialize Publishers

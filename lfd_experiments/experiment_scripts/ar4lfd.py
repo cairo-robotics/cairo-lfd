@@ -67,6 +67,7 @@ def main():
 
     config_filepath = args.config
     configs = load_lfd_configuration(config_filepath)
+    calibration_settings = configs["settings"]["calibration_settings"]
 
     #################################
     # Configure the LFD class model #
@@ -97,7 +98,7 @@ def main():
     ###############################################
 
     rec_settings = configs["settings"]["recording_settings"]
-    recorder = SawyerDemonstrationRecorder(rec_settings, cclfd.environment, processor_pipeline, publish_constraint_validity=True)
+    recorder = SawyerDemonstrationRecorder(calibration_settings, rec_settings, cclfd.environment, processor_pipeline, publish_constraint_validity=True)
     rospy.on_shutdown(recorder.stop)
 
     ##########################################################
@@ -130,12 +131,12 @@ def main():
         else:
             labeled_initial_demos = demo_labeler.label(demonstrations)
             cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))
-            cclfd.sample_keyframes(model_settings.get("number_of_samples", 50), automate_threshold=True)
+            cclfd.sample_keyframes(model_settings.get("number_of_samples", 50), automated_culling_threshold=model_settings.get("automate_culling_threshold", True))
     else:
         labeled_initial_demos = []
         cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))
         
-    study = ARStudyController(cclfd, recorder, demo_labeler, labeled_initial_demos, args.output_directory, args.task, args.subject)
+    study = ARStudyController(calibration_settings, cclfd, recorder, demo_labeler, labeled_initial_demos, args.output_directory, args.task, args.subject)
     study.run()
 
 

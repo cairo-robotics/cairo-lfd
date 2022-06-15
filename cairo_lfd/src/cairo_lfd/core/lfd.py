@@ -492,7 +492,7 @@ class CC_LFD():
         self.G.fit_models(get_observation_joint_vector)
         self.G.identify_primal_observations(get_observation_joint_vector)
 
-    def sample_keyframes(self, number_of_samples, automate_threshold=False, culling_threshold=5):
+    def sample_keyframes(self, number_of_samples, automated_culling_threshold=False, culling_threshold=5):
         culling_threshold = self.settings.get("culling_threshold", culling_threshold)
         
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
@@ -543,7 +543,7 @@ class CC_LFD():
             prior_sample = ranked_samples[0]
 
         # Cull candidate keyframes.
-        for node in get_culling_candidates(self.G, automate_threshold, culling_threshold):
+        for node in get_culling_candidates(self.G, automated_culling_threshold, culling_threshold):
             self.G.cull_node(node)
 
     def _generate_samples(self, node, sampler, number_of_samples):

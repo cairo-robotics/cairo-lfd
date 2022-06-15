@@ -1,26 +1,29 @@
 {
      "settings":
     {
-        "recording_settings": {
+        "calibration_settings": {
+            "start_configuration": [0.7987529296875, 0.6302978515625, -1.84855859375, 0.798107421875, 2.3330693359375, -0.2563291015625, -1.5373125],
             "calibration_pose":
-                {
-                    "position": [0.2821271154625369, 0.6993660443827091, -0.2166083219212962],
-                    "orientation": [-0.005523956201021585, 0.9998884034279703, -0.004719975318146538, 0.01305329196600423]
-                },
-            "start_configuration": [0.575306640625, -0.336431640625, -0.359044921875, 1.458134765625, 0.6804560546875, 0.5560009765625, 1.6094990234375],
+            {
+                "position": [1.0896, -0.04371, -0.15091],
+                "orientation": [0.93665, 0.00855181, 0.349031, 0.0285096]
+            }
+        },
+        "recording_settings": {
             "sampling_rate": 50,
             "constraint_trigger_mechanism": "web_trigger"
         },
         "labeling_settings": {
             "divisor": 50,
-            "window": 50
+            "window": 10
         },
         "modeling_settings": {
             "planner": "RRTkConfigDefault",
-            "culling_threshold": 5,
-            "bandwidth": 0.1,
-            "number_of_samples": 20,
-            "cull_overconstrained": false
+            "bandwidth": 0.025,
+            "number_of_samples": 25,
+            "cull_overconstrained": false,
+            "automate_culling_threshold": true,
+            "culling_threshold": 5
         },
         "raw_output_directory": "./raw_demonstrations/",
         "labeled_output_directory": "./labeled_demonstrations/"

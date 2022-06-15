@@ -7,6 +7,10 @@ from std_msgs.msg import String
 
 from cairo_lfd.data.io import export_to_json
 from cairo_lfd.middleware.ar_middleware import remap_constraints_for_lfd
+from cairo_lfd.data.conversion import convert_data_to_pose
+
+from robot_interface.moveit_interface import SawyerMoveitInterface
+
 
 class ARStudyController():
     """
@@ -16,13 +20,15 @@ class ARStudyController():
 
     """
 
-    def __init__(self, lfd_model, recorder, labeler, poor_demonstrations, output_directory, task, subject):
+    def __init__(self, calibration_settings, lfd_model, recorder, labeler, poor_demonstrations, output_directory, task, subject):
         """
         Parameters
         ----------
 
         """
         self.command = ""
+        self.calibration_pose = calibration_settings.get("calibration_pose", None)
+        self.start_configuration = calibration_settings.get("start_configuration", None)
         self.lfd_model = lfd_model
         self.recorder = recorder
         self.labeler = labeler
@@ -49,7 +55,7 @@ class ARStudyController():
                 rospy.loginfo("Resampling keyframe models...")
                 self._clear_command()
                 self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                    "number_of_samples", .025), automate_threshold=False)
+                    "number_of_samples", .025), automate_culling_threshold=False)
             if self.command == "get_representation":
                 rospy.loginfo(
                     "Publishing keyframe model representation to cairo_lfd/lfd_representation keyframe models...")
@@ -60,6 +66,14 @@ class ARStudyController():
                 rospy.loginfo("Executing learned model...")
                 self._clear_command()
                 self.lfd_model.perform_skill()
+            if self.command == "start":
+                rospy.loginfo("Moving to start configuration...")
+                self._clear_command()
+                self._move_to_start_configuration()
+            if self.command == "calibrate":
+                rospy.loginfo("Moving to calibration pose...")
+                self._clear_command()
+                self._move_to_calibration_pose()
             if self.command == "record":
                 rospy.loginfo("Entering recording mode...")
                 self.raw_demos.extend(self.recorder.record())
@@ -133,6 +147,31 @@ class ARStudyController():
         unity_json_data = json.loads(msg.data)
         constraint_configs = remap_constraints_for_lfd(unity_json_data)
         self.lfd_model.update_constraints(constraint_configs)
+    
+    def _move_to_start_configuration(self):
+        """ Create the moveit_interface """
+        if self.start_configuration is not None:
+            moveit_interface = SawyerMoveitInterface()
+            moveit_interface.set_velocity_scaling(.35)
+            moveit_interface.set_acceleration_scaling(.25)
+            moveit_interface.set_joint_target(self.start_configuration)
+            moveit_interface.execute(moveit_interface.plan())
+        else:
+            rospy.logwarn("No start configuration provided in your config.json file.")
+        self._clear_command()
+        
+    def _move_to_calibration_pose(self):
+        if self.calibration_pose is not None:
+            pose = convert_data_to_pose(self.calibration_pose['position'], self.calibration_pose['orientation'])
+            moveit_interface = SawyerMoveitInterface()
+            moveit_interface.set_velocity_scaling(.35)
+            moveit_interface.set_acceleration_scaling(.25)
+            moveit_interface.set_pose_target(pose)
+            moveit_interface.execute(moveit_interface.plan())
+        else:
+            rospy.logwarn("No start configuration provided in your config.json file.")
+        self._clear_command()
+        
 
     def _clear_command(self):
         self.command = ""

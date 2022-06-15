@@ -69,20 +69,20 @@ class SawyerDemonstrationRecorder():
     _done : bool
         Termination flag.
     """
-    def __init__(self, settings, environment, processor_pipeline=None, publish_constraint_validity=True):
+    def __init__(self, calibration_settings, recording_settings, environment, processor_pipeline=None, publish_constraint_validity=True):
         """
         Parameters
         ----------
         rate : int
             The Hz rate at which to capture state data.
         """
-        self.start_configuration = settings.get("start_configuration", None)
-        self._raw_rate = settings.get("sampling_rate", 25)
+        self.start_configuration = calibration_settings.get("start_configuration", None)
+        self._raw_rate = recording_settings.get("sampling_rate", 25)
         self._rate = rospy.Rate(self._raw_rate)
         self._start_time = rospy.get_time()
         self._done = False
         self.publish_constraint_validity = publish_constraint_validity
-        self.constraint_trigger = settings.get("constraint_trigger_mechanism", "web_trigger")
+        self.constraint_trigger = recording_settings.get("constraint_trigger_mechanism", "web_trigger")
         self.processor_pipeline = processor_pipeline
         self.head_display_pub = rospy.Publisher('/robot/head_display', Image, latch=True, queue_size=10)
         self.recording_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/Recording.jpg')

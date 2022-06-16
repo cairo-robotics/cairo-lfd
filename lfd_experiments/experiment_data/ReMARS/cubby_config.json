@@ -15,11 +15,11 @@
         },
         "labeling_settings": {
             "divisor": 50,
-            "window": 10
+            "window": 50
         },
         "modeling_settings": {
             "planner": "RRTkConfigDefault",
-            "bandwidth": 0.025,
+            "bandwidth": 0.075,
             "number_of_samples": 25,
             "cull_overconstrained": false,
             "automate_culling_threshold": true,

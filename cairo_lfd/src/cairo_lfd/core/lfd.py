@@ -520,8 +520,8 @@ class CC_LFD():
                 continue
             self.G.nodes[node]["samples"] = [
                 sample_to_obsv_converter.convert(sample, run_fk=True) for sample in generated_samples]
-            self._refit_node_model(
-                node, keyframe_sampler, constraints, number_of_samples)
+
+            self._refit_node_model(node)
             attempts, generated_samples, matched_ids, constraints = self._generate_samples(
                 node, keyframe_sampler, number_of_samples)
             rospy.loginfo(
@@ -575,7 +575,7 @@ class CC_LFD():
                                                             self.G.nodes[node]["model"], self.G.nodes[node]["primal_observation"], constraints, n=number_of_samples)
         return attempts, samples, matched_ids, constraints
 
-    def _refit_node_model(self, node, sampler, constraints, number_of_samples):
+    def _refit_node_model(self, node):
         # refit models
         self.G.fit_models_on_valid_samples(
             node, get_observation_joint_vector)

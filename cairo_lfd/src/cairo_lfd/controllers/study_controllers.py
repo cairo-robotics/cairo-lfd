@@ -65,6 +65,7 @@ class ARStudyController():
             if self.command == "execute":
                 rospy.loginfo("Executing learned model...")
                 self._clear_command()
+                self._move_to_start_configuration()
                 self.lfd_model.perform_skill()
             if self.command == "start":
                 rospy.loginfo("Moving to start configuration...")
@@ -89,7 +90,7 @@ class ARStudyController():
                 self.lfd_model.build_keyframe_graph(
                     self.labeled_demos, self.lfd_model.settings.get("bandwidth", .025))
                 self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                    "number_of_samples", .025), automate_threshold=True)
+                    "number_of_samples", .025), automated_culling_threshold=True)
                 rospy.loginfo(
                     "Training complete. New keyframe model available for representation and execution.")
                 self._clear_command()

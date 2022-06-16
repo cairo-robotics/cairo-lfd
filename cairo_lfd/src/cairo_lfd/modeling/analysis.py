@@ -6,7 +6,7 @@ import rospy
 import copy
 
 from cairo_lfd.modeling.stats import kullbach_leibler_divergence, model_divergence_stats
-
+from cairo_lfd.data.conversion import convert_data_to_pose
 
 def evaluate_applied_constraints(environment, observations):
     """
@@ -92,11 +92,17 @@ def check_state_validity(observation, robot_interface):
 
     joints = observation.get_joint_angle()
     if joints is None:
-        observation.data["robot"]["joints"] = robot_interface.get_pose_IK_joints(
-            observation.get_pose_list())
-    if type(joints) is not list:
-        joints = joints.tolist()
-    if not robot_interface.check_point_validity(robot_interface.create_robot_state(joints)):
+        pose_list = observation.get_pose_list()
+        pose = convert_data_to_pose(pose_list[0:3], pose_list[3:])
+        ik_joints = robot_interface.inverse_kinematics(pose)
+        if ik_joints is None:
+            joints = None
+        else:
+            observation.data["robot"]["joints"] = robot_interface.inverse_kinematics(pose)
+            joints = observation.data["robot"]["joints"]
+    elif type(joints) is not list:
+        joints = joints.tolist()    
+    if joints is None or not robot_interface.check_point_validity(robot_interface.create_robot_state(joints)):
         return False
     else:
         return True

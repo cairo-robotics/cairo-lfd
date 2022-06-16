@@ -70,7 +70,6 @@ class KeyframeGraph(MultiDiGraph):
         for node in self.nodes():
             np_array = []
             for obsv in self.nodes[node]["observations"]:
-                vector = np.array(observation_vectorizor(obsv))
                 np_array.append(np.array(observation_vectorizor(obsv)))
             np_array = np.array(np_array)
             self.nodes[node]["model"].fit(np_array)

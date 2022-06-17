@@ -248,7 +248,7 @@ def remap_constraints_for_lfd(json_msg):
 
 class AR4LfDMiddleware(object):
 
-    def __init__(self, command_topic, request_topic, traj_representation_topic, hololens_pub_topic, constraint_edits_in, constraint_edits_out):
+    def __init__(self, device_pos_offset, command_topic, request_topic, traj_representation_topic, hololens_pub_topic, constraint_edits_in, constraint_edits_out):
         """
         :type command_topic: str
         :type request_topic: str
@@ -261,7 +261,7 @@ class AR4LfDMiddleware(object):
         """
 
         # Create transform manager (position and axes hardcoded for now)
-        self.transform_manager = ARVRFixedTransform("hololens_intermediate", Vector3(0.95, -0.09, -0.3),
+        self.transform_manager = ARVRFixedTransform("ar_device", Vector3(device_pos_offset[0], device_pos_offset[1], device_pos_offset[2]),
                                                     Quaternion(0.0, 0.0, 1.0, 0.0), [[0, 0, 1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1]])
 
         # Initialize Publishers
@@ -320,6 +320,7 @@ class AR4LfDMiddleware(object):
 
     def _constraint_cb(self, msg):
         constraint_msg = json.loads(msg.data)
+        rospy.loginfo(constraint_msg)
         for constraint in constraint_msg["constraints"]:
             if(constraint["className"] == "HeightConstraintAbove" or constraint["className"] == "HeightConstraintBelow"):
                 # Transform height constraint
@@ -328,6 +329,7 @@ class AR4LfDMiddleware(object):
                     Point(0, constraint["args"][0], 0), Quaternion(0, 0, 0, 1)))
                 constraint["args"][0] = updated_pose.pose.position.z
             elif(constraint["className"] == "UprightConstraint"):
+                # pass # The quaternion from hololens is actually the real rotation we need since its about the same axes. We don't need to transform anything.
                 # Transform upright constraint
                 updated_pose = self.transform_manager.hololens_to_world(Pose(
                     Point(0, 0, 0), Quaternion(constraint["args"][0], constraint["args"][1],
@@ -353,4 +355,5 @@ class AR4LfDMiddleware(object):
 
         transformed_constraint_msg = String()
         transformed_constraint_msg.data = json.dumps(constraint_msg)
+        rospy.loginfo(transformed_constraint_msg.data)
         self.constraints_pub.publish(transformed_constraint_msg)

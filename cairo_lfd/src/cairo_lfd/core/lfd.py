@@ -457,6 +457,7 @@ class CC_LFD():
         self.cull_overconstrained = self.settings.get(
             "cull_overconstrained", True)
         self.robot_interface = robot_interface
+        self.current_representation = None
 
     def build_environment(self):
         robots = RobotFactory(self.configs['robots']).generate_robots()
@@ -504,6 +505,7 @@ class CC_LFD():
         for node in self.G.get_keyframe_sequence():
             rospy.loginfo("")
             rospy.loginfo("KEYFRAME: {}".format(node))
+            rospy.loginfo("Constraints: {}".format(self.G.nodes[node]["applied_constraints"]))
             attempts, generated_samples, matched_ids, constraints = self._generate_samples(
                 node, keyframe_sampler, number_of_samples)
             rospy.loginfo(
@@ -600,42 +602,59 @@ class CC_LFD():
         time_pub = rospy.Publisher('/lfd/node_time', NodeTime, queue_size=10)
         constraint_pub = rospy.Publisher(
             '/lfd/applied_constraints', AppliedConstraints, queue_size=10)
-        rospy.sleep(5)
+        rospy.sleep(1)
+        
+        if self.current_representation is not None:
+            rospy.loginfo("Executing the current representation sent to the visual interface!")
+            for i in range(len(self.current_representation) - 1):
+                data = self.current_representation[i]
+                current_config = data["robot"]['configuration']
+                next_config = self.current_representation[i+1]["robot"]['configuration']
+                constraints = data["applied_constraints"]
+                constraints_msg = AppliedConstraints()
+                constraints_msg.constraints = constraints
+                constraint_pub.publish(constraints_msg)
+                rospy.loginfo(
+                    "LFD: Moving to a new point from keyframe {}".format(data["keyframe_id"]))
+                # Execute movement using MoveIt!
+                rospy.sleep(1)
+                self.robot_interface.move_to_joint_targets(
+                    [current_config, next_config])
+        else:
+            for i in range(len(self.G.get_keyframe_sequence()) - 1):
+                cur_node = self.G.get_keyframe_sequence()[i]
+                constraints = self.G.nodes[cur_node]["applied_constraints"]
+                rospy.loginfo("Keyframe: {}; Constraints: {}".format(
+                    cur_node, constraints))
+                rospy.loginfo("")
 
-        for i in range(len(self.G.get_keyframe_sequence()) - 1):
-            cur_node = self.G.get_keyframe_sequence()[i]
-            constraints = self.G.nodes[cur_node]["applied_constraints"]
-            rospy.loginfo("Keyframe: {}; Constraints: {}".format(
-                cur_node, constraints))
-            rospy.loginfo("")
+            for i in range(len(self.G.get_keyframe_sequence()) - 1):
 
-        for i in range(len(self.G.get_keyframe_sequence()) - 1):
+                # Grab nodes, samples, and joints
+                cur_node = self.G.get_keyframe_sequence()[i]
+                next_node = self.G.get_keyframe_sequence()[i + 1]
+                cur_sample = self.G.nodes[cur_node]["samples"][0]
+                next_sample = self.G.nodes[next_node]["samples"][0]
+                cur_joints = cur_sample.get_joint_angle()
+                next_joints = next_sample.get_joint_angle()
 
-            # Grab nodes, samples, and joints
-            cur_node = self.G.get_keyframe_sequence()[i]
-            next_node = self.G.get_keyframe_sequence()[i + 1]
-            cur_sample = self.G.nodes[cur_node]["samples"][0]
-            next_sample = self.G.nodes[next_node]["samples"][0]
-            cur_joints = cur_sample.get_joint_angle()
-            next_joints = next_sample.get_joint_angle()
+                # Build and publish node data
+                time_msg = NodeTime()
+                time_msg.cur_node = int(cur_node)
+                time_msg.next_node = int(next_node)
+                time_msg.timestamp = rospy.Time.now()
+                time_pub.publish(time_msg)
 
-            # Build and publish node data
-            time_msg = NodeTime()
-            time_msg.cur_node = int(cur_node)
-            time_msg.next_node = int(next_node)
-            time_msg.timestamp = rospy.Time.now()
-            time_pub.publish(time_msg)
-
-            constraints = self.G.nodes[cur_node]["applied_constraints"]
-            constraints_msg = AppliedConstraints()
-            constraints_msg.constraints = constraints
-            constraint_pub.publish(constraints_msg)
-            rospy.loginfo(
-                "LFD: Moving to a new point from keyframe {}".format(cur_node))
-            # Execute movement using MoveIt!
-            rospy.sleep(1)
-            self.robot_interface.move_to_joint_targets(
-                [cur_joints, next_joints])
+                constraints = self.G.nodes[cur_node]["applied_constraints"]
+                constraints_msg = AppliedConstraints()
+                constraints_msg.constraints = constraints
+                constraint_pub.publish(constraints_msg)
+                rospy.loginfo(
+                    "LFD: Moving to a new point from keyframe {}".format(cur_node))
+                # Execute movement using MoveIt!
+                rospy.sleep(1)
+                self.robot_interface.move_to_joint_targets(
+                    [cur_joints, next_joints])
 
     def generate_representation(self):
         keyframe_data = {}
@@ -644,13 +663,17 @@ class CC_LFD():
             data = {}
             data["applied_constraints"] = self.G.nodes[node]["applied_constraints"]
             robot_data = {}
+            random_idx = random.randint(0, 5)
             robot_data["position"] = list(
-                self.G.nodes[node]["samples"][random.randint(0, 5)].data["robot"]["position"])
+                self.G.nodes[node]["samples"][random_idx].data["robot"]["position"])
             robot_data["orientation"] = list(
-                self.G.nodes[node]["samples"][random.randint(0, 5)].data["robot"]["orientation"])
+                self.G.nodes[node]["samples"][random_idx].data["robot"]["orientation"])
+            robot_data["configuration"] = list(
+                self.G.nodes[node]["samples"][random_idx].data["robot"]["joint_angle"])
             data["robot"] = robot_data
             data["keyframe_id"] = node
             keyframe_data["point_array"].append(data)
+        self.current_representation = keyframe_data["point_array"]
         return keyframe_data
 
     def update_applied_constraints(self, applied_constraints_update):
@@ -668,7 +691,7 @@ class CC_LFD():
                     break
         constraints = current_constraints + new_constraints
         self.environment.constraints = constraints
-        print("Current Environment Constraints: {}".format(self.environment.constraints))
+        rospy.loginfo("Current Environment Constraints: {}".format(self.environment.constraints))
 
     def serialize_out(self, path):
         data = {}

@@ -55,7 +55,7 @@ class ARStudyController():
                 rospy.loginfo("Resampling keyframe models...")
                 self._clear_command()
                 self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                    "number_of_samples", .025), automate_culling_threshold=False)
+                    "number_of_samples", 25), automated_culling_threshold=False)
             if self.command == "get_representation":
                 rospy.loginfo(
                     "Publishing keyframe model representation to cairo_lfd/lfd_representation keyframe models...")
@@ -90,7 +90,7 @@ class ARStudyController():
                 self.lfd_model.build_keyframe_graph(
                     self.labeled_demos, self.lfd_model.settings.get("bandwidth", .025))
                 self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                    "number_of_samples", .025), automated_culling_threshold=True)
+                    "number_of_samples", 25), automated_culling_threshold=True)
                 rospy.loginfo(
                     "Training complete. New keyframe model available for representation and execution.")
                 self._clear_command()
@@ -142,7 +142,7 @@ class ARStudyController():
         self.lfd_model.update_applied_constraints(parsed_data)
         # Sample and refit existing keyframe models.
         self.lfd_model.sample_keyframes(
-            self.lfd_model.settings.get("number_of_samples", .025))
+            self.lfd_model.settings.get("number_of_samples", 25))
 
     def _update_constraints_callback(self, msg):
         unity_json_data = json.loads(msg.data)

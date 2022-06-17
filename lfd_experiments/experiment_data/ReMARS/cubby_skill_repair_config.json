@@ -14,7 +14,7 @@
            "constraint_trigger_mechanism": "web_trigger"
        },
        "labeling_settings": {
-           "divisor": 10,
+           "divisor": 25,
            "window": 50
        },
        "modeling_settings": {

@@ -534,14 +534,6 @@ class ARPOLfDRecorder():
         self._done = False
 
     def record(self):
-        """
-
-
-        Returns
-        -------
-        demonstrations : list
-            List of Demonstration objects each of which captures Observations during user demonstrations.
-        """
 
         demonstrations = []
         rospy.loginfo("Ready to record single points. Refresh rate will be at ~{}Hz".format(self._raw_rate))

@@ -10,9 +10,6 @@ from geometry_msgs.msg import TransformStamped, Transform, Quaternion, Vector3
 
 class VRPNFixedTransform():
     def __init__(self, vrpn_world_frame="optitrack_world", global_world_frame="world", translation=Vector3(0, 0, 0), rotation=Quaternion(0, 0, 0, 1)):
-        """
-
-        """
         self.vrpn_world_frame = vrpn_world_frame
         self.global_world_frame = global_world_frame
         self._update_transform(translation, rotation)
@@ -25,8 +22,6 @@ class VRPNFixedTransform():
         self._publish_transform()
 
     def update_transform(self, translation, rotation):
-        """
-        """
         self.static_transform = TransformStamped()
         self.static_transform.header.frame_id = self.global_world_frame
         self.static_transform.child_frame_id = self.vrpn_world_frame

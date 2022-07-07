@@ -356,11 +356,18 @@ class AR4LfDMiddleware(object):
 
 class ARPOLfDMiddleware():
 
-    def __init__(self, joint_configuration_topic="/joint_configuration", playback_cmd_topic="/trajectory_playback_cmd", joint_trajectory_topic="/joint_trajectory"):
+    def __init__(self, optitrack_tong_topic='tong/pose',  joint_configuration_topic="/joint_configuration", playback_cmd_topic="/trajectory_playback_cmd", joint_trajectory_topic="/joint_trajectory"):
+        
+        
+        # Create transform manager (position and axes hardcoded for now)
+        self.transform_manager = ARVRFixedTransform("hololens", Vector3(0.975, -0.09, -0.27),
+                                                    Quaternion(0.0, 0.0, 1.0, 0.0), [[0, 0, 1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1]])
 
+        
         # Callback stores
         self.current_optimized_pose = []
         self.current_trajectory = []
+        self.current_pose_target = None
         
         # Initialize Publishers
         # Publish joint configurations for hololens as JSON encoded String
@@ -375,10 +382,16 @@ class ARPOLfDMiddleware():
         self.playback_sub = rospy.Subscriber(playback_cmd_topic, String, self._playback_cmd_cb)
         # Subscribes to Collision_IK_results
         self.collision_ik_sub =  rospy.Subscriber('/collision_ik/joint_angle_solutions', JointAngles, self._ja_solution_cb)
+        self.target_pose_sub = rospy.Subscriber(optitrack_tong_topic, String, self._target_pose_cb)
 
-
-    def target_pose(self, target_pose):
-        self.ee_pose_goals_pub
+        
+        
+    def _target_pose_cb(self, target_pose):
+        ee_pose_goals = EEPoseGoals()
+        ee_pose_goals.ee_poses.append(target_pose)
+        ee_pose_goals.header.seq = seq
+        seq += 1
+        self.ee_pose_goals_pub.publish(ee_pose_goals)
 
     def _playback_cmd_cb(self, msg):
         if msg.data == "true":
@@ -389,4 +402,7 @@ class ARPOLfDMiddleware():
         for a in data.angles.data:
             ja_solution.append(a)
         self.current_optimized_pose = ja_solution
-        self.current_trajectory 
+        self.current_trajectory.append(ja_solution)
+        # JSON formatted string to set to hololens.
+        
+        self.joint_configuration_publisher

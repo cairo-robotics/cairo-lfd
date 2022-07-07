@@ -75,8 +75,8 @@ def main():
 
     model_settings = configs["settings"]["modeling_settings"]
     moveit_interface = SawyerMoveitInterface()
-    moveit_interface.set_velocity_scaling(.35)
-    moveit_interface.set_acceleration_scaling(.25)
+    moveit_interface.set_velocity_scaling(.12)
+    moveit_interface.set_acceleration_scaling(.1)
     moveit_interface.set_planner(str(model_settings["planner"]))
     cclfd = CC_LFD(configs, model_settings, moveit_interface)
     cclfd.build_environment()

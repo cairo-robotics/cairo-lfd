@@ -9,14 +9,13 @@ import intera_interface
 from intera_interface import CHECK_VERSION
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
-from cairo_lfd.core.record import SawyerDemonstrationRecorder
+from cairo_lfd.core.record import SawyerDemonstrationRecorder, SawyerDemonstrationLabeler
 from cairo_lfd.core.environment import Observation, Demonstration
 from cairo_lfd.data.io import load_json_files, load_lfd_configuration
 from cairo_lfd.data.vectorization import vectorize_demonstration, get_observation_joint_vector
 from cairo_lfd.data.alignment import DemonstrationAlignment
-from cairo_lfd.data.labeling import SawyerDemonstrationLabeler
 from cairo_lfd.data.processing import DataProcessingPipeline, RelativeKinematicsProcessor, RelativePositionProcessor, InContactProcessor, SphereOfInfluenceProcessor, WithinPerimeterProcessor
-from cairo_lfd.core.lfd import CC_LFD
+from cairo_lfd.core.lfd import CC_LFD_OPT
 from cairo_lfd.controllers.study_controllers import ARStudyController
 
 def main():
@@ -68,7 +67,6 @@ def main():
 
     config_filepath = args.config
     configs = load_lfd_configuration(config_filepath)
-    calibration_settings = configs["settings"]["calibration_settings"]
 
     #################################
     # Configure the LFD class model #
@@ -76,10 +74,10 @@ def main():
 
     model_settings = configs["settings"]["modeling_settings"]
     moveit_interface = SawyerMoveitInterface()
-    moveit_interface.set_velocity_scaling(.12)
-    moveit_interface.set_acceleration_scaling(.1)
+    moveit_interface.set_velocity_scaling(.35)
+    moveit_interface.set_acceleration_scaling(.25)
     moveit_interface.set_planner(str(model_settings["planner"]))
-    cclfd = CC_LFD(configs, model_settings, moveit_interface)
+    cclfd = CC_LFD_OPT(configs, model_settings, moveit_interface)
     cclfd.build_environment()
 
     #####################################
@@ -99,7 +97,7 @@ def main():
     ###############################################
 
     rec_settings = configs["settings"]["recording_settings"]
-    recorder = SawyerDemonstrationRecorder(calibration_settings, rec_settings, cclfd.environment, processor_pipeline, publish_constraint_validity=True)
+    recorder = SawyerDemonstrationRecorder(rec_settings, cclfd.environment, processor_pipeline, publish_constraint_validity=True)
     rospy.on_shutdown(recorder.stop)
 
     ##########################################################
@@ -132,12 +130,12 @@ def main():
         else:
             labeled_initial_demos = demo_labeler.label(demonstrations)
             cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))
-            cclfd.sample_keyframes(model_settings.get("number_of_samples", 50), automated_culling_threshold=model_settings.get("automate_culling_threshold", True))
+            cclfd.sample_keyframes(model_settings.get("number_of_samples", 50), automate_threshold=True, use_optimizers=True)
     else:
         labeled_initial_demos = []
         cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))
         
-    study = ARStudyController(calibration_settings, cclfd, recorder, demo_labeler, labeled_initial_demos, args.output_directory, args.task, args.subject)
+    study = ARStudyController(cclfd, recorder, demo_labeler, labeled_initial_demos, args.output_directory, args.task, args.subject)
     study.run()
 
 

@@ -74,6 +74,10 @@ class ModelKeyboardController(object):
                 self.cmd_pub.publish("resample")
             elif user_input == "train":
                 self.cmd_pub.publish("train")
+            elif user_input == "start":
+                self.cmd_pub.publish("start")
+            elif user_input == "calibrate":
+                self.cmd_pub.publish("calibrate")
             elif user_input == "record":
                 self.cmd_pub.publish("record")
             elif user_input == "representation":
@@ -92,6 +96,8 @@ class ModelKeyboardController(object):
               'resample' - Resample keyframes.
               'representation' - Publish model representation.
               'record' - Record
+              'start' - Move to start configuration.
+              'calibrate' - Move to calibration pose.
               'train' - Train model with current demonstrations.
               'save' - Save the current subjects demonstrations, raw and labeled.
               'serialize' - Serialize the lfd model.

@@ -1,19 +1,17 @@
 <launch>
-
   <arg name="electric_gripper" default="true"/>
   <!-- <arg name="vrpn_server" default="desktop-ckithm9.local"/> -->
-
-
   <node name="joint_trajectory_action_server" pkg="intera_interface" type="joint_trajectory_action_server.py" respawn="true" />
 
-  <include file="$(find sawyer_moveit_config)/launch/sawyer_moveit.launch">
+ <include file="$(find sawyer_moveit_config)/launch/sawyer_moveit.launch">
         <arg name="electric_gripper" value="$(arg electric_gripper)"/>
   </include>
 
-  <include file="$(find cairo_lfd)/launch/web_trigger.launch"></include>
-
-  <!-- <node name="tf_visual_tools_publisher" pkg="tf_visual_tools" type="tf_visual_tools_publisher" respawn="true"/> -->
-
+  <include file="$(find cairo_lfd)/launch/web_trigger.launch">
+    <arg name="address" default="192.168.50.185"/>
+    <arg name="port" default="9090"/>
+  </include>
+ 
   <node name="transform_lookup_service" pkg="cairo_robot_interface" type="transform_lookup_service.py" respawn="true"/>
 
   <node name="ar4lfd_middleware" pkg="cairo_lfd" type="ar4lfd_middleware.py" respawn="true"/>

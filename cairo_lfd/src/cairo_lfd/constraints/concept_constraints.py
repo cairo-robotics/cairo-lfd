@@ -246,7 +246,7 @@ class OrientationConstraint(object):
         else:
             upright_pose = convert_data_to_pose([0, 0, 0], self.reference_orientation)
         cone_eval = cone(upright_pose, current_pose, self.threshold_angle, self.axis)
-        twist_eval = twist(upright_pose, current_pose, self.threshold_angle, self.axis)
+        twist_eval = twist(upright_pose, current_pose, self.threshold_angle)
         if cone_eval and twist_eval:
             return 1
         else:

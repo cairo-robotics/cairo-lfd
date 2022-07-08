@@ -33,7 +33,7 @@ class DataTong():
         Name of transformation lookup service used by _get_transform() to calculate the transformation between world_frame and child_frame
     """
 
-    def __init__(self, object_id, name="data_tong", world_frame="world", left_child_frame="left_tong_marker", right_child_frame="right_tong_marker", service_name="transform_lookup_service"):
+    def __init__(self, object_id, name="data_tong", world_frame="world", left_child_frame="left_data_tong", right_child_frame="right_data_tong", service_name="transform_lookup_service"):
         """
         Parameters
         ----------
@@ -61,12 +61,12 @@ class DataTong():
 
     def get_state(self):
         """
-        Gets the item's state.
+        Gets the data tong's state.
 
         Returns
         -------
         state : dict
-            The state of the dynamic item
+            The state of the data tong.
         """
         state = {}
         left_trans, right_trans = self._get_transforms()

@@ -356,12 +356,11 @@ class AR4LfDMiddleware(object):
 
 class ARPOLfDMiddleware():
 
-    def __init__(self, optitrack_tong_topic='tong/pose',  joint_configuration_topic="/joint_configuration", playback_cmd_topic="/trajectory_playback_cmd", joint_trajectory_topic="/joint_trajectory"):
+    def __init__(self, ar_pos_transform=Vector3(0.975, -0.09, -0.27), ar_quat_transform=Quaternion(0.0, 0.0, 1.0, 0.0), pose_target_topic='arpo_lfd/pose_target', joint_configuration_topic="arpo_lfd/joint_configuration", playback_cmd_topic="arpo_lfd/trajectory_playback_cmd", joint_trajectory_topic="arpo_lfd/joint_trajectory"):
         
         
         # Create transform manager (position and axes hardcoded for now)
-        self.transform_manager = ARVRFixedTransform("hololens", Vector3(0.975, -0.09, -0.27),
-                                                    Quaternion(0.0, 0.0, 1.0, 0.0), [[0, 0, 1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1]])
+        self.transform_manager = ARVRFixedTransform("hololens", ar_pos_transform, ar_quat_transform, [[0, 0, 1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1]])
 
         
         # Callback stores
@@ -382,7 +381,7 @@ class ARPOLfDMiddleware():
         self.playback_sub = rospy.Subscriber(playback_cmd_topic, String, self._playback_cmd_cb)
         # Subscribes to Collision_IK_results
         self.collision_ik_sub =  rospy.Subscriber('/collision_ik/joint_angle_solutions', JointAngles, self._ja_solution_cb)
-        self.target_pose_sub = rospy.Subscriber(optitrack_tong_topic, String, self._target_pose_cb)
+        self.target_pose_sub = rospy.Subscriber(pose_target_topic, PoseStamped, self._target_pose_cb)
 
         
         
@@ -395,8 +394,9 @@ class ARPOLfDMiddleware():
 
     def _playback_cmd_cb(self, msg):
         if msg.data == "true":
-            self.
-    
+            for configuration in self.current_trajectory:
+                self.joint_configuration_publisher.publish(self._format_configuration_as_string(configuration))
+        
     def _ja_solution_cb(self, data):
         ja_solution = []
         for a in data.angles.data:
@@ -405,4 +405,9 @@ class ARPOLfDMiddleware():
         self.current_trajectory.append(ja_solution)
         # JSON formatted string to set to hololens.
         
-        self.joint_configuration_publisher
+        self.joint_configuration_publisher.publish(self._format_configuration_as_string(ja_solution))
+    
+    def _format_configuration_as_string(seld, configuration):
+        data = {}
+        data["joint_configuration"] = configuration
+        return json.dumps(data)

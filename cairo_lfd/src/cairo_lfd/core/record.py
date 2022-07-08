@@ -9,7 +9,7 @@ import cv2
 import cv_bridge
 from sensor_msgs.msg import Image
 from std_msgs.msg import Int8MultiArray, String
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import PoseStamped
 
 import intera_interface
 from intera_core_msgs.msg import InteractionControlCommand
@@ -477,7 +477,7 @@ class SawyerPointwiseRecorder():
 
 class ARPOLfDRecorder():
     
-    def __init__(self, settings, environment, processor_pipeline=None):
+    def __init__(self, settings, environment, data_tong, processor_pipeline=None):
         """
         Parameters
         ----------
@@ -489,7 +489,9 @@ class ARPOLfDRecorder():
         self._raw_rate = settings.get("sampling_rate", 25)
         self._rate = rospy.Rate(self._raw_rate)
         self._done = False
+        self.data_tong = data_tong
         self.processor_pipeline = processor_pipeline
+        self.pose_target_publisher = rospy.Publisher('arpo_lfd/pose_target', PoseStamped, queue_size=10)
         self.head_display_pub = rospy.Publisher('/robot/head_display', Image, latch=True, queue_size=10)
         self.recording_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/Recording.jpg')
         self.ready_to_record_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/ReadyToRecord.jpg')
@@ -586,12 +588,8 @@ class ARPOLfDRecorder():
     def _record_demonstration(self):
         observations = []
         while True:
-            robot = self.environment.robot
-            if robot._gripper:
-                if robot._cuff.upper_button():
-                    robot._gripper.open()
-                elif robot._cuff.lower_button():
-                    robot._gripper.close()
+            state = self.data_tong.get_state()                    
+            self.pose_target_publisher.publish()
             data = {
                 "time": self._time_stamp(),
                 "robot": self.environment.get_robot_state(),
@@ -620,3 +618,6 @@ class ARPOLfDRecorder():
                 self._clear_command()
                 return observations
             self._rate.sleep()
+    
+    def _joint_configuration_cb(self, msg):
+        self.current_joint_configuration = msg.data

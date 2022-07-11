@@ -8,7 +8,6 @@ from std_msgs.msg import String
 from geometry_msgs.msg import TransformStamped, Transform, Pose, PoseStamped, Point, Quaternion, Vector3
 from tf.transformations import inverse_matrix
 
-from vrpn_middleware import VRPNFixedTransform
 from collision_ik.msg import EEPoseGoals, JointAngles
 
 

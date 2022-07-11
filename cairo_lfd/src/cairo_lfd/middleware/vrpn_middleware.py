@@ -6,20 +6,17 @@ import numpy as np
 
 from geometry_msgs.msg import TransformStamped, Transform, Quaternion, Vector3
 
-
-
 class VRPNFixedTransform():
     def __init__(self, vrpn_world_frame="optitrack_world", global_world_frame="world", translation=Vector3(0, 0, 0), rotation=Quaternion(0, 0, 0, 1)):
         self.vrpn_world_frame = vrpn_world_frame
         self.global_world_frame = global_world_frame
-        self._update_transform(translation, rotation)
 
         # TF Specific Stuff
         self.tf2_static_broadcaster = tf2_ros.StaticTransformBroadcaster()
         self.tf2_buffer = tf2_ros.Buffer()
         self.tf2_listener = tf2_ros.TransformListener(self.tf2_buffer)
+        self.update_transform(translation, rotation)
 
-        self._publish_transform()
 
     def update_transform(self, translation, rotation):
         self.static_transform = TransformStamped()

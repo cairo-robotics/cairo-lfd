@@ -77,7 +77,7 @@ class DataTong():
         state['position'] = mid_point
         # for now we use the right orientation
         state['orientation'] = right_trans["orientation"]
-        state['gripper_closed'] = closed
+        state['gripper_state'] = closed
         return state
     
     def _test_closed(self, left_pos, right_pos):

@@ -4,7 +4,7 @@ import tf2_geometry_msgs
 import json
 import time
 import numpy as np
-from std_msgs.msg import String
+from std_msgs.msg import String, Float64MultiArray, Bool
 from geometry_msgs.msg import TransformStamped, Transform, Pose, PoseStamped, Point, Quaternion, Vector3
 from tf.transformations import inverse_matrix
 
@@ -355,15 +355,13 @@ class AR4LfDMiddleware(object):
 
 class ARPOLfDMiddleware():
 
-    def __init__(self, ar_pos_transform=Vector3(0.975, -0.09, -0.27), ar_quat_transform=Quaternion(0.0, 0.0, 1.0, 0.0), pose_target_topic='arpo_lfd/pose_target', joint_configuration_topic="arpo_lfd/joint_configuration", playback_cmd_topic="arpo_lfd/trajectory_playback_cmd", joint_trajectory_topic="arpo_lfd/joint_trajectory"):
+    def __init__(self, ar_pos_transform=Vector3(0.975, -0.09, -0.27), ar_quat_transform=Quaternion(0.0, 0.0, 1.0, 0.0), joint_configuration_topic="arpo_lfd/joint_configuration", playback_cmd_topic="arpo_lfd/trajectory_playback_cmd", joint_trajectory_topic="arpo_lfd/joint_trajectory"):
         
         
         # Create transform manager (position and axes hardcoded for now)
         self.transform_manager = ARVRFixedTransform("hololens", ar_pos_transform, ar_quat_transform, [[0, 0, 1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1]])
 
-        
         # Callback stores
-        self.current_optimized_pose = []
         self.current_trajectory = []
         self.current_pose_target = None
         
@@ -372,39 +370,34 @@ class ARPOLfDMiddleware():
         self.joint_configuration_publisher = rospy.Publisher(joint_configuration_topic, String, queue_size=1)
         # Publish joint trajectory for hololens as JSON encoded String
         self.joint_trajectory_publisher = rospy.Publisher(joint_trajectory_topic, String, queue_size=1)
-        # Pubblish EEPoseGoals to CollisionIK to get a solution
-        self.ee_pose_goals_pub = rospy.Publisher('/collision_ik/ee_pose_goals', EEPoseGoals, queue_size=5)
 
         # Initialize Subscribers
         # Waits for a command to return the current trajectory for replay. 
         self.playback_sub = rospy.Subscriber(playback_cmd_topic, String, self._playback_cmd_cb)
-        # Subscribes to Collision_IK_results
-        self.collision_ik_sub =  rospy.Subscriber('/collision_ik/joint_angle_solutions', JointAngles, self._ja_solution_cb)
-        self.target_pose_sub = rospy.Subscriber(pose_target_topic, PoseStamped, self._target_pose_cb)
-
+        # Subscribes to IK results coming from the recording process.
+        self.joint_angle_solution_sub = rospy.Subscriber('arpo_lfd/joint_angles', Float64MultiArray, self._ja_solution_cb)
+        # If msg.data is True, the current trajectory is cleared.
+        self.clear_trajectory_cmd_sub = rospy.Subscriber('apro_lfd/clear_traj_cmd', Bool, self._clear_traj)
         
         
-    def _target_pose_cb(self, target_pose):
-        ee_pose_goals = EEPoseGoals()
-        ee_pose_goals.ee_poses.append(target_pose)
-        ee_pose_goals.header.seq = seq
-        seq += 1
-        self.ee_pose_goals_pub.publish(ee_pose_goals)
-
     def _playback_cmd_cb(self, msg):
         if msg.data == "true":
             for configuration in self.current_trajectory:
                 self.joint_configuration_publisher.publish(self._format_configuration_as_string(configuration))
+                time.sleep(.1)
         
     def _ja_solution_cb(self, data):
         ja_solution = []
         for a in data.angles.data:
             ja_solution.append(a)
-        self.current_optimized_pose = ja_solution
         self.current_trajectory.append(ja_solution)
         # JSON formatted string to set to hololens.
         
         self.joint_configuration_publisher.publish(self._format_configuration_as_string(ja_solution))
+    
+    def _clear_traj(self, msg):
+        if msg.data is True:
+            self.current_trajectory = []
     
     def _format_configuration_as_string(seld, configuration):
         data = {}

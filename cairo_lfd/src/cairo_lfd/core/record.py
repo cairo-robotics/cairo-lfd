@@ -8,8 +8,8 @@ import rospy
 import cv2
 import cv_bridge
 from sensor_msgs.msg import Image
-from std_msgs.msg import Int8MultiArray, String
-from geometry_msgs.msg import PoseStamped
+from std_msgs.msg import Int8MultiArray, String, Float64MultiArray, Bool
+from geometry_msgs.msg import PoseStamped, Pose
 
 import intera_interface
 from intera_core_msgs.msg import InteractionControlCommand
@@ -20,6 +20,9 @@ from cairo_lfd.data.labeling import ConstraintKeyframeLabeler
 from cairo_lfd.modeling.analysis import evaluate_applied_constraints, check_constraint_validity
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
+
+from collision_ik.srv import CollisionIKSolution, CollisionIKSolutionRequest
+
 
 import copy
 
@@ -477,21 +480,21 @@ class SawyerPointwiseRecorder():
 
 class ARPOLfDRecorder():
     
-    def __init__(self, settings, environment, data_tong, processor_pipeline=None):
+    def __init__(self, calibration_settings, recording_settings, environment, processor_pipeline=None, publish_constraint_validity=True):
         """
         Parameters
         ----------
         rate : int
             The Hz rate at which to capture state data.
         """
-        self.start_configuration = settings.get("start_configuration", None)
+        self.start_configuration = calibration_settings.get("start_configuration", None)
         self._start_time = rospy.get_time()
-        self._raw_rate = settings.get("sampling_rate", 25)
+        self._raw_rate = recording_settings.get("sampling_rate", 25)
         self._rate = rospy.Rate(self._raw_rate)
         self._done = False
-        self.data_tong = data_tong
         self.processor_pipeline = processor_pipeline
-        self.pose_target_publisher = rospy.Publisher('arpo_lfd/pose_target', PoseStamped, queue_size=10)
+        self.joint_angle_publisher = rospy.Publisher('arpo_lfd/joint_angles', Float64MultiArray, queue_size=10)
+        self.clear_ar_traj_publisher = rospy.Publisher('arpo_lfd/clear_traj_cmd', Bool, queue_size=10)
         self.head_display_pub = rospy.Publisher('/robot/head_display', Image, latch=True, queue_size=10)
         self.recording_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/Recording.jpg')
         self.ready_to_record_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/ReadyToRecord.jpg')
@@ -544,6 +547,7 @@ class ARPOLfDRecorder():
             self.head_display_pub.publish(self._setup_image(self.ready_to_record_image_path))
             if self.command == "record":
                 print("Recording!")
+                self.clear_ar_traj_publisher.publish(True)
                 self.head_display_pub.publish(self._setup_image(self.recording_image_path))
                 self.interaction_publisher.external_rate_send_command(self.interaction_options)
                 observations = []
@@ -554,6 +558,7 @@ class ARPOLfDRecorder():
             if self.command == "discard":
                 if len(demonstrations) > 0:
                     demonstrations.pop()
+                    self.clear_ar_traj_publisher.publish(True)
                     print("Discarded most recent demonstration recording!")
                 else:
                     print("There are no new demonstrations to discard.")
@@ -587,15 +592,17 @@ class ARPOLfDRecorder():
 
     def _record_demonstration(self):
         observations = []
+       
         while True:
-            state = self.data_tong.get_state()                    
-            self.pose_target_publisher.publish()
             data = {
                 "time": self._time_stamp(),
                 "robot": self.environment.get_robot_state(),
                 "items": self.environment.get_item_state(),
                 "triggered_constraints": self.environment.check_constraint_triggers()
             }
+        
+            self.joint_angle_publisher.publish(Float64MultiArray(data["robot"]["joint_angle"]))
+                
             observation = Observation(data)
             if self.publish_constraint_validity:
                 valid_constraints = check_constraint_validity(self.environment, self.environment.constraints, observation)[1]
@@ -605,6 +612,7 @@ class ARPOLfDRecorder():
             if self.command == "discard":
                 rospy.loginfo("~~~DISCARDED~~~")
                 self.interaction_publisher.send_position_mode_cmd()
+                self.clear_ar_traj_publisher.publish(True)
                 self._clear_command()
                 return []
             if self.command == "capture":

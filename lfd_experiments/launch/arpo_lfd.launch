@@ -11,11 +11,11 @@
 
   <!-- <include file="$(find sawyer_gazebo)/launch/sawyer_world.launch">
         <arg name="electric_gripper" value="$(arg electric_gripper)"/>
-  </include>
-
-  <include file="$(find sawyer_moveit_config)/launch/sawyer_moveit.launch">
-        <arg name="electric_gripper" value="$(arg electric_gripper)"/>
   </include> -->
+
+  <!-- <include file="$(find sawyer_moveit_config)/launch/sawyer_moveit.launch">
+        <arg name="electric_gripper" value="$(arg electric_gripper)"/>
+  </include>  -->
 
   <include file="$(find cairo_lfd)/launch/web_trigger.launch"></include>
 
@@ -24,11 +24,9 @@
   <node name="transform_lookup_service" pkg="cairo_robot_interface" type="transform_lookup_service.py" respawn="true"/>
 
   <node name="arpo_lfd_middleware" pkg="cairo_lfd" type="arpolfd_middleware.py" respawn="true"/>
-<!-- 
-  <include file="$(find sawyer_gazebo)/launch/sawyer_world.launch">
-        <arg name="electric_gripper" value="$(arg electric_gripper)"/>
-  </include> -->
 
   <include file="$(find collision_ik)/launch/collision_ik_service.launch"> </include>
+  <include file="$(find collision_ik)/launch/rviz_viewer.launch"> </include>
+
 
 </launch>

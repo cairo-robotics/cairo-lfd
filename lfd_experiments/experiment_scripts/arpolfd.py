@@ -94,12 +94,20 @@ def main():
     wp_processor = WithinPerimeterProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
     processor_pipeline = DataProcessingPipeline([rk_processor, ic_processor, soi_processor, rp_processor, wp_processor])
 
-    ###############################################
-    # Configure the Sawyer Demonstration Recorder #
-    ###############################################
+
+    ##################################
+    # Configure the Data Tong Object #
+    ##################################
+
+
+
+
+    ###################################
+    # Configure the ARPO-LfD Recorder #
+    ###################################
 
     rec_settings = configs["settings"]["recording_settings"]
-    recorder = SawyerDemonstrationRecorder(calibration_settings, rec_settings, cclfd.environment, processor_pipeline, publish_constraint_validity=True)
+    recorder = ARPOLfDRecorder(calibration_settings, rec_settings, cclfd.environment, processor_pipeline, publish_constraint_validity=True)
     rospy.on_shutdown(recorder.stop)
 
     ##########################################################

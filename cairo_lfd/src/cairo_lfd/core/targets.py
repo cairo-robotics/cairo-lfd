@@ -33,7 +33,7 @@ class DataTong():
         Name of transformation lookup service used by _get_transform() to calculate the transformation between world_frame and child_frame
     """
 
-    def __init__(self, object_id, name="data_tong", world_frame="world", left_child_frame="left_data_tong", right_child_frame="right_data_tong", service_name="transform_lookup_service"):
+    def __init__(self, name="data_tong", world_frame="world", left_child_frame="left_data_tong", right_child_frame="right_data_tong", service_name="transform_lookup_service", closed_epsilon=.1):
         """
         Parameters
         ----------
@@ -51,12 +51,11 @@ class DataTong():
             Name of transformation lookup service used by _get_transform() to calculate the transformation between world_frame and child_frame
      
         """
-        self.id = object_id
         self.name = name
         self.world_frame = world_frame if world_frame is not None else ""
         self.left_child_frame = left_child_frame
         self.right_child_frame = right_child_frame
-        self.epislon = 0.025
+        self.epsilon = closed_epsilon
         self.tlc = TransformLookupClient(service_name)
 
     def get_state(self):
@@ -71,9 +70,8 @@ class DataTong():
         state = {}
         left_trans, right_trans = self._get_transforms()
         # we treat position as the midpoint between left and right tong markers.
-        mid_point = self._get_midpoint(left_trans.position, right_trans.position)
-        closed = self._test_closed(left_trans.position, right_trans.position)
-        state['id'] = self.id
+        mid_point = self._get_midpoint(left_trans["position"], right_trans["position"])
+        closed = self._test_closed(left_trans["position"], right_trans["position"])
         state['position'] = mid_point
         # for now we use the right orientation
         state['orientation'] = right_trans["orientation"]
@@ -99,12 +97,13 @@ class DataTong():
         transform : dict
             Dictionary of representing transformation containing position and orientation keys.
         """
-        left_trans = self.tlc.call(self.world_frame, self.left_child).transform
+        left_trans = self.tlc.call(self.world_frame, self.left_child_frame).transform
+        print(left_trans)
         left_transform = {
             "position": [left_trans.translation.x, left_trans.translation.y, left_trans.translation.z],
             "orientation": [left_trans.rotation.x, left_trans.rotation.y, left_trans.rotation.z, left_trans.rotation.w]
         }
-        right_trans = self.tlc.call(self.world_frame, self.left_child).transform
+        right_trans = self.tlc.call(self.world_frame, self.right_child_frame).transform
         right_transform = {
             "position": [right_trans.translation.x, right_trans.translation.y, right_trans.translation.z],
             "orientation": [right_trans.rotation.x, right_trans.rotation.y, right_trans.rotation.z, right_trans.rotation.w]

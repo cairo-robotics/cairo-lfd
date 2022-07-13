@@ -392,7 +392,6 @@ class ARPOLfDMiddleware():
             ja_solution.append(a)
         self.current_trajectory.append(ja_solution)
         # JSON formatted string to set to hololens.
-        
         self.joint_configuration_publisher.publish(self._format_configuration_as_string(ja_solution))
     
     def _clear_traj(self, msg):

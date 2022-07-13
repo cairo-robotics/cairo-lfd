@@ -16,7 +16,7 @@ from robot_clients.transform_clients import TransformLookupClient
 from robot_clients.kinematics_clients import CollisionIKInverseKinematicsClient, CollisionIKForwardKinematicsClient
 
 
-class AbstractRobot(object):
+class AbstractRobot():
     """
     Abstract Base class for represent robot in an Environment.
     """
@@ -43,7 +43,7 @@ class SawyerRobot(AbstractRobot):
 
     Attributes
     ----------
-    robot_id : int
+    item_id : int
             Id of robot assigned in the config.json configuration files.
     reference_pose : dict
        Dictionary with position and orientation fields indicating the 'correct' orientation of the Sawyer end-effector.
@@ -67,7 +67,7 @@ class SawyerRobot(AbstractRobot):
         """
         Parameters
         ----------
-        robot_id : int
+        item_id : int
             Id of robot assigned in the config.json configuration files.
         reference_pose : dict
            Dictionary with position and orientation fields
@@ -159,7 +159,7 @@ class SawyerDataTongRobot(AbstractRobot):
 
     Attributes
     ----------
-    robot_id : int
+    item_id : int
             Id of robot assigned in the config.json configuration files.
     """
 
@@ -167,7 +167,7 @@ class SawyerDataTongRobot(AbstractRobot):
         """
         Parameters
         ----------
-        robot_id : int
+        item_id : int
             Id of robot assigned in the config.json configuration files.
         reference_pose : dict
            Dictionary with position and orientation fields
@@ -189,14 +189,14 @@ class SawyerDataTongRobot(AbstractRobot):
             The state of the robot
         """
         data_tong_state = self.data_tong.get_state()
-        joint_angles = self._get_data_tong_ik(data_tong_state)
-        fk_pose = self._get_fk(joint_angles)
+        ik_results = self._get_data_tong_ik(data_tong_state)
+        fk_pose = self._get_fk(ik_results)
         state = {}
         state['id'] = self.id
         state['position'] = [fk_pose.position.x, fk_pose.position.y, fk_pose.position.z]
         state['orientation'] = [fk_pose.orientation.w, fk_pose.orientation.x, fk_pose.orientation.y, fk_pose.orientation.z]
         state['gripper_state'] = data_tong_state["gripper_state"]
-        state['joint_angle'] = joint_angles
+        state['joint_angle'] = ik_results.data
         return state
 
     def get_info(self):
@@ -227,7 +227,7 @@ class SawyerDataTongRobot(AbstractRobot):
         return ik_res.joint_state
 
     def _get_fk(self, joint_angles):
-        return self.cik_FK_client.call(joint_angles)
+        return self.cik_FK_client.call(joint_angles).pose
         
 
 class RobotFactory(object):
@@ -254,7 +254,7 @@ class RobotFactory(object):
             "name": "Sawyer",
             "init_args":
                 {
-                    "object_id": 1,
+                    "item_id": 1,
                     "upright_pose":
                         {
                             "position":
@@ -302,16 +302,23 @@ class RobotFactory(object):
         """
         robot_ids = []
         robots = []
+        print("self.configs")
+        print(self.configs)
         for config in self.configs:
+            print(config["init_args"]["item_id"])
             if config["init_args"]["item_id"] in robot_ids:
                 raise ValueError(
                     "Robots must each have a unique integer 'item_id'")
             else:
                 robot_ids.append(config["init_args"]["item_id"])
             try:
+                print(self.classes[config["class"]])
+                print(config["init_args"])
                 robots.append(
-                    self.classes[config["class"]](**config["init_args"]))
+                    self.classes[config["class"]]   (**config["init_args"]))
             except TypeError as e:
                 rospy.logerr("Error constructing {}: {}".format(
                     self.classes[config["class"]], e))
+
+        print(robots)
         return robots

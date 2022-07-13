@@ -501,7 +501,6 @@ class ARPOLfDRecorder():
         self.command = ""
         self.command_sub = rospy.Subscriber("/cairo_lfd/record_commands", String, self.command_callback)
         self.environment = environment
-        self._setup_zero_g()
 
     def command_callback(self, data):
         self.command = data.data
@@ -544,12 +543,10 @@ class ARPOLfDRecorder():
         rospy.loginfo("Ready to record single points. Refresh rate will be at ~{}Hz".format(self._raw_rate))
         self.start()
         while not self.done():
-            self.head_display_pub.publish(self._setup_image(self.ready_to_record_image_path))
             if self.command == "record":
                 print("Recording!")
                 self.clear_ar_traj_publisher.publish(True)
-                self.head_display_pub.publish(self._setup_image(self.recording_image_path))
-                self.interaction_publisher.external_rate_send_command(self.interaction_options)
+    
                 observations = []
                 counter = 0
                 observations = self._record_demonstration()
@@ -600,8 +597,10 @@ class ARPOLfDRecorder():
                 "items": self.environment.get_item_state(),
                 "triggered_constraints": self.environment.check_constraint_triggers()
             }
-        
-            self.joint_angle_publisher.publish(Float64MultiArray(data["robot"]["joint_angle"]))
+            print(data["robot"])
+            message = Float64MultiArray()
+            message.data = data["robot"]["joint_angle"]
+            self.joint_angle_publisher.publish(message)
                 
             observation = Observation(data)
             if self.publish_constraint_validity:

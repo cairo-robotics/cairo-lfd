@@ -270,7 +270,10 @@ class ARStudyController():
                 self._clear_command()
 
     def save_trial_data(self):
-        dirname_raw = './' + self.output_directory + \
+        if self.task is None or self.subject is None:
+            dirname_raw = './' + self.output_directory
+        else:
+            dirname_raw = './' + self.output_directory + \
             '/' + self.task + '/' + self.subject + '/raw'
         if not os.path.exists(dirname_raw):
             os.makedirs(dirname_raw)

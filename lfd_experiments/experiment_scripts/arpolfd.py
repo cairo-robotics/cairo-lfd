@@ -9,7 +9,7 @@ import intera_interface
 from intera_interface import CHECK_VERSION
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
-from cairo_lfd.core.record import SawyerDemonstrationRecorder
+from cairo_lfd.core.record import ARPOLfDRecorder
 from cairo_lfd.core.environment import Observation, Demonstration
 from cairo_lfd.data.io import load_json_files, load_lfd_configuration
 from cairo_lfd.data.vectorization import vectorize_demonstration, get_observation_joint_vector
@@ -31,7 +31,7 @@ def main():
     )
 
     required.add_argument(
-        '-i', '--input_directory', dest='input_directory', required=True,
+        '-i', '--input_directory', dest='input_directory', required=False,
         help='the directory from which to input prior poor/broken demonstration .json files'
     )
 
@@ -41,12 +41,12 @@ def main():
     )
 
     required.add_argument(
-        '-t', '--task', dest='task', required=True,
+        '-t', '--task', dest='task', required=False,
         help='the name of the task being demonstrated'
     )
 
     required.add_argument(
-        '-s', '--subject', dest='subject', required=True,
+        '-s', '--subject', dest='subject', required=False,
         help='the ID of the subject'
     )
     args = parser.parse_args(rospy.myargv()[1:])
@@ -57,10 +57,10 @@ def main():
 
     print("Initializing node... ")
     rospy.init_node("ar4lfd")
-    print("Getting robot state... ")
-    robot_state = intera_interface.RobotEnable(CHECK_VERSION)
-    print("Enabling robot... ")
-    robot_state.enable()
+    # print("Getting robot state... ")
+    # robot_state = intera_interface.RobotEnable(CHECK_VERSION)
+    # print("Enabling robot... ")
+    # robot_state.enable()
 
     ########################
     # Import Configuration #
@@ -75,11 +75,12 @@ def main():
     #################################
 
     model_settings = configs["settings"]["modeling_settings"]
-    moveit_interface = SawyerMoveitInterface()
-    moveit_interface.set_velocity_scaling(.12)
-    moveit_interface.set_acceleration_scaling(.1)
-    moveit_interface.set_planner(str(model_settings["planner"]))
-    cclfd = CC_LFD(configs, model_settings, moveit_interface)
+    # moveit_interface = SawyerMoveitInterface()
+    # moveit_interface.set_velocity_scaling(.12)
+    # moveit_interface.set_acceleration_scaling(.1)
+    # moveit_interface.set_planner(str(model_settings["planner"]))
+    interface = None
+    cclfd = CC_LFD(configs, model_settings, interface)
     cclfd.build_environment()
 
     #####################################
@@ -88,18 +89,11 @@ def main():
 
     # Build processors and process demonstrations to generate derivative data e.g. relative position.
     rk_processor = RelativeKinematicsProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
-    ic_processor = InContactProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id(), .06, .5)
-    soi_processor = SphereOfInfluenceProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
-    rp_processor = RelativePositionProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
-    wp_processor = WithinPerimeterProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
-    processor_pipeline = DataProcessingPipeline([rk_processor, ic_processor, soi_processor, rp_processor, wp_processor])
-
-
-    ##################################
-    # Configure the Data Tong Object #
-    ##################################
-
-
+    # ic_processor = InContactProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id(), .06, .5)
+    # soi_processor = SphereOfInfluenceProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
+    # rp_processor = RelativePositionProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
+    # wp_processor = WithinPerimeterProcessor(cclfd.environment.get_item_ids(), cclfd.environment.get_robot_id())
+    # processor_pipeline = DataProcessingPipeline([rk_processor, ic_processor, soi_processor, rp_processor, wp_processor])
 
 
     ###################################
@@ -107,7 +101,7 @@ def main():
     ###################################
 
     rec_settings = configs["settings"]["recording_settings"]
-    recorder = ARPOLfDRecorder(calibration_settings, rec_settings, cclfd.environment, processor_pipeline, publish_constraint_validity=True)
+    recorder = ARPOLfDRecorder(calibration_settings, rec_settings, cclfd.environment, None, publish_constraint_validity=True)
     rospy.on_shutdown(recorder.stop)
 
     ##########################################################

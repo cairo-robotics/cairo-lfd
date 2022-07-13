@@ -24,6 +24,8 @@
   <node name="transform_lookup_service" pkg="cairo_robot_interface" type="transform_lookup_service.py" respawn="true"/>
 
   <node name="arpo_lfd_middleware" pkg="cairo_lfd" type="arpolfd_middleware.py" respawn="true"/>
+  <node name="vrpn_middleware" pkg="cairo_lfd" type="vrpn_middleware.py" respawn="true"/>
+
 
   <include file="$(find collision_ik)/launch/collision_ik_service.launch"> </include>
   <include file="$(find collision_ik)/launch/rviz_viewer.launch"> </include>

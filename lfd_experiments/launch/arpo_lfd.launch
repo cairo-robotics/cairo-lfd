@@ -25,6 +25,9 @@
 
   <node name="arpo_lfd_middleware" pkg="cairo_lfd" type="arpolfd_middleware.py" respawn="true"/>
   <node name="vrpn_middleware" pkg="cairo_lfd" type="vrpn_middleware.py" respawn="true"/>
+  <node name="world_to_base_transform" pkg="cairo_lfd" type="world_to_base_transform.py" respawn="true"/>
+  <!-- <node name="world_to_common_world_transform" pkg="cairo_lfd" type="world_to_common_world_transform.py" respawn="true"/> -->
+
 
 
   <include file="$(find collision_ik)/launch/collision_ik_service.launch"> </include>

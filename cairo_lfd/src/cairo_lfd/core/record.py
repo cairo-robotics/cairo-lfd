@@ -603,11 +603,11 @@ class ARPOLfDRecorder():
             self.joint_angle_publisher.publish(message)
                 
             observation = Observation(data)
-            if self.publish_constraint_validity:
-                valid_constraints = check_constraint_validity(self.environment, self.environment.constraints, observation)[1]
-                pub = rospy.Publisher('cairo_lfd/valid_constraints', Int8MultiArray, queue_size=10)
-                msg = Int8MultiArray(data=valid_constraints)
-                pub.publish(msg)
+            # if self.publish_constraint_validity:
+            #     valid_constraints = check_constraint_validity(self.environment, self.environment.constraints, observation)[1]
+            #     pub = rospy.Publisher('cairo_lfd/valid_constraints', Int8MultiArray, queue_size=10)
+            #     msg = Int8MultiArray(data=valid_constraints)
+            #     pub.publish(msg)
             if self.command == "discard":
                 rospy.loginfo("~~~DISCARDED~~~")
                 self.interaction_publisher.send_position_mode_cmd()

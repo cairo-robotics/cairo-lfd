@@ -8,8 +8,8 @@ from geometry_msgs.msg import Quaternion, Vector3
 
 
 def main():
-    rospy.init_node("vrpn_middleware")
-    fixed_transform = FixedTransform(parent_frame="world", child_frame="optitrack_world", translation=Vector3(0, 0, 0), rotation=Quaternion( 0, 0, 0, 1))
+    rospy.init_node("world_to_base_transform")
+    fixed_transform = FixedTransform(parent_frame="world", child_frame="base", translation=Vector3(0, 0, 0), rotation=Quaternion( 0, 0, 0, 1))
     rospy.spin()
 
   

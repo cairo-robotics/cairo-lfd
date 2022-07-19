@@ -213,7 +213,7 @@ class Demonstration(object):
     labeled_observations : list
         List of Observation objects representing keyframe labeled observations.
     """
-    def __init__(self, observations, aligned_observation=None, labeled_observations=None):
+    def __init__(self, observations, aligned_observations=None, labeled_observations=None):
         """
         Parameters
         ----------
@@ -225,7 +225,7 @@ class Demonstration(object):
             List of Observation objects representing keyframe labeled observations.
         """
         self.observations = observations
-        self.aligned_observation = aligned_observation
+        self.aligned_observations = aligned_observations
         self.labeled_observations = labeled_observations
 
     def get_observation_by_index(self, idx):

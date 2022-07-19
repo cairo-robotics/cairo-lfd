@@ -8,11 +8,15 @@ import numpy as np
 import tf
 import rospy
 import intera_interface
+from geometry_msgs.msg import Pose
+
+from cairo_lfd.core.targets import DataTong
 
 from robot_clients.transform_clients import TransformLookupClient
+from robot_clients.kinematics_clients import CollisionIKInverseKinematicsClient, CollisionIKForwardKinematicsClient
 
 
-class AbstractRobot(object):
+class AbstractRobot():
     """
     Abstract Base class for represent robot in an Environment.
     """
@@ -39,7 +43,7 @@ class SawyerRobot(AbstractRobot):
 
     Attributes
     ----------
-    robot_id : int
+    item_id : int
             Id of robot assigned in the config.json configuration files.
     reference_pose : dict
        Dictionary with position and orientation fields indicating the 'correct' orientation of the Sawyer end-effector.
@@ -63,7 +67,7 @@ class SawyerRobot(AbstractRobot):
         """
         Parameters
         ----------
-        robot_id : int
+        item_id : int
             Id of robot assigned in the config.json configuration files.
         reference_pose : dict
            Dictionary with position and orientation fields
@@ -148,7 +152,83 @@ class SawyerRobot(AbstractRobot):
             "orientation": [trans.rotation.x, trans.rotation.y, trans.rotation.z, trans.rotation.w]
         }
         return transform
+    
+class SawyerDataTongRobot(AbstractRobot):
+    """
+    Class representing the Saywer robot in the LFD Environment object.
 
+    Attributes
+    ----------
+    item_id : int
+            Id of robot assigned in the config.json configuration files.
+    """
+
+    def __init__(self, item_id, reference_pose):
+        """
+        Parameters
+        ----------
+        item_id : int
+            Id of robot assigned in the config.json configuration files.
+        reference_pose : dict
+           Dictionary with position and orientation fields
+        
+        """
+        self.id = item_id
+        self.reference_pose = reference_pose
+        self.data_tong = DataTong()
+        self.cik_IK_client = CollisionIKInverseKinematicsClient()
+        self.cik_FK_client = CollisionIKForwardKinematicsClient()
+
+    def get_state(self):
+        """
+        Gets the current state of the robot.
+
+        Returns
+        -------
+        state : dict
+            The state of the robot
+        """
+        data_tong_state = self.data_tong.get_state()
+        ik_results = self._get_data_tong_ik(data_tong_state)
+        fk_pose = self._get_fk(ik_results)
+        state = {}
+        state['id'] = self.id
+        state['position'] = [fk_pose.position.x, fk_pose.position.y, fk_pose.position.z]
+        state['orientation'] = [fk_pose.orientation.w, fk_pose.orientation.x, fk_pose.orientation.y, fk_pose.orientation.z]
+        state['gripper_state'] = data_tong_state["gripper_state"]
+        state['joint_angle'] = ik_results.data
+        return state
+
+    def get_info(self):
+        """
+        Gets the robot item's information.
+
+        Returns
+        -------
+        : dict
+            The info of the robot item
+        """
+        return {"id": self.id,
+                "upright_pose": self.reference_pose
+                }
+
+    def _get_data_tong_ik(self, data_tong_state):
+        pose = Pose()
+        pose.position.x = data_tong_state['position'][0]
+        pose.position.y = data_tong_state['position'][1]
+        pose.position.z = data_tong_state['position'][2]
+
+        pose.orientation.w = data_tong_state['orientation'][0]
+        pose.orientation.x = data_tong_state['orientation'][1]
+        pose.orientation.y = data_tong_state['orientation'][2]
+        pose.orientation.z = data_tong_state['orientation'][3]
+        
+        ik_res = self.cik_IK_client.call(pose)
+        return ik_res.joint_state
+
+    def _get_fk(self, joint_angles):
+        return self.cik_FK_client.call(joint_angles).pose
+        
 
 class RobotFactory(object):
     """
@@ -174,7 +254,7 @@ class RobotFactory(object):
             "name": "Sawyer",
             "init_args":
                 {
-                    "object_id": 1,
+                    "item_id": 1,
                     "upright_pose":
                         {
                             "position":
@@ -207,7 +287,8 @@ class RobotFactory(object):
         """
         self.configs = configs
         self.classes = {
-            "SawyerRobot": SawyerRobot
+            "SawyerRobot": SawyerRobot,
+            "SawyerDataTongRobot": SawyerDataTongRobot
         }
 
     def generate_robots(self):
@@ -221,16 +302,23 @@ class RobotFactory(object):
         """
         robot_ids = []
         robots = []
+        print("self.configs")
+        print(self.configs)
         for config in self.configs:
+            print(config["init_args"]["item_id"])
             if config["init_args"]["item_id"] in robot_ids:
                 raise ValueError(
                     "Robots must each have a unique integer 'item_id'")
             else:
                 robot_ids.append(config["init_args"]["item_id"])
             try:
+                print(self.classes[config["class"]])
+                print(config["init_args"])
                 robots.append(
-                    self.classes[config["class"]](**config["init_args"]))
+                    self.classes[config["class"]]   (**config["init_args"]))
             except TypeError as e:
                 rospy.logerr("Error constructing {}: {}".format(
                     self.classes[config["class"]], e))
+
+        print(robots)
         return robots

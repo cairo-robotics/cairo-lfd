@@ -1,0 +1,37 @@
+<launch>
+
+  <arg name="electric_gripper" default="true"/>
+  <arg name="vrpn_server" default="DESKTOP-CKITHM9.lan"/>
+
+  <include file="$(find cairo_robot_interface)/launch/vrpn.launch">
+        <arg name="server" value="$(arg vrpn_server)"/>
+  </include>
+
+  <!-- <node name="joint_trajectory_action_server" pkg="intera_interface" type="joint_trajectory_action_server.py" respawn="true" /> -->
+
+  <!-- <include file="$(find sawyer_gazebo)/launch/sawyer_world.launch">
+        <arg name="electric_gripper" value="$(arg electric_gripper)"/>
+  </include> -->
+
+  <!-- <include file="$(find sawyer_moveit_config)/launch/sawyer_moveit.launch">
+        <arg name="electric_gripper" value="$(arg electric_gripper)"/>
+  </include>  -->
+
+  <include file="$(find cairo_lfd)/launch/web_trigger.launch"></include>
+
+  <!-- <node name="tf_visual_tools_publisher" pkg="tf_visual_tools" type="tf_visual_tools_publisher" respawn="true"/> -->
+
+  <node name="transform_lookup_service" pkg="cairo_robot_interface" type="transform_lookup_service.py" respawn="true"/>
+
+  <node name="arpo_lfd_middleware" pkg="cairo_lfd" type="arpolfd_middleware.py" respawn="true"/>
+  <node name="vrpn_middleware" pkg="cairo_lfd" type="vrpn_middleware.py" respawn="true"/>
+  <node name="world_to_base_transform" pkg="cairo_lfd" type="world_to_base_transform.py" respawn="true"/>
+  <!-- <node name="world_to_common_world_transform" pkg="cairo_lfd" type="world_to_common_world_transform.py" respawn="true"/> -->
+
+
+
+  <include file="$(find collision_ik)/launch/collision_ik_service.launch"> </include>
+  <include file="$(find collision_ik)/launch/rviz_viewer.launch"> </include>
+
+
+</launch>

@@ -459,6 +459,7 @@ class CC_LFD():
         self.current_representation = None
 
     def build_environment(self):
+        print(self.configs['robots'])
         robots = RobotFactory(self.configs['robots']).generate_robots()
         items = ItemFactory(self.configs['items']).generate_items()
         triggers = TriggerFactory(self.configs['triggers']).generate_triggers()
@@ -470,27 +471,30 @@ class CC_LFD():
             items=items, robot=robots[0], constraints=constraints, optimizers=optimizers, triggers=triggers)
 
     def build_keyframe_graph(self, labeled_demonstrations, bandwidth):
-        self.G = KeyframeGraph()
-        self.G.graph['labeled_demonstrations'] = labeled_demonstrations
-        self.G.graph['intermediate_trajectories'] = IntermediateTrajectories(
-        ).get_trajectories(labeled_demonstrations)
-        keyframe_clustering = KeyframeClustering()
+        if labeled_demonstrations is None or len(labeled_demonstrations) > 0:
+            self.G = KeyframeGraph()
+            self.G.graph['labeled_demonstrations'] = labeled_demonstrations
+            self.G.graph['intermediate_trajectories'] = IntermediateTrajectories(
+            ).get_trajectories(labeled_demonstrations)
+            keyframe_clustering = KeyframeClustering()
 
-        """
-        Generate clusters using labeled observations, build the models, graphs, and attributes for each
-        cluster in the KeyFrameGraph
-        """
-        clusters = keyframe_clustering.get_clusters(labeled_demonstrations)
-        for cluster_id in clusters.keys():
-            self.G.add_node(cluster_id)
-            self.G.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
-            self.G.nodes[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
-            self.G.nodes[cluster_id]["applied_constraints"] = clusters[cluster_id]["applied_constraints"]
-            self.G.nodes[cluster_id]["model"] = KDEModel(
-                kernel='gaussian', bandwidth=bandwidth)
-        nx.add_path(self.G, self.G.nodes())
-        self.G.fit_models(get_observation_joint_vector)
-        self.G.identify_primal_observations(get_observation_joint_vector)
+            """
+            Generate clusters using labeled observations, build the models, graphs, and attributes for each
+            cluster in the KeyFrameGraph
+            """
+            clusters = keyframe_clustering.get_clusters(labeled_demonstrations)
+            for cluster_id in clusters.keys():
+                self.G.add_node(cluster_id)
+                self.G.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
+                self.G.nodes[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
+                self.G.nodes[cluster_id]["applied_constraints"] = clusters[cluster_id]["applied_constraints"]
+                self.G.nodes[cluster_id]["model"] = KDEModel(
+                    kernel='gaussian', bandwidth=bandwidth)
+            nx.add_path(self.G, self.G.nodes())
+            self.G.fit_models(get_observation_joint_vector)
+            self.G.identify_primal_observations(get_observation_joint_vector)
+        else:
+            rospy.logwarn("No labeled demostrations. Keyframe graph not built.")
 
     def sample_keyframes(self, number_of_samples, automated_culling_threshold=False, culling_threshold=5):
         culling_threshold = self.settings.get("culling_threshold", culling_threshold)

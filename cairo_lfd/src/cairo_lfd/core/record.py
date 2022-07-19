@@ -8,8 +8,8 @@ import rospy
 import cv2
 import cv_bridge
 from sensor_msgs.msg import Image
-from std_msgs.msg import Int8MultiArray, String
-from geometry_msgs.msg import Pose
+from std_msgs.msg import Int8MultiArray, String, Float64MultiArray, Bool
+from geometry_msgs.msg import PoseStamped, Pose
 
 import intera_interface
 from intera_core_msgs.msg import InteractionControlCommand
@@ -20,6 +20,9 @@ from cairo_lfd.data.labeling import ConstraintKeyframeLabeler
 from cairo_lfd.modeling.analysis import evaluate_applied_constraints, check_constraint_validity
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
+
+from collision_ik.srv import CollisionIKSolution, CollisionIKSolutionRequest
+
 
 import copy
 
@@ -474,3 +477,154 @@ class SawyerPointwiseRecorder():
 
     def _clear_command(self):
         self.command = ""
+
+class ARPOLfDRecorder():
+    
+    def __init__(self, calibration_settings, recording_settings, environment, processor_pipeline=None, publish_constraint_validity=True):
+        """
+        Parameters
+        ----------
+        rate : int
+            The Hz rate at which to capture state data.
+        """
+        self.start_configuration = calibration_settings.get("start_configuration", None)
+        self._start_time = rospy.get_time()
+        self._raw_rate = recording_settings.get("sampling_rate", 25)
+        self._rate = rospy.Rate(self._raw_rate)
+        self._done = False
+        self.processor_pipeline = processor_pipeline
+        self.joint_angle_publisher = rospy.Publisher('arpo_lfd/joint_angles', Float64MultiArray, queue_size=10)
+        self.clear_ar_traj_publisher = rospy.Publisher('arpo_lfd/clear_traj_cmd', Bool, queue_size=10)
+        self.head_display_pub = rospy.Publisher('/robot/head_display', Image, latch=True, queue_size=10)
+        self.recording_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/Recording.jpg')
+        self.ready_to_record_image_path = os.path.join(os.path.dirname(__file__), '../../../../lfd_experiments/images/ReadyToRecord.jpg')
+        self.command = ""
+        self.command_sub = rospy.Subscriber("/cairo_lfd/record_commands", String, self.command_callback)
+        self.environment = environment
+
+    def command_callback(self, data):
+        self.command = data.data
+
+    def _time_stamp(self):
+        """
+        Captures time difference from start time to current time.
+
+        Returns
+        ----------
+         : float
+            Current time passed so far.
+        """
+        return rospy.get_time() - self._start_time
+
+    def stop(self):
+        """
+        Stop recording by setting _done flag to True.
+        """
+        self._done = True
+
+    def done(self):
+        """
+        Return whether or not recording is done.
+
+        Returns
+        : bool
+            The _done attribute.
+        """
+        if rospy.is_shutdown():
+            self.stop()
+        return self._done
+
+    def start(self):
+        self._done = False
+
+    def record(self):
+
+        demonstrations = []
+        rospy.loginfo("Ready to record single points. Refresh rate will be at ~{}Hz".format(self._raw_rate))
+        self.start()
+        while not self.done():
+            if self.command == "record":
+                print("Recording!")
+                self.clear_ar_traj_publisher.publish(True)
+    
+                observations = []
+                counter = 0
+                observations = self._record_demonstration()
+                if len(observations) > 0:
+                    demonstrations.append(Demonstration(observations))
+            if self.command == "discard":
+                if len(demonstrations) > 0:
+                    demonstrations.pop()
+                    self.clear_ar_traj_publisher.publish(True)
+                    print("Discarded most recent demonstration recording!")
+                else:
+                    print("There are no new demonstrations to discard.")
+                self._clear_command()
+            if self.command == "quit":
+                print("Stopping recording!")
+                self._clear_command()
+                self.stop()
+            if self.command == "start":
+                print("Moving to start position!")
+                self._move_to_start_configuration()
+
+        if self.processor_pipeline is not None:
+            # Generates additional data
+            self.processor_pipeline.process(demonstrations)
+        self._analyze_applied_constraints(self.environment, demonstrations)
+        self._clear_command()
+        return demonstrations
+
+    def _move_to_start_configuration(self):
+        """ Create the moveit_interface """
+        if self.start_configuration is not None:
+            moveit_interface = SawyerMoveitInterface()
+            moveit_interface.set_velocity_scaling(.35)
+            moveit_interface.set_acceleration_scaling(.25)
+            moveit_interface.set_joint_target(self.start_configuration)
+            moveit_interface.execute(moveit_interface.plan())
+        else:
+            rospy.logwarn("No start configuration provided in your config.json file.")
+        self._clear_command()
+
+    def _record_demonstration(self):
+        observations = []
+       
+        while True:
+            data = {
+                "time": self._time_stamp(),
+                "robot": self.environment.get_robot_state(),
+                "items": self.environment.get_item_state(),
+                "triggered_constraints": self.environment.check_constraint_triggers()
+            }
+            print(data["robot"])
+            message = Float64MultiArray()
+            message.data = data["robot"]["joint_angle"]
+            self.joint_angle_publisher.publish(message)
+                
+            observation = Observation(data)
+            # if self.publish_constraint_validity:
+            #     valid_constraints = check_constraint_validity(self.environment, self.environment.constraints, observation)[1]
+            #     pub = rospy.Publisher('cairo_lfd/valid_constraints', Int8MultiArray, queue_size=10)
+            #     msg = Int8MultiArray(data=valid_constraints)
+            #     pub.publish(msg)
+            if self.command == "discard":
+                rospy.loginfo("~~~DISCARDED~~~")
+                self.interaction_publisher.send_position_mode_cmd()
+                self.clear_ar_traj_publisher.publish(True)
+                self._clear_command()
+                return []
+            if self.command == "capture":
+                rospy.loginfo("~~~CAPTURED POINT~~~")
+                self._clear_command()
+                rospy.loginfo("{} observations captured.".format(len(observations)))
+                observations.append(observation)
+            if self.command == "end":
+                rospy.loginfo("~~~ENDING POINTWISE RECORDING~~~")
+                self.interaction_publisher.send_position_mode_cmd()
+                self._clear_command()
+                return observations
+            self._rate.sleep()
+    
+    def _joint_configuration_cb(self, msg):
+        self.current_joint_configuration = msg.data

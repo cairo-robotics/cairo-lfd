@@ -13,7 +13,7 @@ from cairo_lfd.data.vectorization import get_observation_joint_vector
 from cairo_lfd.data.io import export_to_json
 from cairo_lfd.constraints.acc_assignment import assign_autoconstraints, AutoconstraintFactory
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory
-from cairo_lfd.constraints.optimizers import OptimizerFactory
+# from cairo_lfd.constraints.optimizers import OptimizerFactory
 from cairo_lfd.modeling.graphing import KeyframeClustering, KeyframeGraph, IntermediateTrajectories
 from cairo_lfd.modeling.models import KDEModel, BayesianGaussianMixtureModel
 from cairo_lfd.modeling.sampling import ConstrainedKeyframeModelSampler, KeyframeModelSampler, ModelScoreRanking, ConfigurationSpaceRanking, AutoconstraintSampler
@@ -205,7 +205,7 @@ class CC_LFD_OPT():
         triggers = TriggerFactory(self.configs['triggers']).generate_triggers()
         constraints = ConstraintFactory(
             self.configs['constraints']).generate_constraints()
-        optimizers = OptimizerFactory(self.configs['optimizers']).generate_optimizers()
+        # optimizers = OptimizerFactory(self.configs['optimizers']).generate_optimizers()
         # We only have just the one robot...for now.......
         self.environment = Environment(
             items=items, robot=robots[0], constraints=constraints, optimizers=optimizers, triggers=triggers)
@@ -925,7 +925,8 @@ class LfD2D():
             self.G.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
             self.G.nodes[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
             self.G.nodes[cluster_id]["applied_constraints"] = clusters[cluster_id]["applied_constraints"]
-            self.G.nodes[cluster_id]["model"] = BayesianGaussianMixtureModel()
+            self.G.nodes[cluster_id]["model"] = KDEModel(
+                kernel='gaussian', bandwidth=bandwidth)
         nx.add_path(self.G, self.G.nodes())
         self.G.fit_models(self.observation_vectorizer)
         self.G.identify_primal_observations(self.observation_vectorizer)

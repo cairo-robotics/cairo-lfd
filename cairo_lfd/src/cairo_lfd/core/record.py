@@ -546,7 +546,6 @@ class ARPOLfDRecorder():
             if self.command == "record":
                 print("Recording!")
                 self.clear_ar_traj_publisher.publish(True)
-    
                 observations = []
                 counter = 0
                 observations = self._record_demonstration()

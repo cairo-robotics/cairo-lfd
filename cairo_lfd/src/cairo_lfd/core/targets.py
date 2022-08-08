@@ -79,13 +79,15 @@ class DataTong():
         return state
     
     def _test_closed(self, left_pos, right_pos):
-        if euclidean(left_pos, right_pos) < self.epsilon:
+        left_xyz = [left_pos['x'], left_pos['y'], left_pos['z']]
+        right_xyz = [right_pos['x'], right_pos['y'], right_pos['z']]
+        if euclidean(left_xyz, right_xyz) < self.epsilon:
             True
         else:
             False
             
     def _get_midpoint(self, left_pos, right_pos):
-        return [(left_pos[0] + right_pos[0]) / 2, (left_pos[1] + right_pos[1]) / 2, (left_pos[2] + right_pos[2]) / 2]
+        return {'x': (left_pos['x'] + right_pos['x']) / 2, 'y': (left_pos['y'] + right_pos['y']) / 2, 'z': (left_pos['z'] + right_pos['z']) / 2}
         
 
     def _get_transforms(self):
@@ -98,17 +100,33 @@ class DataTong():
             Dictionary of representing transformation containing position and orientation keys.
         """
         left_trans = self.tlc.call(self.world_frame, self.left_child_frame).transform
-        print(left_trans)
+        l_pos = {}
+        l_orientation = {}
+        l_pos["x"] = left_trans.translation.x
+        l_pos["y"] = left_trans.translation.y
+        l_pos["z"] = left_trans.translation.z
+        l_orientation["w"] = left_trans.rotation.w
+        l_orientation["x"] = left_trans.rotation.x
+        l_orientation["y"] = left_trans.rotation.y
+        l_orientation["z"] = left_trans.rotation.z
         left_transform = {
-            "position": [left_trans.translation.x, left_trans.translation.y, left_trans.translation.z],
-            "orientation": [left_trans.rotation.x, left_trans.rotation.y, left_trans.rotation.z, left_trans.rotation.w]
+            "position": l_pos,
+            "orientation": l_orientation
         }
         right_trans = self.tlc.call(self.world_frame, self.right_child_frame).transform
+        r_pos = {}
+        r_orientation = {}
+        r_pos["x"] = right_trans.translation.x
+        r_pos["y"] = right_trans.translation.y
+        r_pos["z"] = right_trans.translation.z
+        r_orientation["w"] = right_trans.rotation.w
+        r_orientation["x"] = right_trans.rotation.x
+        r_orientation["y"] = right_trans.rotation.y
+        r_orientation["z"] = right_trans.rotation.z
         right_transform = {
-            "position": [right_trans.translation.x, right_trans.translation.y, right_trans.translation.z],
-            "orientation": [right_trans.rotation.x, right_trans.rotation.y, right_trans.rotation.z, right_trans.rotation.w]
+            "position": r_pos,
+            "orientation": r_orientation
         }
-        
         
         return left_transform, right_transform
 

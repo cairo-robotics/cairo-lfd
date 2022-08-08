@@ -188,8 +188,11 @@ class SawyerDataTongRobot(AbstractRobot):
         state : dict
             The state of the robot
         """
+        # Given a data tong state ...
         data_tong_state = self.data_tong.get_state()
+        # ... Calculate the inverse kinematics for that pose target ...
         ik_results = self._get_data_tong_ik(data_tong_state)
+        # ... and then with that IK result, get teh FK results for the endeffector.
         fk_pose = self._get_fk(ik_results)
         state = {}
         state['id'] = self.id
@@ -214,14 +217,14 @@ class SawyerDataTongRobot(AbstractRobot):
 
     def _get_data_tong_ik(self, data_tong_state):
         pose = Pose()
-        pose.position.x = data_tong_state['position'][0]
-        pose.position.y = data_tong_state['position'][1]
-        pose.position.z = data_tong_state['position'][2]
+        pose.position.x = data_tong_state['position']['x']
+        pose.position.y = data_tong_state['position']['y']
+        pose.position.z = data_tong_state['position']['z']
 
-        pose.orientation.w = data_tong_state['orientation'][0]
-        pose.orientation.x = data_tong_state['orientation'][1]
-        pose.orientation.y = data_tong_state['orientation'][2]
-        pose.orientation.z = data_tong_state['orientation'][3]
+        pose.orientation.w = data_tong_state['orientation']['w']
+        pose.orientation.x = data_tong_state['orientation']['x']
+        pose.orientation.y = data_tong_state['orientation']['y']
+        pose.orientation.z = data_tong_state['orientation']['z']
         
         ik_res = self.cik_IK_client.call(pose)
         return ik_res.joint_state

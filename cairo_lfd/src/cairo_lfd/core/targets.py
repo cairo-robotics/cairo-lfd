@@ -1,14 +1,8 @@
 """
 The items.py module contains container classes for items used in the Cario LfD ecosystem, generally non-robot objects.
 """
-from abc import ABCMeta, abstractmethod
 from scipy.spatial.distance import euclidean
-
-
-import numpy as np
-import tf
-import rospy
-import intera_interface
+from pyquaternion import Quaternion
 
 from robot_clients.transform_clients import TransformLookupClient
 
@@ -33,7 +27,7 @@ class DataTong():
         Name of transformation lookup service used by _get_transform() to calculate the transformation between world_frame and child_frame
     """
 
-    def __init__(self, name="data_tong", world_frame="world", left_child_frame="left_data_tong", right_child_frame="right_data_tong", service_name="transform_lookup_service", closed_epsilon=.1):
+    def __init__(self, name="data_tong", world_frame="world", left_child_frame="left_data_tong", right_child_frame="right_data_tong", service_name="transform_lookup_service", static_rotation=(0, 0, 0, 1), closed_epsilon=.1):
         """
         Parameters
         ----------
@@ -56,6 +50,7 @@ class DataTong():
         self.left_child_frame = left_child_frame
         self.right_child_frame = right_child_frame
         self.epsilon = closed_epsilon
+        self.static_rotation = Quaternion(*static_rotation)
         self.tlc = TransformLookupClient(service_name)
 
     def get_state(self):
@@ -68,13 +63,13 @@ class DataTong():
             The state of the data tong.
         """
         state = {}
-        left_trans, right_trans = self._get_transforms()
+        left_transform, right_transform = self._get_transforms()
         # we treat position as the midpoint between left and right tong markers.
-        mid_point = self._get_midpoint(left_trans["position"], right_trans["position"])
-        closed = self._test_closed(left_trans["position"], right_trans["position"])
+        mid_point = self._get_midpoint(left_transform["position"], left_transform["position"])
+        closed = self._test_closed(right_transform["position"], right_transform["position"])
         state['position'] = mid_point
         # for now we use the right orientation
-        state['orientation'] = right_trans["orientation"]
+        state['orientation'] = right_transform["orientation"]
         state['gripper_state'] = closed
         return state
     
@@ -105,10 +100,11 @@ class DataTong():
         l_pos["x"] = left_trans.translation.x
         l_pos["y"] = left_trans.translation.y
         l_pos["z"] = left_trans.translation.z
-        l_orientation["w"] = left_trans.rotation.w
-        l_orientation["x"] = left_trans.rotation.x
-        l_orientation["y"] = left_trans.rotation.y
-        l_orientation["z"] = left_trans.rotation.z
+        lt_quat = self._apply_static_rotation(Quaternion(left_trans.rotation.w, left_trans.rotation.x, left_trans.rotation.y, left_trans.rotation.z))
+        l_orientation["w"] = lt_quat.w
+        l_orientation["x"] = lt_quat.x
+        l_orientation["y"] = lt_quat.y
+        l_orientation["z"] = lt_quat.z
         left_transform = {
             "position": l_pos,
             "orientation": l_orientation
@@ -119,14 +115,20 @@ class DataTong():
         r_pos["x"] = right_trans.translation.x
         r_pos["y"] = right_trans.translation.y
         r_pos["z"] = right_trans.translation.z
-        r_orientation["w"] = right_trans.rotation.w
-        r_orientation["x"] = right_trans.rotation.x
-        r_orientation["y"] = right_trans.rotation.y
-        r_orientation["z"] = right_trans.rotation.z
+        
+        rt_quat = self._apply_static_rotation(Quaternion(right_trans.rotation.w, right_trans.rotation.x, right_trans.rotation.y, right_trans.rotation.z))
+        r_orientation["w"] = rt_quat.w
+        r_orientation["x"] = rt_quat.x
+        r_orientation["y"] = rt_quat.y
+        r_orientation["z"] = rt_quat.z
         right_transform = {
             "position": r_pos,
             "orientation": r_orientation
         }
         
         return left_transform, right_transform
+        
+    def _apply_static_rotation(self, quat):
+        return self.static_rotation * quat
+        
 

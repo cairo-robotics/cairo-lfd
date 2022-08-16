@@ -21,11 +21,6 @@ from cairo_lfd.modeling.analysis import evaluate_applied_constraints, check_cons
 
 from robot_interface.moveit_interface import SawyerMoveitInterface
 
-from collision_ik.srv import CollisionIKSolution, CollisionIKSolutionRequest
-
-
-import copy
-
 
 class SawyerDemonstrationRecorder():
     """
@@ -627,3 +622,6 @@ class ARPOLfDRecorder():
     
     def _joint_configuration_cb(self, msg):
         self.current_joint_configuration = msg.data
+        
+    def _clear_command(self):
+        self.command = ""

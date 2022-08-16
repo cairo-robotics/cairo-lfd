@@ -163,7 +163,7 @@ class SawyerDataTongRobot(AbstractRobot):
             Id of robot assigned in the config.json configuration files.
     """
 
-    def __init__(self, item_id, reference_pose):
+    def __init__(self, item_id, reference_pose, data_tong_static_rotation=[0, 0, 0, 1]):
         """
         Parameters
         ----------
@@ -175,9 +175,10 @@ class SawyerDataTongRobot(AbstractRobot):
         """
         self.id = item_id
         self.reference_pose = reference_pose
-        self.data_tong = DataTong()
+        self.data_tong = DataTong(static_rotation=data_tong_static_rotation) # xyzw quaternion
         self.cik_IK_client = CollisionIKInverseKinematicsClient()
         self.cik_FK_client = CollisionIKForwardKinematicsClient()
+  
 
     def get_state(self):
         """
@@ -197,7 +198,7 @@ class SawyerDataTongRobot(AbstractRobot):
         state = {}
         state['id'] = self.id
         state['position'] = [fk_pose.position.x, fk_pose.position.y, fk_pose.position.z]
-        state['orientation'] = [fk_pose.orientation.w, fk_pose.orientation.x, fk_pose.orientation.y, fk_pose.orientation.z]
+        state['orientation'] = [fk_pose.orientation.x, fk_pose.orientation.y, fk_pose.orientation.z, fk_pose.orientation.w]
         state['gripper_state'] = data_tong_state["gripper_state"]
         state['joint_angle'] = ik_results.data
         return state

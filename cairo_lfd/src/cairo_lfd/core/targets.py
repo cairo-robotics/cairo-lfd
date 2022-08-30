@@ -50,7 +50,7 @@ class DataTong():
         self.left_child_frame = left_child_frame
         self.right_child_frame = right_child_frame
         self.epsilon = closed_epsilon
-        self.static_rotation = Quaternion(*static_rotation)
+        self.static_rotation = Quaternion(static_rotation[3], static_rotation[0], static_rotation[1], static_rotation[2])
         self.tlc = TransformLookupClient(service_name)
 
     def get_state(self):
@@ -65,8 +65,8 @@ class DataTong():
         state = {}
         left_transform, right_transform = self._get_transforms()
         # we treat position as the midpoint between left and right tong markers.
-        mid_point = self._get_midpoint(left_transform["position"], left_transform["position"])
-        closed = self._test_closed(right_transform["position"], right_transform["position"])
+        mid_point = self._get_midpoint(left_transform["position"], right_transform["position"])
+        closed = self._test_closed(left_transform["position"], right_transform["position"])
         state['position'] = mid_point
         # for now we use the right orientation
         state['orientation'] = right_transform["orientation"]

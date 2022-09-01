@@ -138,7 +138,7 @@ class AR4LfDMiddleware(object):
             # Update position and orientation
             pos = point_object["robot"]["position"]
             quat = point_object["robot"]["orientation"]
-            updated_pose = self.transform_manager.world_to_hololens(Pose(
+            updated_pose = self.transform_manager.world_to_target(Pose(
                 Point(pos[0], pos[1], pos[2]), Quaternion(quat[0], quat[1], quat[2], quat[3])))
 
             # update JSON with transformed pose
@@ -162,12 +162,12 @@ class AR4LfDMiddleware(object):
         for constraint in constraint_msg["constraints"]:
             if(constraint["className"] == "HeightConstraintAbove" or constraint["className"] == "HeightConstraintBelow"):
                 # Transform height constraint
-                updated_pose = self.transform_manager.hololens_to_world(Pose(
+                updated_pose = self.transform_manager.target_to_world(Pose(
                     Point(0, constraint["args"][0], 0), Quaternion(0, 0, 0, 1)))
                 constraint["args"][0] = updated_pose.pose.position.z
             elif(constraint["className"] == "UprightConstraint"):
                 # Transform upright constraint
-                updated_pose = self.transform_manager.hololens_to_world(Pose(
+                updated_pose = self.transform_manager.target_to_world(Pose(
                     Point(0, 0, 0), Quaternion(constraint["args"][0], constraint["args"][1],
                     constraint["args"][2], constraint["args"][3])))
                 constraint["args"][0] = updated_pose.pose.orientation.x
@@ -176,7 +176,7 @@ class AR4LfDMiddleware(object):
                 constraint["args"][3] = updated_pose.pose.orientation.w
             elif(constraint["className"] == "OverUnderConstraint"):
                 # Transform over-under constraint
-                updated_pose = self.transform_manager.hololens_to_world(Pose(
+                updated_pose = self.transform_manager.target_to_world(Pose(
                     Point(constraint["args"][0], constraint["args"][1], constraint["args"][2]), 
                     Quaternion(0, 0, 0, 1)))
                 constraint["args"][0] = updated_pose.pose.position.x

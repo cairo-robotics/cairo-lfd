@@ -13,7 +13,7 @@ def main():
                                      description=main.__doc__)
     required = parser.add_argument_group('required arguments')
 
-    configuration = [ 0.0, 0.0, -1.5708, 1.5708, 0.0, -1.5708, 0.0 ]
+    configuration = [-1.3189136841166726, 0.485822174871958, -1.2973158681981019, -0.8143342002873153, -0.3846951412628785, -0.4319590127219599, 3.090875503125326]
     """ Create the moveit_interface """
     moveit_interface = SawyerMoveitInterface()
     moveit_interface.set_velocity_scaling(.55)

@@ -54,7 +54,7 @@ def main():
     else:
         config_filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./default_config.json")
     configs = load_lfd_configuration(config_filepath)
-
+    calibration_settings = configs["settings"]["calibration_settings"]
     #################################
     # Configure the LFD class model #
     #################################
@@ -84,7 +84,7 @@ def main():
     ###############################################
 
     rec_settings = configs["settings"]["recording_settings"]
-    recorder = SawyerDemonstrationRecorder(rec_settings, cclfd.environment, processor_pipeline, publish_constraint_validity=True)
+    recorder = SawyerDemonstrationRecorder(calibration_settings, rec_settings, cclfd.environment, processor_pipeline, publish_constraint_validity=True)
     rospy.on_shutdown(recorder.stop)
 
     recording_controller = RecordingOnlyController(cclfd, recorder, args.output_directory)

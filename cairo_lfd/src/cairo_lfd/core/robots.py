@@ -239,6 +239,7 @@ class SawyerDataTongRobot(AbstractRobot):
         return self.cik_FK_client.call(joint_angles).pose
 
     def _apply_coordinate_axes_transformation(self, pose):
+        pass
         
         
 

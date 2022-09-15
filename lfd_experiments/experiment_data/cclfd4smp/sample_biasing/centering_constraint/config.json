@@ -1,6 +1,14 @@
 {
     "settings":
    {
+        "calibration_settings": {
+            "start_configuration": [-1.646701171875, -0.4156904296875, -2.504056640625, -2.0136162109375, 1.7770849609375, -0.914322265625, -1.458513671875],
+            "calibration_pose":
+            {
+                "position": [1.0896, -0.04371, -0.15091],
+                "orientation": [0, 0, 0, 1]
+            }
+        },
        "recording_settings": {
            "calibration_pose":
                {

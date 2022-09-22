@@ -55,6 +55,7 @@ def main():
         config_filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./default_config.json")
     configs = load_lfd_configuration(config_filepath)
     calibration_settings = configs["settings"]["calibration_settings"]
+    
     #################################
     # Configure the LFD class model #
     #################################

@@ -44,9 +44,15 @@ class DemonstrationAlignment(object):
         """
         demonstrations = copy.deepcopy(demonstrations)
         rospy.loginfo("Performing alignment via the FastDTW algorithm...")
-        if not len(demonstrations) > 1:
-            raise AlignmentException("Error! You are attempting to align ONLY ONE OR ZERO demonstrations.")
+        if not len(demonstrations) > 0:
+            raise AlignmentException("Error! You are attempting to align ZERO demonstrations.")
 
+        
+        if len(demonstrations) == 1:
+            demonstrations[0].aligned_observations = self._deep_copy_observations(demonstrations[0].observations)
+            constraint_transitions = self._get_universal_constraint_transitions(demonstrations)
+            return (demonstrations, constraint_transitions)
+            
         for demo in demonstrations:
             demo.aligned_observations = self._deep_copy_observations(demo.observations)
 

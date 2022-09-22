@@ -93,8 +93,7 @@ class ACC_LFD():
             "number_of_samples", number_of_samples)
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
 
-        keyframe_sampler = ConstrainedKeyframeModelSampler(
-            sample_to_obsv_converter, self.robot_interface)
+        keyframe_sampler = ConstrainedKeyframeModelSampler(sample_to_obsv_converter, self.robot_interface)
 
         prior_sample = None
         for node in self.G.get_keyframe_sequence():
@@ -238,8 +237,7 @@ class CC_LFD_OPT():
         
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
 
-        keyframe_sampler = ConstrainedKeyframeModelSampler(
-            sample_to_obsv_converter, self.robot_interface)
+        keyframe_sampler = ConstrainedKeyframeModelSampler(sample_to_obsv_converter, self.robot_interface)
 
         prior_sample = None
         for node in self.G.get_keyframe_sequence():
@@ -496,13 +494,12 @@ class CC_LFD():
         else:
             rospy.logwarn("No labeled demostrations. Keyframe graph not built.")
 
-    def sample_keyframes(self, number_of_samples, automated_culling_threshold=False, culling_threshold=5):
+    def sample_keyframes(self, number_of_samples, automated_culling=False, culling_threshold=5):
         culling_threshold = self.settings.get("culling_threshold", culling_threshold)
         
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
 
-        keyframe_sampler = KeyframeModelSampler(
-            sample_to_obsv_converter, self.robot_interface)
+        keyframe_sampler = ConstrainedKeyframeModelSampler(sample_to_obsv_converter, self.robot_interface)
 
         prior_sample = None
         for node in self.G.get_keyframe_sequence():
@@ -548,7 +545,7 @@ class CC_LFD():
             prior_sample = ranked_samples[0]
 
         # Cull candidate keyframes.
-        for node in get_culling_candidates(self.G, automated_culling_threshold, culling_threshold):
+        for node in get_culling_candidates(self.G, automated_culling, culling_threshold):
             self.G.cull_node(node)
 
     def _generate_samples(self, node, sampler, number_of_samples):
@@ -706,7 +703,7 @@ class CC_LFD():
         data['keyframes'] = {}
         for cur_node in self.G.get_keyframe_sequence():
             data['keyframes'][cur_node] = {}
-            data['keyframes'][cur_node]['applied_constraints'] = self.G.nodes[cur_node]["applied_constraints"]
+            data['keyframes'][cur_node]['applied_constraints'] = self.G.nodes[cur_node].get("applied_constraints", [])
             data['keyframes'][cur_node]['observations'] = [
                 obsv.data for obsv in self.G.nodes[cur_node]["observations"]]
             data['keyframes'][cur_node]['keyframe_type'] = self.G.nodes[cur_node]["keyframe_type"]
@@ -752,8 +749,7 @@ class LFD():
     def sample_keyframes(self, number_of_samples, automate_threshold=False, culling_threshold=-1000):
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
 
-        keyframe_sampler = ConstrainedKeyframeModelSampler(
-            sample_to_obsv_converter, self.robot_interface)
+        keyframe_sampler = ConstrainedKeyframeModelSampler(sample_to_obsv_converter, self.robot_interface)
 
         prior_sample = None
         for node in self.G.get_keyframe_sequence():

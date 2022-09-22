@@ -49,7 +49,7 @@ class ARPOLfDStudyController():
                 rospy.loginfo("Resampling keyframe models...")
                 self._clear_command()
                 self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                    "number_of_samples", 25), automated_culling_threshold=False)
+                    "number_of_samples", 25), automated_culling=False)
             if self.command == "get_representation":
                 rospy.loginfo(
                     "Publishing keyframe model representation to cairo_lfd/lfd_representation keyframe models...")
@@ -84,7 +84,7 @@ class ARPOLfDStudyController():
                 self.lfd_model.build_keyframe_graph(
                     self.labeled_demos, self.lfd_model.settings.get("bandwidth", .025))
                 self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                    "number_of_samples", 25), automated_culling_threshold=True)
+                    "number_of_samples", 25), automated_culling=True)
                 rospy.loginfo(
                     "Training complete. New keyframe model available for representation and execution.")
                 self._clear_command()
@@ -216,7 +216,7 @@ class ARStudyController():
                 rospy.loginfo("Resampling keyframe models...")
                 self._clear_command()
                 self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                    "number_of_samples", 25), automated_culling_threshold=False)
+                    "number_of_samples", 25), automated_culling=False)
             if self.command == "get_representation":
                 rospy.loginfo(
                     "Publishing keyframe model representation to cairo_lfd/lfd_representation keyframe models...")
@@ -251,7 +251,7 @@ class ARStudyController():
                 self.lfd_model.build_keyframe_graph(
                     self.labeled_demos, self.lfd_model.settings.get("bandwidth", .025))
                 self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                    "number_of_samples", 25), automated_culling_threshold=True)
+                    "number_of_samples", 25), automated_culling=True)
                 rospy.loginfo(
                     "Training complete. New keyframe model available for representation and execution.")
                 self._clear_command()
@@ -419,7 +419,7 @@ class ACCLfDController():
                 rospy.loginfo("Resampling keyframe models...")
                 self._clear_command()
                 self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                    "number_of_samples", .025), automate_threshold=False)
+                    "number_of_samples", .025), automated_culling=False)
             if self.command == "get_representation":
                 rospy.loginfo(
                     "Publishing keyframe model representation to cairo_lfd/lfd_representation keyframe models...")
@@ -447,7 +447,7 @@ class ACCLfDController():
                     self.lfd_model.generate_autoconstraints(
                         self.labeled_demos)
                     self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                        "number_of_samples", .025), automate_threshold=True)
+                        "number_of_samples", .025), automated_culling=True)
                     rospy.loginfo(
                         "Training complete. New keyframe model available for representation and execution.")
                 else:
@@ -504,7 +504,7 @@ class CCLfDController():
 
     """
 
-    def __init__(self, cclfd_model, recorder, labeler, initial_demonstrations, output_directory, task, subject):
+    def __init__(self, calibration_settings, cclfd_model, recorder, labeler, raw_demos, labeled_demos, output_directory, task, subject):
         """
         Parameters
         ----------
@@ -512,6 +512,7 @@ class CCLfDController():
         """
         self.command = ""
         self.lfd_model = cclfd_model
+        self.start_configuration = calibration_settings.get("start_configuration", None)
         self.recorder = recorder
         self.labeler = labeler
         self.update_subscriber = rospy.Subscriber(
@@ -520,12 +521,15 @@ class CCLfDController():
             '/cairo_lfd/model_commands', String, self._command_callback)
         self.representation_publisher = rospy.Publisher(
             '/cairo_lfd/lfd_representation', String, queue_size=10)
-        self.raw_demos = initial_demonstrations
-        self.labeled_demos = []
+        self.raw_demos = raw_demos
+        self.labeled_demos = labeled_demos
+        if self.labeled_demos != []:
+            self.ready_to_serialize = True
+        else:
+            self.ready_to_serialize = False
         self.task = task
         self.output_directory = output_directory
         self.subject = subject
-        self.ready_to_serialize = False
 
     def run(self):
         rospy.loginfo("Running the CC LfD Experiment Controller...")
@@ -536,7 +540,7 @@ class CCLfDController():
                 rospy.loginfo("Resampling keyframe models...")
                 self._clear_command()
                 self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                    "number_of_samples", .025), automate_threshold=False)
+                    "number_of_samples", .025), automated_culling=False)
             if self.command == "get_representation":
                 rospy.loginfo(
                     "Publishing keyframe model representation to cairo_lfd/lfd_representation keyframe models...")
@@ -547,6 +551,10 @@ class CCLfDController():
                 rospy.loginfo("Executing learned model...")
                 self._clear_command()
                 self.lfd_model.perform_skill()
+            if self.command == "start":
+                rospy.loginfo("Moving to start configuration...")
+                self._clear_command()
+                self._move_to_start_configuration()
             if self.command == "record":
                 rospy.loginfo("Entering recording mode...")
                 self.raw_demos.extend(self.recorder.record())
@@ -562,7 +570,7 @@ class CCLfDController():
                     self.lfd_model.build_keyframe_graph(
                         self.labeled_demos, self.lfd_model.settings.get("bandwidth", .025))
                     self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                        "number_of_samples", .025), automate_threshold=True)
+                        "number_of_samples", .025), automated_culling=True)
                     rospy.loginfo(
                         "Training complete. New keyframe model available for representation and execution.")
                     self.ready_to_serialize = True
@@ -626,6 +634,18 @@ class CCLfDController():
 
     def _clear_command(self):
         self.command = ""
+    
+    def _move_to_start_configuration(self):
+        """ Create the moveit_interface """
+        if self.start_configuration is not None:
+            moveit_interface = SawyerMoveitInterface()
+            moveit_interface.set_velocity_scaling(.35)
+            moveit_interface.set_acceleration_scaling(.25)
+            moveit_interface.set_joint_target(self.start_configuration)
+            moveit_interface.execute(moveit_interface.plan())
+        else:
+            rospy.logwarn("No start configuration provided in your config.json file.")
+        self._clear_command()
 
 
 class LfDController():
@@ -665,7 +685,7 @@ class LfDController():
                 rospy.loginfo("Resampling keyframe models...")
                 self._clear_command()
                 self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                    "number_of_samples", .025), automate_threshold=False)
+                    "number_of_samples", .025), automated_culling=False)
             if self.command == "get_representation":
                 rospy.loginfo(
                     "Publishing keyframe model representation to cairo_lfd/lfd_representation keyframe models...")
@@ -777,7 +797,7 @@ class FeedbackLfDStudyController():
                 rospy.loginfo("Resampling keyframe models...")
                 self._clear_command()
                 self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                    "number_of_samples", .025), automate_threshold=False)
+                    "number_of_samples", .025), automated_culling=False)
             if self.command == "get_representation":
                 rospy.loginfo(
                     "Publishing keyframe model representation to cairo_lfd/lfd_representation keyframe models...")
@@ -803,7 +823,7 @@ class FeedbackLfDStudyController():
                 self.lfd_model.build_keyframe_graph(
                     self.labeled_demos, self.lfd_model.settings.get("bandwidth", .025))
                 self.lfd_model.sample_keyframes(self.lfd_model.settings.get(
-                    "number_of_samples", .025), automate_threshold=True)
+                    "number_of_samples", .025), automated_culling=True)
                 rospy.loginfo(
                     "Training complete. New keyframe model available for representation and execution.")
                 self._clear_command()

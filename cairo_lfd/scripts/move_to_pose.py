@@ -9,9 +9,9 @@ from cairo_lfd.data.conversion import convert_data_to_pose
 
 def main():
 
-    position = [ 0.70497801598107912, 0.032547560252505,  .1766266588857409]
+    position = [0.7968, -0.5726, 0]
     # orientation = [0.999364381860628, -0.0321504866108988, 0.01184169368679194, -0.009846459751380035]
-    orientation = [-0.5025809059472035, -0.455533381558173, 0.5438250996747817, -0.4941214751730367]
+    orientation = [0.724142324757704, -0.011632070356660449, 0.687893404040879, 0.047804321047140386]
 
     """ Create the moveit_interface """
     moveit_interface = SawyerMoveitInterface()

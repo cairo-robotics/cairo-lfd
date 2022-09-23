@@ -76,6 +76,7 @@ class DemonstrationAlignment(object):
             # Realign until uniform constraint transition mappings across all demonstrations
             while self._check_for_equivalent_constraint_transitions(demonstrations) is False:
                 demonstrations.sort(key = lambda d: len(d.observations))
+                reference_demo = demonstrations[0]
                 for curr_demo in demonstrations:
                     alignments = self._get_alignment(curr_demo, reference_demo)
                     curr_demo.aligned_observations = alignments["current"]

@@ -706,6 +706,8 @@ class CC_LFD():
             data['keyframes'][cur_node]['applied_constraints'] = self.G.nodes[cur_node].get("applied_constraints", [])
             data['keyframes'][cur_node]['observations'] = [
                 obsv.data for obsv in self.G.nodes[cur_node]["observations"]]
+            data['keyframes'][cur_node]['samples'] = [
+                obsv.data for obsv in self.G.nodes[cur_node]["samples"]]
             data['keyframes'][cur_node]['keyframe_type'] = self.G.nodes[cur_node]["keyframe_type"]
         export_to_json(path, data)
 
@@ -1010,6 +1012,8 @@ class LfD2D():
             data['keyframes'][cur_node]['applied_constraints'] = self.G.nodes[cur_node]["applied_constraints"]
             data['keyframes'][cur_node]['observations'] = [
                 obsv.data for obsv in self.G.nodes[cur_node]["observations"]]
+            data['keyframes'][cur_node]['samples'] = [
+                obsv.data for obsv in self.G.nodes[cur_node]["samples"]]
             data['keyframes'][cur_node]['keyframe_type'] = self.G.nodes[cur_node]["keyframe_type"]
         export_to_json(path, data)
     

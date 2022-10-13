@@ -76,7 +76,8 @@ def main():
     #################################
 
     model_settings = configs["settings"]["modeling_settings"]
-    moveit_interface = SawyerMoveitInterface()
+    print(configs["settings"]["tip_names"])
+    moveit_interface = SawyerMoveitInterface(tip_names=configs["settings"]["tip_names"])
     moveit_interface.set_velocity_scaling(.35)
     moveit_interface.set_acceleration_scaling(.25)
     moveit_interface.set_planner(str(model_settings["planner"]))
@@ -134,6 +135,7 @@ def main():
         cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))
         cclfd.sample_keyframes(model_settings.get("number_of_samples", 50), automated_culling=True)
     else:
+        demonstrations = []
         labeled_initial_demos = []
 
     #######################################

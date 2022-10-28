@@ -111,7 +111,7 @@ class ConeConstraint(object):
     axis : int
         The axis from which angle of deviation is calculated.
     """
-    def __init__(self, constraint_id, item_id, threshold_angle, reference_orientation=None):
+    def __init__(self, constraint_id, item_id, threshold_angle, reference_orientation=None, axis="z"):
         """
         These arguments should be in the "init_args" field of the config.json file's entry representing this constraint.
 
@@ -131,6 +131,7 @@ class ConeConstraint(object):
         self.item_id = item_id
         self.threshold_angle = threshold_angle
         self.reference_orientation = reference_orientation
+        self.axis = axis
 
     def evaluate(self, environment, observation):
         """
@@ -163,7 +164,7 @@ class ConeConstraint(object):
             upright_pose = convert_data_to_pose(item_info["reference_pose"]["position"], item_info["reference_pose"]["orientation"])
         else:
             upright_pose = convert_data_to_pose([0, 0, 0], self.reference_orientation)
-        return cone(upright_pose, current_pose, self.threshold_angle)
+        return cone(upright_pose, current_pose, self.threshold_angle, axis=self.axis)
 
     def __repr__(self):
         return "ConeConstraint({}, {}, {}, {}, {})".format(self.id, self.item_id, self.threshold_angle, self.reference_orientation)

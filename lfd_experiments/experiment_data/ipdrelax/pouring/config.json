@@ -1,13 +1,16 @@
 {
     "settings":
    {
+        "calibration_settings": {
+            "start_configuration": [0.5889033203125, 0.5130458984375, -0.585072265625, 0.61779296875, 0.98657421875, -0.8804697265625, -1.3759873046875],
+            "calibration_pose":
+            {
+                "position": [1.0896, -0.04371, -0.15091],
+                "orientation": [0.724142324757704, -0.011632070356660449, 0.687893404040879, 0.047804321047140386]    
+            }
+        },
        "recording_settings": {
-           "calibration_pose":
-               {
-                   "position": [0.2821271154625369, 0.6993660443827091, -0.2166083219212962],
-                   "orientation": [-0.005523956201021585, 0.9998884034279703, -0.004719975318146538, 0.01305329196600423]
-               },
-           "start_configuration": [0.4523310546875, 0.8259462890625, -1.3458369140625, 0.3512138671875, 1.7002646484375, -0.7999306640625, -1.324783203125],
+           "start_configuration": [0.5889033203125, 0.5130458984375, -0.585072265625, 0.61779296875, 0.98657421875, -0.8804697265625, -1.3759873046875],
            "sampling_rate": 20,
            "constraint_trigger_mechanism": "web_trigger"
        },
@@ -18,23 +21,23 @@
        "modeling_settings": {
            "planner": "RRTkConfigDefault",
            "culling_threshold": 12,
-           "bandwidth": 0.025,
-           "number_of_samples": 50
+           "bandwidth": 0.15,
+           "number_of_samples": 100
        },
        "raw_output_directory": "./raw_demonstrations/",
-       "labeled_output_directory": "./labeled_demonstrations/"
+       "labeled_output_directory": "./labeled_demonstrations/",
+       "tip_names": ["right_hand"]
 
    },
    "constraints": [
         {
-            "class": "OrientationConstraint", 
+            "class": "ConeConstraint", 
             "init_args" :
                 {
                     "constraint_id": 1,
                     "item_id": 1,
-                    "threshold_angle": 12,
-                    "reference_orientation": [0.724142324757704, -0.011632070356660449, 0.687893404040879, 0.047804321047140386],
-                    "axis": "z"
+                    "threshold_angle": 15,
+                    "reference_orientation": [0.724142324757704, -0.011632070356660449, 0.687893404040879, 0.047804321047140386]
                 }
         },
         {
@@ -44,9 +47,9 @@
                    "constraint_id": 2,
                    "above_item_id": 1,
                    "below_item_id": 2,
-                   "threshold_distance": 0.05,
+                   "threshold_distance": 0.075,
                    "reference_pose": {
-                       "position": [0.7968, -0.5726, -0.2],
+                       "position": [0.678, -0.336, -0.2],
                        "orientation":  [-0.003588055934499179, -0.9989722612831933, -0.004546341379431041, 0.044954174682852586]
                    },
                    "axis": "z"
@@ -58,7 +61,7 @@
             {
                 "constraint_id": 3,
                 "item_id": 1,
-                "reference_position": 0.1,
+                "reference_position": 0.15,
                 "threshold_distance": 0.00,
                 "direction": "positive",
                 "axis": "z"
@@ -100,7 +103,8 @@
                    "position": [0.578695253097807, -0.39773819035311436, -0.011090908106854147],
                    "orientation":[-0.7071318608127011, -0.02090705254793435, -0.011310713675474933, -0.7066820319871432]
 
-               }
+               },
+               "child_frame": "right_hand"
            }
        }
 

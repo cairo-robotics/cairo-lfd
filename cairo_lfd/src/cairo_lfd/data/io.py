@@ -52,7 +52,7 @@ def export_to_json(path, data):
         Data to be serialized to json.
     """
     with open(path, 'w') as f:
-        json.dump(data, f, indent=4, sort_keys=True)
+        json.dump(data, f, indent=4)
 
 
 def import_csv_to_list(path, exclude_header=True):

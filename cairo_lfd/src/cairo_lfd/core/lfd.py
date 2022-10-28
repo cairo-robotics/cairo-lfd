@@ -13,7 +13,7 @@ from cairo_lfd.data.vectorization import get_observation_joint_vector
 from cairo_lfd.data.io import export_to_json
 from cairo_lfd.constraints.acc_assignment import assign_autoconstraints, AutoconstraintFactory
 from cairo_lfd.constraints.concept_constraints import ConstraintFactory
-from cairo_lfd.constraints.optimizers import OptimizerFactory
+# from cairo_lfd.constraints.optimizers import OptimizerFactory
 from cairo_lfd.modeling.graphing import KeyframeClustering, KeyframeGraph, IntermediateTrajectories
 from cairo_lfd.modeling.models import KDEModel, BayesianGaussianMixtureModel
 from cairo_lfd.modeling.sampling import ConstrainedKeyframeModelSampler, KeyframeModelSampler, ModelScoreRanking, ConfigurationSpaceRanking, AutoconstraintSampler
@@ -93,8 +93,7 @@ class ACC_LFD():
             "number_of_samples", number_of_samples)
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
 
-        keyframe_sampler = ConstrainedKeyframeModelSampler(
-            sample_to_obsv_converter, self.robot_interface)
+        keyframe_sampler = ConstrainedKeyframeModelSampler(sample_to_obsv_converter, self.robot_interface)
 
         prior_sample = None
         for node in self.G.get_keyframe_sequence():
@@ -205,7 +204,7 @@ class CC_LFD_OPT():
         triggers = TriggerFactory(self.configs['triggers']).generate_triggers()
         constraints = ConstraintFactory(
             self.configs['constraints']).generate_constraints()
-        optimizers = OptimizerFactory(self.configs['optimizers']).generate_optimizers()
+        # optimizers = OptimizerFactory(self.configs['optimizers']).generate_optimizers()
         # We only have just the one robot...for now.......
         self.environment = Environment(
             items=items, robot=robots[0], constraints=constraints, optimizers=optimizers, triggers=triggers)
@@ -238,8 +237,7 @@ class CC_LFD_OPT():
         
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
 
-        keyframe_sampler = ConstrainedKeyframeModelSampler(
-            sample_to_obsv_converter, self.robot_interface)
+        keyframe_sampler = ConstrainedKeyframeModelSampler(sample_to_obsv_converter, self.robot_interface)
 
         prior_sample = None
         for node in self.G.get_keyframe_sequence():
@@ -496,13 +494,12 @@ class CC_LFD():
         else:
             rospy.logwarn("No labeled demostrations. Keyframe graph not built.")
 
-    def sample_keyframes(self, number_of_samples, automated_culling_threshold=False, culling_threshold=5):
+    def sample_keyframes(self, number_of_samples, automated_culling=False, culling_threshold=5):
         culling_threshold = self.settings.get("culling_threshold", culling_threshold)
         
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
 
-        keyframe_sampler = KeyframeModelSampler(
-            sample_to_obsv_converter, self.robot_interface)
+        keyframe_sampler = ConstrainedKeyframeModelSampler(sample_to_obsv_converter, self.robot_interface)
 
         prior_sample = None
         for node in self.G.get_keyframe_sequence():
@@ -548,7 +545,7 @@ class CC_LFD():
             prior_sample = ranked_samples[0]
 
         # Cull candidate keyframes.
-        for node in get_culling_candidates(self.G, automated_culling_threshold, culling_threshold):
+        for node in get_culling_candidates(self.G, automated_culling, culling_threshold):
             self.G.cull_node(node)
 
     def _generate_samples(self, node, sampler, number_of_samples):
@@ -706,9 +703,11 @@ class CC_LFD():
         data['keyframes'] = {}
         for cur_node in self.G.get_keyframe_sequence():
             data['keyframes'][cur_node] = {}
-            data['keyframes'][cur_node]['applied_constraints'] = self.G.nodes[cur_node]["applied_constraints"]
+            data['keyframes'][cur_node]['applied_constraints'] = self.G.nodes[cur_node].get("applied_constraints", [])
             data['keyframes'][cur_node]['observations'] = [
                 obsv.data for obsv in self.G.nodes[cur_node]["observations"]]
+            data['keyframes'][cur_node]['samples'] = [
+                obsv.data for obsv in self.G.nodes[cur_node]["samples"]]
             data['keyframes'][cur_node]['keyframe_type'] = self.G.nodes[cur_node]["keyframe_type"]
         export_to_json(path, data)
 
@@ -752,8 +751,7 @@ class LFD():
     def sample_keyframes(self, number_of_samples, automate_threshold=False, culling_threshold=-1000):
         sample_to_obsv_converter = SawyerSampleConversion(self.robot_interface)
 
-        keyframe_sampler = ConstrainedKeyframeModelSampler(
-            sample_to_obsv_converter, self.robot_interface)
+        keyframe_sampler = ConstrainedKeyframeModelSampler(sample_to_obsv_converter, self.robot_interface)
 
         prior_sample = None
         for node in self.G.get_keyframe_sequence():
@@ -925,7 +923,8 @@ class LfD2D():
             self.G.nodes[cluster_id]["observations"] = clusters[cluster_id]["observations"]
             self.G.nodes[cluster_id]["keyframe_type"] = clusters[cluster_id]["keyframe_type"]
             self.G.nodes[cluster_id]["applied_constraints"] = clusters[cluster_id]["applied_constraints"]
-            self.G.nodes[cluster_id]["model"] = BayesianGaussianMixtureModel()
+            self.G.nodes[cluster_id]["model"] = KDEModel(
+                kernel='gaussian', bandwidth=bandwidth)
         nx.add_path(self.G, self.G.nodes())
         self.G.fit_models(self.observation_vectorizer)
         self.G.identify_primal_observations(self.observation_vectorizer)
@@ -1013,6 +1012,8 @@ class LfD2D():
             data['keyframes'][cur_node]['applied_constraints'] = self.G.nodes[cur_node]["applied_constraints"]
             data['keyframes'][cur_node]['observations'] = [
                 obsv.data for obsv in self.G.nodes[cur_node]["observations"]]
+            data['keyframes'][cur_node]['samples'] = [
+                obsv.data for obsv in self.G.nodes[cur_node]["samples"]]
             data['keyframes'][cur_node]['keyframe_type'] = self.G.nodes[cur_node]["keyframe_type"]
         export_to_json(path, data)
     

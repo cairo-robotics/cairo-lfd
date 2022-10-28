@@ -109,11 +109,11 @@ class SawyerSampleConversion(object):
             joints = None
         if primal_observation is not None:
             obsv = copy.deepcopy(primal_observation)
-            obsv.data["robot"]["position"] = position
-            obsv.data["robot"]["orientation"] = orientation
-            obsv.data["robot"]["joint_angle"] = joints
+            obsv.data["robot"]["position"] = list(position)
+            obsv.data["robot"]["orientation"] = list(orientation)
+            obsv.data["robot"]["joint_angle"] = list(joints)
         else:
-            obsv = Observation.init_samples(position, orientation, joints)
+            obsv = Observation.init_samples(list(position), list(orientation), list(joints))
         return obsv
 
     def _run_foward_kinematics(self, sample):

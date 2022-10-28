@@ -6,62 +6,60 @@ import rospy
 import tf2_ros
 import tf2_geometry_msgs
 from tf.transformations import inverse_matrix
-from geometry_msgs.msg import TransformStamped, Transform, Quaternion, Vector3, PoseStamped
+from geometry_msgs.msg import TransformStamped, Transform, Quaternion, Vector3, Pose, PoseStamped
 
 '''
 Helper functions modified from https://github.com/cu-ironlab/ros_arvr_device_and_robot_management/blob/master/src/arvr_utility/msg_transformations.py
 '''
 
 
-def arvr_to_world(msg, transformation_matrix):
+def target_to_world(pose, transformation_matrix):
     """
-    This is a helper function to transform a arvr coordinate to the world space when given the
+    This is a helper function to transform a target coordinate to the world space when given the
     selector transformation matrix that is specific to that arvr device.
-    :type msg: PoseStamped
+    :type pose: Pose
     :type transformation_matrix: np.ndarray
     :param msg:
     :param transformation_matrix:
     :return:
     """
-    translation_vector = np.array([msg.pose.position.x,
-                                   msg.pose.position.y,
-                                   msg.pose.position.z,
+    translation_vector = np.array([pose.position.x,
+                                   pose.position.y,
+                                   pose.position.z,
                                    1]).transpose()
-    quaternion_vector = np.array([msg.pose.orientation.x,
-                                  msg.pose.orientation.y,
-                                  msg.pose.orientation.z,
-                                  msg.pose.orientation.w]).transpose()
-
+    quaternion_vector = np.array([pose.orientation.x,
+                                  pose.orientation.y,
+                                  pose.orientation.z,
+                                  pose.orientation.w]).transpose()
     translation_vector = transformation_matrix.dot(translation_vector)
     quaternion_vector = transformation_matrix.dot(quaternion_vector)
 
-    p = PoseStamped()
-    p.header = msg.header
-    p.pose.position.x = translation_vector[0]
-    p.pose.position.y = translation_vector[1]
-    p.pose.position.z = translation_vector[2]
-    p.pose.orientation.x = quaternion_vector[0]
-    p.pose.orientation.y = quaternion_vector[1]
-    p.pose.orientation.z = quaternion_vector[2]
-    p.pose.orientation.w = quaternion_vector[3]
+    p = Pose()
+    p.position.x = translation_vector[0]
+    p.position.y = translation_vector[1]
+    p.position.z = translation_vector[2]
+    p.orientation.x = quaternion_vector[0]
+    p.orientation.y = quaternion_vector[1]
+    p.orientation.z = quaternion_vector[2]
+    p.orientation.w = quaternion_vector[3]
 
     return p
 
 
-def world_to_arvr(msg, transformation_matrix):
+def world_to_target(pose, transformation_matrix):
     """
     This is a helper function to transform a world coordinate to an arvr coordinate when given the
     selector transformation matrix that is specific to that arvr device. To convert it back in the
     opposite direction, you must use the inverse of the transformation_matrix and then do the normal
     swaps in the arvr_to_world() function.
-    :type msg: PoseStamped
+    :type pose: Pose
     :type transformation_matrix: np.ndarray
     :param msg:
     :param transformation_matrix:
     :return:
     """
     inverse = inverse_matrix(transformation_matrix)
-    return arvr_to_world(msg, inverse)
+    return target_to_world(pose, inverse)
 
 
 '''
@@ -116,10 +114,10 @@ class ARVRFixedTransform(object):
     def _publish_transform(self):
         self.tf2_static_broadcaster.sendTransform(self.static_transform)
 
-    def world_to_hololens(self, pose):
+    def world_to_target(self, pose):
         """
         :type pose: Pose
-        :param pose: point in world coordinates to be transformed to HoloLens space
+        :param pose: point in world coordinates to be transformed to target space
         """
 
         # lookup transform between world and this device if it has been longer than one second since last lookup
@@ -137,13 +135,14 @@ class ARVRFixedTransform(object):
             pose_stamped, self.frame_transform)
 
         # switch coordinate axes
-        device_pose = world_to_arvr(transformed_pose, self.selector_matrix)
-        return device_pose
+        device_pose = world_to_target(transformed_pose.pose, self.selector_matrix)
+        pose_stamped.pose = device_pose
+        return pose_stamped
 
-    def hololens_to_world(self, pose):
+    def target_to_world(self, pose):
         """
         :type pose: Pose
-        :param pose: point in HoloLens coordinates to be transformed to world space
+        :param pose: point in target coordinates to be transformed to world space
         """
         # lookup transform between this device and world if it has been longer than one second since last lookup
         if(self.last_inverse_lookup is None or time.time() - self.last_inverse_lookup > 1):
@@ -157,11 +156,11 @@ class ARVRFixedTransform(object):
         pose_stamped.pose = pose
 
         # switch coordinate axes
-        world_pose = arvr_to_world(pose_stamped, self.selector_matrix)
+        pose_stamped.pose = target_to_world(pose_stamped.pose, self.selector_matrix)
 
         # apply transform to point
         transformed_pose = tf2_geometry_msgs.do_transform_pose(
-            world_pose, self.inverse_transform)
+            pose_stamped, self.inverse_transform)
 
         return transformed_pose
 

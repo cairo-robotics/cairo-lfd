@@ -206,6 +206,7 @@ class IntermediateTrajectories():
             labeled_demonstrations[0])
 
         id_sequence.append(self._get_last_keyframe_id(labeled_demonstrations[0]))
+        print(id_sequence)
         trajectory_groups = {}
         for seq_id in id_sequence:
             group = []
@@ -218,7 +219,7 @@ class IntermediateTrajectories():
                     else:
                         break
                 group.append(trajectory_slice)
-            trajectory_groups[keyframe_id] = group
+            trajectory_groups[seq_id] = group
         return trajectory_groups
 
     def _constraint_transition_id_sequence(self, demonstration):

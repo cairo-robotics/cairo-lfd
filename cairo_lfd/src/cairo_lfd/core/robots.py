@@ -9,11 +9,13 @@ import tf
 import rospy
 import intera_interface
 from geometry_msgs.msg import Pose
+from tf.transformations import quaternion_matrix
 
 from cairo_lfd.core.targets import DataTong
 
 from robot_clients.transform_clients import TransformLookupClient
 from robot_clients.kinematics_clients import CollisionIKInverseKinematicsClient, CollisionIKForwardKinematicsClient
+
 
 
 class AbstractRobot():
@@ -163,7 +165,7 @@ class SawyerDataTongRobot(AbstractRobot):
             Id of robot assigned in the config.json configuration files.
     """
 
-    def __init__(self, item_id, reference_pose):
+    def __init__(self, item_id, reference_pose, data_tong_static_rotation=[0, 0, 0, 1], coordinate_axes_transformation=[[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, -1]]):
         """
         Parameters
         ----------
@@ -175,9 +177,11 @@ class SawyerDataTongRobot(AbstractRobot):
         """
         self.id = item_id
         self.reference_pose = reference_pose
-        self.data_tong = DataTong()
+        self.data_tong = DataTong(static_rotation=data_tong_static_rotation) # xyzw quaternion
         self.cik_IK_client = CollisionIKInverseKinematicsClient()
         self.cik_FK_client = CollisionIKForwardKinematicsClient()
+        self.axes_transformation = np.array(coordinate_axes_transformation)
+  
 
     def get_state(self):
         """
@@ -188,13 +192,16 @@ class SawyerDataTongRobot(AbstractRobot):
         state : dict
             The state of the robot
         """
+        # Given a data tong state ...
         data_tong_state = self.data_tong.get_state()
+        # ... Calculate the inverse kinematics for that pose target ...
         ik_results = self._get_data_tong_ik(data_tong_state)
+        # ... and then with that IK result, get teh FK results for the endeffector.
         fk_pose = self._get_fk(ik_results)
         state = {}
         state['id'] = self.id
         state['position'] = [fk_pose.position.x, fk_pose.position.y, fk_pose.position.z]
-        state['orientation'] = [fk_pose.orientation.w, fk_pose.orientation.x, fk_pose.orientation.y, fk_pose.orientation.z]
+        state['orientation'] = [fk_pose.orientation.x, fk_pose.orientation.y, fk_pose.orientation.z, fk_pose.orientation.w]
         state['gripper_state'] = data_tong_state["gripper_state"]
         state['joint_angle'] = ik_results.data
         return state
@@ -214,20 +221,26 @@ class SawyerDataTongRobot(AbstractRobot):
 
     def _get_data_tong_ik(self, data_tong_state):
         pose = Pose()
-        pose.position.x = data_tong_state['position'][0]
-        pose.position.y = data_tong_state['position'][1]
-        pose.position.z = data_tong_state['position'][2]
+        pose.position.x = data_tong_state['position']['x']
+        pose.position.y = data_tong_state['position']['y']
+        pose.position.z = data_tong_state['position']['z']
 
-        pose.orientation.w = data_tong_state['orientation'][0]
-        pose.orientation.x = data_tong_state['orientation'][1]
-        pose.orientation.y = data_tong_state['orientation'][2]
-        pose.orientation.z = data_tong_state['orientation'][3]
+        pose.orientation.w = data_tong_state['orientation']['w']
+        pose.orientation.x = data_tong_state['orientation']['x']
+        pose.orientation.y = data_tong_state['orientation']['y']
+        pose.orientation.z = data_tong_state['orientation']['z']
         
-        ik_res = self.cik_IK_client.call(pose)
+        transformed_target_pose = (pose, self.axes_transformation)
+        
+        ik_res = self.cik_IK_client.call(transformed_target_pose)
         return ik_res.joint_state
 
     def _get_fk(self, joint_angles):
         return self.cik_FK_client.call(joint_angles).pose
+
+    def _apply_coordinate_axes_transformation(self, pose):
+        pass
+        
         
 
 class RobotFactory(object):

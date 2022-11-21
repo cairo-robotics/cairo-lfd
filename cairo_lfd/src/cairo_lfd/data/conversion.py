@@ -88,6 +88,7 @@ class SawyerSampleConversion(object):
         obsv : lfd.environment.Observation
             Observation object constructed from the converted sample.
         """
+        print(sample)
         if self.grounded_transform is not None:
             sample = self.grounded_transform(sample)
         if run_fk is True:
@@ -111,7 +112,7 @@ class SawyerSampleConversion(object):
             obsv = copy.deepcopy(primal_observation)
             obsv.data["robot"]["position"] = list(position)
             obsv.data["robot"]["orientation"] = list(orientation)
-            obsv.data["robot"]["joint_angle"] = list(joints)
+            obsv.data["robot"]["joint_angle"] = list(joints) if joints is not None else []
         else:
             obsv = Observation.init_samples(list(position), list(orientation), list(joints))
         return obsv

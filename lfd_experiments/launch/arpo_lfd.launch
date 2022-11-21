@@ -4,7 +4,6 @@
   <arg name="vrpn_server" default="DESKTOP-CKITHM9.lan"/>
 
   <include file="$(find cairo_robot_interface)/launch/vrpn.launch">
-        <arg name="server" value="$(arg vrpn_server)"/>
   </include>
 
   <!-- <node name="joint_trajectory_action_server" pkg="intera_interface" type="joint_trajectory_action_server.py" respawn="true" /> -->

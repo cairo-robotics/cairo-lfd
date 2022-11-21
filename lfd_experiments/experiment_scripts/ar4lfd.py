@@ -132,7 +132,7 @@ def main():
         else:
             labeled_initial_demos = demo_labeler.label(demonstrations)
             cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))
-            cclfd.sample_keyframes(model_settings.get("number_of_samples", 50), automated_culling_threshold=model_settings.get("automate_culling_threshold", True))
+            cclfd.sample_keyframes(model_settings.get("number_of_samples", 50), automated_culling=model_settings.get("automate_culling_threshold", True))
     else:
         labeled_initial_demos = []
         cclfd.build_keyframe_graph(labeled_initial_demos, model_settings.get("bandwidth", .025))

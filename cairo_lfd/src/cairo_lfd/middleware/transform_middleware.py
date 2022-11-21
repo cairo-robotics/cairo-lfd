@@ -5,7 +5,7 @@ import numpy as np
 import rospy
 import tf2_ros
 import tf2_geometry_msgs
-from tf.transformations import inverse_matrix
+from tf.transformations import quaternion_from_matrix, inverse_matrix, quaternion_multiply
 from geometry_msgs.msg import TransformStamped, Transform, Quaternion, Vector3, Pose, PoseStamped
 
 '''
@@ -167,11 +167,10 @@ class ARVRFixedTransform(object):
 
 
 class FixedTransform():
-    def __init__(self, parent_frame="world", child_frame="optitrack_world", translation=Vector3(0, 0, 0), rotation=Quaternion(0, 0, 0, 1)):
+    def __init__(self, parent_frame="world", child_frame="optitrack_world", translation=[0, 0, 0], rotation=[0, 0, 0, 1], axis_selector_matrix=[[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]):
         self.parent_frame = parent_frame
         self.child_frame = child_frame
-        
-        self.update_transform(translation, rotation)
+        self.update_transform(translation, rotation, axis_selector_matrix)
 
         # TF Specific Stuff
         self.tf2_static_broadcaster = tf2_ros.StaticTransformBroadcaster()
@@ -180,14 +179,22 @@ class FixedTransform():
         
         self._publish_transform()
 
-    def update_transform(self, translation, rotation):
+    def update_transform(self, translation, rotation, axis_selector_matrix):
+        quaternion_from_matrix(axis_selector_matrix)
+        selector_quaternion = quaternion_from_matrix(np.array(axis_selector_matrix))
+
+        final_rotation_array = quaternion_multiply(selector_quaternion, np.array(rotation))
+        print(final_rotation_array)
+        final_rotation = Quaternion(final_rotation_array[0], final_rotation_array[1], final_rotation_array[2], final_rotation_array[3])
         self.static_transform = TransformStamped()
         self.static_transform.header.frame_id = self.parent_frame
         self.static_transform.child_frame_id = self.child_frame
-        self.static_transform.transform = Transform(translation, rotation)
+        self.static_transform.transform = Transform(Vector3(*translation), final_rotation)
         self.static_transform.header.stamp = rospy.Time.now()
+
 
     def _publish_transform(self):
         self.tf2_static_broadcaster.sendTransform(self.static_transform)
+
 
 

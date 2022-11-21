@@ -4,12 +4,9 @@ The robots.py module contains container classes for robots used in the Cario LfD
 """
 from abc import ABCMeta, abstractmethod
 
-import numpy as np
-import tf
 import rospy
 import intera_interface
 from geometry_msgs.msg import Pose
-from tf.transformations import quaternion_matrix
 
 from cairo_lfd.core.targets import DataTong
 
@@ -165,7 +162,7 @@ class SawyerDataTongRobot(AbstractRobot):
             Id of robot assigned in the config.json configuration files.
     """
 
-    def __init__(self, item_id, reference_pose, data_tong_static_rotation=[0, 0, 0, 1], coordinate_axes_transformation=[[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, -1]]):
+    def __init__(self, item_id, reference_pose, data_tong_static_rotation=[0, 0, 0, 1]):
         """
         Parameters
         ----------
@@ -180,7 +177,6 @@ class SawyerDataTongRobot(AbstractRobot):
         self.data_tong = DataTong(static_rotation=data_tong_static_rotation) # xyzw quaternion
         self.cik_IK_client = CollisionIKInverseKinematicsClient()
         self.cik_FK_client = CollisionIKForwardKinematicsClient()
-        self.axes_transformation = np.array(coordinate_axes_transformation)
   
 
     def get_state(self):
@@ -229,18 +225,13 @@ class SawyerDataTongRobot(AbstractRobot):
         pose.orientation.x = data_tong_state['orientation']['x']
         pose.orientation.y = data_tong_state['orientation']['y']
         pose.orientation.z = data_tong_state['orientation']['z']
-        
-        transformed_target_pose = (pose, self.axes_transformation)
-        
-        ik_res = self.cik_IK_client.call(transformed_target_pose)
+                
+        ik_res = self.cik_IK_client.call(pose)
         return ik_res.joint_state
 
     def _get_fk(self, joint_angles):
         return self.cik_FK_client.call(joint_angles).pose
 
-    def _apply_coordinate_axes_transformation(self, pose):
-        pass
-        
         
 
 class RobotFactory(object):

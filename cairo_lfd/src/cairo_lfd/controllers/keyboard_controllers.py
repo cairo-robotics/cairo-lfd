@@ -32,6 +32,8 @@ class RecordingKeyboardController(object):
                 self.cmd_pub.publish("discard")
             elif user_input == "c":
                 self.cmd_pub.publish("capture")
+            elif user_input == "p":
+                self.cmd_pub.publish("replay")
             elif user_input == "e":
                 self.cmd_pub.publish("end")
             elif user_input == "s":
@@ -44,6 +46,7 @@ class RecordingKeyboardController(object):
               'q' - Quit Recording Session
               'd' - Discard current demo while recording.
               'c' - Capture current demo/point while recording.
+              'p' - Previews/replays demonstration.
               'e' - End the current demo recording. This will capture the entire demonstration if recording a whole demo at once.
               's' - Move to start configuration
               """)

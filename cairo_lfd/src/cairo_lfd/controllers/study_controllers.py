@@ -59,12 +59,11 @@ class ARPOLfDStudyController():
             if self.command == "execute":
                 rospy.loginfo("Executing learned model...")
                 self._clear_command()
-                self._move_to_start_configuration()
+                # self._move_to_start_configuration()
                 self.lfd_model.perform_skill()
             if self.command == "start":
-                rospy.loginfo("Moving to start configuration...")
+                rospy.loginfo("In AR, one cannot simply move to the start configuration...")
                 self._clear_command()
-                self._move_to_start_configuration()
             if self.command == "calibrate":
                 rospy.loginfo("Moving to calibration pose...")
                 self._clear_command()
@@ -125,8 +124,8 @@ class ARPOLfDStudyController():
                 dirname_labeled + "/labeled_demo_{}.json".format(unique_filename), raw_data)
 
     def _command_callback(self, msg):
-        self.command = msg.data
-
+        self.command = msg.data        
+    
     # def _update_keyframe_callback(self, msg):
     #     unity_json_data = json.loads(msg.data)
     #     parsed_data = {}
@@ -143,29 +142,29 @@ class ARPOLfDStudyController():
     #     constraint_configs = remap_constraints_for_lfd(unity_json_data)
     #     self.lfd_model.update_constraints(constraint_configs)
     
-    def _move_to_start_configuration(self):
-        """ Create the moveit_interface """
-        if self.start_configuration is not None:
-            moveit_interface = SawyerMoveitInterface()
-            moveit_interface.set_velocity_scaling(.35)
-            moveit_interface.set_acceleration_scaling(.25)
-            moveit_interface.set_joint_target(self.start_configuration)
-            moveit_interface.execute(moveit_interface.plan())
-        else:
-            rospy.logwarn("No start configuration provided in your config.json file.")
-        self._clear_command()
+    # def _move_to_start_configuration(self):
+    #     """ Create the moveit_interface """
+    #     if self.start_configuration is not None:
+    #         moveit_interface = SawyerMoveitInterface()
+    #         moveit_interface.set_velocity_scaling(.35)
+    #         moveit_interface.set_acceleration_scaling(.25)
+    #         moveit_interface.set_joint_target(self.start_configuration)
+    #         moveit_interface.execute(moveit_interface.plan())
+    #     else:
+    #         rospy.logwarn("No start configuration provided in your config.json file.")
+    #     self._clear_command()
         
-    def _move_to_calibration_pose(self):
-        if self.calibration_pose is not None:
-            pose = convert_data_to_pose(self.calibration_pose['position'], self.calibration_pose['orientation'])
-            moveit_interface = SawyerMoveitInterface()
-            moveit_interface.set_velocity_scaling(.35)
-            moveit_interface.set_acceleration_scaling(.25)
-            moveit_interface.set_pose_target(pose)
-            moveit_interface.execute(moveit_interface.plan())
-        else:
-            rospy.logwarn("No start configuration provided in your config.json file.")
-        self._clear_command()
+    # def _move_to_calibration_pose(self):
+    #     if self.calibration_pose is not None:
+    #         pose = convert_data_to_pose(self.calibration_pose['position'], self.calibration_pose['orientation'])
+    #         moveit_interface = SawyerMoveitInterface()
+    #         moveit_interface.set_velocity_scaling(.35)
+    #         moveit_interface.set_acceleration_scaling(.25)
+    #         moveit_interface.set_pose_target(pose)
+    #         moveit_interface.execute(moveit_interface.plan())
+    #     else:
+    #         rospy.logwarn("No start configuration provided in your config.json file.")
+    #     self._clear_command()
         
 
     def _clear_command(self):

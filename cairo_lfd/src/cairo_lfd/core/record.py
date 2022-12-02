@@ -561,11 +561,16 @@ class ARPOLfDRecorder():
             if self.command == "start":
                 print("Moving to start position!")
                 self._move_to_start_configuration()
+            if self.command == "replay":
+                print("Replaying captured demonstration!")
+                self._replay_demonstration(demonstrations[-1])
+                self._clear_command()
+
 
         if self.processor_pipeline is not None:
             # Generates additional data
             self.processor_pipeline.process(demonstrations)
-        self._analyze_applied_constraints(self.environment, demonstrations)
+        # self._analyze_applied_constraints(self.environment, demonstrations)
         self._clear_command()
         return demonstrations
 
@@ -597,6 +602,7 @@ class ARPOLfDRecorder():
             self.joint_angle_publisher.publish(message)
                 
             observation = Observation(data)
+            observations.append(observation)
             # if self.publish_constraint_validity:
             #     valid_constraints = check_constraint_validity(self.environment, self.environment.constraints, observation)[1]
             #     pub = rospy.Publisher('cairo_lfd/valid_constraints', Int8MultiArray, queue_size=10)
@@ -604,21 +610,28 @@ class ARPOLfDRecorder():
             #     pub.publish(msg)
             if self.command == "discard":
                 rospy.loginfo("~~~DISCARDED~~~")
-                self.interaction_publisher.send_position_mode_cmd()
                 self.clear_ar_traj_publisher.publish(True)
                 self._clear_command()
                 return []
             if self.command == "capture":
                 rospy.loginfo("~~~CAPTURED POINT~~~")
-                self._clear_command()
+                self.clear_ar_traj_publisher.publish(True)
                 rospy.loginfo("{} observations captured.".format(len(observations)))
-                observations.append(observation)
+                self._clear_command()
+                return observations
             if self.command == "end":
                 rospy.loginfo("~~~ENDING POINTWISE RECORDING~~~")
-                self.interaction_publisher.send_position_mode_cmd()
                 self._clear_command()
                 return observations
             self._rate.sleep()
+    
+    def _replay_demonstration(self, demonstration):
+        for observation in demonstration.observations:
+            message = Float64MultiArray()
+            message.data = observation.data["robot"]["joint_angle"]
+            self.joint_angle_publisher.publish(message)
+            rospy.sleep(.1)
+
     
     def _joint_configuration_cb(self, msg):
         self.current_joint_configuration = msg.data
